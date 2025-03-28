@@ -1,0 +1,87 @@
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px; /* Khoảng cách giữa các card */
+}
+
+.card-item {
+  box-sizing: border-box; /* Đảm bảo padding và border không làm thay đổi kích thước của card */
+}
+
+@media (max-width: 1200px) {
+  .card-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 card trên một hàng khi màn hình nhỏ hơn */
+  }
+}
+
+@media (max-width: 800px) {
+  .card-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 card trên một hàng khi màn hình nhỏ hơn */
+  }
+}
+
+@media (max-width: 600px) {
+  .card-container {
+    grid-template-columns: 1fr; /* 1 card trên một hàng khi màn hình nhỏ hơn */
+  }
+}
+
+.data-card {
+  flex: 1 1 23%; /* Đặt độ rộng để mỗi hàng có 4 item */
+  max-width: 200px; /* Giới hạn độ rộng của mỗi card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+  border-radius: 8px; /* Bo tròn góc */
+}
+.card-content {
+  padding: 10px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.status-active {
+  background-color: green;
+}
+
+.status-inactive {
+  background-color: red;
+}
+
+.status-unknown {
+  background-color: gray;
+}
+.card-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card-item{
+  border-radius: 8px;
+}
+.card-item {
+  .extra-template {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+  }
+
+  .extra-template a {
+    color: rgba(0, 0, 0, 0.65); /* Màu chữ mặc định */
+  }
+
+  .extra-template a.nz-tooltip:hover {
+    color: #1890ff; /* Màu chữ khi hover */
+  }
+
+  .extra-template a:nth-child(2) {
+    color: #f5222d; /* Màu chữ mặc định cho nút Delete */
+  }
+
+  .extra-template a:nth-child(2).nz-tooltip:hover {
+    color: #ff4d4f; /* Màu chữ khi hover nút Delete */
+  }
+}

@@ -1,0 +1,25 @@
+<ng-container>
+  <nz-form-item *ngIf="control"
+    [ngClass]="showErrors && (control.errors?.['required'] || checkError()) ? '!mb-[0px]' : ''">
+    <nz-form-label [nzRequired]="required">{{ label }}</nz-form-label>
+    <nz-form-control nzErrorTip="Không được để trống">
+      <app-input-clear [nzErrorTip]="nzErrorTip" (click)="onClick($event)" [disabled]="disabled" [initFocus]="initFocus"
+        [focus]="focus" [class]="class" [classWraper]="classWraper" [onlyNumber]="true"
+        [status]="showErrors && (control.errors?.['required'] || checkError()) ? 'error' : ''" (click)="clearZero()"
+        (input)="writeValue()" (blur)="onBlur()" [(value)]="value" [placeholder]="placeholder"></app-input-clear>
+      <div *ngIf="showErrors">
+        <div *ngIf="control?.errors?.['required']" class="text-validate text-[14px]">Nhập số khác 0</div>
+        <div *ngIf="checkError()" class="text-validate text-[14px]">{{nzErrorTip}}</div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+  <ng-container *ngIf="!control">
+    <nz-form-label [nzRequired]="required">{{ label }}</nz-form-label>
+    <app-input-clear [nzErrorTip]="nzErrorTip" (click)="onClick($event)" [disabled]="disabled" [initFocus]="initFocus"
+      [focus]="focus" [class]="class" [classWraper]="classWraper" [onlyNumber]="true"
+      [status]="showErrors ? 'error' : ''" (click)="clearZero()" (input)="writeValue()" (blur)="onBlur()"
+      [(value)]="value" [placeholder]="placeholder"></app-input-clear>
+  </ng-container>
+  <input type="text" *ngIf="control" class="hide" [formControl]="control" />
+  <input type="text" *ngIf="!control" class="hide" [(ngModel)]="valueInput" />
+</ng-container>

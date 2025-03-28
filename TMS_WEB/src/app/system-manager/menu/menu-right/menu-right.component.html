@@ -1,0 +1,12 @@
+<nz-tree #treeCom nzCheckable nzMultiple [nzData]="nodes" nzBlockNode (nzCheckBoxChange)="sendDataToParent()"
+  [nzExpandedIcon]="multiExpandedIconTpl">
+  <ng-template #nzTreeTemplate let-node>
+    <span>
+      {{ node.title }}
+    </span>
+  </ng-template>
+  <ng-template #multiExpandedIconTpl let-node let-origin="origin">
+    <span *ngIf="node.children.length > 0" nz-icon [nzType]="node.isExpanded ? 'caret-down' : 'caret-right'"
+      nzTheme="outline" class="ant-tree-switcher-line-icon icon-tree"></span>
+  </ng-template>
+</nz-tree>

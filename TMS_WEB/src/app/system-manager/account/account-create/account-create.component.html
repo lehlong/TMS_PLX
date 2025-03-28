@@ -1,0 +1,169 @@
+<nz-drawer
+  [nzMask]="true"
+  nzSize="large"
+  [nzVisible]="visible"
+  nzPlacement="right"
+  nzTitle="Tạo mới tài khoản"
+  [nzExtra]="extra"
+  (nzOnClose)="closeDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <form
+      nz-form
+      nzLayout="vertical"
+      [formGroup]="validateForm"
+      (ngSubmit)="submitForm()"
+    >
+      <div nz-row [nzGutter]="12">
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <app-input-clear
+            placeholder="Nhập tên tài khoản"
+            [required]="true"
+            label="Tên tài khoản"
+            [control]="$any(validateForm).controls['userName']"
+          ></app-input-clear>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label>Mật khẩu</nz-form-label>
+            <nz-form-control nzErrorTip="Không được để trống">
+              <nz-input-group [nzSuffix]="suffixTemplatePassword">
+                <input
+                  nz-input
+                  placeholder="Nhập mật khẩu"
+                  formControlName="password"
+                  [type]="passwordVisible ? 'text' : 'password'"
+                />
+              </nz-input-group>
+              <ng-template #suffixTemplatePassword>
+                <span
+                  nz-icon
+                  [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                  (click)="passwordVisible = !passwordVisible"
+                ></span>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <app-input-clear
+            placeholder="Nhập tên đầy đủ"
+            [required]="true"
+            label="Tên đầy đủ"
+            [control]="$any(validateForm).controls['fullName']"
+          ></app-input-clear>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <app-input-clear
+            placeholder="Nhập địa chỉ"
+            label="Địa chỉ"
+            [control]="$any(validateForm).controls['address']"
+          ></app-input-clear>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <app-input-clear
+            placeholder="Nhập số điện thoại"
+            label="Số điện thoại"
+            [control]="$any(validateForm).controls['phoneNumber']"
+          ></app-input-clear>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <app-input-clear
+            placeholder="Nhập email"
+            label="Email"
+            [control]="$any(validateForm).controls['email']"
+          ></app-input-clear>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label>Kiểu người dùng</nz-form-label>
+            <nz-form-control nzErrorTip="Không được để trống">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                placeholder="Chọn kiểu người dùng"
+                formControlName="accountType"
+              >
+                <nz-option
+                  cdkScrollable
+                  *ngFor="let item of accountType"
+                  [nzLabel]="item.name"
+                  [nzValue]="item.id"
+                >
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-form-item>
+            <nz-form-label>Đơn vị</nz-form-label>
+            <nz-form-control nzErrorTip="Không được để trống">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                placeholder="Chọn đơn vị"
+                formControlName="organizeCode"
+              >
+                <nz-option
+                  cdkScrollable
+                  *ngFor="let item of orgList"
+                  [nzLabel]="item.name"
+                  [nzValue]="item.id"
+                >
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <!-- <div nz-col [nzXs]="24" [nzMd]="12" *ngIf="isShowSelectPartner">
+          <nz-form-item>
+            <nz-form-label>Chọn đối tác</nz-form-label>
+            <nz-form-control nzErrorTip="Không được để trống">
+              <nz-select nzShowSearch nzAllowClear placeholder="Chọn kiểu người dùng" formControlName="partnerId">
+                <nz-option cdkScrollable *ngFor="let item of listPartnerCustomer" [nzLabel]="item.name"
+                  [nzValue]="item.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div> -->
+        <div nz-col [nzXs]="24">
+          <nz-form-item>
+            <nz-form-label>Trạng thái</nz-form-label>
+            <nz-form-control>
+              <nz-radio-group formControlName="isActive">
+                <label nz-radio [nzValue]="true">Kích hoạt</label>
+                <label nz-radio [nzValue]="false">Khoá</label>
+              </nz-radio-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</nz-drawer>
+<ng-template #extra>
+  <nz-space>
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="primary"
+      class="!flex !items-center"
+      (click)="submitForm()"
+    >
+      <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+    </button>
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="default"
+      nzType="primary"
+      class="!flex !items-center"
+      nzDanger
+      (click)="closeDrawer()"
+    >
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>

@@ -1,0 +1,162 @@
+<div class="container-list">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header
+      nzBackIcon
+      nzTitle="Cấu hình tham số hệ thống"
+      nzSubtitle="Danh sách cấu hình tham số hệ thống"
+      class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <nz-space>
+            <app-input-clear
+              placeholder="Tìm kiếm"
+              (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button
+              (click)="search()"
+              class="flex !items-center !border-l-0 gray-btn"
+              nzType="default"
+              nz-button
+              nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+            <button
+              (click)="reset()"
+              class="flex !items-center !border-l-0 gray-btn"
+              nzType="default"
+              nz-button
+              nzType="default">
+              <span nz-icon nzType="redo"></span>
+            </button>
+          </nz-space>
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+          <button (click)="exportExcel()" class="!flex !items-center" nz-button nzType="primary" nzDanger>
+            <span nz-icon nzType="file-excel"></span>Tải Excel
+          </button>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div class="overflow-auto flex-grow">
+    <nz-table [nzShowPagination]="false" [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
+      <thead>
+        <tr>
+          <th nzWidth="30px">STT</th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('code', $event)" nzWidth="150px">Mã tham số</th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">Tên tham số</th>
+          <th nzWidth="150px" nzAlign="right">Giá trị</th>
+          <th nzWidth="120px" nzAlign="center">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of headerTable.data; let i = index" (dblclick)="openEdit(data)">
+          <td>{{ (paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
+          <td>
+            <a (click)="openEdit(data)">{{ data.code }}</a>
+          </td>
+          <td>{{ data.name }}</td>
+          <td nzAlign="right">{{ data.value }}</td>
+          <td nzAlign="center">
+            <span
+              (click)="openEdit(data)"
+              class="cursor-pointer mr-[10px]"
+              nz-icon
+              nzTheme="outline"
+              nzType="edit"></span>
+            <span
+              nz-popconfirm
+              nzPopconfirmTitle="Bạn muốn xoá tham số này ?"
+              nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteItem(data.code)"
+              class="!text-red-500 cursor-pointer"
+              nz-icon
+              nzType="delete"
+              nzTheme="outline"></span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination
+      nzShowSizeChanger
+      [nzPageIndex]="filter.currentPage"
+      [nzTotal]="paginationResult.totalRecord"
+      [nzPageSize]="filter.pageSize"
+      (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
+  </div>
+</div>
+
+<!--Create Update-->
+<nz-drawer
+  [nzMask]="!edit"
+  nzSize="default"
+  [nzVisible]="visible"
+  nzPlacement="right"
+  [nzTitle]="edit ? ' Chỉnh sửa ' : 'Tạo mới '"
+  [nzExtra]="extra"
+  (nzOnClose)="close()">
+  <ng-container *nzDrawerContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <app-input-clear
+        placeholder="Nhập mã tham số"
+        [required]="true"
+        label="Mã tham số"
+        [control]="$any(validateForm).controls['code']"
+        [required]="true"
+        [disabled]="edit"></app-input-clear>
+
+      <app-input-clear
+        placeholder="Nhập tên tham số"
+        [required]="true"
+        label="Tên tham số"
+        [control]="$any(validateForm).controls['name']"></app-input-clear>
+
+      <app-input-clear
+        placeholder="Nhập giá trị tham số"
+        [required]="true"
+        label="Giá trị"
+        [control]="$any(validateForm).controls['value']">
+      </app-input-clear>
+    </form>
+  </ng-container>
+</nz-drawer>
+<ng-template #extra>
+  <nz-space>
+    <ng-container *ngIf="edit">
+      <button
+        [nzLoading]="loading"
+        *nzSpaceItem
+        nz-button
+        nzType="primary"
+        class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!edit">
+      <button
+        [nzLoading]="loading"
+        *nzSpaceItem
+        nz-button
+        nzType="primary"
+        class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="default"
+      nzType="primary"
+      class="!flex !items-center"
+      nzDanger
+      (click)="close()">
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>

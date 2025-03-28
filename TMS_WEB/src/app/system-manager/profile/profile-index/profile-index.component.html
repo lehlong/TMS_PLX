@@ -1,0 +1,114 @@
+<div class="container-list">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Trang cá nhân" nzSubtitle="Thông tin trang cá nhân" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space>
+          <ng-container *ngIf="tabVisible > 0">
+            <button *nzSpaceItem nz-button nzType="primary" class="!flex !items-center" (click)="handleClickSave()">
+              <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+            </button>
+          </ng-container>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div class="overflow-auto flex-grow">
+    <nz-tabset class="!pl-5" (nzSelectChange)="changeTab($event)">
+      <nz-tab nzTitle="Thông tin chung">
+        <nz-descriptions nzTitle="Thông tin người dùng" [nzColumn]="3">
+          <nz-descriptions-item nzTitle="Tên đăng nhập" [nzSpan]="3">{{userName}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Họ tên" [nzSpan]="3">{{fullName}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Địa chỉ" [nzSpan]="3">{{address}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Số điện thoại" [nzSpan]="3">{{phoneNumber}}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="email" [nzSpan]="3">{{email}}</nz-descriptions-item>
+        </nz-descriptions>
+      </nz-tab>
+      <nz-tab nzTitle="Chỉnh sửa">
+        <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+          <div nz-row [nzGutter]="12" class="w-[50vw]">
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <app-input-clear placeholder="Nhập tên tài khoản" [required]="true" label="Tên tài khoản"
+                [control]="$any(validateForm).controls['userName']" [disabled]="true"></app-input-clear>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <app-input-clear placeholder="Nhập tên đầy đủ" [required]="true" label="Tên đầy đủ"
+                [control]="$any(validateForm).controls['fullName']"></app-input-clear>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <app-input-clear placeholder="Nhập địa chỉ" label="Địa chỉ"
+                [control]="$any(validateForm).controls['address']"></app-input-clear>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <app-input-clear placeholder="Nhập số điện thoại" label="Số điện thoại"
+                [control]="$any(validateForm).controls['phoneNumber']"></app-input-clear>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <app-input-clear placeholder="Nhập email" label="Email"
+                [control]="$any(validateForm).controls['email']"></app-input-clear>
+            </div>
+          </div>
+        </form>
+      </nz-tab>
+      <nz-tab nzTitle="Đổi mật khẩu">
+        <form nz-form nzLayout="vertical" [formGroup]="changePassForm" (ngSubmit)="onChangePass()">
+          <div nz-row [nzGutter]="12" class="w-[30vw]">
+            <div nz-col [nzXs]="24" [nzMd]="24">
+              <label>Mật khẩu hiện tại:</label>
+              <nz-input-group [nzSuffix]="suffixTemplate1"
+                [nzStatus]="submitted && _f['oldPassword'].errors ? 'error' : ''">
+                <input [type]="oldPassVisible ? 'text' : 'password'" nz-input placeholder="nhập mật khẩu hiện tại"
+                  name="oldPassword" formControlName="oldPassword" (ngModelChange)="oldPassType($event)" />
+              </nz-input-group>
+              <ng-template #suffixTemplate1>
+                <span nz-icon [nzType]="oldPassVisible ? 'eye-invisible' : 'eye'"
+                  (click)="oldPassVisible = !oldPassVisible"></span>
+              </ng-template>
+              <div *ngIf="submitted && _f['oldPassword'].errors" class="text-[#ff4d4f]">
+                <div *ngIf="_f['oldPassword']['errors']['required']">không được để trống</div>
+              </div>
+              <div *ngIf="oldPassFalse" class="text-[#ff4d4f] mt-1">
+                <div>Mật khẩu hiện tại không chính xác</div>
+              </div>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24" class="mt-5">
+              <label>Mật khẩu mới:</label>
+              <nz-input-group [nzSuffix]="suffixTemplate2"
+                [nzStatus]="submitted && _f['newPassword'].errors ? 'error' : ''">
+                <input [type]="newPassVisible ? 'text' : 'password'" nz-input placeholder="nhập mật khẩu mới"
+                  name="newPassword" formControlName="newPassword" />
+              </nz-input-group>
+              <ng-template #suffixTemplate2>
+                <span nz-icon [nzType]="newPassVisible ? 'eye-invisible' : 'eye'"
+                  (click)="newPassVisible = !newPassVisible"></span>
+              </ng-template>
+              <div *ngIf="submitted && _f['newPassword'].errors" class="text-[#ff4d4f]">
+                <div *ngIf="_f['newPassword']['errors']['required']">Không được để trống</div>
+                <div *ngIf="!_f['newPassword']['errors']['required'] && _f['newPassword']['invalid']">
+                  Vui lòng nhập ít nhất 8 ký tự bao gồm tối thiểu 1 ký tự in hoa và 1 ký tự đặc biệt
+                </div>
+              </div>
+            </div>
+            <div nz-col [nzXs]="24" [nzMd]="24" class="mt-5">
+              <label>Nhập lại mật khẩu mới:</label>
+              <nz-input-group [nzSuffix]="suffixTemplate3"
+                [nzStatus]="submitted && _f['rePassword'].errors ? 'error' : ''">
+                <input [type]="reNewPassVisible ? 'text' : 'password'" nz-input placeholder="nhập lại mật khẩu mới"
+                  name="rePassword" formControlName="rePassword" />
+              </nz-input-group>
+              <ng-template #suffixTemplate3>
+                <span nz-icon [nzType]="reNewPassVisible ? 'eye-invisible' : 'eye'"
+                  (click)="reNewPassVisible = !reNewPassVisible"></span>
+              </ng-template>
+              <div *ngIf="submitted && _f['rePassword'].errors" class="text-[#ff4d4f]">
+                <div *ngIf="_f['rePassword']['errors']['required']">Không được để trống</div>
+              </div>
+              <div *ngIf="submitted && _f['rePassword'].errors" class="text-[#ff4d4f]">
+                <div *ngIf="_f['rePassword']['errors']['mismatch']">Mật khẩu không trùng khớp</div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

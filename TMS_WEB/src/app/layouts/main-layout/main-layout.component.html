@@ -1,0 +1,82 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <h3>TMS</h3>
+      <!-- <a href="#" target="_blank">
+        <img *ngIf="!isCollapsed" src="assets/img/logo.png" class="w-full" alt="logo" />
+        <img *ngIf="isCollapsed" src="assets/img/favicon.png" class="w-full img-isCollapsed" alt="logo" />
+      </a> -->
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: dataSidebarMenu }"></ng-container>
+      <ng-template #menuTpl let-menus>
+        <ng-container *ngFor="let menu of menus">
+          <ng-container *ngIf="!menu.children; else submenuTpl">
+            <li [nzDisabled]="loading" nz-menu-item [nzPaddingLeft]="!isCollapsed ? menu.level * 24 : 0"
+              [nzDisabled]="menu.disabled" [nzSelected]="menu.selected" (click)="navigateTo(menu.url)">
+              <ng-container *ngIf="menu.icon">
+                <span nz-icon [nzType]="menu.icon"></span>
+              </ng-container>
+              <span>{{ menu.title }}</span>
+            </li>
+          </ng-container>
+          <ng-template #submenuTpl>
+            <li nz-submenu [nzPaddingLeft]="!isCollapsed ? menu.level * 24 : 0" [nzOpen]="menu.open"
+              [nzTitle]="menu.title" [nzIcon]="menu.level == 1 && menu?.icon ? menu.icon : ''"
+              [nzDisabled]="menu.disabled">
+              <ul>
+                <ng-container *ngTemplateOutlet="
+                    menuTpl;
+                    context: { $implicit: menu.children }
+                  "></ng-container>
+              </ul>
+            </li>
+          </ng-template>
+        </ng-container>
+      </ng-template>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header flex justify-between items-center">
+        <div class="header-trigger flex items-center gap-[24px]">
+          <div (click)="toggleSidebar()">
+            <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          </div>
+          <div *ngIf="screenWidth >= 576">
+            <nz-breadcrumb>
+              <nz-breadcrumb-item><a routerLink="/"><span nz-icon nzType="home"></span></a></nz-breadcrumb-item>
+              <nz-breadcrumb-item *ngFor="let breadcrumb of breadcrumbs">
+                <a [routerLink]="breadcrumb?.path">{{ breadcrumb?.name }}</a>
+              </nz-breadcrumb-item>
+            </nz-breadcrumb>
+          </div>
+        </div>
+        <div>
+          <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="topLeft">
+            <nz-avatar nzIcon="user"></nz-avatar><span class="ml-[7px] text-base">{{ getAccountName(userName) }}</span>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu" class="w-[240px]">
+            <ul nz-menu class="w-[200px]">
+              <li nz-menu-item class="p-[5px]">
+                <span nz-icon nzType="lock" nzTheme="outline"></span><span class="ml-[10px]" (click)="changePass()">Đổi
+                  mật khẩu</span>
+              </li>
+              <li nz-menu-item class="p-[5px] border-t border-solid border-custom-gray" (click)="logout()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span><span class="ml-[10px]">Đăng xuất</span>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <nz-spin [nzSpinning]="loading">
+          <router-outlet></router-outlet>
+        </nz-spin>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

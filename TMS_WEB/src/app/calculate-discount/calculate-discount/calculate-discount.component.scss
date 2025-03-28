@@ -1,0 +1,15 @@
+td > input[type=number]{
+    border: none;
+    background: transparent;
+    text-align: right;
+}
+td > input[type=text]{
+    border: none;
+    background: transparent;
+    text-align: left;
+}
+
+.overflow-input{
+    overflow: auto !important;
+    height: calc(100vh - 234px) !important;
+}

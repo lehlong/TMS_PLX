@@ -1,0 +1,22 @@
+.item_form {
+  margin-bottom: 24px;
+  input,
+  textarea {
+    margin-top: 8px;
+  }
+}
+
+pre {
+  border: 1px solid #d9d9d9;
+  padding: 8px;
+  margin-top: 8px;
+}
+
+.txt {
+  &_success {
+    color: green;
+  }
+  &_error {
+    color: red;
+  }
+}

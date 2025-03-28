@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone') {
+            steps {
+				git branch: 'staging_data', credentialsId: '9932eef2-9bc6-41f2-8110-d6ea706fada1', url: 'https://github.com/thinhgakon/WOODCHIP_DMS_WEB.git'
+			}
+        }
+		stage('Build-Deploy') {
+            steps {
+                bat 'C:\\Batch-Scripts\\WOODCHIP_DMS_DATA_WEB.bat'
+	              }
+        }
+ stage('Slack') {
+         steps {
+               slackSend channel: '#build', message: 'Build WOODCHIP-DMS-DATA-WEB SUCCESS!', tokenCredentialId: 'slack-bot-token'
+            }
+        }
+	}
+}	

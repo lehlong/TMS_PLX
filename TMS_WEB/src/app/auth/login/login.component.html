@@ -1,0 +1,38 @@
+<div class="w-full bg-size-100 h-screen bg-[url('/assets/img/bg-auth.png')] bg-cover flex items-center justify-center">
+  <div class="max-w-[320px] w-full">
+    <!-- <div class="flex justify-center mb-[40px]"><img src="assets/img/logo.png" /></div> -->
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Chưa nhập tên đăng nhập!">
+          <nz-input-group nzPrefixIcon="user">
+            <input type="text" nz-input formControlName="userName" placeholder="Tên đăng nhập" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Chưa nhập mật khẩu!">
+          <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplatePassword">
+            <input nz-input placeholder="Mật khẩu" formControlName="password" [type]="passwordVisible ? 'text' : 'password'" >
+          </nz-input-group>
+          <ng-template #suffixTemplatePassword>
+            <span nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'" (click)="passwordVisible = !passwordVisible"></span>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-row class="mb-[16px]">
+        <div nz-col [nzSpan]="12">
+          <label nz-checkbox formControlName="remember">
+            <span>Lưu mật khẩu</span>
+          </label>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <a class="float-right">Quên mật khẩu</a>
+        </div>
+      </div>
+      <button nz-button class="w-full mb-[16px]" [nzType]="'primary'">Đăng nhập</button>
+      Hoặc
+      <a>Đăng ký ngay!</a>
+    </form>
+  </div>
+
+</div>

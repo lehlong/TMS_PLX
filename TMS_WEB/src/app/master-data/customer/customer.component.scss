@@ -1,0 +1,114 @@
+nz-select {
+  width: 240px;
+}
+
+nz-divider {
+  margin: 4px 0;
+}
+
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 8px;
+}
+
+.add-item {
+  flex: 0 0 auto;
+  padding: 8px;
+  display: block;
+}
+
+.contact {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.item {
+  width: 48%;
+  margin-bottom: 24px;
+}
+
+.select {
+  width: 100%;
+}
+
+.selectPhone {
+  width: 100%;
+}
+
+.custom-dropdown {
+  display: flex;
+  gap: 5px;
+}
+
+.custom-dropdown>input {
+  width: 80%;
+}
+
+.custom-dropdown>button {
+  width: 20%;
+}
+
+.dropdown-li {
+  width: 100%;
+}
+
+.contact-dropdown {
+  width: 100%;
+  min-width: 0;
+  padding: 4px 11px;
+  font-size: 14px;
+  line-height: 1.5715;
+  background-image: none;
+  border-radius: 2px;
+  transition: all .3s;
+  display: flex;
+  border: 1px solid #d9d9d9;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wrap {
+  width: 100%;
+  display: inline;
+}
+
+.drop-down-item {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+
+.inputAdd {
+  width: 87%;
+}
+
+.btn-add {
+  width: 18%;
+  margin-left: 12px;
+}
+
+.drop-down-item>input {
+  width: 87%;
+}
+
+.drop-down-item>button {
+  width: 18%;
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+::ng-deep .ant-menu-title-content {
+  display: flex;
+  width: 100%;
+}
+
+::ng-deep .anticon svg{
+  display: block;
+}

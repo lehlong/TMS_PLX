@@ -1,0 +1,95 @@
+<div class="container-list" [appPermission]="ADMIN_RIGHTS.EMAIL_TEMPLATE_CONFIGURATION">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon [nzTitle]="title" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <button class="!flex btn-green !items-center badge-blue" nzType="primary" nz-button (click)="newTab()">
+            <span nz-icon nzType="plus-circle"></span> Thêm mẫu
+          </button>
+          <button class="!flex !items-center badge-blue" nzType="primary" nz-button (click)="submitForm()">
+            <span nz-icon nzType="check"></span> Cập nhật thông tin
+          </button>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <nz-tabset [(nzSelectedIndex)]="tabs.length" (nzAdd)="newTab()" (nzClose)="closeTab($event)">
+    <nz-tab *ngFor="let tab of data" (nzSelect)="openEdit(tab)" (nzContextmenu)="openEdit(tab)" [nzTitle]="tab.name"
+      class="ant-tabs-tab">
+      <form style="width: fit-content;" nz-form nzLayout="vertical" [formGroup]="validateForm"
+        (ngSubmit)="submitForm()">
+        <div class="d-flex" style="margin-bottom: 15px;">
+          <span nz-icon nzType="edit" nzTheme="outline"></span>
+          <input nz-input style="border: none; " placeholder="Name" formControlName="name" type="text" />
+        </div>
+        <strong>
+          <u>Cấu hình Email:</u>
+        </strong>
+
+        <div style="margin: 5px  0; margin-top: 10px"> Tiêu đề email: </div>
+        <input type="text" nz-input
+        formControlName="title"/>
+        <!-- [ngModel]="'[PARAM1]-[PARAM2]'" -->
+
+        <div style="margin-top: 15px">
+          Các tham số được sử dụng trong nội dung Email:
+        </div>
+        <div nz-row>
+          <button class="btn-pram" (click)="addPram($event, '[pram]')" nz-button>
+            <span>[pram]</span>
+          </button>
+          <button class="btn-pram" (click)="addPram($event, '[fromDate]')" nz-button>
+            <span>[fromDate]</span>
+          </button>
+          <button class="btn-pram" (click)="addPram($event, '[toDate]')" nz-button>
+            <span>[toDate]</span>
+          </button>
+          <button class="btn-pram" (click)="addPram($event, '[goods]')" nz-button>
+            <span>[goods]</span>
+          </button>
+        </div>
+        <div>
+          <div class="main-container" nzWidth="100%">
+            <div class="editor-container editor-container_classic-editor" #editorContainerElement>
+              <div class="editor-container__editor" style="height: calc(100vh - 410px) !important;">
+                <div #editorElement class="ck-editor__editable_inline">
+                  <ckeditor formControlName="htmlSource"
+                  [editor]="Editor"
+                  [config]="config"
+                  *ngIf="isLayoutReady" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </nz-tab>
+
+  </nz-tabset>
+</div>
+
+<nz-modal [(nzVisible)]="isCancelModalVisible" (nzOnCancel)="handleCancelModal()" (nzOnOk)="handleCancelOk()"
+  [nzFooter]="null" class="custom-modal">
+  <ng-container *nzModalContent>
+    <div class="modal-header">
+      <div nz-col class="gutter-row" [nzSpan]="18">
+        <div class="inner-box">
+          <label>Tên:</label>
+          <input nz-input [(ngModel)]="model.name" placeholder="new" label="name"/>
+        </div>
+        <!-- // class="input-v align-left" -->
+      </div>
+    </div>
+    <input type="text">
+
+    <div style="text-align: center; margin-top: 10px">
+      <button nz-button nzType="primary" style="border-radius: 10px; width: 6rem" nzSize="large" (click)="submitForm()">
+        Xác nhận
+      </button>
+      <button nz-button nzType="primary" nzDanger nzSize="large"
+        style="margin-left: 5rem; border-radius: 10px; width: 6rem" (click)="handleCancelModal()">
+        Huỷ
+      </button>
+    </div>
+  </ng-container>
+</nz-modal>

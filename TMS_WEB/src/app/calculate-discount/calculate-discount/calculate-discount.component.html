@@ -1,0 +1,189 @@
+<div class="container-list">
+    <div class="site-page-header-ghost-wrapper">
+        <nz-page-header nzBackIcon nzTitle="Danh sách đợt tính mức giảm giá" class="site-page-header">
+            <nz-page-header-extra>
+                <nz-space [nzWrap]="true" class="gap-[5px]">
+                    <nz-space>
+                        <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
+                            [(value)]="filter.keyWord"></app-input-clear>
+                        <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default"
+                            nz-button nzType="default">
+                            <span nz-icon nzType="search"></span>
+                        </button>
+                    </nz-space>
+                    <button class="!flex !items-center" nzType="primary" nz-button (click)="genarateCreate()">
+                        <span nz-icon nzType="plus-circle"></span> Thêm mới
+                    </button>
+                </nz-space>
+            </nz-page-header-extra>
+        </nz-page-header>
+    </div>
+    <div class="overflow-auto flex-grow">
+        <nz-table nzTableLayout="fixed" #lstCalculateDiscount [nzData]="paginationResult.data">
+            <thead>
+                <tr>
+                    <th nzWidth="60px">STT</th>
+                    <th>Tên đợt tính</th>
+                    <th>Ngày hiệu lực</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of lstCalculateDiscount.data; let i = index" (click)="openCalculateDetail(data.id)"
+                    style="cursor: pointer;">
+                    <td>{{(paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.date| date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+                    <td>{{ data.status }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+
+<nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visible" nzPlacement="right" [nzTitle]="'Tạo mới đợt tính'"
+    [nzExtra]="extra" (nzOnClose)="close()">
+    <ng-container *nzDrawerContent>
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+            <div nz-col class="gutter-row" [nzSpan]="18">
+                <div class="inner-box">
+                    <label>Tên đợt tính</label>
+                    <input nz-input placeholder="Nhập tên đợt tính" [(ngModel)]="input.header.name" type="text" />
+
+                </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+                <div class="inner-box">
+                    <label>Ngày hiệu lực</label>
+                    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" ngModel (ngModelChange)="onChange($event)"
+                        [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;" (nzOnOk)="onOk($event)"></nz-date-picker>
+                </div>
+            </div>
+        </div>
+
+
+        <nz-tabset>
+            <nz-tab nzTitle="THÔNG TIN GIÁ">
+                <nz-table nzBordered nzSize="small" [nzData]="input.inputPrice" [nzFrontPagination]="false"
+                    [nzShowPagination]="false">
+                    <thead>
+                        <tr>
+                            <th nzAlign="center" rowspan="2">LOẠI HÀNG</th>
+                            <th nzAlign="center" rowspan="2">THUẾ BVMT</th>
+                            <th nzAlign="center" rowspan="2">Hệ số <br> VCF BQ <br> mùa miền</th>
+                            <th nzAlign="center" rowspan="2">CHÊNH LỆCH</th>
+                            <th nzAlign="center" colspan="2">GIÁ TẬP ĐOÀN CÔNG BỐ</th>
+                            <th nzAlign="center" rowspan="2">L15 CHƯA VAT<br> & BVMT<br>(PT bán lẻ - V2)</th>
+                            <th nzAlign="center" rowspan="2">L15 CHƯA VAT <br> & BVMT<br>(ngoài bán lẻ)</th>
+                            <th nzAlign="center" rowspan="2">LÃI GỘP <br>ĐIỀU TIẾT</th>
+                            <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
+                            <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br>(Vùng còn lại)</th>
+                        </tr>
+                        <tr>
+                            <th nzAlign="center">GIÁ BÁN LẺ V1</th>
+                            <th nzAlign="center">GIÁ BÁN LẺ V2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of input.inputPrice; let rowIndex = index">
+                            <td>{{ data.goodName }}</td>
+                            <td><input nz-input [(ngModel)]="data.thueBvmt" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.vcf" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.chenhLech" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.gblV1" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.gblV2" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.l15Blv2" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.l15Nbl" type="number"></td>
+                            <td><input nz-input [(ngModel)]="data.laiGop" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.fobV1" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.fobV2" type="number" /></td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </nz-tab>
+            <nz-tab nzTitle="THỊ TRƯỜNG">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.market" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">THỊ TRƯỜNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.market">
+                                <td>{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.gap" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cuocVCBQ" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpChungChuaCuocVC" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDieuTietXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDieuTietDau" type="number" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+            <nz-tab nzTitle="KHÁCH HÀNG ĐB">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerDb" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerDb">
+                                <td >{{data.code }}</td>
+                                <td >{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+        </nz-tabset>
+
+
+    </ng-container>
+</nz-drawer>
+<ng-template #extra>
+    <nz-space>
+        <ng-container>
+            <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+                (click)="onCreate()">
+                <span nz-icon nzType="save" nzTheme="outline"></span> Tạo mới
+            </button>
+        </ng-container>
+    </nz-space>
+</ng-template>

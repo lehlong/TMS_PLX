@@ -1,0 +1,162 @@
+<div class="container-list" [appPermission]="ADMIN_RIGHTS.PERMISSION_MANAGEMENT">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header
+      nzBackIcon
+      nzTitle="Danh sách quyền"
+      class="site-page-header"
+    >
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <nz-space class="gap-[5px]">
+            <div>
+              <nz-input-group [nzSuffix]="suffixIcon" style="width: auto">
+                <input
+                  type="text"
+                  nz-input
+                  placeholder="Search"
+                  [(ngModel)]="searchValue"
+                  (ngModelChange)="searchTables(searchValue)"
+                />
+              </nz-input-group>
+              <ng-template #suffixIcon>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <button
+                (click)="reset()"
+                class="flex !items-center !border-l-0 gray-btn"
+                nzType="default"
+                nz-button
+                nzType="default"
+              >
+                <span nz-icon nzType="redo"></span>
+              </button>
+            </div>
+            <button
+              (click)="updateOrderTree()"
+              class="!flex !items-center btn_success"
+              nz-button
+            >
+              <span nz-icon nzType="check" nzTheme="outline"></span> Cập nhật
+              thứ tự
+            </button>
+          </nz-space>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <nz-tree
+    #treeCom
+    class="!pl-[10px] overflow-auto"
+    [nzData]="nodes"
+    nzDraggable
+    nzBlockNode
+    (nzOnDrop)="nzEvent($event)"
+    [nzSearchValue]="searchValue"
+    (nzExpandChange)="nzEvent($event)"
+    (nzSearchValueChange)="nzEvent($event)"
+    (nzOnDrop)="onDrop($event)"
+    (nzOnDragStart)="onDragStart($event)"
+    [nzTreeTemplate]="nzTreeTemplate"
+    [nzExpandedIcon]="multiExpandedIconTpl"
+  >
+    <ng-template #nzTreeTemplate let-node>
+      <div class="!flex justify-between pr-8 note_title">
+        <div class="flex-1" (click)="onClick(node)">{{ node.title }}</div>
+        <div>
+          <span
+            nz-icon
+            (click)="openCreateChild(node)"
+            nzType="plus-circle"
+            nzTheme="twotone"
+          ></span>
+          <nz-divider nzType="vertical"></nz-divider>
+          <span
+            nz-popconfirm
+            nzPopconfirmTitle="Bạn có muốn xóa quyền này?"
+            nzPopconfirmPlacement="bottom"
+            (nzOnConfirm)="deleteItem(node)"
+            class="!text-red-500 cursor-pointer"
+            nz-icon
+            nzType="delete"
+            nzTheme="outline"
+          ></span>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #multiExpandedIconTpl let-node let-origin="origin">
+      <span
+        *ngIf="node.children.length > 0"
+        nz-icon
+        [nzType]="node.isExpanded ? 'caret-down' : 'caret-right'"
+        nzTheme="outline"
+        class="ant-tree-switcher-line-icon icon-tree"
+      ></span>
+    </ng-template>
+  </nz-tree>
+</div>
+
+<!--Create Update-->
+<nz-drawer
+  [nzMask]="!edit"
+  [nzVisible]="visible"
+  nzPlacement="right"
+  [nzTitle]="edit ? 'Chỉnh sửa ' : 'Tạo mới '"
+  [nzExtra]="extra"
+  (nzOnClose)="close()"
+>
+  <ng-container *nzDrawerContent>
+    <form
+      nz-form
+      nzLayout="vertical"
+      [formGroup]="validateForm"
+      (ngSubmit)="submitForm()"
+    >
+      <app-input-clear
+        placeholder="Nhập mã quyền"
+        [required]="true"
+        label="Mã quyền cha"
+        [control]="$any(validateForm).controls['pId']"
+        [disabled]="true"
+      >
+      </app-input-clear>
+      <app-input-clear
+        placeholder="Nhập mã quyền"
+        [required]="true"
+        label="Mã quyền"
+        [control]="$any(validateForm).controls['id']"
+        [disabled]="edit ? true : false"
+      >
+      </app-input-clear>
+      <app-input-clear
+        placeholder="Nhập tên quyền"
+        [required]="true"
+        label="Tên quyền"
+        [control]="$any(validateForm).controls['name']"
+      ></app-input-clear>
+    </form>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #extra>
+  <nz-space>
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="primary"
+      class="!flex !items-center"
+      (click)="submitForm()"
+    >
+      <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+    </button>
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="primary"
+      class="!flex !items-center"
+      nzDanger
+      (click)="close()"
+    >
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>

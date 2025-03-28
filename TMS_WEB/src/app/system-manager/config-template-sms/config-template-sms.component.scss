@@ -1,0 +1,103 @@
+@media print {
+  body {
+    margin: 0 !important;
+  }
+}
+
+nz-input-group {
+  margin-bottom: 12px;
+}
+
+.btn_success {
+  background-color: #28a745;
+  border: 1px solid #28a745;
+  color: #ffffff;
+  margin-top: 50px;
+  width: 150px;
+}
+.btn_warning {
+  background-color: #28a745;
+  border: 1px solid #28a745;
+  color: #ffffff;
+}
+
+.node_icon {
+  color: #ff4d4f;
+  z-index: 10;
+}
+.icon-tree {
+  font-size: 10px;
+}
+.btn_warning {
+  background-color: #28a745;
+  border: 1px solid #28a745;
+  color: #ffffff;
+}
+.badge-blue {
+  // border-radius: 10px;
+  background-color: #2196f3;
+  color: #ffffff;
+}
+.main-container {
+  font-family: 'Lato';
+  width: fit-content;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.ck-content {
+  font-family: 'Lato';
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+  min-width: 795px;
+  max-width: 795px;
+}
+
+.ant-tabs{
+  padding: 0 15px;
+}
+.ant-row{
+  padding: 7px 0;
+}
+.btn-pram{
+  color: white;
+  padding: 3px 10px;
+  background-color: #00ace6;
+  // padding: 3px;
+  margin-right: 7px;
+}
+
+.editor-container__editor{
+  overflow: hidden; /* Ẩn nội dung tràn */
+  height: calc(100vh - 352px) !important;
+  padding-top: 20px;
+}
+
+.ck-editor__editable_inline{
+  height: 100%; /* Chiều cao của thẻ con */
+  overflow: auto;
+}
+
+.inner-box{
+  width: 470px;
+  padding-top: 20px;
+}
+
+.ant-tabs-tab-active{
+
+  border: none !important;
+  border-bottom: 2px solid;
+}
+
+.btn-green{
+  background-color: #00cc66;
+  border: #00cc66;
+}
+// @media print {
+//   body {
+//     margin: 0 !important;
+//   }
+// }

@@ -1,0 +1,106 @@
+<div class="container-list">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Thiết bị" nzSubtitle="Danh sách thiết bị" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+
+  <div class="px-[10px] overflow-scroll flex-grow">
+    <div class="card-container">
+      <nz-card class="card-item" *ngFor="let item of listDevice" [nzTitle]="item.name" [nzExtra]="extraTemplate"
+        (click)="openModal(item)">
+        <p>Type: <span class="ml-[10px]">{{ item.type }}</span></p>
+        <p>Địa chỉ: <span class="ml-[10px]">{{ item.address }}</span></p>
+        <p>Ghi chú: <span class="ml-[10px]">{{ item.note }}</span></p>
+        <p>Status:
+          <span class="ml-[10px]"
+            [ngStyle]="{
+              'color': item.status ? 'green' : item.status === false ? 'red' : 'gray'
+            }"
+            nz-icon
+            [nzType]="item.status ? 'check-circle' : item.status === false ? 'close-circle' : 'question-circle'"
+            nzTheme="outline">
+          </span>
+        </p>
+        <ng-template #extraTemplate>
+          <a nz-tooltip="Edit" (click)="openEdit(item, $event)" class="mr-[15px]">
+            <span nz-icon nzType="edit" nzTheme="outline"></span>
+          </a>
+
+          <a nz-tooltip="Delete" (click)="confirmDelete(item.code, $event)">
+            <span nz-popconfirm nzPopconfirmTitle="Bạn muốn xoá nhóm hàng hóa này ?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteItem(item.code)"
+              class="!text-red-500 cursor-pointer" nz-icon nzType="delete" nzTheme="outline"></span>
+          </a>
+        </ng-template>
+      </nz-card>
+    </div>
+  </div>
+</div>
+
+<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
+  [nzTitle]="edit ? ' Chỉnh sửa ' : 'Tạo mới '" [nzExtra]="extra" (nzOnClose)="close()">
+  <ng-container *nzDrawerContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <app-input-clear placeholder="Nhập mã thiết bị" [required]="true" label="Mã thiết bị"
+        [control]="$any(validateForm).controls['code']" [disabled]="edit"></app-input-clear>
+
+      <app-input-clear placeholder="Nhập tên thiết bị" [required]="true" label="Tên thiết bị"
+        [control]="$any(validateForm).controls['name']">
+      </app-input-clear>
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Type</nz-form-label>
+        <nz-form-control nzErrorTip="Không được để trống">
+          <nz-select nzShowSearch nzAllowClear placeholder="Type" formControlName="type" required>
+            <nz-option cdkScrollable [nzLabel]="'HTTP'" [nzValue]="'HTTP'"></nz-option>
+            <nz-option cdkScrollable [nzLabel]="'TCP_IP'" [nzValue]="'TCP_IP'"></nz-option>
+            <nz-option cdkScrollable [nzLabel]="'JOB'" [nzValue]="'JOB'"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <app-input-clear placeholder="Địa chỉ" label="Địa chỉ" [control]="$any(validateForm).controls['address']">
+      </app-input-clear>
+
+      <app-input-number [showErrors]="isSubmit" [nzErrorTip]="textErrorOrderNumber" placeholder="Thời gian kiểm tra"
+        [required]="true" label="Thời gian kiểm tra" [control]="$any(validateForm).controls['interval']">
+      </app-input-number>
+
+      <app-input-clear [textArea]="true" placeholder="Ghi chú" label="Ghi chú"
+        [control]="$any(validateForm).controls['note']">
+      </app-input-clear>
+    </form>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #extra>
+  <nz-space>
+    <ng-container *ngIf="edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
+      (click)="close()">
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Thông tin chi tiết" (nzOnCancel)="handleCancel()" [nzFooter]="null">
+  <div *nzModalContent [innerHTML]="modalContent"></div>
+</nz-modal>

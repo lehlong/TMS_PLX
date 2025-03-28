@@ -1,0 +1,114 @@
+<div class="container-list" [appPermission]="ADMIN_RIGHTS.USER_MANAGEMENT">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Tài khoản" nzSubtitle="Danh sách tài khoản" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space>
+          <button *nzSpaceItem (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+          <button *nzSpaceItem class="!flex !items-center" nz-button nzType="primary" nzDanger>
+            <span nz-icon nzType="file-excel"></span>Tải Excel
+          </button>
+        </nz-space>
+      </nz-page-header-extra>
+      <nz-page-header-content>
+        <div class="w-full flex gap-[2px] flex-wrap mt-[2px]">
+          <nz-select class="flex-grow" nzShowSearch nzAllowClear nzPlaceHolder="Nhóm tài khoản"
+            [(ngModel)]="filter.GroupId">
+            <nz-option *ngFor="let item of listAccountGroup" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+          </nz-select>
+          <nz-select class="flex-grow" nzShowSearch nzAllowClear nzPlaceHolder="Kiểu người dùng"
+            [(ngModel)]="filter.AccountType">
+            <nz-option cdkScrollable *ngFor="let item of accountType" [nzLabel]="item.name" [nzValue]="item.id">
+            </nz-option>
+          </nz-select>
+          <!-- <nz-select
+            class="flex-grow"
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Đối tác"
+            [(ngModel)]="filter.PartnerId"
+          >
+            <nz-option
+              *ngFor="let item of listPartner"
+              [nzValue]="item.id"
+              [nzLabel]="item.name"
+            ></nz-option>
+          </nz-select> -->
+          <nz-select class="flex-grow" nzShowSearch nzAllowClear nzPlaceHolder="Trạng thái"
+            [(ngModel)]="filter.IsActive">
+            <nz-option *ngFor="let item of listStatus" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+          </nz-select>
+          <div class="flex-grow-2 flex">
+            <app-input-clear class="w-full" placeholder="Tìm kiếm" (enterEvent)="search()" (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="redo"></span>
+            </button>
+          </div>
+        </div>
+      </nz-page-header-content>
+    </nz-page-header>
+  </div>
+  <div class="overflow-auto flex-grow">
+    <nz-table [nzShowPagination]="false" [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
+      <thead>
+        <tr>
+          <th nzWidth="80px">STT</th>
+          <th nzWidth="150px">Nhóm tài khoản</th>
+          <th nzWidth="150px" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('userName', $event)">
+            Tên tài khoản
+          </th>
+          <th nzWidth="200px" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('fullName', $event)">
+            Tên đầy đủ
+          </th>
+          <th>Kiểu người dùng</th>
+          <th nzAlign="center">Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of headerTable.data; let i = index">
+          <td>
+            {{
+            (paginationResult.currentPage - 1) * paginationResult.pageSize +
+            i +
+            1
+            }}
+          </td>
+          <td>
+            <div *ngFor="let item of data?.accountGroups">
+              <a (click)="handleAccountGroup(item.id)">{{ item?.name }}</a>
+            </div>
+          </td>
+          <td>
+            <a (click)="openEdit(data.userName)">{{ data.userName }}</a>
+          </td>
+          <td>{{ data.fullName }}</td>
+          <td>{{ getAccountTypeNameById(data?.accountType) }}</td>
+          <td nzAlign="center">
+            <span [ngClass]="data?.isActive ? '!text-green-500' : '!text-red-500'" nz-icon nzType="check-circle"
+              nzTheme="outline"></span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination nzShowSizeChanger [nzShowTotal]="totalTemplate" [nzPageIndex]="filter.currentPage"
+      [nzTotal]="paginationResult.totalRecord" [nzPageSize]="filter.pageSize"
+      (nzPageIndexChange)="pageIndexChange($event)" (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
+    <ng-template #totalTemplate let-total>Tổng số {{ paginationResult.totalRecord }} mục</ng-template>
+  </div>
+</div>
+<app-account-create [close]="close.bind(this)" [reset]="loadInit.bind(this)"
+  [visible]="showCreate"></app-account-create>
+<app-account-edit [userName]="userName" [close]="close.bind(this)" [reset]="loadInit.bind(this)"
+  [visible]="showEdit"></app-account-edit>
+<app-account-group-edit [id]="idDetail" [close]="close.bind(this)" [reset]="loadInit.bind(this)"
+  [visible]="showEditAcg">
+</app-account-group-edit>

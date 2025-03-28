@@ -1,0 +1,498 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'ckeditor5/ckeditor5.css';
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+.swal2-title {
+  font-size: 22px;
+}
+
+.swal2-html-container {
+  font-size: 18px;
+}
+
+.green-btn {
+  background-color: green !important;
+  border-color: green !important;
+  color: white !important;
+}
+
+.yellow-btn {
+  background-color: #ffffcc !important;
+  border-color: #ffffcc !important;
+  color: #212121 !important;
+}
+
+.purple-btn {
+  background-color: #e6ccff !important;
+  border-color: #e6ccff !important;
+  color: #212121 !important;
+}
+
+.gray-btn {
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+  color: #212121 !important;
+  svg {
+    fill: #212121 !important;
+  }
+}
+
+.pink-btn {
+  background-color: #ffcce6 !important;
+  border-color: #ffcce6 !important;
+  color: #212121 !important;
+}
+
+.brown-btn {
+  background-color: #d2b48c !important;
+  border-color: #d2b48c !important;
+  color: #212121 !important;
+}
+
+.menu-sidebar {
+  .ant-menu-root {
+    height: calc(100vh - 56px);
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 5px !important;
+      background: #000c17 !important;
+    }
+    &::-webkit-scrollbar-track {
+      background: #000c17 !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #000c17 !important;
+      border-radius: 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: #131a22 !important;
+      }
+    }
+    & {
+      scrollbar-width: thin;
+      scrollbar-color: #000c17 #000c17;
+      scrollbar-width: 2px;
+    }
+  }
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  height: 8px !important;
+}
+
+.container-list {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 75px);
+  padding: 10px;
+  padding-bottom: 0px;
+  .ant-table-thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
+}
+
+.ant-tabs-tabpane {
+  .container-list {
+    height: calc(100vh - 130px);
+  }
+}
+
+.ant-table-thead {
+  tr {
+    th {
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 220px !important;
+    }
+  }
+}
+
+.ant-layout-content {
+  margin: 10px !important;
+}
+
+.ant-page-header {
+  padding: 0px 10px 14px 10px !important;
+}
+
+.ant-layout-header {
+  height: 56px !important;
+  .app-header {
+    height: 56px !important;
+  }
+}
+
+.ant-table-tbody {
+  tr {
+    td {
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 220px !important;
+    }
+  }
+}
+
+.list-detail {
+  border-top: none !important;
+  border-bottom: none !important;
+  border-right: none !important;
+  padding-left: 12px !important;
+  .ant-list-header {
+    font-weight: bold !important;
+  }
+  .ant-list-header,
+  .ant-list-item {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  @media (max-width: 767px) {
+    border-left: none !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .order-sm-1 {
+    order: 1;
+  }
+  .order-sm-2 {
+    order: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .order-md-1 {
+    order: 1;
+  }
+  .order-md-2 {
+    order: 2;
+  }
+}
+
+// stc
+.align-right {
+  text-align: right;
+}
+.align-center {
+  text-align: center;
+}
+.align-left {
+  text-align: left !important;
+}
+.d-block {
+  display: block;
+}
+.d-none {
+  display: none;
+}
+.d-flex {
+  display: flex;
+}
+.menu-sidebar {
+  .ant-menu-root {
+    height: calc(100vh - 56px);
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 5px !important;
+      background: #207ce5 !important;
+    }
+    &::-webkit-scrollbar-track {
+      background: #207ce5 !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #207ce5 !important;
+      border-radius: 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: #207ce5 !important;
+      }
+    }
+    & {
+      scrollbar-width: none;
+      scrollbar-color: #424242 #424242;
+      scrollbar-width: 2px;
+    }
+  }
+}
+
+pre {
+  font-weight: 400;
+
+  .number-line {
+    color: #adadaf;
+  }
+  .string {
+    color: #95c602;
+  }
+  .number {
+    color: #f2b619;
+  }
+  .boolean {
+    color: #0097f1;
+  }
+  .null {
+    color: #727990;
+  }
+  .key {
+    color: #000000d9;
+  }
+}
+
+.state-khoi-tao {
+  background-color: #ffcc00;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-cho-xac-nhan {
+  background-color: #ffa500;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-xac-nhan {
+  background-color: #008000;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-huy {
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-in-phieu {
+  background-color: #0000ff;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-dang-xuat-hang {
+  background-color: #ffd700;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-xuat-hang {
+  background-color: #4b0082;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.step {
+  font-weight: 500;
+  &-chua-nhan-don {
+    background-color: #c2c1c1;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-nhan-don {
+    background-color: #ffa500;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-xac-thuc {
+    background-color: #008000;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-vao-cong {
+    background-color: #0000ff;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-can-vao {
+    background-color: #4b0082;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-dang-goi-xe {
+    background-color: #ffd700;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-dang-lay-hang {
+    background-color: #8dfde1;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-lay-hang {
+    background-color: #d362f0;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-can-ra {
+    background-color: #fc5478;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-hoan-thanh {
+    background-color: #96f062;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  &-da-giao-hang {
+    background-color: #faa454;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-align: center;
+  }
+}
+// state list xuat hang tu dong
+
+.state-chua-nhan-don {
+  background-color: #c2c1c1;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-nhan-don {
+  background-color: #ffa500;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-vao-cong {
+  background-color: #36ba98;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-can-vao {
+  background-color: #008000;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-dang-goi-xe {
+  background-color: #0000ff;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-dang-lay-hang {
+  background-color: #006769;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-lay-hang {
+  background-color: #65b741;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+.state-da-can-ra {
+  background-color: #bc5a94;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+.state-da-hoan-thanh {
+  background-color: #973131;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+.state-da-giao-hang {
+  background-color: #604cc3;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.state-da-xac-thuc {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 3px 7px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+}

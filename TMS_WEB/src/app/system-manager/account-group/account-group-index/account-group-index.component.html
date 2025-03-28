@@ -1,0 +1,95 @@
+<div class="container-list" [appPermission]="ADMIN_RIGHTS.USER_GROUP_MANAGEMENT">
+  <!-- cấp quyền cho phép sử dụng chức năng nhóm tài khoản -->
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Nhóm tài khoản" nzSubtitle="Danh sách nhóm tài khoản" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <nz-space>
+            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="redo"></span>
+            </button>
+          </nz-space>
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button
+           >
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+          <!-- <button
+            (click)="exportExcel()"
+            class="!flex !items-center"
+            nz-button
+            nzType="primary"
+            nzDanger
+            [appPermission]="ACCOUNT_GROUP_RIGHTS.EXCEL"
+          >
+            <span nz-icon nzType="file-excel"></span>Tải Excel
+          </button> -->
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div class="px-[10px] overflow-scroll flex-grow">
+    <nz-table [nzScroll]="{ x: 'max-content' }" nzTableLayout="fixed" [nzShowPagination]="false"
+      [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
+      <thead>
+        <tr>
+          <th nzWidth="80px">STT</th>
+          <th nzWidth="150px" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
+            Mã nhóm tài khoản
+          </th>
+          <th>Tên nhóm tài khoản</th>
+
+          <th nzWidth="100px" nzAlign="right">Số lượng tài khoản</th>
+          <th nzWidth="100px" nzAlign="center" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)">
+            Trạng thái
+          </th>
+          <th nzWidth="120px" nzAlign="center">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of headerTable.data; let i = index">
+          <td>
+            {{
+            (paginationResult.currentPage - 1) * paginationResult.pageSize +
+            i +
+            1
+            }}
+          </td>
+          <td>
+            <a (click)="openEdit(data.id)">{{ data.name }}</a>
+          </td>
+
+          <td>{{ data.notes }}</td>
+          <td nzAlign="right">{{ data.totalAccount }}</td>
+          <td nzAlign="center">
+            <span [ngClass]="data?.isActive ? '!text-green-500' : '!text-red-500'" nz-icon nzType="check-circle"
+              nzTheme="outline"></span>
+          </td>
+          <td nzAlign="center">
+            <span nz-popconfirm nzPopconfirmTitle="Bạn muốn xoá loại hàng hóa này ?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteItem(data.id)" class="!text-red-500 cursor-pointer" nz-icon nzType="delete"
+              nzTheme="outline" ></span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination nzShowSizeChanger [nzPageIndex]="filter.currentPage" [nzTotal]="paginationResult.totalRecord"
+      [nzPageSize]="filter.pageSize" (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
+  </div>
+</div>
+
+<app-account-group-create [loading]="loading" [close]="close.bind(this)" [reset]="loadInit.bind(this)"
+  [visible]="showCreate"></app-account-group-create>
+
+<app-account-group-edit [loading]="loading" [id]="idDetail" [close]="close.bind(this)" [reset]="loadInit.bind(this)"
+  [visible]="showEdit">
+</app-account-group-edit>

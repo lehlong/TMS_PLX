@@ -1,0 +1,23 @@
+.ant-row {
+    margin: 0 !important;
+}
+
+.overflow-tab {
+    overflow: auto !important;
+    height: calc(100vh - 206px) !important;
+}
+.overflow-input{
+    overflow: auto !important;
+    height: calc(100vh - 234px) !important;
+}
+
+
+th {
+    text-align: center !important;
+}
+
+td > input{
+    border: none;
+    background: transparent;
+    text-align: right;
+}

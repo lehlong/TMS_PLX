@@ -1,0 +1,175 @@
+<div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.MARKET_MANAGEMENT">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Thị trường" nzSubtitle="Danh sách thị trường" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <nz-space>
+            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="redo"></span>
+            </button>
+          </nz-space>
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div class="overflow-auto flex-grow">
+    <nz-table [nzScroll]="{ x: 'max-content' }" nzTableLayout="fixed" [nzShowPagination]="false"
+      [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
+      <thead>
+        <tr>
+          <th nzWidth="30px">STT</th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
+            Tên
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('gap', $event)">
+            Cự ly BQ (Km)
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('localCode', $event)">
+            Vùng
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('cpChungChuaCuocVCs', $event)">
+            CP chung chưa cước VC
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('cuocVCBQ', $event)">
+            Cước VC BQ
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('ckDieuTietXang', $event)">
+            CK điều tiết cho xăng
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('ckDieuTietDau', $event)">
+            CK điều tiết cho dầu
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('createDate', $event)">
+            Ngày tạo
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
+            Trạng thái
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of headerTable.data; let i = index" (dblclick)="openEdit(data)">
+          <td>
+            {{
+            (paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1
+            }}
+          </td>
+          <td><a (click)="openEdit(data)">{{ data.name }}</a></td>
+          <td class="align-right">{{ data.gap }}</td>
+          <td class="align-right">
+            <span *ngFor="let item of localResult">
+              <span *ngIf="item.code == data.localCode">{{ item.name }}</span>
+            </span>
+          </td>
+          <td class="align-right">{{ data.cpChungChuaCuocVC }}</td>
+          <td class="align-right">{{ data.cuocVCBQ }}</td>
+          <td class="align-right">{{ data.ckDieuTietXang }}</td>
+          <td class="align-right">{{ data.ckDieuTietDau }}</td>
+          <td class="align-right">{{ data.createDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+
+          <td nzAlign="center">
+            <span [ngClass]="data?.isActive ? '!text-green-500' : '!text-red-500'" nz-icon nzType="check-circle"
+              nzTheme="outline"></span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination nzShowSizeChanger [nzPageIndex]="filter.currentPage" [nzTotal]="paginationResult.totalRecord"
+      [nzPageSize]="filter.pageSize" (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
+  </div>
+</div>
+
+<!--Create Update-->
+<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
+  [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
+  <ng-container *nzDrawerContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+      <app-input-clear placeholder="Nhập tên" [required]="true" label="Tên"
+        [control]="$any(validateForm).controls['name']"></app-input-clear>
+
+      <app-input-clear placeholder="Nhập cự ly BQ" [required]="true" label="Cự ly BQ (Km)"
+        [control]="$any(validateForm).controls['gap']"></app-input-clear>
+
+      <app-input-clear placeholder="Hệ số" [required]="true" label="Hệ số"
+        [control]="$any(validateForm).controls['coefficient']"></app-input-clear>
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Kho</nz-form-label>
+        <nz-form-control nzErrorTip="Không được để trống">
+          <nz-select nzShowSearch nzAllowClear placeholder="Chọn vùng" formControlName="warehouseCode">
+            <nz-option cdkScrollable *ngFor="let item of warehouseResult" [nzLabel]="item.code + ' - ' + item.name"
+              [nzValue]="item.code">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Vùng</nz-form-label>
+        <nz-form-control nzErrorTip="Không được để trống">
+          <nz-select nzShowSearch nzAllowClear placeholder="Chọn vùng" formControlName="localCode">
+            <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.code + ' - ' + item.name"
+              [nzValue]="item.code">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <app-input-clear placeholder="Nhập cước VC bình quân" [required]="true" label="Cước VC bình quân"
+        [control]="$any(validateForm).controls['cuocVCBQ']"></app-input-clear>
+
+      <app-input-clear placeholder="CP chung chưa cước VC" [required]="true" label="CP chung chưa cước VC"
+        [control]="$any(validateForm).controls['cpChungChuaCuocVC']"></app-input-clear>
+
+      <app-input-clear placeholder="CK điều tiết cho xăng" [required]="true" label="CK điều tiết cho xăng"
+        [control]="$any(validateForm).controls['ckDieuTietXang']"></app-input-clear>
+
+      <app-input-clear placeholder="CK điều tiết cho dầu" [required]="true" label="CK điều tiết cho dầu"
+        [control]="$any(validateForm).controls['ckDieuTietDau']"></app-input-clear>
+
+      <nz-form-item>
+        <nz-form-label>Trạng thái</nz-form-label>
+        <nz-form-control>
+          <nz-radio-group formControlName="isActive">
+            <label nz-radio [nzValue]="true">Kích hoạt</label>
+            <label nz-radio [nzValue]="false">Khoá</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-drawer>
+<ng-template #extra>
+  <nz-space>
+    <ng-container *ngIf="edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
+      (click)="close()">
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>

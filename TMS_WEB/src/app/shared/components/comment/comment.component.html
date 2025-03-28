@@ -1,0 +1,79 @@
+<ng-template #commentTemplateRef let-comment="comment">
+    <nz-comment [nzAuthor]="comment?.creator?.fullName || 'Ẩn danh'" [nzDatetime]="getTime(comment.createDate)">
+        <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="comment.avatar"></nz-avatar>
+        <nz-comment-content>
+            <p *ngIf="comment.type == TYPE_COMMENT.TEXT" class="fw-300 content-comment">{{comment.content}}<span
+                    nz-popconfirm nzPopconfirmTitle="Bạn muốn xoá bình luận này ?" nzPopconfirmPlacement="top"
+                    (nzOnConfirm)="deleteComment(comment)" class="!text-red-500 cursor-pointer icon-delete ml-[5px]"
+                    nz-icon nzType="delete" nzTheme="outline"></span></p>
+            <div *ngIf="comment.type == TYPE_COMMENT.IMAGE" class="content-comment">
+                <img nz-image height="100px" [nzSrc]="comment?.attachment?.url" alt="" />
+                <span nz-popconfirm nzPopconfirmTitle="Bạn muốn xoá bình luận này ?" nzPopconfirmPlacement="top"
+                    (nzOnConfirm)="deleteComment(comment)" class="!text-red-500 cursor-pointer icon-delete ml-[5px]"
+                    nz-icon nzType="delete" nzTheme="outline"></span>
+            </div>
+        </nz-comment-content>
+        <nz-comment-action *ngIf="!comment.pId"><span (click)="replyTo(comment)">Phản hồi</span></nz-comment-action>
+        <div *ngIf="comment?.openReply" class="wrapper-input">
+            <div *ngIf="comment?.openPrevew" class="preview children">
+                <span class="close-icon" (click)="cleareFile(false)" nz-icon nzType="close" nzTheme="outline"></span>
+                <nz-spin *ngIf="loadImage" nzSimple [nzSize]="'large'"></nz-spin>
+                <img nz-image [nzSrc]="imageUrlSub" alt="" />
+            </div>
+            <nz-input-group [nzSuffix]="suffixTemplateInfo">
+                <input id="input-reply" [disabled]="comment.disableText" type="text" [(ngModel)]="messageChatSub"
+                    (keydown)="sendMessage($event, comment.id)" nz-input placeholder="Viết bình luận" />
+            </nz-input-group>
+            <ng-template #suffixTemplateInfo>
+                <input type="file" #imageInput style="display: none;"
+                    (change)="handleImageUpload($event, comment.id, false)" accept="image/*">
+                <span class="click-icon !mr-[8px]" nz-icon nzType="camera" nzTheme="outline"
+                    (click)="imageInput.click()"></span>
+                <span class="click-icon" (click)="sendMessage(null, comment.id)" nz-icon nzType="send"
+                    nzTheme="outline"></span>
+            </ng-template>
+        </div>
+        <ng-container *ngIf="comment.replies && comment.replies.length">
+            <ng-template ngFor let-child [ngForOf]="comment.replies">
+                <ng-template [ngTemplateOutlet]="commentTemplateRef"
+                    [ngTemplateOutletContext]="{ comment: child }"></ng-template>
+            </ng-template>
+        </ng-container>
+    </nz-comment>
+</ng-template>
+<div class="comment-container">
+    <div class="mbf-box">
+        <div class="mbf-box__header">
+            <div class="mbf-box__title">
+                <span nz-icon nzType="comment" nzTheme="outline"></span>
+                <span>{{title}}</span>
+            </div>
+        </div>
+
+        <div class="mbf-box__body container-body">
+            <div class="wrapper-input">
+                <div *ngIf="openPrevew" class="preview">
+                    <span class="close-icon" (click)="cleareFile()" nz-icon nzType="close" nzTheme="outline"></span>
+                    <nz-spin *ngIf="loadImage" nzSimple [nzSize]="'large'"></nz-spin>
+                    <img nz-image [nzSrc]="imageUrl" alt="" />
+                </div>
+                <nz-input-group [nzSuffix]="suffixTemplateInfo">
+                    <input [disabled]="disableText" type="text" (keydown)="sendMessage($event)"
+                        [(ngModel)]="messageChat" nz-input placeholder="Viết bình luận ..." />
+                </nz-input-group>
+                <ng-template #suffixTemplateInfo>
+                    <input type="file" #imageInputMain class="!hidden" (change)="handleImageUpload($event)"
+                        accept="image/*">
+                    <span *ngIf="uploadImage" class="click-icon !mr-[8px]" nz-icon nzType="camera" nzTheme="outline"
+                        (click)="imageInputMain.click()"></span>
+                    <span class="click-icon" (click)="sendMessage()" nz-icon nzType="send" nzTheme="outline"></span>
+                </ng-template>
+            </div>
+            <div *ngIf="paginationResult" class="wrapper-content" #scrollContent (scroll)="onScrollContent()">
+                <ng-template *ngFor="let element of paginationResult?.data" [ngTemplateOutlet]="commentTemplateRef"
+                    [ngTemplateOutletContext]="{ comment: element }"></ng-template>
+                <div class="pt-3 relative" *ngIf="loadingContent"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></div>
+            </div>
+        </div>
+    </div>
+</div>
