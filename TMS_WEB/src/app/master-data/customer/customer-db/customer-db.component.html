@@ -155,14 +155,21 @@
           [control]="$any(validateForm).controls['ckDau']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
-        <app-input-clear nz-col nzSpan="7" placeholder="Nhập phương thức" [required]="true"
+        <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true"
           label="Phương thức" [control]="$any(validateForm).controls['phuongThuc']"></app-input-clear>
 
-          <app-input-clear nz-col nzSpan="8" placeholder="Nhập lãi vay ngân hàng" [required]="true" label="Lãi vay ngân hàng"
+          <app-input-clear nz-col nzSpan="6" placeholder="Nhập lãi vay ngân hàng" [required]="true" label="Lãi vay ngân hàng"
           [control]="$any(validateForm).controls['lvnh']"></app-input-clear>
 
-        <app-input-clear nz-col nzSpan="8" placeholder="Nhập thời hạn thanh toán" [required]="true" label="Thời hạn thanh toán"
-          [control]="$any(validateForm).controls['thtt']"></app-input-clear>
+          <nz-form-item nz-col nzSpan="11">
+            <nz-form-label>Thời hạn thanh toán</nz-form-label>
+            <nz-form-control>
+              <nz-select nzShowSearch nzAllowClear placeholder="Chọn hạn thanh toán" formControlName="thtt">
+                <nz-option cdkScrollable *ngFor="let item of thttLst" [nzLabel]="item.code + ' - '+ item.name" [nzValue]="item.code">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
       </div>
       <div nz-row nzJustify="space-evenly" style="padding: 0 18px;">
 

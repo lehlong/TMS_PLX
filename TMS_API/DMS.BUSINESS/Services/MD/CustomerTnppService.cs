@@ -12,20 +12,20 @@ using System.Threading.Tasks;
 
 namespace DMS.BUSINESS.Services.MD
 {
-    public interface ICustomerPtService : IGenericService<TblMdCustomerPt, CustomerPtDto>
+    public interface ICustomerTnppService : IGenericService<TblMdCustomerTnpp, CustomerTnppDto>
     {
-        Task<IList<CustomerPtDto>> GetAll(BaseMdFilter filter);
+        Task<IList<CustomerTnppDto>> GetAll(BaseMdFilter filter);
 
         Task<PagedResponseDto> Search(BaseFilter filter);
         Task<byte[]> Export(BaseMdFilter filter);
     }
-    public class CustomerPtService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdCustomerPt, CustomerPtDto>(dbContext, mapper), ICustomerPtService
+    public class CustomerTnppService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdCustomerTnpp, CustomerTnppDto>(dbContext, mapper), ICustomerTnppService
     {
         public override async Task<PagedResponseDto> Search(BaseFilter filter)
         {
             try
             {
-                var query = _dbContext.TblMdCustomerPt.AsQueryable();
+                var query = _dbContext.TblMdCustomerTnpp.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
@@ -45,11 +45,11 @@ namespace DMS.BUSINESS.Services.MD
                 return null;
             }
         }
-        public async Task<IList<CustomerPtDto>> GetAll(BaseMdFilter filter)
+        public async Task<IList<CustomerTnppDto>> GetAll(BaseMdFilter filter)
         {
             try
             {
-                var query = _dbContext.TblMdCustomerPt.AsQueryable();
+                var query = _dbContext.TblMdCustomerTnpp.AsQueryable();
                 if (filter.IsActive.HasValue)
                 {
                     query = query.Where(x => x.IsActive == filter.IsActive);
@@ -68,7 +68,7 @@ namespace DMS.BUSINESS.Services.MD
         {
             try
             {
-                var query = _dbContext.TblMdCustomerPt.AsQueryable();
+                var query = _dbContext.TblMdCustomerTnpp.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
                     query = query.Where(x => x.Code.Contains(filter.KeyWord));

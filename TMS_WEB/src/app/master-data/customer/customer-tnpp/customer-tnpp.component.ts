@@ -2,22 +2,22 @@ import { Component } from '@angular/core'
 import { FormGroup, Validators, NonNullableFormBuilder } from '@angular/forms'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { PaginationResult } from '../../../models/base.model'
-import { CustomerDbFilter } from '../../../models/master-data/customer-db.model'
 import { GlobalService } from '../../../services/global.service'
-import { CustomerDbService } from '../../../services/master-data/customer-db.service'
 import { MASTER_DATA_MANAGEMENT } from '../../../shared/constants'
 import { ShareModule } from '../../../shared/share-module'
 import { LocalService } from '../../../services/master-data/local.service'
 import { MarketService } from '../../../services/master-data/market.service'
+import { CustomerTnppFilter } from '../../../models/master-data/customer-tnpp.model'
+import { CustomerTnppService } from '../../../services/master-data/customer-tnpp.service'
 import { TermOfPaymentService } from '../../../services/master-data/term-of-payment.service'
 @Component({
-  selector: 'db',
+  selector: 'tnpp',
   standalone: true,
   imports: [ShareModule],
-  templateUrl: './customer-db.component.html',
-  styleUrl: './customer-db.component.scss',
+  templateUrl: './customer-tnpp.component.html',
+  styleUrl: './customer-tnpp.component.scss',
 })
-export class CustomerDbComponent {
+export class CustomerTnppComponent {
   validateForm: FormGroup = this.fb.group({
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
@@ -42,7 +42,7 @@ export class CustomerDbComponent {
   isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
-  filter = new CustomerDbFilter()
+  filter = new CustomerTnppFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
@@ -50,13 +50,12 @@ export class CustomerDbComponent {
   data: any = []
   localResult: any = []
   marketResult: any = []
-
   thttLst: any = []
 
   constructor(
-    private _thttService: TermOfPaymentService,
-    private _service: CustomerDbService,
+    private _service: CustomerTnppService,
     private _localService: LocalService,
+    private _thttService: TermOfPaymentService,
     private _marketService: MarketService,
     private fb: NonNullableFormBuilder,
     private globalService: GlobalService,
@@ -65,7 +64,7 @@ export class CustomerDbComponent {
     this.globalService.setBreadcrumb([
       {
         name: 'Danh sách khách hàng',
-        path: 'master-data/customer/db',
+        path: 'master-data/customer/tnpp',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -80,8 +79,8 @@ export class CustomerDbComponent {
   ngOnInit(): void {
     this.search()
     this.getAllLocal()
-    this.getAllThtt()
     this.getAllMarket()
+    this.getAllThtt()
     this.lstType = [
       { code: 'X', name: 'Xăng' },
       { code: 'D', name: 'Dầu' }
@@ -99,7 +98,7 @@ export class CustomerDbComponent {
 
   search() {
     this.isSubmit = false
-    this._service.searchCustomerDb(this.filter).subscribe({
+    this._service.searchCustomerTnpp(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
         console.log(this.paginationResult);
@@ -112,11 +111,11 @@ export class CustomerDbComponent {
   }
 
 
-  getAllThtt() {
+  getAllLocal() {
     this.isSubmit = false
-    this._thttService.getall().subscribe({
+    this._localService.getall().subscribe({
       next: (data) => {
-        this.thttLst = data
+        this.localResult = data
       },
       error: (response) => {
         console.log(response)
@@ -124,11 +123,11 @@ export class CustomerDbComponent {
     })
   }
 
-  getAllLocal() {
+  getAllThtt() {
     this.isSubmit = false
-    this._localService.getall().subscribe({
+    this._thttService.getall().subscribe({
       next: (data) => {
-        this.localResult = data
+        this.thttLst = data
       },
       error: (response) => {
         console.log(response)
@@ -152,7 +151,7 @@ export class CustomerDbComponent {
 
   exportExcel() {
     return this._service
-      .exportExcelCustomerDb(this.filter)
+      .exportExcelCustomerTnpp(this.filter)
       .subscribe((result: Blob) => {
         const blob = new Blob([result], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -174,7 +173,7 @@ export class CustomerDbComponent {
     if (this.edit) {
       console.log(formData);
 
-      this._service.updateCustomerDb(formData).subscribe({
+      this._service.updateCustomerTnpp(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -189,7 +188,7 @@ export class CustomerDbComponent {
         )
         return
       }
-      this._service.createCustomerDb(formData).subscribe({
+      this._service.createCustomerTnpp(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -214,7 +213,7 @@ export class CustomerDbComponent {
   }
 
   reset() {
-    this.filter = new CustomerDbFilter()
+    this.filter = new CustomerTnppFilter()
     this.search()
   }
 
@@ -229,7 +228,7 @@ export class CustomerDbComponent {
   }
 
   deleteItem(code: string | number) {
-    this._service.deleteCustomerDb(code).subscribe({
+    this._service.deleteCustomerTnpp(code).subscribe({
       next: (data) => {
         this.search()
       },

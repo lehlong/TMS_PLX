@@ -9,8 +9,9 @@ import { LocalService } from '../../../services/master-data/local.service'
 import { MarketService } from '../../../services/master-data/market.service'
 import { CustomerPtFilter } from '../../../models/master-data/customer-pt.model'
 import { CustomerPtService } from '../../../services/master-data/customer-pt.service'
+import { TermOfPaymentService } from '../../../services/master-data/term-of-payment.service'
 @Component({
-  selector: 'db',
+  selector: 'pt',
   standalone: true,
   imports: [ShareModule],
   templateUrl: './customer-pt.component.html',
@@ -50,9 +51,12 @@ export class CustomerPtComponent {
   localResult: any = []
   marketResult: any = []
 
+  thttLst: any = []
+
 
   constructor(
     private _service: CustomerPtService,
+    private _thttService: TermOfPaymentService,
     private _localService: LocalService,
     private _marketService: MarketService,
     private fb: NonNullableFormBuilder,
@@ -61,7 +65,7 @@ export class CustomerPtComponent {
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'Danh sách mặt hàng',
+        name: 'Danh sách khách hàng',
         path: 'master-data/customer/pt',
       },
     ])
@@ -77,6 +81,7 @@ export class CustomerPtComponent {
   ngOnInit(): void {
     this.search()
     this.getAllLocal()
+    this.getAllThtt()
     this.getAllMarket()
     this.lstType = [
       { code: 'X', name: 'Xăng' },
@@ -100,6 +105,18 @@ export class CustomerPtComponent {
         this.paginationResult = data
         console.log(this.paginationResult);
 
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
+  getAllThtt() {
+    this.isSubmit = false
+    this._thttService.getall().subscribe({
+      next: (data) => {
+        this.thttLst = data
       },
       error: (response) => {
         console.log(response)
