@@ -4,21 +4,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_CUSTOMER_PT")]
-    public class TblMdCustomerPt : SoftDeleteEntity
+    [Table("T_MD_CUSTOMER_FOB")]
+    public class TblMdCustomerFob : SoftDeleteEntity
     {
         [Key]
         [Column("CODE", TypeName = "NVARCHAR(50)")]
         public string Code { get; set; }
 
         [Column("NAME", TypeName = "NVARCHAR(1000)")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Column("LOCAL_CODE", TypeName = "NVARCHAR(50)")]
-        public string? LocalCode { get; set; }
+        public string LocalCode { get; set; }
 
         [Column("MARKET_CODE", TypeName = "NVARCHAR(50)")]
-        public string? MarketCode { get; set; }
+        public string MarketCode { get; set; }
 
         [Column("CU_LY_BQ", TypeName = "DECIMAL(18,0)")]
         public decimal? CuLyBq { get; set; }
@@ -48,15 +48,15 @@ namespace DMS.CORE.Entities.MD
         public decimal? CkDau { get; set; }
 
         [Column("PHUONG_THUC", TypeName = "NVARCHAR(50)")]
-        public string? PhuongThuc { get; set; }
+        public string PhuongThuc { get; set; }
 
         [Column("THTT", TypeName = "NVARCHAR(50)")]
-        public string? Thtt { get; set; }
+        public string Thtt { get; set; }
 
         [Column("ADDRESS", TypeName = "NVARCHAR(1000)")]
-        public string? Adrress { get; set; }
+        public string Adrress { get; set; }
 
         [Column("C_ORDER")]
-        public int? Order { get; set; }
+        public int Order { get; set; }
     }
 }

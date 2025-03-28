@@ -2,21 +2,21 @@ import { Component } from '@angular/core'
 import { FormGroup, Validators, NonNullableFormBuilder } from '@angular/forms'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { PaginationResult } from '../../../models/base.model'
-import { CustomerDbFilter } from '../../../models/master-data/customer-db.model'
 import { GlobalService } from '../../../services/global.service'
-import { CustomerDbService } from '../../../services/master-data/customer-db.service'
 import { MASTER_DATA_MANAGEMENT } from '../../../shared/constants'
 import { ShareModule } from '../../../shared/share-module'
 import { LocalService } from '../../../services/master-data/local.service'
 import { MarketService } from '../../../services/master-data/market.service'
+import { CustomerPtFilter } from '../../../models/master-data/customer-pt.model'
+import { CustomerPtService } from '../../../services/master-data/customer-pt.service'
 @Component({
   selector: 'db',
   standalone: true,
   imports: [ShareModule],
-  templateUrl: './customer-db.component.html',
-  styleUrl: './customer-db.component.scss',
+  templateUrl: './customer-pt.component.html',
+  styleUrl: './customer-pt.component.scss',
 })
-export class CustomerDbComponent {
+export class CustomerPtComponent {
   validateForm: FormGroup = this.fb.group({
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
@@ -41,7 +41,7 @@ export class CustomerDbComponent {
   isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
-  filter = new CustomerDbFilter()
+  filter = new CustomerPtFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
@@ -52,7 +52,7 @@ export class CustomerDbComponent {
 
 
   constructor(
-    private _service: CustomerDbService,
+    private _service: CustomerPtService,
     private _localService: LocalService,
     private _marketService: MarketService,
     private fb: NonNullableFormBuilder,
@@ -62,7 +62,7 @@ export class CustomerDbComponent {
     this.globalService.setBreadcrumb([
       {
         name: 'Danh sách mặt hàng',
-        path: 'master-data/customer/db',
+        path: 'master-data/customer/pt',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -95,7 +95,7 @@ export class CustomerDbComponent {
 
   search() {
     this.isSubmit = false
-    this._service.searchCustomerDb(this.filter).subscribe({
+    this._service.searchCustomerPt(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
         console.log(this.paginationResult);
@@ -136,7 +136,7 @@ export class CustomerDbComponent {
 
   exportExcel() {
     return this._service
-      .exportExcelCustomerDb(this.filter)
+      .exportExcelCustomerPt(this.filter)
       .subscribe((result: Blob) => {
         const blob = new Blob([result], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -158,7 +158,7 @@ export class CustomerDbComponent {
     if (this.edit) {
       console.log(formData);
 
-      this._service.updateCustomerDb(formData).subscribe({
+      this._service.updateCustomerPt(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -173,7 +173,7 @@ export class CustomerDbComponent {
         )
         return
       }
-      this._service.createCustomerDb(formData).subscribe({
+      this._service.createCustomerPt(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -198,7 +198,7 @@ export class CustomerDbComponent {
   }
 
   reset() {
-    this.filter = new CustomerDbFilter()
+    this.filter = new CustomerPtFilter()
     this.search()
   }
 
@@ -213,7 +213,7 @@ export class CustomerDbComponent {
   }
 
   deleteItem(code: string | number) {
-    this._service.deleteCustomerDb(code).subscribe({
+    this._service.deleteCustomerPt(code).subscribe({
       next: (data) => {
         this.search()
       },

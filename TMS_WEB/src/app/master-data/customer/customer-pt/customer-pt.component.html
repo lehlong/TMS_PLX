@@ -57,14 +57,14 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of paginationResult.data">
-          <td> <a (click)="openEdit(data)"> {{data.code }}</a></td>
-          <td>{{data.name }}</td>
-          <td>
+          <td nzAlign="center"> <a (click)="openEdit(data)"> {{data.code }}</a></td>
+          <td >{{data.name }}</td>
+          <td >
             <span *ngFor="let item of localResult">
               <span *ngIf=" data.localCode === item.code ">{{ item.name }}</span>
             </span>
           </td>
-          <td>
+          <td >
             <span *ngFor="let item of marketResult">
               <span *ngIf="item.code === data.marketCode">{{ item.name }}</span>
             </span>
@@ -94,6 +94,7 @@
   [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
       <div nz-row nzJustify="space-evenly">
         <app-input-clear nz-col nzSpan="9" placeholder="Nhập mã " [required]="true" label="Mã "
           [control]="$any(validateForm).controls['code']" [required]="true"

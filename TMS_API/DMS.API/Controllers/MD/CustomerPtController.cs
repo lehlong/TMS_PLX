@@ -10,9 +10,9 @@ namespace DMS.API.Controllers.MD
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerDbController(ICustomerDbService service) : ControllerBase
+    public class CustomerPtController(ICustomerPtService service) : ControllerBase
     {
-        public readonly ICustomerDbService _service = service;
+        public readonly ICustomerPtService _service = service;
         [HttpGet("Search")]
         public async Task<IActionResult> Search([FromQuery] BaseFilter filter)
         {
@@ -48,11 +48,11 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
 
-        //[HttpGet("GetSpecialCustomerDb")]
-        //public async Task<IActionResult> GetSpecialCustomerDb([FromQuery] BaseMdFilter filter)
+        //[HttpGet("GetSpecialCustomerPt")]
+        //public async Task<IActionResult> GetSpecialCustomerPt([FromQuery] BaseMdFilter filter)
         //{
         //    var transferObject = new TransferObject();
-        //    var result = await _service.GetSpecialCustomerDb(filter);
+        //    var result = await _service.GetSpecialCustomerPt(filter);
         //    if (_service.Status)
         //    {
         //        transferObject.Data = result;
@@ -67,10 +67,10 @@ namespace DMS.API.Controllers.MD
         //}
 
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] CustomerDbDto CustomerDb)
+        public async Task<IActionResult> Insert([FromBody] CustomerPtDto CustomerPt)
         {
             var transferObject = new TransferObject();
-            var result = await _service.Add(CustomerDb);
+            var result = await _service.Add(CustomerPt);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -87,10 +87,10 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] CustomerDbDto CustomerDb)
+        public async Task<IActionResult> Update([FromBody] CustomerPtDto CustomerPt)
         {
             var transferObject = new TransferObject();
-            await _service.Update(CustomerDb);
+            await _service.Update(CustomerPt);
             if (_service.Status)
             {
                 transferObject.Status = true;

@@ -129,6 +129,9 @@ namespace DMS.CORE
         #region Master Data
         public DbSet<TblMdTermOfPayment> TblMdTermOfPayment { get; set; }
         public DbSet<TblMdCustomerDb> TblMdCustomerDb { get; set; }
+        public DbSet<TblMdCustomerPt> TblMdCustomerPt { get; set; }
+        public DbSet<TblMdCustomerFob> TblMdCustomerFob { get; set; }
+        public DbSet<TblMdCustomerTnpp> TblMdCustomerTnpp { get; set; }
 
 
 
@@ -229,6 +232,9 @@ namespace DMS.CORE
         public DbSet<TblBuInputPrice> TblBuInputPrice { get; set; }
         public DbSet<TblBuInputMarket> TblBuInputMarket { get; set; }
         public DbSet<TblBuInputCustomerDb> TblBuInputCustomerDb { get; set; }
+        public DbSet<TblBuInputCustomerFob> TblBuInputCustomerFob { get; set; }
+        public DbSet<TblBuInputCustomerTnpp> TblBuInputCustomerTnpp { get; set; }
+        public DbSet<TblBuInputCustomerPt> TblBuInputCustomerPt { get; set; }
         #endregion
     }
 }

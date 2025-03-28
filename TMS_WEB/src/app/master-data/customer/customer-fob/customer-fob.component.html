@@ -1,6 +1,7 @@
 <div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.GOODS_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
     <nz-page-header nzBackIcon nzTitle="Khách hàng" nzSubtitle="Danh sách Khách hàng" class="site-page-header">
+
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
@@ -94,6 +95,7 @@
   [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
       <div nz-row nzJustify="space-evenly">
         <app-input-clear nz-col nzSpan="9" placeholder="Nhập mã " [required]="true" label="Mã "
           [control]="$any(validateForm).controls['code']" [required]="true"

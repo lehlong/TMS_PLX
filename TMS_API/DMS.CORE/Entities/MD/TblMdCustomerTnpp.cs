@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_CUSTOMER_PT")]
-    public class TblMdCustomerPt : SoftDeleteEntity
+    [Table("T_MD_CUSTOMER_TNPP")]
+    public class TblMdCustomerTnpp : SoftDeleteEntity
     {
         [Key]
         [Column("CODE", TypeName = "NVARCHAR(50)")]
