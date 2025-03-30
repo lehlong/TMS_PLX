@@ -36,7 +36,7 @@ namespace DMS.BUSINESS.Services.MD
                 {
                     query = query.Where(x => x.IsActive == filter.IsActive);
                 }
-                return await Paging(query, filter);
+                return await Paging(query.OrderBy(x => x.Order), filter);
             }
             catch (Exception ex)
             {

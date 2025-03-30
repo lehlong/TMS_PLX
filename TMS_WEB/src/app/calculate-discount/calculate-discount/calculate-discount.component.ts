@@ -39,7 +39,11 @@ export class CalculateDiscountComponent implements OnInit {
   input: any = {
     header: {},
     inputPrice: [],
-    market:[],
+    market: [],
+    customerDb: [],
+    customerPt: [],
+    customerFob: [],
+    customerTnpp: [],
   };
 
   ngOnInit(): void {
@@ -83,6 +87,15 @@ export class CalculateDiscountComponent implements OnInit {
   }
   close(): void {
     this.visible = false;
+    this.input = {
+      header: {},
+      inputPrice: [],
+      market: [],
+      customerDb: [],
+      customerPt: [],
+      customerFob: [],
+      customerTnpp: [],
+    };
   }
   onChange(result: Date): void {
     console.log('Selected Time: ', result);

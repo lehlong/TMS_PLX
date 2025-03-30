@@ -23,6 +23,11 @@ namespace DMS.CORE.Entities.BU
 
         [Column("NAME", TypeName = "NVARCHAR(255)")]
         public string Name { get; set; }
+        [Column("FULL_NAME", TypeName = "NVARCHAR(500)")]
+        public string? FullName { get; set; }
+
+        [Column("LOCAL2", TypeName = "NVARCHAR(500)")]
+        public string? Local2 { get; set; }
 
         [Column("GAP", TypeName = "DECIMAL(18,0)")]
         public decimal? Gap { get; set; }

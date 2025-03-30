@@ -23,6 +23,7 @@ export class CustomerDbComponent {
     name: ['', [Validators.required]],
     marketCode: [''],
     localCode: [''],
+    local2: [''],
     cuLyBq: [0],
     cvcbq: [0],
     cpccvc: [0],
@@ -260,6 +261,7 @@ export class CustomerDbComponent {
       phuongThuc: data.phuongThuc,
       thtt: data.thtt,
       adrress: data.adrress,
+      local2 : data.local2
     })
     setTimeout(() => {
       this.edit = true

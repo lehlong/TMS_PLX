@@ -16,14 +16,30 @@ export class CalculateDiscountDetailComponent implements OnInit {
   titleTab: string = 'Dữ liệu gốc';
   loading: boolean = false;
   visibleInput: boolean = false;
+  selectedIndex : number = 0;
   input: any = {
     header: {},
     inputPrice: [],
     market: [],
+    customerDb: [],
+    customerPt: [],
+    customerFob: [],
+    customerTnpp: [],
   };
   output: any = {
     dlg: {},
-    pt:[],
+    pt: [],
+    db: [],
+    fob: [],
+    pt09: [],
+    pl1: [],
+    pl2: [],
+    pl3: [],
+    pl4: [],
+    vk11Pt: [],
+    vk11Db: [],
+    vk11Fob: [],
+    vk11Tnpp: [],
   }
   headerId: any = '';
   constructor(
@@ -63,7 +79,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
-  onClickTab(title: string) {
+  onClickTab(title: string, tab: number) {
     this.titleTab = title;
   }
 

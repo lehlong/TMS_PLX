@@ -18,61 +18,61 @@ namespace DMS.BUSINESS.Dtos.MD
 
         [Key]
         [Description("Mã")]
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
         [Description("Tên")]
         public string Name { get; set; }
 
         //[Description("Số điện thoại")]
-        //public string? Phone { get; set; }
+        //public string Phone { get; set; }
 
         //[Description("email")]
-        //public string? Email { get; set; }
+        //public string Email { get; set; }
 
         [Description("địa chỉ")]
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         [Description("Hạn thanh toán")]
-        public string? PaymentTerm { get; set; }
+        public string PaymentTerm { get; set; }
 
         [Description("Cự ly BQ")]
-        public decimal? Gap { get; set; }
+        public decimal Gap { get; set; }
 
         [Description("Cước vận chuyển bình quân")]
-        public decimal? CuocVcBq { get; set; }
+        public decimal CuocVcBq { get; set; }
 
         [Description("Hỗ trợ cước Vân chuyển")]
-        public decimal? HoTroCuocVc { get; set; }
+        public decimal HoTroCuocVc { get; set; }
 
         [Description("Mức giảm xăng")]
-        public decimal? MgglhXang { get; set; }
+        public decimal MgglhXang { get; set; }
 
         [Description("Mức giảm dầu")]
-        public decimal? MgglhDau { get; set; }
+        public decimal MgglhDau { get; set; }
 
         [Description("thông tin mua hàng")]
-        public string? BuyInfo { get; set; }
+        public string BuyInfo { get; set; }
 
         [Description("Lãi vay ngân hàng")]
-        public decimal? BankLoanInterest { get; set; }
+        public decimal BankLoanInterest { get; set; }
 
         [Description("Mã phương thức mua hàng")]
-        public string? SalesMethodCode { get; set; }
+        public string SalesMethodCode { get; set; }
 
         [Description("Mã Vùng")]
-        public string? LocalCode { get; set; }
+        public string LocalCode { get; set; }
 
         [Description("Mã kiểu khách hàng")]
-        public string? CustomerTypeCode { get; set; }
+        public string CustomerTypeCode { get; set; }
 
         [Description("Mã thị trường")]
-        public string? MarketCode { get; set; }
+        public string MarketCode { get; set; }
 
         [Description("Đề xuất mức giảm giá tại kho bên bán (FOB)")]
-        public decimal? Fob { get; set; }
+        public decimal Fob { get; set; }
 
         [Description("Trạng thái")]
-        public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }
+        public string State { get => this.IsActive == true  ? "Đang hoạt động" : "Khóa"; }
 
         public void Mapping(Profile profile)
         {

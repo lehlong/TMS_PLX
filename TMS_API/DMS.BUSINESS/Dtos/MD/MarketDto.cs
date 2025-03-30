@@ -46,6 +46,8 @@ namespace DMS.BUSINESS.Dtos.MD
 
         [Description("Mã kho")]
         public string? WarehouseCode { get; set; }
+        public string? FullName { get; set; }
+        public string? Local2 { get; set; }
 
         [Description("Ngày tạo")]
         public DateTime? CreateDate { get; set; }

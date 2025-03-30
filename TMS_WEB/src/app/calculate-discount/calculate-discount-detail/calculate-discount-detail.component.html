@@ -21,9 +21,10 @@
         </nz-page-header>
     </div>
     <div>
-        <nz-tabset>
+        <nz-tabset [(nzSelectedIndex)]="selectedIndex">
+            <!-- #region Dữ liệu gốc -->
             <nz-tab nzTitle="Dữ liệu gốc" (click)="onClickTab('Dữ liệu gốc')">
-                <div class="overflow-tab">
+                <div class="overflow-tab" *ngIf="selectedIndex === 0">
                     <div nz-row [nzGutter]="12">
                         <div nz-col class="gutter-row" [nzSpan]="6">
                             <div class="inner-box">
@@ -431,8 +432,11 @@
                     </div>
                 </div>
             </nz-tab>
+            <!-- #endregion Dữ liệu gốc -->
+
+            <!-- #region PT -->
             <nz-tab nzTitle="PT" (click)="onClickTab('PT')">
-                <div class="overflow-tab">
+                <div class="overflow-tab" *ngIf="selectedIndex === 1">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pt">
                         <thead>
@@ -538,8 +542,11 @@
                     </nz-table>
                 </div>
             </nz-tab>
+            <!-- #endregion PT -->
+
+            <!-- #region ĐB -->
             <nz-tab nzTitle="ĐB" (click)="onClickTab('ĐB')">
-                <div class="overflow-tab">
+                <div class="overflow-tab" *ngIf="selectedIndex === 2">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pt">
                         <thead>
@@ -608,14 +615,148 @@
 
                         </thead>
                         <tbody>
-                            <tr *ngFor="let data of output.pt;">
+                            <tr *ngFor="let data of output.db;">
                                 <td *ngIf="data.isBold"></td>
-                                <td *ngIf="data.isBold" nzAlign="left" colspan="31" style="font-weight: bold;">
-                                    {{data.marketName}}</td>
+                                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
+                                    {{data.customerName}}</td>
 
                                 <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
                                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
-                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col9 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
+
+                                <td *ngIf="!data.isBold && data.col23 >= 0" nzAlign="right">{{ data.col23 | number}}
+                                </td>
+                                <td *ngIf="!data.isBold && data.col23 < 0" nzAlign="right" style="color: red;">({{
+                                    data.col23 - data.col23 * 2 | number}})</td>
+
+                                <td *ngIf="!data.isBold && data.col24 >= 0" nzAlign="right">{{ data.col24 | number}}
+                                </td>
+                                <td *ngIf="!data.isBold && data.col24 < 0" nzAlign="right" style="color: red;">({{
+                                    data.col24 - data.col24 * 2| number}})</td>
+
+                                <td *ngIf="!data.isBold && data.col25 >= 0" nzAlign="right">{{ data.col25 | number}}
+                                </td>
+                                <td *ngIf="!data.isBold && data.col25 < 0" nzAlign="right" style="color: red;">({{
+                                    data.col25 - data.col25 * 2 | number}})</td>
+
+                                <td *ngIf="!data.isBold && data.col26 >= 0" nzAlign="right">{{ data.col26 | number}}
+                                </td>
+                                <td *ngIf="!data.isBold && data.col26 < 0" nzAlign="right" style="color: red;">({{
+                                    data.col26 - data.col26 * 2 | number}})</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col33 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col34 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+            <!-- #endregion ĐB -->
+
+            <!-- #region FOB -->
+            <nz-tab nzTitle="FOB" (click)="onClickTab('FOB')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 3">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.fob">
+                        <thead>
+                            <tr>
+                                <th rowspan="3">TT</th>
+                                <th rowspan="3">THỊ TRƯỜNG</th>
+                                <th colspan="4">Lãi gộp chưa VAT</th>
+                                <th colspan="4">Chi phí phát sinh chưa có VAT</th>
+                                <th rowspan="3">Hỗ trợ <br> theo VB1370/PLX <br> ngày 12/6/2024</th>
+                                <th colspan="2">CK điều tiết <br> (-/+)</th>
+                                <th colspan="8">Đề xuất mức giảm giá</th>
+                                <th rowspan="3">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
+                                <th colspan="4">Lợi nhuận chưa VAT</th>
+                                <th colspan="2">Ron 95 III</th>
+                                <th colspan="2">E5 - Ron 92 II</th>
+                                <th colspan="2">DO 0.001S</th>
+                                <th colspan="2">DO 0.05S</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">Ron 95 III</th>
+                                <th rowspan="2">E5 - Ron 92 II</th>
+                                <th rowspan="2">DO 0.001S</th>
+                                <th rowspan="2">DO 0.05S</th>
+                                <th rowspan="2">Tổng <br> chi phí</th>
+                                <th rowspan="2">CP chung <br> chưa<br> cước vc</th>
+                                <th rowspan="2">Cước VC <br> bình quân</th>
+                                <th rowspan="2">Lãi vay <br> NH (đ/l)</th>
+                                <th>Xăng</th>
+                                <th>Dầu</th>
+                                <th colspan="2">Ron 95 III</th>
+                                <th colspan="2">E5 - Ron 92 II</th>
+                                <th colspan="2">DO 0.001S</th>
+                                <th colspan="2">DO 0.05S</th>
+
+                                <th rowspan="2">Ron 95 III</th>
+                                <th rowspan="2">E5 - Ron 92 II</th>
+                                <th rowspan="2">DO 0.001S</th>
+                                <th rowspan="2">DO 0.05S</th>
+
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+
+                            </tr>
+                            <tr>
+                                <th>Có VAT</th>
+                                <th>Có VAT</th>
+
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.fob;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
+                                    {{data.customerName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
@@ -646,59 +787,560 @@
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
                                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
                             </tr>
                         </tbody>
                     </nz-table>
                 </div>
             </nz-tab>
-            <nz-tab nzTitle="FOB" (click)="onClickTab('FOB')">
+            <!-- #endregion FOB -->
 
-            </nz-tab>
+            <!-- #region PT09 -->
             <nz-tab nzTitle="PT09" (click)="onClickTab('PT09')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 4">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.pt09">
+                        <thead>
+                            <tr>
+                                <th rowspan="3">TT</th>
+                                <th rowspan="3">THỊ TRƯỜNG</th>
+                                <th colspan="4">Lãi gộp chưa VAT</th>
+                                <th colspan="4">Chi phí phát sinh chưa có VAT</th>
+                                <th colspan="2">CK điều tiết <br> (-/+)</th>
+                                <th colspan="8">Đề xuất mức giảm giá</th>
+                                <th rowspan="3">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
+                                <th colspan="4">Lợi nhuận chưa VAT</th>
+                                <th colspan="2">Ron 95 III</th>
+                                <th colspan="2">E5 - Ron 92 II</th>
+                                <th colspan="2">DO 0.001S</th>
+                                <th colspan="2">DO 0.05S</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">Ron 95 III</th>
+                                <th rowspan="2">E5 - Ron 92 II</th>
+                                <th rowspan="2">DO 0.001S</th>
+                                <th rowspan="2">DO 0.05S</th>
+                                <th rowspan="2">Tổng <br> chi phí</th>
+                                <th rowspan="2">CP chung <br> chưa<br> cước vc</th>
+                                <th rowspan="2">Cước VC <br> bình quân</th>
+                                <th rowspan="2">Lãi vay <br> NH (đ/l)</th>
+                                <th>Xăng</th>
+                                <th>Dầu</th>
+                                <th colspan="2">Ron 95 III</th>
+                                <th colspan="2">E5 - Ron 92 II</th>
+                                <th colspan="2">DO 0.001S</th>
+                                <th colspan="2">DO 0.05S</th>
 
+                                <th rowspan="2">Ron 95 III</th>
+                                <th rowspan="2">E5 - Ron 92 II</th>
+                                <th rowspan="2">DO 0.001S</th>
+                                <th rowspan="2">DO 0.05S</th>
+
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+                                <th rowspan="2">CHƯA VAT, BVMT</th>
+                                <th rowspan="2">CÓ VAT, BVMT</th>
+
+                            </tr>
+                            <tr>
+                                <th>Có VAT</th>
+                                <th>Có VAT</th>
+
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                                <th>Có VAT</th>
+                                <th>Chưa có VAT</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.pt09;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
+                                    {{data.customerName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+            <!-- #endregion PT09 -->
+
+
             <nz-tab nzTitle="BB DO" (click)="onClickTab('BB DO')">
-
+                <div class="overflow-tab" *ngIf="selectedIndex === 5">
+                </div>
             </nz-tab>
+
+            <!-- #region PL1 -->
             <nz-tab nzTitle="PL1" (click)="onClickTab('PL1')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 6">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.pl1" style="width: 50%;">
+                        <thead>
+                            <tr>
+                                <th class="align-center" rowspan="3">TT</th>
+                                <th class="align-center" rowspan="3">VÙNG THỊ TRƯỜNG</th>
+                                <th class="align-center" colspan="4">MỨC GIẢM GIÁ (ĐÃ CÓ VAT)</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">Xăng không chì <br> RON 95-III</th>
+                                <th class="align-center">Xăng sinh học <br> E5 RON 92-II</th>
+                                <th class="align-center">DO 0,001S-V</th>
+                                <th class="align-center">DO 0,05S-II</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                            </tr>
+                            <tr>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.pl1;">
+                                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                                    {{data.marketName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+            <!-- #endregion PL1 -->
+
             <nz-tab nzTitle="PL2" (click)="onClickTab('PL2')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 7">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.pl1" style="width: 50%;">
+                        <thead>
+                            <tr>
+                                <th class="align-center" rowspan="3">TT</th>
+                                <th class="align-center" rowspan="3">VÙNG THỊ TRƯỜNG</th>
+                                <th class="align-center" colspan="4">MỨC GIẢM GIÁ (ĐÃ CÓ VAT)</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">Xăng không chì <br> RON 95-III</th>
+                                <th class="align-center">Xăng sinh học <br> E5 RON 92-II</th>
+                                <th class="align-center">DO 0,001S-V</th>
+                                <th class="align-center">DO 0,05S-II</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                            </tr>
+                            <tr>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.pl1;">
+                                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                                    {{data.marketName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="PL3" (click)="onClickTab('PL3')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 8">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.pl3" style="width: 70%;">
+                        <thead>
+                            <tr>
+                                <th class="align-center" rowspan="3">TT</th>
+                                <th class="align-center" rowspan="3">TÊN KHÁCH HÀNG</th>
+                                <th class="align-center" colspan="4">MỨC GIẢM GIÁ (ĐÃ CÓ VAT)</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">Xăng không chì <br> RON 95-III</th>
+                                <th class="align-center">Xăng sinh học <br> E5 RON 92-II</th>
+                                <th class="align-center">DO 0,001S-V</th>
+                                <th class="align-center">DO 0,05S-II</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                            </tr>
+                            <tr>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.pl3;">
+                                <td nzAlign="center">{{data.stt}}</td>
+                                <td nzAlign="left">{{data.customerName}}</td>
+                                <td nzAlign="center">{{ data.col1 | number}}</td>
+                                <td nzAlign="center">{{ data.col2 | number}}</td>
+                                <td nzAlign="center">{{ data.col3 | number}}</td>
+                                <td nzAlign="center">{{ data.col4 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="PL4" (click)="onClickTab('PL4')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 9">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.pl1" style="width: 50%;">
+                        <thead>
+                            <tr>
+                                <th class="align-center" rowspan="3">TT</th>
+                                <th class="align-center" rowspan="3">VÙNG THỊ TRƯỜNG</th>
+                                <th class="align-center" colspan="4">MỨC GIẢM GIÁ (ĐÃ CÓ VAT)</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">Xăng không chì <br> RON 95-III</th>
+                                <th class="align-center">Xăng sinh học <br> E5 RON 92-II</th>
+                                <th class="align-center">DO 0,001S-V</th>
+                                <th class="align-center">DO 0,05S-II</th>
+                            </tr>
+                            <tr>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                                <th class="align-center">đ/lít tt</th>
+                            </tr>
+                            <tr>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.pl1;">
+                                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                                    {{data.marketName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="VK11 PT" (click)="onClickTab('VK11 PT')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 10">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.vk11Pt">
+                        <thead>
+                            <tr>
+                                <th class="align-center">TT</th>
+                                <th class="align-center">TÊN KHÁCH HÀNG ĐẠI LÝ</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">CỰ LY <br> V/C km</th>
+                                <th class="align-center">ĐƠN GIÁ <br> CƯỚC đ/l</th>
+                                <th class="align-center">P THỨC</th>
+                                <th class="align-center">MÃ KHÁCH</th>
+                                <th class="align-center">MÃ HÀNG</th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center">THỜI HẠN TT</th>
+                                <th class="align-center">GIÁ CHƯA <br> VAT&BVMT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">HIỆU LỰC TỪ</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐẾN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.vk11Pt;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                                    {{data.customerName}}</td>
 
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="VK11 ĐB" (click)="onClickTab('VK11 ĐB')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 11">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.vk11Db">
+                        <thead>
+                            <tr>
+                                <th class="align-center">TT</th>
+                                <th class="align-center">TÊN KHÁCH HÀNG ĐẠI LÝ</th>
+                                <th class="align-center">ĐỊA CHỈ</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">CỰ LY <br> V/C km</th>
+                                <th class="align-center">ĐƠN GIÁ <br> CƯỚC đ/l</th>
+                                <th class="align-center">P THỨC</th>
+                                <th class="align-center">MÃ KHÁCH</th>
+                                <th class="align-center">MÃ HÀNG</th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center">THỜI HẠN TT</th>
+                                <th class="align-center">GIÁ CHƯA <br> VAT&BVMT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">HIỆU LỰC TỪ</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐẾN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.vk11Db;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                                    {{data.customerName}}</td>
 
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="VK11 FOB" (click)="onClickTab('VK11 FOB')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 12">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.vk11Fob">
+                        <thead>
+                            <tr>
+                                <th class="align-center">TT</th>
+                                <th class="align-center">TÊN KHÁCH HÀNG ĐẠI LÝ</th>
+                                <th class="align-center">ĐỊA CHỈ</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">CỰ LY <br> V/C km</th>
+                                <th class="align-center">ĐƠN GIÁ <br> CƯỚC đ/l</th>
+                                <th class="align-center">P THỨC</th>
+                                <th class="align-center">MÃ KHÁCH</th>
+                                <th class="align-center">MÃ HÀNG</th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center">THỜI HẠN TT</th>
+                                <th class="align-center">GIÁ CHƯA <br> VAT&BVMT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">HIỆU LỰC TỪ</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐẾN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.vk11Fob;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                                    {{data.customerName}}</td>
 
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="VK11 TNPP" (click)="onClickTab('VK11 TNPP')">
+                <div class="overflow-tab" *ngIf="selectedIndex === 13">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.vk11Tnpp">
+                        <thead>
+                            <tr>
+                                <th class="align-center">TT</th>
+                                <th class="align-center">TÊN KHÁCH HÀNG ĐẠI LÝ</th>
+                                <th class="align-center" colspan="2">VÙNG CHXD</th>
+                                <th class="align-center">CỰ LY <br> V/C km</th>
+                                <th class="align-center">ĐƠN GIÁ <br> CƯỚC đ/l</th>
+                                <th class="align-center">P THỨC</th>
+                                <th class="align-center">MÃ KHÁCH</th>
+                                <th class="align-center">MÃ HÀNG</th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center">THỜI HẠN TT</th>
+                                <th class="align-center">GIÁ CHƯA <br> VAT&BVMT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">HIỆU LỰC TỪ</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐẾN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.vk11Tnpp;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                                    {{data.customerName}}</td>
 
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="PTS" (click)="onClickTab('PTS')">
-
+                <div class="overflow-tab" *ngIf="selectedIndex === 14">
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="VK11 BB" (click)="onClickTab('VK11 BB')">
-
+                <div class="overflow-tab" *ngIf="selectedIndex === 15">
+                </div>
             </nz-tab>
+
             <nz-tab nzTitle="Tổng hợp" (click)="onClickTab('Tổng hợp')">
-
+                <div class="overflow-tab" *ngIf="selectedIndex === 16">
+                </div>
             </nz-tab>
+
         </nz-tabset>
     </div>
 </div>
 
 
-<!-- Dữ liệu đẩu vào  -->
+<!-- #region Dữ liệu đầu vào -->
 <nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visibleInput" nzPlacement="right" [nzTitle]="'Tạo mới đợt tính'"
     [nzExtra]="extra" (nzOnClose)="close()">
     <ng-container *nzDrawerContent>
@@ -721,8 +1363,8 @@
 
         <nz-tabset>
             <nz-tab nzTitle="THÔNG TIN GIÁ">
-                <nz-table nzBordered nzSize="small" [nzData]="input.inputPrice" [nzFrontPagination]="'false'"
-                    [nzShowPagination]="'false'">
+                <nz-table nzBordered nzSize="small" [nzData]="input.inputPrice" [nzFrontPagination]="false"
+                    [nzShowPagination]="false">
                     <thead>
                         <tr>
                             <th nzAlign="center" rowspan="2">LOẠI HÀNG</th>
@@ -730,7 +1372,6 @@
                             <th nzAlign="center" rowspan="2">Hệ số <br> VCF BQ <br> mùa miền</th>
                             <th nzAlign="center" rowspan="2">CHÊNH LỆCH</th>
                             <th nzAlign="center" colspan="2">GIÁ TẬP ĐOÀN CÔNG BỐ</th>
-
                             <th nzAlign="center" rowspan="2">L15 CHƯA VAT<br> & BVMT<br>(PT bán lẻ - V2)</th>
                             <th nzAlign="center" rowspan="2">L15 CHƯA VAT <br> & BVMT<br>(ngoài bán lẻ)</th>
                             <th nzAlign="center" rowspan="2">LÃI GỘP <br>ĐIỀU TIẾT</th>
@@ -743,15 +1384,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let data of input.inputPrice">
-                            <td style="font-weight: bold;">{{data.goodName }}</td>
+                        <tr *ngFor="let data of input.inputPrice; let rowIndex = index">
+                            <td>{{ data.goodName }}</td>
                             <td><input nz-input [(ngModel)]="data.thueBvmt" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.vcf" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.chenhLech" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.gblV1" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.gblV2" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.l15Blv2" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.l15Nbl" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.l15Nbl" type="number"></td>
                             <td><input nz-input [(ngModel)]="data.laiGop" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.fobV1" type="number" /></td>
                             <td><input nz-input [(ngModel)]="data.fobV2" type="number" /></td>
@@ -778,7 +1419,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of input.market">
-                                <td style="font-weight: bold;">{{data.name }}</td>
+                                <td>{{data.name }}</td>
                                 <td><input nz-input [(ngModel)]="data.gap" type="number" /></td>
                                 <td><input nz-input [(ngModel)]="data.cuocVCBQ" type="number" /></td>
                                 <td><input nz-input [(ngModel)]="data.cpChungChuaCuocVC" type="number" /></td>
@@ -788,11 +1429,181 @@
                         </tbody>
                     </nz-table>
                 </div>
-
             </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG PT">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerPt" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerPt">
+                                <td>{{data.code }}</td>
+                                <td>{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG ĐB">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerDb" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerDb">
+                                <td>{{data.code }}</td>
+                                <td>{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG FOB">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerFob" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerFob">
+                                <td>{{data.code }}</td>
+                                <td>{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG TNPP">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerTnpp" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerTnpp">
+                                <td>{{data.code }}</td>
+                                <td>{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
         </nz-tabset>
-
-
     </ng-container>
 </nz-drawer>
 <ng-template #extra>
@@ -805,3 +1616,4 @@
         </ng-container>
     </nz-space>
 </ng-template>
+<!-- #endregion Dữ liệu đầu vào -->

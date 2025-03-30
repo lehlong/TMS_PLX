@@ -3,7 +3,18 @@
     public class CalculateDiscountOutputModel
     {
         public Dlg Dlg { get; } = new Dlg();
-        public List<PtModel> Pt { get; } = new List<PtModel>();
+        public List<DataModel> Pt { get; } = new List<DataModel>();
+        public List<DataModel> Db { get; } = new List<DataModel>();
+        public List<DataModel> Fob { get; } = new List<DataModel>();
+        public List<DataModel> Pt09 { get; } = new List<DataModel>();
+        public List<DataModel> Pl1 { get; } = new List<DataModel>();
+        public List<DataModel> Pl2 { get; } = new List<DataModel>();
+        public List<DataModel> Pl3 { get; } = new List<DataModel>();
+        public List<DataModel> Pl4 { get; } = new List<DataModel>();
+        public List<VK11Model> Vk11Pt { get; } = new List<VK11Model>();
+        public List<VK11Model> Vk11Db { get; } = new List<VK11Model>();
+        public List<VK11Model> Vk11Fob { get; } = new List<VK11Model>();
+        public List<VK11Model> Vk11Tnpp { get; } = new List<VK11Model>();
     }
 
     public class Dlg
@@ -44,9 +55,10 @@
         public string Note { get; set; }
     }
 
-    public class PtModel
+    public class DataModel
     {
-        
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
         public string MarketCode { get; set; }
         public string MarketName { get; set; }
         public string LocalCode { get; set; }
@@ -81,7 +93,35 @@
         public decimal Col28 { get; set; } = 0;
         public decimal Col29 { get; set; } = 0;
         public decimal Col30 { get; set; } = 0;
+        public decimal Col31 { get; set; } = 0;
+        public decimal Col32 { get; set; } = 0;
+        public decimal Col33 { get; set; } = 0;
+        public decimal Col34 { get; set; } = 0;
         public bool IsBold { get; set; } = false;
         public string Note { get; set; }
+    }
+    public class VK11Model
+    {
+        public string Stt { get; set; }
+        public bool IsBold { get; set; } = false;
+        public string CustomerName { get; set; }
+        public string Address { get; set; }
+        public string MarketCode { get; set; }
+        public string MarketName { get; set; }
+        public decimal Col1 { get; set; }
+        public decimal Col2 { get; set; }
+        public string Col3 { get; set; }
+        public string Col4 { get; set; }
+        public string Col5 { get; set; }
+        public string Col6 { get; set; } = "L";
+        public string Col7 { get; set; }
+        public decimal Col8 { get; set; }
+        public string Col9 { get; set; } = "VND";
+        public int Col10 { get; set; } = 1;
+        public string Col11 { get; set; } = "L";
+        public string Col12 { get; set; } = "C";
+        public string Col13 { get; set; }
+        public string Col14 { get; set; }
+        public string Col15 { get; set; } = "31.12.9999";
     }
 }

@@ -8,8 +8,8 @@ import { ShareModule } from '../../../shared/share-module'
 import { LocalService } from '../../../services/master-data/local.service'
 import { MarketService } from '../../../services/master-data/market.service'
 import { CustomerPtFilter } from '../../../models/master-data/customer-pt.model'
-import { CustomerPtService } from '../../../services/master-data/customer-pt.service'
 import { TermOfPaymentService } from '../../../services/master-data/term-of-payment.service'
+import { CustomerFobService } from '../../../services/master-data/customer-fob.service'
 @Component({
   selector: 'fob',
   standalone: true,
@@ -55,7 +55,7 @@ export class CustomerFobComponent {
 
 
     constructor(
-    private _service: CustomerPtService,
+    private _service: CustomerFobService,
     private _thttService: TermOfPaymentService,
     private _localService: LocalService,
     private _marketService: MarketService,
@@ -100,7 +100,7 @@ export class CustomerFobComponent {
 
   search() {
     this.isSubmit = false
-    this._service.searchCustomerPt(this.filter).subscribe({
+    this._service.searchCustomerFob(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
         console.log(this.paginationResult);
@@ -153,7 +153,7 @@ export class CustomerFobComponent {
 
   exportExcel() {
     return this._service
-      .exportExcelCustomerPt(this.filter)
+      .exportExcelCustomerFob(this.filter)
       .subscribe((result: Blob) => {
         const blob = new Blob([result], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -175,7 +175,7 @@ export class CustomerFobComponent {
     if (this.edit) {
       console.log(formData);
 
-      this._service.updateCustomerPt(formData).subscribe({
+      this._service.updateCustomerFob(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -190,7 +190,7 @@ export class CustomerFobComponent {
         )
         return
       }
-      this._service.createCustomerPt(formData).subscribe({
+      this._service.createCustomerFob(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -230,7 +230,7 @@ export class CustomerFobComponent {
   }
 
   deleteItem(code: string | number) {
-    this._service.deleteCustomerPt(code).subscribe({
+    this._service.deleteCustomerFob(code).subscribe({
       next: (data) => {
         this.search()
       },

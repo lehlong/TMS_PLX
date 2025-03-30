@@ -27,23 +27,23 @@ namespace DMS.CORE.Entities.BU
         [Column("MARKET_CODE", TypeName = "NVARCHAR(50)")]
         public string MarketCode { get; set; }
         [Column("CU_LY_BQ", TypeName = "DECIMAL(18,0)")]
-        public decimal? CuLyBq { get; set; }
+        public decimal CuLyBq { get; set; }
         [Column("CPCCVC", TypeName = "DECIMAL(18,0)")]
-        public decimal? Cpccvc { get; set; }
+        public decimal Cpccvc { get; set; }
 
         [Column("CVCBQ", TypeName = "DECIMAL(18,0)")]
-        public decimal? Cvcbq { get; set; }
+        public decimal Cvcbq { get; set; }
 
         [Column("LVNH", TypeName = "DECIMAL(18,0)")]
-        public decimal? Lvnh { get; set; }
+        public decimal Lvnh { get; set; }
 
         [Column("HTCVC", TypeName = "DECIMAL(18,0)")]
-        public decimal? Htcvc { get; set; }
+        public decimal Htcvc { get; set; }
         [Column("HTT_VB1370_PLX", TypeName = "DECIMAL(18,0)")]
-        public decimal? HttVb1370 { get; set; }
+        public decimal HttVb1370 { get; set; }
 
         [Column("CKV2", TypeName = "DECIMAL(18,0)")]
-        public decimal? Ckv2 { get; set; }
+        public decimal Ckv2 { get; set; }
         [Column("PHUONG_THUC", TypeName = "NVARCHAR(50)")]
         public string PhuongThuc { get; set; }
 
@@ -52,9 +52,9 @@ namespace DMS.CORE.Entities.BU
         [Column("ADDRESS", TypeName = "NVARCHAR(1000)")]
         public string Adrress { get; set; }
         [Column("CK_XANG", TypeName = "DECIMAL(18,0)")]
-        public decimal? CkXang { get; set; }
+        public decimal CkXang { get; set; }
         [Column("CK_DAU", TypeName = "DECIMAL(18,0)")]
-        public decimal? CkDau { get; set; }
+        public decimal CkDau { get; set; }
 
         [Column("C_ORDER")]
         public int Order { get; set; }

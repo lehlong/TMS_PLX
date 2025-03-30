@@ -100,6 +100,8 @@
 
       <app-input-clear placeholder="Nhập tên" [required]="true" label="Tên"
         [control]="$any(validateForm).controls['name']"></app-input-clear>
+      <app-input-clear placeholder="Nhập tên đầy đủ" [required]="true" label="Tên đầy đủ"
+        [control]="$any(validateForm).controls['fullName']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập cự ly BQ" [required]="true" label="Cự ly BQ (Km)"
         [control]="$any(validateForm).controls['gap']"></app-input-clear>
@@ -119,7 +121,7 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzRequired]="true">Vùng</nz-form-label>
+        <nz-form-label [nzRequired]="true">Vùng giá</nz-form-label>
         <nz-form-control nzErrorTip="Không được để trống">
           <nz-select nzShowSearch nzAllowClear placeholder="Chọn vùng" formControlName="localCode">
             <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.code + ' - ' + item.name"
@@ -128,6 +130,9 @@
           </nz-select>
         </nz-form-control>
       </nz-form-item>
+
+      <app-input-clear placeholder="Nhập vùng thị trường" [required]="true" label="Vùng thị trường"
+        [control]="$any(validateForm).controls['local2']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập cước VC bình quân" [required]="true" label="Cước VC bình quân"
         [control]="$any(validateForm).controls['cuocVCBQ']"></app-input-clear>

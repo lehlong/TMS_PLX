@@ -28,6 +28,8 @@ export class MarketComponent {
     cpChungChuaCuocVC: ['', [Validators.required]],
     localCode: ['', [Validators.required]],
     warehouseCode: [''],
+    fullName: [''],
+    local2: [''],
     isActive: [true, [Validators.required]],
   })
 
@@ -218,7 +220,9 @@ export class MarketComponent {
       cpChungChuaCuocVC: data.cpChungChuaCuocVC,
       localCode: data.localCode,
       isActive: data.isActive,
-      warehouseCode: data.warehouseCode
+      warehouseCode: data.warehouseCode,
+      local2: data.local2,
+      fullName: data.fullName,
     })
     setTimeout(() => {
       this.edit = true

@@ -132,6 +132,50 @@
                     </nz-table>
                 </div>
             </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG PT">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerPt" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerPt">
+                                <td >{{data.code }}</td>
+                                <td >{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
             <nz-tab nzTitle="KHÁCH HÀNG ĐB">
                 <div class="overflow-input">
                     <nz-table nzBordered nzSize="small" [nzData]="input.customerDb" [nzFrontPagination]="'false'"
@@ -147,6 +191,7 @@
                                 <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
                                 <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
                                 <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
                                 <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
                             </tr>
                             <tr>
@@ -166,12 +211,100 @@
                                 <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
                                 <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
                                 <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                                 <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
                             </tr>
                         </tbody>
                     </nz-table>
                 </div>
             </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG FOB">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerFob" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerFob">
+                                <td >{{data.code }}</td>
+                                <td >{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+            <nz-tab nzTitle="KHÁCH HÀNG TNPP">
+                <div class="overflow-input">
+                    <nz-table nzBordered nzSize="small" [nzData]="input.customerTnpp" [nzFrontPagination]="'false'"
+                        [nzShowPagination]="'false'">
+                        <thead>
+                            <tr>
+                                <th nzAlign="center" rowspan="2">MÃ</th>
+                                <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+                                <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+                                <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+                                <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                                <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+                                <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+                                <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+                                <th nzAlign="center" rowspan="2">LÃI VAY NH</th>
+                                <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+                            </tr>
+                            <tr>
+                                <th nzAlign="center">XĂNG</th>
+                                <th nzAlign="center">DẦU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of input.customerTnpp">
+                                <td >{{data.code }}</td>
+                                <td >{{data.name }}</td>
+                                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+            
         </nz-tabset>
 
 
