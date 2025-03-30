@@ -25,6 +25,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     customerPt: [],
     customerFob: [],
     customerTnpp: [],
+    customerBbdo: [],
   };
   output: any = {
     dlg: {},
@@ -32,6 +33,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     db: [],
     fob: [],
     pt09: [],
+    bbdo: [],
     pl1: [],
     pl2: [],
     pl3: [],
@@ -40,6 +42,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     vk11Db: [],
     vk11Fob: [],
     vk11Tnpp: [],
+    vk11Bb: [],
   }
   headerId: any = '';
   constructor(
@@ -105,5 +108,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
   close(): void {
     this.visibleInput = false;
+  }
+  reCalculate(){
+    this.getOutput(this.headerId);
+  }
+  exportExcel(){
+    this._service.exportExcel(this.headerId).subscribe({
+      next: (data) => {
+        console.log(data)
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
   }
 }

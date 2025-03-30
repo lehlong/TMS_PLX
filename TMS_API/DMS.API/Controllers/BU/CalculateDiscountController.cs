@@ -70,6 +70,7 @@ namespace DMS.API.Controllers.BU
             }
             return Ok(transferObject);
         }
+
         [HttpGet("GetInput")]
         public async Task<IActionResult> GetInput([FromQuery] string id)
         {
@@ -124,5 +125,23 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
+        [HttpGet("ExportExcel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.ExportExcel(headerId);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@
         public List<DataModel> Db { get; } = new List<DataModel>();
         public List<DataModel> Fob { get; } = new List<DataModel>();
         public List<DataModel> Pt09 { get; } = new List<DataModel>();
+        public List<DataModel> Bbdo { get; } = new List<DataModel>();
         public List<DataModel> Pl1 { get; } = new List<DataModel>();
         public List<DataModel> Pl2 { get; } = new List<DataModel>();
         public List<DataModel> Pl3 { get; } = new List<DataModel>();
@@ -15,6 +16,7 @@
         public List<VK11Model> Vk11Db { get; } = new List<VK11Model>();
         public List<VK11Model> Vk11Fob { get; } = new List<VK11Model>();
         public List<VK11Model> Vk11Tnpp { get; } = new List<VK11Model>();
+        public List<VK11Model> Vk11Bb { get; } = new List<VK11Model>();
     }
 
     public class Dlg
@@ -57,11 +59,18 @@
 
     public class DataModel
     {
+        public string Id { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
         public string MarketCode { get; set; }
         public string MarketName { get; set; }
         public string LocalCode { get; set; }
+        public string DeliveryPoint { get; set; }
+        public string GoodCode { get; set; }
+        public string GoodName { get; set; }
+        public string PThuc { get; set; }
+        public string Dvt { get; set; }
+        public string TToan { get; set; }
         public string Stt { get; set; }
         public decimal Col1 { get; set; } = 0;
         public decimal Col2 { get; set; } = 0;
@@ -105,6 +114,7 @@
         public string Stt { get; set; }
         public bool IsBold { get; set; } = false;
         public string CustomerName { get; set; }
+        public string GoodsName { get; set; }
         public string Address { get; set; }
         public string MarketCode { get; set; }
         public string MarketName { get; set; }

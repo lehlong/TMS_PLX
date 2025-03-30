@@ -1641,14 +1641,14 @@ namespace DMS.BUSINESS.Services.BU
 
                 var styles = new
                 {
-                    Text = ExcelNPOIExtention.SetCellStyleText(workbook),
-                    TextBold = ExcelNPOIExtention.SetCellStyleTextBold(workbook),
-                    Number = ExcelNPOIExtention.SetCellStyleNumber(workbook),
-                    NumberBold = ExcelNPOIExtention.SetCellStyleNumberBold(workbook),
-                    SignCenter = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true),
-                    SignLeft = ExcelNPOIExtention.SetCellStyleTextSign(workbook, false, false, true),
-                    HumanSign = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true, true),
-                    Header = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, false)
+                    Text = ExcelNPOIExtentions.SetCellStyleText(workbook),
+                    TextBold = ExcelNPOIExtentions.SetCellStyleTextBold(workbook),
+                    Number = ExcelNPOIExtentions.SetCellStyleNumber(workbook),
+                    NumberBold = ExcelNPOIExtentions.SetCellStyleNumberBold(workbook),
+                    SignCenter = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true),
+                    SignLeft = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, false, false, true),
+                    HumanSign = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true, true),
+                    Header = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, false)
                 };
                 #region biến sử dụng
                 var header = _dbContext.TblBuCalculateResultList.Where(x => x.Code == headerId).ToList().FirstOrDefault();
@@ -2313,18 +2313,18 @@ namespace DMS.BUSINESS.Services.BU
                 var rowSignPT = ReportUtilities.CreateRow(ref sheetPT, startRowPT + 1, 24);
 
                 rowSignPT.Cells[1].SetCellValue("LẬP BIỂU");
-                rowSignPT.Cells[1].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT.Cells[1].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
 
                 rowSignPT.Cells[5].SetCellValue("P. KINH DOANH XD");
-                rowSignPT.Cells[5].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, false, false, true);
+                rowSignPT.Cells[5].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, false, false, true);
                 sheetPT.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT + 1, startRowPT + 1, 5, 8));
 
                 rowSignPT.Cells[9].SetCellValue("PHÒNG TCKT");
-                rowSignPT.Cells[9].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT.Cells[9].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
                 sheetPT.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT + 1, startRowPT + 1, 9, 13));
 
                 rowSignPT.Cells[19].SetCellValue("DUYỆT");
-                rowSignPT.Cells[19].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT.Cells[19].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
                 sheetPT.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT + 1, startRowPT + 1, 19, 23));
 
                 #endregion
@@ -2454,18 +2454,18 @@ namespace DMS.BUSINESS.Services.BU
                 var rowSignFOB = ReportUtilities.CreateRow(ref sheetFOB, startRowFOB + 1, 24);
 
                 rowSignFOB.Cells[1].SetCellValue("LẬP BIỂU");
-                rowSignFOB.Cells[1].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignFOB.Cells[1].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
 
                 rowSignFOB.Cells[5].SetCellValue("P. KINH DOANH XD");
-                rowSignFOB.Cells[5].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, false, false, true);
+                rowSignFOB.Cells[5].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, false, false, true);
                 sheetFOB.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowFOB + 1, startRowFOB + 1, 5, 8));
 
                 rowSignFOB.Cells[13].SetCellValue("KẾ  TOÁN TRƯỞNG");
-                rowSignFOB.Cells[13].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, false, false, true);
+                rowSignFOB.Cells[13].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, false, false, true);
                 sheetFOB.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowFOB + 1, startRowFOB + 1, 13, 15));
 
                 rowSignFOB.Cells[20].SetCellValue("DUYỆT");
-                rowSignFOB.Cells[20].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignFOB.Cells[20].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
                 sheetFOB.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowFOB + 1, startRowFOB + 1, 20, 24));
                 #endregion
 
@@ -2550,18 +2550,18 @@ namespace DMS.BUSINESS.Services.BU
                 var rowSignPT09 = ReportUtilities.CreateRow(ref sheetPT09, startRowPT09 + 1, 24);
 
                 rowSignPT09.Cells[1].SetCellValue("LẬP BIỂU");
-                rowSignPT09.Cells[1].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT09.Cells[1].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
 
                 rowSignPT09.Cells[5].SetCellValue("P. KINH DOANH XD");
-                rowSignPT09.Cells[5].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, false, false, true);
+                rowSignPT09.Cells[5].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, false, false, true);
                 sheetPT09.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT09 + 1, startRowPT09 + 1, 5, 8));
 
                 rowSignPT09.Cells[9].SetCellValue("KẾ  TOÁN TRƯỞNG");
-                rowSignPT09.Cells[9].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT09.Cells[9].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
                 sheetPT09.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT09 + 1, startRowPT09 + 1, 9, 16));
 
                 rowSignPT09.Cells[19].SetCellValue("DUYỆT");
-                rowSignPT09.Cells[19].CellStyle = ExcelNPOIExtention.SetCellStyleTextSign(workbook, true, false, true);
+                rowSignPT09.Cells[19].CellStyle = ExcelNPOIExtentions.SetCellStyleTextSign(workbook, true, false, true);
                 sheetPT09.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRowPT09 + 1, startRowPT09 + 1, 19, 23));
                 #endregion
 
@@ -4858,7 +4858,7 @@ namespace DMS.BUSINESS.Services.BU
 
     }
 }
-public static class ExcelNPOIExtention
+public static class ExcelNPOIExtentions
 {
     public static ICellStyle SetCellStyleText(IWorkbook workbook)
     {

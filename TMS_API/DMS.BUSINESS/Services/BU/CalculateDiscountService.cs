@@ -2,6 +2,7 @@
 using Common;
 using DMS.BUSINESS.Common;
 using DMS.BUSINESS.Dtos.BU;
+using DMS.BUSINESS.Extentions;
 using DMS.BUSINESS.Models;
 using DMS.CORE;
 using DMS.CORE.Entities.BU;
@@ -10,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 using NPOI.HSSF.Record.Chart;
 using NPOI.OpenXml4Net.Util;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -20,6 +23,7 @@ namespace DMS.BUSINESS.Services.BU
         Task UpdateInput(CalculateDiscountInputModel input);
         Task Create(CalculateDiscountInputModel input);
         Task<CalculateDiscountOutputModel> CalculateDiscountOutput(string id);
+        Task<string> ExportExcel(string headerId);
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
@@ -59,7 +63,7 @@ namespace DMS.BUSINESS.Services.BU
                 var lstCustomerPt = await _dbContext.TblMdCustomerPt.OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerFob = await _dbContext.TblMdCustomerFob.OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.OrderBy(x => x.Order).ToListAsync();
-
+                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.OrderBy(x => x.Order).ToListAsync();
 
                 return new CalculateDiscountInputModel
                 {
@@ -197,7 +201,33 @@ namespace DMS.BUSINESS.Services.BU
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
                         IsActive = true
-                    }).ToList()
+                    }).ToList(),
+                    CustomerBbdo = lstCustomerBbdo.Select(x => new TblBuInputCustomerBbdo
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = headerId,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode ?? "-",
+                        DeliveryPoint = x.DeliveryPoint ?? "-",
+                        DeliveryGroupCode = x.DeliveryGroupCode ?? "-",
+                        GoodsCode = x.GoodsCode ?? "-",
+                        MarketCode = x.MarketCode ?? "-",
+                        CuLyBq = x.CuLyBq ?? 0,
+                        Cpccvc = x.Cpccvc ?? 0,
+                        Cvcbq = x.Cvcbq ?? 0,
+                        Lvnh = x.Lvnh ?? 0,
+                        Htcvc = x.Htcvc ?? 0,
+                        HttVb1370 = x.HttVb1370 ?? 0,
+                        Ckv2 = x.Ckv2 ?? 0,
+                        PhuongThuc = x.PhuongThuc ?? "-",
+                        Thtt = x.Thtt ?? "-",
+                        Order = x.Order,
+                        Adrress = x.Adrress ?? "-",
+                        CkDau = x.CkDau ?? 0,
+                        CkXang = x.CkXang ?? 0,
+                        IsActive = true
+                    }).ToList(),
                 };
 
             }
@@ -222,6 +252,7 @@ namespace DMS.BUSINESS.Services.BU
                 _dbContext.TblBuInputCustomerPt.AddRange(input.CustomerPt);
                 _dbContext.TblBuInputCustomerFob.AddRange(input.CustomerFob);
                 _dbContext.TblBuInputCustomerTnpp.AddRange(input.CustomerTnpp);
+                _dbContext.TblBuInputCustomerBbdo.AddRange(input.CustomerBbdo);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -246,6 +277,7 @@ namespace DMS.BUSINESS.Services.BU
                     CustomerPt = await _dbContext.TblBuInputCustomerPt.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerTnpp = await _dbContext.TblBuInputCustomerTnpp.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
+                    CustomerBbdo = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                 };
             }
             catch (Exception ex)
@@ -267,6 +299,7 @@ namespace DMS.BUSINESS.Services.BU
                 _dbContext.TblBuInputCustomerPt.UpdateRange(input.CustomerPt);
                 _dbContext.TblBuInputCustomerFob.UpdateRange(input.CustomerFob);
                 _dbContext.TblBuInputCustomerTnpp.UpdateRange(input.CustomerTnpp);
+                _dbContext.TblBuInputCustomerBbdo.UpdateRange(input.CustomerBbdo);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -292,6 +325,7 @@ namespace DMS.BUSINESS.Services.BU
                 var lstCustomerPt = await _dbContext.TblBuInputCustomerPt.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerTnpp = await _dbContext.TblBuInputCustomerTnpp.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerBbdo = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
 
                 var currentHeader = _dbContext.TblBuCalculateDiscount.Find(id);
 
@@ -752,6 +786,147 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 #endregion
 
+                #region BB DO
+                var lstDG = await _dbContext.TblMdDeliveryGroup.OrderBy(x => x.Code).ToListAsync();
+                var obb = 1;
+                var _I = lstCustomerBbdo.Where(x => x.GoodsCode == "0601002").ToList();
+                data.Bbdo.Add(new DataModel
+                {
+                    CustomerName = "I. MẶT HÀNG DẦU DO 0,05S-II",
+                    IsBold = true,
+                });
+                foreach (var d in lstDG)
+                {
+                    data.Bbdo.Add(new DataModel
+                    {
+                        CustomerName = d.Name,
+                        IsBold = true,
+                    });
+                    foreach (var i in _I.Where(x => x.DeliveryGroupCode == d.Code))
+                    {
+                        var j = new DataModel
+                        {
+                            Stt = obb.ToString(),
+                            Id = i.Id,
+                            CustomerName = i.Name,
+                            DeliveryPoint = i.DeliveryPoint,
+                            GoodName = "Điêzen 0,05S-II",
+                            PThuc = i.PhuongThuc,
+                            CustomerCode = i.Code,
+                            GoodCode = i.GoodsCode,
+                            Dvt = "L",
+                            TToan = i.Thtt,
+                            Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
+                            Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                            Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
+                            Col4 = i.Cpccvc,
+                            Col5 = i.Cvcbq,
+                            Col6 = i.Lvnh,
+                            Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) + 50,
+                            Col8 = (data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) + 50) / 1.1M,
+                        };
+                        j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                        j.Col10 = j.Col9 / 1.1M;
+                        j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
+                        j.Col11 = j.Col12 * 1.1M;
+
+                        j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
+                        j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+
+                        j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+
+                        data.Bbdo.Add(j);
+                        obb++;
+                    }
+                }
+
+                var _II = lstCustomerBbdo.Where(x => x.GoodsCode == "0601005").ToList();
+                data.Bbdo.Add(new DataModel
+                {
+                    CustomerName = "II. MẶT HÀNG DẦU DO 0,001S-V",
+                    IsBold = true,
+                });
+                foreach (var i in _II)
+                {
+                    var j = new DataModel
+                    {
+                        Stt = obb.ToString(),
+                        Id = i.Id,
+                        CustomerName = i.Name,
+                        DeliveryPoint = i.DeliveryPoint,
+                        GoodName = "Điêzen 0.001S-V",
+                        PThuc = i.PhuongThuc,
+                        CustomerCode = i.Code,
+                        GoodCode = i.GoodsCode,
+                        Dvt = "L",
+                        TToan = i.Thtt,
+                        Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
+                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                        Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
+                        Col4 = i.Cpccvc,
+                        Col5 = i.Cvcbq,
+                        Col6 = i.Lvnh,
+                        Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
+                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                    };
+                    j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                    j.Col10 = j.Col9 / 1.1M;
+                    j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
+                    j.Col11 = j.Col12 * 1.1M;
+
+                    j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
+                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+
+                    j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    data.Bbdo.Add(j);
+
+                    obb++;
+                }
+
+                var _III = lstCustomerBbdo.Where(x => x.GoodsCode != "0601005" && x.GoodsCode != "0601002").ToList();
+                data.Bbdo.Add(new DataModel
+                {
+                    CustomerName = "III. MẶT HÀNG XĂNG",
+                    IsBold = true,
+                });
+                foreach (var i in _III)
+                {
+                    var j = new DataModel
+                    {
+                        Stt = obb.ToString(),
+                        Id = i.Id,
+                        CustomerName = i.Name,
+                        DeliveryPoint = i.DeliveryPoint,
+                        GoodName = lstGoods.FirstOrDefault(x => x.Code == i.GoodsCode)?.Name,
+                        PThuc = i.PhuongThuc,
+                        CustomerCode = i.Code,
+                        GoodCode = i.GoodsCode,
+                        Dvt = "L",
+                        TToan = i.Thtt,
+                        Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
+                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                        Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
+                        Col4 = i.Cpccvc,
+                        Col5 = i.Cvcbq,
+                        Col6 = i.Lvnh,
+                        Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
+                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                    };
+                    j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                    j.Col10 = j.Col9 / 1.1M;
+                    j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
+                    j.Col11 = j.Col12 * 1.1M;
+
+                    j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
+                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+
+                    j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    data.Bbdo.Add(j);
+                    obb++;
+                }
+
+                #endregion
+
                 #region PL1
                 var local = lstMarket.Where(x => !string.IsNullOrEmpty(x.Local2)).OrderBy(x => x.Local2).Select(x => x.Local2).Distinct().ToList();
                 var _pl1 = 1;
@@ -765,7 +940,7 @@ namespace DMS.BUSINESS.Services.BU
                         IsBold = true,
                     });
                     var market = lstMarket.Where(x => x.Local2 == l).ToList();
-                    foreach(var i in market)
+                    foreach (var i in market)
                     {
                         data.Pl1.Add(new DataModel
                         {
@@ -783,9 +958,40 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 #endregion
 
+                #region PL2
+                var local2 = lstCustomerDb.Where(x => !string.IsNullOrEmpty(x.Local2)).Select(x => x.Local2).Distinct().ToList();
+                var _pl2_lm = 1;
+                foreach (var l in local2)
+                {
+                    data.Pl2.Add(new DataModel
+                    {
+                        Stt = IntToRoman(_pl2_lm),
+                        CustomerName = l,
+                        IsBold = true,
+                    });
+                    var customer = lstCustomerDb.Where(x => x.Local2 == l).ToList();
+                    var _pl2 = 1;
+                    foreach (var i in customer)
+                    {
+                        data.Pl2.Add(new DataModel
+                        {
+                            Stt = _pl2.ToString(),
+                            CustomerCode = i.Code,
+                            CustomerName = i.Name,
+                            Col1 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col14 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            Col2 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col16 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            Col3 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col18 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            Col4 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col20 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                        });
+                        _pl2++;
+                    }
+                    _pl2_lm++;
+                }
+                #endregion
+
                 #region PL3
                 var pl3 = 1;
-                foreach(var i in lstCustomerFob)
+                foreach (var i in lstCustomerFob)
                 {
                     data.Pl3.Add(new DataModel
                     {
@@ -976,6 +1182,30 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 #endregion
 
+                #region VK11-BB
+                var bb = 1;
+                foreach (var i in lstCustomerBbdo)
+                {
+                    data.Vk11Bb.Add(new VK11Model
+                    {
+                        Stt = bb.ToString(),
+                        CustomerName = i.Name,
+                        Address = i.DeliveryPoint,
+                        GoodsName = lstGoods.FirstOrDefault(x => x.Code == i.GoodsCode)?.Name ?? "",
+                        Col1 = i.CuLyBq,
+                        Col2 = i.Cvcbq,
+                        Col3 = i.PhuongThuc,
+                        Col4 = i.Code,
+                        Col5 = i.GoodsCode,
+                        Col7 = i.Thtt,
+                        Col8 = Math.Round(data.Bbdo.Where(x => x.Id == i.Id).Sum(x => x.Col13)),
+                        Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
+                        Col14 = currentHeader.Date.ToString("hh:mm"),
+                    });
+                    bb++;
+                }
+                #endregion
+
                 return RoundNumber(data);
             }
             catch (Exception ex)
@@ -1140,6 +1370,22 @@ namespace DMS.BUSINESS.Services.BU
             }
             #endregion
 
+            #region BB DO
+            foreach (var i in data.Bbdo)
+            {
+                i.Col1 = Math.Round(i.Col1);
+                i.Col2 = Math.Round(i.Col2);
+                i.Col8 = Math.Round(i.Col8);
+                i.Col9 = Math.Round(i.Col9);
+                i.Col10 = Math.Round(i.Col10);
+                i.Col11 = Math.Round(i.Col11);
+                i.Col12 = Math.Round(i.Col12);
+                i.Col13 = Math.Round(i.Col13);
+                i.Col14 = Math.Round(i.Col14);
+
+            }
+            #endregion
+
             return data;
         }
         #endregion
@@ -1149,10 +1395,8 @@ namespace DMS.BUSINESS.Services.BU
         {
             var romanNumerals = new (int value, string numeral)[]
             {
-            (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
-            (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
-            (10, "X"), (9, "IX"), (5, "V"), (4, "IV"),
-            (1, "I")
+                (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),(100, "C"), (90, "XC"),
+                (50, "L"), (40, "XL"),(10, "X"), (9, "IX"), (5, "V"), (4, "IV"),(1, "I")
             };
 
             string result = "";
@@ -1167,8 +1411,91 @@ namespace DMS.BUSINESS.Services.BU
             return result;
         }
         #endregion
+
+        #region Xuất Excel (Tất cả sheet)
+        public async Task<string> ExportExcel(string headerId)
+        {
+            try
+            {
+                var data = await this.CalculateDiscountOutput(headerId);
+                var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "CoSoTinhMucGiamGia.xlsx");
+
+                if (!File.Exists(templatePath))
+                {
+                    throw new FileNotFoundException("Không tìm thấy template Excel.", templatePath);
+                }
+
+                using var file = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                IWorkbook workbook = new XSSFWorkbook(file);
+
+                var styles = new
+                {
+                    Text = ExcelNPOIExtention.SetCellStyleText(workbook),
+                    TextBold = ExcelNPOIExtention.SetCellStyleTextBold(workbook),
+                    Number = ExcelNPOIExtention.SetCellStyleNumber(workbook),
+                    NumberBold = ExcelNPOIExtention.SetCellStyleNumberBold(workbook),
+                };
+
+                #region PT
+                var sheetPt = workbook.GetSheetAt(1);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(1) ?? sheetPt.CreateRow(1), 0, "Thực hiện: từ 15h00 ngày 20/03/2025", styles.Text);
+                int rowIndex = 7;
+                foreach (var i in data.Pt)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPt.GetRow(rowIndex) ?? sheetPt.CreateRow(rowIndex);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text); 
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
+                    rowIndex++;
+                }
+                #endregion
+
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
+                Directory.CreateDirectory(uploadPath);
+                var outputPath = Path.Combine(uploadPath, $"{DateTime.Now:ddMMyyyy_HHmmss}_CSTMGG.xlsx");
+                using var outFile = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
+                workbook.Write(outFile);
+
+                return outputPath;
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi để dễ debug
+                Console.WriteLine($"Lỗi khi xuất file Excel: {ex.Message}\n{ex.StackTrace}");
+                return string.Empty;
+            }
+        }
+        #endregion
     }
 }
-
-
-

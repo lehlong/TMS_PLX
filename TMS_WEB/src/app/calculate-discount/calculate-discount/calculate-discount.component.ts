@@ -44,6 +44,7 @@ export class CalculateDiscountComponent implements OnInit {
     customerPt: [],
     customerFob: [],
     customerTnpp: [],
+    customerBbdo: [],
   };
 
   ngOnInit(): void {

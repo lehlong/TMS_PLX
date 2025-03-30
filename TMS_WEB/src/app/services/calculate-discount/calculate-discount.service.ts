@@ -30,4 +30,8 @@ export class CalculateDiscountService {
     updateInput(input: any): Observable<any> {
         return this.commonService.put(`CalculateDiscount/UpdateInput`, input);
     }
+
+    exportExcel(id: any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/ExportExcel?headerId=${id}`);
+    }
 }

@@ -11,5 +11,6 @@ namespace DMS.BUSINESS.Models
         public List<TblBuInputCustomerPt> CustomerPt { get; set; } = new List<TblBuInputCustomerPt>();
         public List<TblBuInputCustomerFob> CustomerFob { get; set; } = new List<TblBuInputCustomerFob>();
         public List<TblBuInputCustomerTnpp> CustomerTnpp { get; set; } = new List<TblBuInputCustomerTnpp>();
+        public List<TblBuInputCustomerBbdo> CustomerBbdo { get; set; } = new List<TblBuInputCustomerBbdo>();
     }
 }

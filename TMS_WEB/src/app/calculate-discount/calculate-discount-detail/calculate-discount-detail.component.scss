@@ -26,3 +26,8 @@ td > input[type=text]{
     background: transparent;
     text-align: left;
 }
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
