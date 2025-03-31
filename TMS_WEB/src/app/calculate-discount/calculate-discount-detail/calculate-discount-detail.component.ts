@@ -43,6 +43,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     vk11Fob: [],
     vk11Tnpp: [],
     vk11Bb: [],
+    summary: [],
   }
   headerId: any = '';
   constructor(

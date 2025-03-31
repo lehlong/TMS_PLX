@@ -1438,10 +1438,12 @@
             </nz-tab>
              <!-- #endregion VK11 TNPP -->
 
+            <!-- #region PTS -->
             <nz-tab nzTitle="PTS" (click)="onClickTab('PTS')">
                 <div class="overflow-tab" *ngIf="selectedIndex === 14">
                 </div>
             </nz-tab>
+            <!-- #endregion PTS -->
 
             <!-- #region VK11 BB -->
             <nz-tab nzTitle="VK11 BB" (click)="onClickTab('VK11 BB')">
@@ -1499,10 +1501,65 @@
             </nz-tab>
             <!-- #endregion VK11 BB -->
 
+            <!-- #region Tổng hợp -->
             <nz-tab nzTitle="Tổng hợp" (click)="onClickTab('Tổng hợp')">
                 <div class="overflow-tab" *ngIf="selectedIndex === 16">
+                    <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+                        [nzData]="output.summary">
+                        <thead>
+                            <tr>
+                                <th class="align-center">TT</th>
+                                <th class="align-center">TÊN KHÁCH HÀNG ĐẠI LÝ</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">VÙNG CHXD</th>
+                                <th class="align-center">CỰ LY <br> V/C km</th>
+                                <th class="align-center">ĐƠN GIÁ <br> CƯỚC đ/l</th>
+                                <th class="align-center">P THỨC</th>
+                                <th class="align-center">MÃ KHÁCH</th>
+                                <th class="align-center">MÃ HÀNG</th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center">THỜI HẠN TT</th>
+                                <th class="align-center">GIÁ CHƯA <br> VAT&BVMT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐVT</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">HIỆU LỰC TỪ</th>
+                                <th class="align-center"></th>
+                                <th class="align-center">ĐẾN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of output.summary;">
+                                <td *ngIf="data.isBold"></td>
+                                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                                    {{data.customerName}}</td>
+
+                                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
                 </div>
             </nz-tab>
+            <!-- #endregion Tổng hợp -->
 
         </nz-tabset>
     </div>

@@ -1216,7 +1216,61 @@ namespace DMS.BUSINESS.Services.BU
                     CustomerName = "TNQTM",
                     IsBold = true,
                 });
+                data.Summary.AddRange(data.Vk11Pt);
+
+                data.Summary.Add(new VK11Model
+                {
+                    Stt = "B",
+                    CustomerName = "KHÁCH ĐẶC BIỆT",
+                    IsBold = true,
+                });
+                data.Summary.AddRange(data.Vk11Db);
+
+                data.Summary.Add(new VK11Model
+                {
+                    Stt = "C",
+                    CustomerName = "BÁN FOB",
+                    IsBold = true,
+                });
+                data.Summary.AddRange(data.Vk11Fob);
+
+                data.Summary.Add(new VK11Model
+                {
+                    Stt = "D",
+                    CustomerName = "TNPP",
+                    IsBold = true,
+                });
+                data.Summary.AddRange(data.Vk11Tnpp);
+
+                data.Summary.Add(new VK11Model
+                {
+                    Stt = "E",
+                    CustomerName = "BÁN BUÔN",
+                    IsBold = true,
+                });
+
+                foreach (var i in data.Vk11Bb)
+                {
+                    data.Summary.Add(new VK11Model
+                    {
+                        IsBold = i.IsBold,
+                        Stt = i.Stt,
+                        CustomerName = i.CustomerName,
+                        Address = i.Address,
+                        MarketName = i.GoodsName,
+                        Col1 = i.Col1,
+                        Col2 = i.Col2,
+                        Col3 = i.Col3,
+                        Col4 = i.Col4,
+                        Col5 = i.Col5,
+                        Col7 = i.Col7,
+                        Col8 = i.Col8,
+                        Col13 = i.Col13,
+                        Col14 = i.Col14,
+                    });
+                }
                 #endregion
+
                 return RoundNumber(data);
             }
             catch (Exception ex)
@@ -1453,12 +1507,12 @@ namespace DMS.BUSINESS.Services.BU
                 #region PT
                 var sheetPt = workbook.GetSheetAt(1);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(1) ?? sheetPt.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
-                int rowIndex = 7;
+                int rowIndexPt = 7;
                 foreach (var i in data.Pt)
                 {
                     var text = i.IsBold ? styles.TextBold : styles.Text;
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
-                    var row = sheetPt.GetRow(rowIndex) ?? sheetPt.CreateRow(rowIndex);
+                    var row = sheetPt.GetRow(rowIndexPt) ?? sheetPt.CreateRow(rowIndexPt);
                     ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text); 
                     ExcelNPOIExtention.SetCellValue(row, 1, i.MarketName, text);
                     ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
@@ -1491,9 +1545,15 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
                     ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
                     ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
-                    rowIndex++;
+                    rowIndexPt++;
                 }
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 15, "DUYỆT", styles.TextCenterBold);
                 #endregion
+
+
 
                 var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
                 Directory.CreateDirectory(uploadPath);
