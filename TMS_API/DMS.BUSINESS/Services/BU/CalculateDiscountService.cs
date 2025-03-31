@@ -1182,6 +1182,9 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 #endregion
 
+                #region PTS
+                #endregion
+
                 #region VK11-BB
                 var bb = 1;
                 foreach (var i in lstCustomerBbdo)
@@ -1206,6 +1209,14 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 #endregion
 
+                #region Tổng hợp
+                data.Summary.Add(new VK11Model
+                {
+                    Stt = "A",
+                    CustomerName = "TNQTM",
+                    IsBold = true,
+                });
+                #endregion
                 return RoundNumber(data);
             }
             catch (Exception ex)
@@ -1417,6 +1428,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
+                var header = _dbContext.TblBuCalculateDiscount.Find(headerId);
                 var data = await this.CalculateDiscountOutput(headerId);
                 var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "CoSoTinhMucGiamGia.xlsx");
 
@@ -1430,15 +1442,17 @@ namespace DMS.BUSINESS.Services.BU
 
                 var styles = new
                 {
-                    Text = ExcelNPOIExtention.SetCellStyleText(workbook),
-                    TextBold = ExcelNPOIExtention.SetCellStyleTextBold(workbook),
-                    Number = ExcelNPOIExtention.SetCellStyleNumber(workbook),
-                    NumberBold = ExcelNPOIExtention.SetCellStyleNumberBold(workbook),
+                    Text = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Left, true),
+                    TextBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Left, true),
+                    TextCenter = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Center, false),
+                    TextCenterBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false),
+                    Number = ExcelNPOIExtention.SetCellStyleNumber(workbook, false, HorizontalAlignment.Right, true),
+                    NumberBold = ExcelNPOIExtention.SetCellStyleNumber(workbook, true, HorizontalAlignment.Right, true),
                 };
 
                 #region PT
                 var sheetPt = workbook.GetSheetAt(1);
-                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(1) ?? sheetPt.CreateRow(1), 0, "Thực hiện: từ 15h00 ngày 20/03/2025", styles.Text);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(1) ?? sheetPt.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
                 int rowIndex = 7;
                 foreach (var i in data.Pt)
                 {

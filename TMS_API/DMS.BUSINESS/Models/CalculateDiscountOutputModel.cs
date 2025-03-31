@@ -17,6 +17,7 @@
         public List<VK11Model> Vk11Fob { get; } = new List<VK11Model>();
         public List<VK11Model> Vk11Tnpp { get; } = new List<VK11Model>();
         public List<VK11Model> Vk11Bb { get; } = new List<VK11Model>();
+        public List<VK11Model> Summary { get; } = new List<VK11Model>();
     }
 
     public class Dlg
