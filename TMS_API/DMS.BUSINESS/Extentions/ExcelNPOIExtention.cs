@@ -43,7 +43,7 @@ namespace DMS.BUSINESS.Extentions
                 style.BorderLeft = BorderStyle.Thin;
                 style.BorderRight = BorderStyle.Thin;
             }
-
+            style.DataFormat = workbook.CreateDataFormat().GetFormat("@");
             return style;
         }
         public static ICellStyle SetCellStyleNumber(IWorkbook workbook, bool isBold, HorizontalAlignment align, bool isBorder)

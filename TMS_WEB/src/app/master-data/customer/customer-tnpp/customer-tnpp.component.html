@@ -33,8 +33,8 @@
     </nz-page-header>
   </div>
   <div class="overflow-auto flex-grow">
-    <nz-table nzBordered nzSize="small" [nzData]="paginationResult.data" [nzFrontPagination]="'false'"
-      [nzShowPagination]="'false'">
+    <nz-table nzTableLayout="fixed" nzSize="small" [nzData]="paginationResult.data" [nzFrontPagination]="false"
+    [nzShowPagination]="false" [nzFrontPagination]="false">
       <thead>
         <tr>
           <th nzAlign="center" rowspan="2">MÃ</th>

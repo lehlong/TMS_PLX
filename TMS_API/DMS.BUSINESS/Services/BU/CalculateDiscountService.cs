@@ -1504,6 +1504,10 @@ namespace DMS.BUSINESS.Services.BU
                     NumberBold = ExcelNPOIExtention.SetCellStyleNumber(workbook, true, HorizontalAlignment.Right, true),
                 };
 
+                #region Dữ liệu gốc
+
+                #endregion
+
                 #region PT
                 var sheetPt = workbook.GetSheetAt(1);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(1) ?? sheetPt.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
@@ -1546,11 +1550,557 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
                     ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
                     rowIndexPt++;
-                }
+                }   
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 15, "DUYỆT", styles.TextCenterBold);
+                #endregion
+
+                #region ĐB
+                var sheetDb = workbook.GetSheetAt(2);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(1) ?? sheetDb.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexDb = 7;
+                foreach (var i in data.Db)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDb.GetRow(rowIndexDb) ?? sheetDb.CreateRow(rowIndexDb);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValue(row, 32, i.Col30, number);
+                    ExcelNPOIExtention.SetCellValue(row, 33, i.Col31, number);
+                    ExcelNPOIExtention.SetCellValue(row, 34, i.Col32, number);
+                    ExcelNPOIExtention.SetCellValue(row, 35, i.Col33, number);
+                    ExcelNPOIExtention.SetCellValue(row, 36, i.Col34, number);
+                    rowIndexDb++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region FOB
+                var sheetFob = workbook.GetSheetAt(3);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(1) ?? sheetFob.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexFob = 7;
+                foreach (var i in data.Fob)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetFob.GetRow(rowIndexFob) ?? sheetFob.CreateRow(rowIndexFob);
+
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
+                    ExcelNPOIExtention.SetCellValue(row, 32, i.Col31, number);
+                    ExcelNPOIExtention.SetCellValue(row, 33, i.Col32, number);
+
+                    rowIndexFob++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region PT 09
+                var sheetPt09 = workbook.GetSheetAt(4);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(1) ?? sheetPt09.CreateRow(1), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPt09 = 7;
+                foreach (var i in data.Pt09)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPt09.GetRow(rowIndexPt09) ?? sheetPt09.CreateRow(rowIndexPt09);
+
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
+                    ExcelNPOIExtention.SetCellValue(row, 32, i.Col31, number);
+                    ExcelNPOIExtention.SetCellValue(row, 33, i.Col32, number);
+
+                    rowIndexPt09++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region BB DO
+                var sheetBbDo = workbook.GetSheetAt(5);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(3) ?? sheetBbDo.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexBbDo = 9;
+                foreach (var i in data.Bbdo)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetBbDo.GetRow(rowIndexBbDo) ?? sheetBbDo.CreateRow(rowIndexBbDo);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.DeliveryPoint, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.PThuc, text);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.CustomerCode, text);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.GoodCode, text);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Dvt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.TToan, text);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col14, number);
+                    rowIndexBbDo++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region BB FO
+
+                #endregion
+
+                #region PL1
+                var sheetPl1 = workbook.GetSheetAt(7);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(2) ?? sheetPl1.CreateRow(2), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPl1 = 8;
+                foreach (var i in data.Pl1)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPl1.GetRow(rowIndexPl1) ?? sheetPl1.CreateRow(rowIndexPl1);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.MarketName, text);
+
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+
+                    rowIndexPl1++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region PL2
+
+                var sheetPl2 = workbook.GetSheetAt(8);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(2) ?? sheetPl2.CreateRow(2), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPl2 = 7;
+                foreach (var i in data.Pl2)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPl2.GetRow(rowIndexPl2) ?? sheetPl2.CreateRow(rowIndexPl2);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+
+                    rowIndexPl2++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region PL3
+
+                var sheetPl3 = workbook.GetSheetAt(9);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(2) ?? sheetPl3.CreateRow(2), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPl3 = 7;
+                foreach (var i in data.Pl3)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPl3.GetRow(rowIndexPl3) ?? sheetPl3.CreateRow(rowIndexPl3);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+
+                    rowIndexPl3++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region PL4
+
+                var sheetPl4 = workbook.GetSheetAt(10);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(3) ?? sheetPl4.CreateRow(3), 2, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPl4 = 8;
+                foreach (var i in data.Pl4)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPl4.GetRow(rowIndexPl4) ?? sheetPl4.CreateRow(rowIndexPl4);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
+
+                    rowIndexPl4++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region VK11-PT
+
+                var sheetVk11Pt = workbook.GetSheetAt(11);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(3) ?? sheetVk11Pt.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexVk11Pt = 2;
+                foreach (var i in data.Vk11Pt)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetVk11Pt.GetRow(rowIndexVk11Pt) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, number);
+                    rowIndexVk11Pt++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region VK11-ĐB
+
+                var sheetVk11Db = workbook.GetSheetAt(12);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(3) ?? sheetVk11Db.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexVk11Db = 2;
+                foreach (var i in data.Vk11Db)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetVk11Db.GetRow(rowIndexVk11Db) ?? sheetVk11Db.CreateRow(rowIndexVk11Db);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, number);
+                    rowIndexVk11Db++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region VK11-FOB
+
+                var sheetVk11Fob = workbook.GetSheetAt(13);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(3) ?? sheetVk11Fob.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexVk11Fob = 3;
+                foreach (var i in data.Vk11Fob)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetVk11Fob.GetRow(rowIndexVk11Fob) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, "", number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, "", number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, "", number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, text);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, text);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, text);
+                    rowIndexVk11Fob++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region VK11-TNPP
+
+                var sheetVk11Tnpp = workbook.GetSheetAt(14);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(3) ?? sheetVk11Tnpp.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexVk11Tnpp = 3;
+                foreach (var i in data.Vk11Tnpp)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col6, text);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col7, text);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col15, text);
+                    rowIndexVk11Tnpp++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region VK11-BB
+
+                var sheetVk11Bb = workbook.GetSheetAt(15);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(3) ?? sheetVk11Bb.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexVk11Bb = 2;
+                foreach (var i in data.Vk11Bb)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetVk11Bb.GetRow(rowIndexVk11Bb) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb);
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.GoodsName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 4, "", number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col15, text);
+                    rowIndexVk11Bb++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                #endregion
+
+                #region PTS
+
+                #endregion
+
+                #region Tổng hợp
+
+                var sheetTh = workbook.GetSheetAt(17);
+                //ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(3) ?? sheetTh.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexTh = 2;
+                foreach (var i in data.Summary)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetTh.GetRow(rowIndexTh) ?? sheetTh.CreateRow(rowIndexTh);
+
+                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValue(row, 3, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, text);
+                    rowIndexTh++;
+                }
+                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 15, "DUYỆT", styles.TextCenterBold);
+
                 #endregion
 
 
