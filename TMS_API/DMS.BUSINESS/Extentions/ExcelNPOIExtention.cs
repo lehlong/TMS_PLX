@@ -9,6 +9,45 @@ namespace DMS.BUSINESS.Extentions
 {
     public static class ExcelNPOIExtention
     {
+        public static void SetCellValueText(IRow row, int columnIndex, object value, ICellStyle style)
+        {
+            var cell = row.CreateCell(columnIndex);
+            cell.CellStyle = style;
+
+            if (value is null)
+            {
+                cell.SetCellValue("");
+            }
+            else
+            {
+                cell.SetCellValue(value.ToString());
+            }
+        }
+        public static void SetCellValueNumber(IRow row, int columnIndex, object value, ICellStyle style)
+        {
+            var cell = row.CreateCell(columnIndex);
+            cell.CellStyle = style;
+
+            if (value is null)
+            {
+                cell.SetCellValue("");
+            }
+            else if (double.TryParse(value.ToString(), out double number))
+            {
+                if (number == 0)
+                {
+                    cell.SetCellValue("");
+                }
+                else
+                {
+                    cell.SetCellValue(number);
+                }
+            }
+            else
+            {
+                cell.SetCellValue("");
+            }
+        }
         public static void SetCellValue(IRow row, int columnIndex, object value, ICellStyle style)
         {
             var cell = row.CreateCell(columnIndex);
@@ -20,7 +59,14 @@ namespace DMS.BUSINESS.Extentions
             }
             else if (double.TryParse(value.ToString(), out double number))
             {
-                cell.SetCellValue(number);
+                if (number == 0)
+                {
+                    cell.SetCellValue("");
+                }
+                else
+                {
+                    cell.SetCellValue(number);
+                }
             }
             else
             {
