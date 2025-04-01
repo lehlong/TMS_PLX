@@ -12,6 +12,7 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {BlankLayoutComponent} from './layouts/blank-layout/blank-layout.component';
 import { calculateDiscountRoutes } from './calculate-discount/calculate-discount.routes';
+import { discountInformation } from './discount-information/discount-information.route';
 
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
       {path: 'master-data', children: masterDataRoutes, canActivate: [AuthGuard]},
       {path: 'system-manager', children: systemManagerRoutes, canActivate: [AuthGuard]},
       {path: 'calculate-discount', children: calculateDiscountRoutes, canActivate: [AuthGuard]},
+      {path: 'discount-information', children: discountInformation, canActivate: [AuthGuard]},
     ],
   },
   {

@@ -73,6 +73,26 @@ namespace DMS.BUSINESS.Extentions
                 cell.SetCellValue(value.ToString());
             }
         }
+        public static ICellStyle SetCellFreeStyle(IWorkbook workbook, bool isBold, HorizontalAlignment align, bool isBorder, int size)
+        {
+            ICellStyle style = workbook.CreateCellStyle();
+            IFont font = workbook.CreateFont();
+            font.FontName = "Times New Roman";
+            font.FontHeightInPoints = size;
+            style.SetFont(font);
+            font.IsBold = isBold;
+            style.Alignment = align;
+            style.VerticalAlignment = VerticalAlignment.Center;
+            if (isBorder)
+            {
+                style.BorderTop = BorderStyle.Thin;
+                style.BorderBottom = BorderStyle.Thin;
+                style.BorderLeft = BorderStyle.Thin;
+                style.BorderRight = BorderStyle.Thin;
+            }
+            style.DataFormat = workbook.CreateDataFormat().GetFormat("@");
+            return style;
+        }
         public static ICellStyle SetCellStyleText(IWorkbook workbook, bool isBold, HorizontalAlignment align, bool isBorder)
         {
             ICellStyle style = workbook.CreateCellStyle();
@@ -81,7 +101,8 @@ namespace DMS.BUSINESS.Extentions
             font.FontHeightInPoints = 12;
             style.SetFont(font);
             font.IsBold = isBold;
-            style.Alignment = align;
+            style.Alignment = align; 
+            style.VerticalAlignment = VerticalAlignment.Center;
             if (isBorder)
             {
                 style.BorderTop = BorderStyle.Thin;
@@ -101,6 +122,7 @@ namespace DMS.BUSINESS.Extentions
             font.IsBold = isBold;
             style.SetFont(font);
             style.Alignment = align;
+            style.VerticalAlignment = VerticalAlignment.Center;
             if (isBorder)
             {
                 style.BorderTop = BorderStyle.Thin;

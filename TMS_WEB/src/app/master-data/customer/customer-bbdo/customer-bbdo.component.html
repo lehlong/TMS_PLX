@@ -1,0 +1,214 @@
+<div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.GOODS_MANAGEMENT">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon nzTitle="Khách hàng" nzSubtitle="Danh sách Khách hàng" class="site-page-header">
+      <nz-page-header-extra>
+        <nz-space [nzWrap]="true" class="gap-[5px]">
+          <nz-space>
+            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
+              <span nz-icon nzType="redo"></span>
+            </button>
+          </nz-space>
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+            <span nz-icon nzType="plus-circle"></span> Thêm mới
+          </button>
+          <!-- <button
+            (click)="exportExcel()"
+            class="!flex !items-center"
+            nz-button
+            nzType="primary"
+            [appPermission]="LOCAL_RIGHTS.EXCEL"
+            nzDanger
+          >
+            <span nz-icon nzType="file-excel"></span>Tải Excel
+          </button> -->
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div class="overflow-auto flex-grow">
+    <nz-table nzBordered nzSize="small" [nzData]="paginationResult.data" [nzFrontPagination]="'false'"
+      [nzShowPagination]="'false'">
+      <thead>
+        <tr>
+          <th nzAlign="center" rowspan="2">MÃ</th>
+          <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+          <th nzAlign="center" rowspan="2">VÙNG</th>
+          <th nzAlign="center" rowspan="2">THỊ TRƯỜNG</th>
+          <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
+          <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
+          <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+          <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
+          <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
+          <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
+          <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+          <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+        </tr>
+        <tr>
+          <th nzAlign="center">XĂNG</th>
+          <th nzAlign="center">DẦU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of paginationResult.data">
+          <td> <a (click)="openEdit(data)"> {{data.code }}</a></td>
+          <td>{{data.name }}</td>
+          <td>
+            <span *ngFor="let item of localResult">
+              <span *ngIf=" data.localCode === item.code ">{{ item.name }}</span>
+            </span>
+          </td>
+          <td>
+            <span *ngFor="let item of marketResult">
+              <span *ngIf="item.code === data.marketCode">{{ item.name }}</span>
+            </span>
+          </td>
+          <td nzAlign="center">{{data.cuLyBq }}</td>
+          <td nzAlign="center">{{data.cvcbq }}</td>
+          <td nzAlign="center">{{data.cpccvc }}</td>
+          <td nzAlign="center">{{data.ckXang }}</td>
+          <td nzAlign="center">{{data.ckDau }}</td>
+          <td nzAlign="center">{{data.htcvc }}</td>
+          <td nzAlign="center">{{data.httVb1370 }}</td>
+          <td nzAlign="center">{{data.ckv2 }}</td>
+          <td>{{data.adrress }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination nzShowSizeChanger [nzPageIndex]="filter.currentPage" [nzTotal]="paginationResult.totalRecord"
+      [nzPageSize]="filter.pageSize" (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
+  </div>
+</div>
+
+<!--Create Update-->
+<nz-drawer nzWidth="60%" [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
+  [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
+  <ng-container *nzDrawerContent>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <div nz-row nzJustify="space-evenly">
+        <app-input-clear nz-col nzSpan="9" placeholder="Nhập mã " [required]="true" label="Mã "
+          [control]="$any(validateForm).controls['code']" [required]="true"
+          [disabled]="edit ? true : false"></app-input-clear>
+
+        <app-input-clear nz-col nzSpan="14" placeholder="Nhập tên" [required]="true" label="Tên "
+          [control]="$any(validateForm).controls['name']"></app-input-clear>
+      </div>
+
+      <div nz-row nzJustify="space-evenly">
+        <nz-form-item nz-col nzSpan="6">
+          <nz-form-label>Vùng giá</nz-form-label>
+          <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá" formControlName="localCode">
+              <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name" [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item nz-col nzSpan="6">
+          <nz-form-label>Thị Trường</nz-form-label>
+          <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear placeholder="Chọn thị trường" formControlName="marketCode">
+              <nz-option cdkScrollable *ngFor="let item of marketResult" [nzLabel]="item.name" [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <app-input-clear nz-col nzSpan="11" placeholder="Nhập vùng thị trường" [required]="true" label="Vùng thị trường"
+        [control]="$any(validateForm).controls['local2']"></app-input-clear>
+      </div>
+      <div nz-row nzJustify="space-evenly">
+
+        <app-input-clear nz-col nzSpan="7" placeholder="Nhập Cự ly bình quân" [required]="true" label="Cự ly bình quân"
+          [control]="$any(validateForm).controls['cuLyBq']"></app-input-clear>
+
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập Cước vân chuyển bình quân" [required]="true"
+          label="Cước vân chuyển bình quân" [control]="$any(validateForm).controls['cvcbq']"></app-input-clear>
+
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập CP chung chưa chưa cước Vận chuyển" [required]="true"
+          label="CP chung chưa chưa cước Vận chuyển"
+          [control]="$any(validateForm).controls['cpccvc']"></app-input-clear>
+
+      </div>
+      <div nz-row nzJustify="space-evenly">
+        <app-input-clear nz-col nzSpan="7" placeholder="Nhập hỗ trợ cước vận chuyển" [required]="true"
+          label="Hỗ trợ cước vận chuyển" [control]="$any(validateForm).controls['htcvc']"></app-input-clear>
+
+          <app-input-clear nz-col nzSpan="8" placeholder="Nhập hỗ trợ theo VB1370/PLX" [required]="true" label="Hỗ trợ theo VB1370/PLX"
+          [control]="$any(validateForm).controls['httVb1370']"></app-input-clear>
+
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập chiết khấu Vùng 2" [required]="true" label="Chiết khấu Vùng 2"
+          [control]="$any(validateForm).controls['ckv2']"></app-input-clear>
+      </div>
+      <div nz-row nzJustify="space-evenly">
+        <app-input-clear nz-col nzSpan="11" placeholder="Nhập chiết khấu xăng" [required]="true" label="Chiết khấu xăng"
+          [control]="$any(validateForm).controls['ckXang']"></app-input-clear>
+
+        <app-input-clear nz-col nzSpan="12" placeholder="Nhập chiết khấu dầu" [required]="true" label="Chiết khấu dầu"
+          [control]="$any(validateForm).controls['ckDau']"></app-input-clear>
+      </div>
+      <div nz-row nzJustify="space-evenly">
+        <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true"
+          label="Phương thức" [control]="$any(validateForm).controls['phuongThuc']"></app-input-clear>
+
+          <app-input-clear nz-col nzSpan="6" placeholder="Nhập lãi vay ngân hàng" [required]="true" label="Lãi vay ngân hàng"
+          [control]="$any(validateForm).controls['lvnh']"></app-input-clear>
+
+          <nz-form-item nz-col nzSpan="11">
+            <nz-form-label>Thời hạn thanh toán</nz-form-label>
+            <nz-form-control>
+              <nz-select nzShowSearch nzAllowClear placeholder="Chọn hạn thanh toán" formControlName="thtt">
+                <nz-option cdkScrollable *ngFor="let item of thttLst" [nzLabel]="item.code + ' - '+ item.name" [nzValue]="item.code">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+      </div>
+      <div nz-row nzJustify="space-evenly" style="padding: 0 18px;">
+
+      <app-input-clear nz-col nzSpan="24" placeholder="Nhập địa chỉ" [required]="true" label="Địa chỉ"
+        [control]="$any(validateForm).controls['adrress']"></app-input-clear>
+
+      <nz-form-item nz-col nzSpan="24">
+        <nz-form-label>Trạng thái</nz-form-label>
+        <nz-form-control>
+          <nz-radio-group formControlName="isActive">
+            <label nz-radio [nzValue]="true">Kích hoạt</label>
+            <label nz-radio [nzValue]="false">Khoá</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+      </div>
+    </form>
+  </ng-container>
+</nz-drawer>
+<ng-template #extra>
+  <nz-space>
+    <ng-container *ngIf="edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!edit">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
+        <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
+      </button>
+    </ng-container>
+    <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
+      (click)="close()">
+      <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+  </nz-space>
+</ng-template>

@@ -29,6 +29,7 @@ using LeftBorder = DocumentFormat.OpenXml.Wordprocessing.LeftBorder;
 using RightBorder = DocumentFormat.OpenXml.Wordprocessing.RightBorder;
 using DMS.CORE.Entities.IN;
 using NPOI.XSSF.UserModel.Helpers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -58,8 +59,11 @@ namespace DMS.BUSINESS.Services.BU
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x =>
-                    x.Name.Contains(filter.KeyWord));
+                    query = query.Where(x => x.Name.Contains(filter.KeyWord));
+                }
+                if (filter.KeyWord == "04")
+                {
+                    query = query.Where(x => x.Status == "04");
                 }
                 return await Paging(query.OrderByDescending(x => x.CreateDate), filter);
             }
@@ -1677,6 +1681,7 @@ namespace DMS.BUSINESS.Services.BU
                 var header = _dbContext.TblBuCalculateDiscount.Find(headerId);
                 var data = await this.CalculateDiscountOutput(headerId);
                 var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "CoSoTinhMucGiamGia.xlsx");
+                var muaMien = "";
 
                 if (!File.Exists(templatePath))
                 {
@@ -1688,6 +1693,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 var styles = new
                 {
+                    FreeText = ExcelNPOIExtention.SetCellFreeStyle(workbook, true, HorizontalAlignment.Center, true, 16),
                     Text = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Left, true),
                     TextBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Left, true),
                     TextCenter = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Center, false),
@@ -1695,8 +1701,143 @@ namespace DMS.BUSINESS.Services.BU
                     Number = ExcelNPOIExtention.SetCellStyleNumber(workbook, false, HorizontalAlignment.Right, true),
                     NumberBold = ExcelNPOIExtention.SetCellStyleNumber(workbook, true, HorizontalAlignment.Right, true),
                 };
+                if(header.Date.Month > 3 && header.Date.Month < 10)
+                {
+                    muaMien = "Hè Thu";
+                }
+                else
+                {
+                    muaMien = "Đông xuân";
+                }
 
                 #region Dữ liệu gốc
+                var sheetDlg = workbook.GetSheetAt(0);
+
+                #region thông báo
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(1) ?? sheetDlg.CreateRow(1), 6, $"THÔNG BÁO GIÁ BÁN LẺ TỪ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.FreeText);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(2) ?? sheetDlg.CreateRow(2), 17, $"(Từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")})", styles.FreeText);
+                int rowIndexDl1 = 5;
+                foreach (var i in data.Dlg.Dlg1)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl1) ?? sheetDlg.CreateRow(rowIndexDl1);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 1, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                    rowIndexDl1++;
+                }
+                int rowIndexDl2 = 5;
+                foreach (var i in data.Dlg.Dlg2)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl2) ?? sheetDlg.CreateRow(rowIndexDl2);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col2, number);
+                    rowIndexDl2++;
+                }
+                int rowIndexDl3 = 5;
+                foreach (var i in data.Dlg.Dlg3)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl3) ?? sheetDlg.CreateRow(rowIndexDl3);
+                    if (i.GoodCode == null)
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, styles.TextBold);
+
+                    }
+                    else
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, text);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 20, i.Col1, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col2, number);
+                    }
+                    rowIndexDl3++;
+                }
+                #endregion
+
+                #region BIỂU TỔNG HỢP CÁC CHỈ TIÊU DẦU SÁNG (PT bán lẻ - V2)
+
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(34) ?? sheetDlg.CreateRow(34), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.FreeText);
+                int rowIndexDl4 = 40;
+                foreach (var i in data.Dlg.Dlg4)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl4) ?? sheetDlg.CreateRow(rowIndexDl4);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 1, i.GoodName, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 6, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 7, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col11, number);
+                    rowIndexDl4++;
+                }
+                #endregion
+
+                #region THAY ĐỔI GIÁ GIAO PT BÁN LẺ
+
+                #endregion
+
+                #region BIỂU TỔNG HỢP CÁC CHỈ TIÊU DẦU SÁNG (ngoài bán lẻ)
+
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(74) ?? sheetDlg.CreateRow(74), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.FreeText);
+                int rowIndexDl6 = 81;
+                foreach (var i in data.Dlg.Dlg6)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl6) ?? sheetDlg.CreateRow(rowIndexDl6);
+                    if (i.GoodCode == null)
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, styles.TextBold);
+                    }
+                    else
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, text);
+
+                        ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, styles.TextCenter);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 3, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col4, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 6, i.Col5, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 7, i.Col6, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col7, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 9, i.Col8, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col9, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 11, i.Col10, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col11, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col12, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col13, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 15, i.Col14, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 16, i.Col15, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 17, i.Col16, number);
+                    }
+                    rowIndexDl6++;
+                }
+                #endregion
+
+                #region BIỂU TÍNH GIÁ XUẤT NỘI DỤNG
+
+                #endregion
+
+                #region BIỂU TÍNH GIÁ BÁN CHO CÔNG TY CP VẬN TẢI VÀ DỊCH VỤ PETROLIMEX NGHỆ TĨNH
+
+                #endregion
+
+                #region SO SÁNH
+
+                #endregion
 
                 #endregion
 
@@ -1711,36 +1852,36 @@ namespace DMS.BUSINESS.Services.BU
                     var row = sheetPt.GetRow(rowIndexPt) ?? sheetPt.CreateRow(rowIndexPt);
                     ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text); 
                     ExcelNPOIExtention.SetCellValue(row, 1, i.MarketName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.Col1, number);
-                    ExcelNPOIExtention.SetCellValue(row, 3, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col3, number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col4, number);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col5, number);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col6, number);
-                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col7, number);
-                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col8, number);
-                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col9, number);
-                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col11, number);
-                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col13, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col15, number);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col16, number);
-                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col17, number);
-                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col18, number);
-                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col19, number);
-                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col20, number);
-                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col21, number);
-                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col22, number);
-                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col23, number);
-                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col24, number);
-                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col25, number);
-                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col26, number);
-                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col27, number);
-                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
-                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
-                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 3, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 6, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 7, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 9, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 11, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 15, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 16, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 17, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 18, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 19, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 20, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 25, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 26, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 27, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 28, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 29, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 30, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 31, i.Col30, number);
                     rowIndexPt++;
                 }   
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
@@ -1922,14 +2063,14 @@ namespace DMS.BUSINESS.Services.BU
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetBbDo.GetRow(rowIndexBbDo) ?? sheetBbDo.CreateRow(rowIndexBbDo);
                     ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.DeliveryPoint, text);
-                    ExcelNPOIExtention.SetCellValue(row, 3, i.GoodName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 4, i.PThuc, text);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.CustomerCode, text);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.GoodCode, text);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Dvt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 8, i.TToan, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.DeliveryPoint, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 4, i.PThuc, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 5, i.CustomerCode, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.GoodCode, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Dvt, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 8, i.TToan, text);
                     ExcelNPOIExtention.SetCellValue(row, 9, i.Col1, number);
                     ExcelNPOIExtention.SetCellValue(row, 10, i.Col2, number);
                     ExcelNPOIExtention.SetCellValue(row, 11, i.Col3, number);
@@ -2095,11 +2236,6 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueText(row, 18, i.Col15, text);
                     rowIndexVk11Pt++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(rowIndexVk11Pt + 1) ?? sheetVk11Pt.CreateRow(rowIndexVk11Pt + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
                 #region VK11-ĐB
@@ -2116,10 +2252,10 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
                     ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
                     ExcelNPOIExtention.SetCellValue(row, 3, i.MarketName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col1, number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, number);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 4, i.Col1, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 5, i.Col2, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Col4, text);
                     ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, number);
                     ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, number);
                     ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, number);
@@ -2128,16 +2264,11 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
                     ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
                     ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 16, i.Col13, text);
                     ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 18, i.Col15, text);
                     rowIndexVk11Db++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Db.GetRow(rowIndexVk11Db + 1) ?? sheetVk11Db.CreateRow(rowIndexVk11Db + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
                 #region VK11-FOB
@@ -2150,32 +2281,27 @@ namespace DMS.BUSINESS.Services.BU
                     var text = i.IsBold ? styles.TextBold : styles.Text;
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetVk11Fob.GetRow(rowIndexVk11Fob) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob);
-                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.MarketName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 3, "", number);
-                    ExcelNPOIExtention.SetCellValue(row, 4, "", number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, "", number);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, text);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, text);
-                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, text);
-                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, text);
-                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, text);
-                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
-                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
-                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, text);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 3, "", number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, "", number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, "", number);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 8, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 9, i.Col6, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 10, i.Col7, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 16, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 18, i.Col15, text);
                     rowIndexVk11Fob++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Fob.GetRow(rowIndexVk11Fob + 1) ?? sheetVk11Fob.CreateRow(rowIndexVk11Fob + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
                 #region VK11-TNPP
@@ -2188,31 +2314,26 @@ namespace DMS.BUSINESS.Services.BU
                     var text = i.IsBold ? styles.TextBold : styles.Text;
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp);
-                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.Address, text);
                     ExcelNPOIExtention.SetCellValue(row, 3, i.Col1, number);
                     ExcelNPOIExtention.SetCellValue(row, 4, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col3, text);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col4, text);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col5, text);
-                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col6, text);
-                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col7, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 5, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 8, i.Col6, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 9, i.Col7, text);
                     ExcelNPOIExtention.SetCellValue(row, 10, i.Col8, number);
                     ExcelNPOIExtention.SetCellValue(row, 11, i.Col9, number);
                     ExcelNPOIExtention.SetCellValue(row, 12, i.Col10, number);
                     ExcelNPOIExtention.SetCellValue(row, 13, i.Col11, number);
                     ExcelNPOIExtention.SetCellValue(row, 14, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 15, i.Col13, text);
                     ExcelNPOIExtention.SetCellValue(row, 16, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col15, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 17, i.Col15, text);
                     rowIndexVk11Tnpp++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Tnpp.GetRow(rowIndexVk11Tnpp + 1) ?? sheetVk11Tnpp.CreateRow(rowIndexVk11Tnpp + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
                 #region VK11-BB
@@ -2226,13 +2347,13 @@ namespace DMS.BUSINESS.Services.BU
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetVk11Bb.GetRow(rowIndexVk11Bb) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb);
                     ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
-                    ExcelNPOIExtention.SetCellValue(row, 3, i.GoodsName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.GoodsName, text);
                     ExcelNPOIExtention.SetCellValue(row, 4, "", number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col3, text);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col4, text);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 5, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Col5, text);
                     ExcelNPOIExtention.SetCellValue(row, 8, i.Col6, number);
                     ExcelNPOIExtention.SetCellValue(row, 9, i.Col7, number);
                     ExcelNPOIExtention.SetCellValue(row, 10, i.Col8, number);
@@ -2240,16 +2361,11 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 12, i.Col10, number);
                     ExcelNPOIExtention.SetCellValue(row, 13, i.Col11, number);
                     ExcelNPOIExtention.SetCellValue(row, 14, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 15, i.Col13, text);
                     ExcelNPOIExtention.SetCellValue(row, 16, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col15, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 17, i.Col15, text);
                     rowIndexVk11Bb++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetVk11Bb.GetRow(rowIndexVk11Bb + 1) ?? sheetVk11Bb.CreateRow(rowIndexVk11Bb + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
                 #region PTS
@@ -2267,32 +2383,28 @@ namespace DMS.BUSINESS.Services.BU
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetTh.GetRow(rowIndexTh) ?? sheetTh.CreateRow(rowIndexTh);
 
-                    ExcelNPOIExtention.SetCellValue(row, 0, i.Stt, text);
-                    ExcelNPOIExtention.SetCellValue(row, 1, i.CustomerName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 2, i.Address, text);
-                    ExcelNPOIExtention.SetCellValue(row, 3, i.MarketName, text);
-                    ExcelNPOIExtention.SetCellValue(row, 4, i.Col1, number);
-                    ExcelNPOIExtention.SetCellValue(row, 5, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValue(row, 6, i.Col3, text);
-                    ExcelNPOIExtention.SetCellValue(row, 7, i.Col4, text);
-                    ExcelNPOIExtention.SetCellValue(row, 8, i.Col5, text);
-                    ExcelNPOIExtention.SetCellValue(row, 9, i.Col6, number);
-                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col7, number);
-                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col8, number);
-                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col9, number);
-                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col11, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col13, text);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col15, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.CustomerName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.Address, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 6, i.Col3, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 7, i.Col4, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 8, i.Col5, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 9, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col7, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 11, i.Col8, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col9, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 15, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 16, i.Col13, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 17, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 18, i.Col15, text);
                     rowIndexTh++;
                 }
-                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetTh.GetRow(rowIndexTh + 1) ?? sheetTh.CreateRow(rowIndexTh + 1), 15, "DUYỆT", styles.TextCenterBold);
-
                 #endregion
 
 

@@ -16,6 +16,9 @@ export class CalculateDiscountService {
         return this.commonService.get('CalculateDiscount/GenarateCreate');
     }
 
+    getByStatus(status:string): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/Search?keyword=${status}`);
+    }
     create(input: any): Observable<any> {
         return this.commonService.post('CalculateDiscount/Create', input);
     }
