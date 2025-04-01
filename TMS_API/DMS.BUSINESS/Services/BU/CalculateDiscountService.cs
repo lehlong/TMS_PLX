@@ -1679,9 +1679,11 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 var header = _dbContext.TblBuCalculateDiscount.Find(headerId);
+                var nguoiKy = _dbContext.TblMdSigner.Where(x => x.Code == header.SignerCode).FirstOrDefault();
                 var data = await this.CalculateDiscountOutput(headerId);
                 var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "CoSoTinhMucGiamGia.xlsx");
                 var muaMien = "";
+                var tuThang = "";
 
                 if (!File.Exists(templatePath))
                 {
@@ -1695,6 +1697,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     FreeText = ExcelNPOIExtention.SetCellFreeStyle(workbook, true, HorizontalAlignment.Center, true, 16),
                     Text = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Left, true),
+                    TextRight = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Right, true),
                     TextBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Left, true),
                     TextCenter = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Center, false),
                     TextCenterBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false),
@@ -1704,10 +1707,13 @@ namespace DMS.BUSINESS.Services.BU
                 if(header.Date.Month > 3 && header.Date.Month < 10)
                 {
                     muaMien = "Hè Thu";
+                    tuThang = "5 - 10";
                 }
                 else
                 {
                     muaMien = "Đông xuân";
+                    tuThang = "11 - 4";
+
                 }
 
                 #region Dữ liệu gốc
@@ -1715,7 +1721,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region thông báo
                 ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(1) ?? sheetDlg.CreateRow(1), 6, $"THÔNG BÁO GIÁ BÁN LẺ TỪ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.FreeText);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(2) ?? sheetDlg.CreateRow(2), 17, $"(Từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")})", styles.FreeText);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(2) ?? sheetDlg.CreateRow(2), 18, $"(Từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")})", ExcelNPOIExtention.SetCellFreeStyle(workbook, true, HorizontalAlignment.Center, false, 16));
                 int rowIndexDl1 = 5;
                 foreach (var i in data.Dlg.Dlg1)
                 {
@@ -1747,14 +1753,13 @@ namespace DMS.BUSINESS.Services.BU
                     if (i.GoodCode == null)
                     {
                         ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, styles.TextBold);
-
                     }
                     else
                     {
                         ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 20, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col3, number);
                     }
                     rowIndexDl3++;
                 }
@@ -1762,15 +1767,59 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region BIỂU TỔNG HỢP CÁC CHỈ TIÊU DẦU SÁNG (PT bán lẻ - V2)
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(34) ?? sheetDlg.CreateRow(34), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.FreeText);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(34) ?? sheetDlg.CreateRow(34), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
                 int rowIndexDl4 = 40;
+
+                #region xuất người ký
+                if (header.SignerCode == "TongGiamDoc")
+                {
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(46) ?? sheetDlg.CreateRow(46), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(93), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(99), 9, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(92) ?? sheetDlg.CreateRow(92), 11, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(93) ?? sheetDlg.CreateRow(93), 11, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(128) ?? sheetDlg.CreateRow(128), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(129) ?? sheetDlg.CreateRow(129), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(164) ?? sheetDlg.CreateRow(164), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(165) ?? sheetDlg.CreateRow(165), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                }
+                else
+                {
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(46) ?? sheetDlg.CreateRow(46), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(47), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(48) ?? sheetDlg.CreateRow(48), 9, $"{nguoiKy.Position}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(92) ?? sheetDlg.CreateRow(92), 11, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(93) ?? sheetDlg.CreateRow(93), 11, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(94) ?? sheetDlg.CreateRow(94), 11, $"{nguoiKy.Position}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(128) ?? sheetDlg.CreateRow(128), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(129) ?? sheetDlg.CreateRow(129), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(130) ?? sheetDlg.CreateRow(130), 9, $"{nguoiKy.Position}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy.Name}", styles.TextCenter);
+
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(164) ?? sheetDlg.CreateRow(164), 9, $"Vinh, Ngày{header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(165) ?? sheetDlg.CreateRow(165), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(167) ?? sheetDlg.CreateRow(167), 9, $"{nguoiKy.Position}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                }
+                #endregion
+
                 foreach (var i in data.Dlg.Dlg4)
                 {
                     var text = i.IsBold ? styles.TextBold : styles.Text;
                     var number = i.IsBold ? styles.NumberBold : styles.Number;
                     var row = sheetDlg.GetRow(rowIndexDl4) ?? sheetDlg.CreateRow(rowIndexDl4);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 1, i.GoodName, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, styles.TextRight);
                     ExcelNPOIExtention.SetCellValueNumber(row, 3, i.Col2, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col4, number);
@@ -1779,20 +1828,39 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col7, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col8, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col9, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 13, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 14, i.Col10, number);
                     rowIndexDl4++;
                 }
                 #endregion
 
                 #region THAY ĐỔI GIÁ GIAO PT BÁN LẺ
-
+                int rowIndexDl5 = 39;
+                foreach (var i in data.Dlg.Dlg3)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl5) ?? sheetDlg.CreateRow(rowIndexDl5);
+                    if (i.GoodCode == null)
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, styles.TextBold);
+                    }
+                    else
+                    {
+                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "Không thay đổi" : "Thay đổi", text);
+                    }
+                    rowIndexDl5++;
+                }
                 #endregion
 
                 #region BIỂU TỔNG HỢP CÁC CHỈ TIÊU DẦU SÁNG (ngoài bán lẻ)
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(74) ?? sheetDlg.CreateRow(74), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.FreeText);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(74) ?? sheetDlg.CreateRow(74), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
                 int rowIndexDl6 = 81;
+               
                 foreach (var i in data.Dlg.Dlg6)
                 {
                     var text = i.IsBold ? styles.TextBold : styles.Text;
@@ -1806,7 +1874,7 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, text);
 
-                        ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col1, styles.TextCenter);
+                        ExcelNPOIExtention.SetCellValueText(row, 2, i.Col1, styles.TextRight);
                         ExcelNPOIExtention.SetCellValueNumber(row, 3, i.Col2, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col4, number);
@@ -1829,13 +1897,121 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region BIỂU TÍNH GIÁ XUẤT NỘI DỤNG
 
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(115) ?? sheetDlg.CreateRow(115), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
+                int rowIndexDl7 = 121;
+                foreach (var i in data.Dlg.Dlg7)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl7) ?? sheetDlg.CreateRow(rowIndexDl7);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, text);
+
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.Col1, styles.TextRight);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 12, i.Col5, number);
+                    
+                    rowIndexDl7++;
+                }
                 #endregion
 
                 #region BIỂU TÍNH GIÁ BÁN CHO CÔNG TY CP VẬN TẢI VÀ DỊCH VỤ PETROLIMEX NGHỆ TĨNH
 
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(153) ?? sheetDlg.CreateRow(153), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số 123 ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
+                int rowIndexDl8 = 159;
+                if (header.SignerCode == "TongGiamDoc")
+                foreach (var i in data.Dlg.Dlg8)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl8) ?? sheetDlg.CreateRow(rowIndexDl8);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.GoodName, text);
+
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.Col1, styles.TextRight);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 5, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 6, i.Col4, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 7, i.Col5, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, i.Col6, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 10, i.Col7, number);
+
+                    rowIndexDl8++;
+                }
                 #endregion
 
                 #region SO SÁNH
+
+                #region thay đổi giá giao phương thức bán lẻ
+                int rowIndexDl13 = 53;
+                var check = 159;
+                foreach (var i in data.Dlg.Dlg5)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl13) ?? sheetDlg.CreateRow(rowIndexDl13);
+                    ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+
+                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, $"Thay đổi", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+
+                    rowIndexDl13++;
+                }
+                #endregion
+
+                ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+
+                #region thay đổi lãi gộp
+                int rowIndexDl9_1 = 81;
+                int rowIndexDl9_2 = 86;
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(76) ?? sheetDlg.CreateRow(76), 20, $"Lãi gộp từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} và tính theo VCF {muaMien} từ tháng {tuThang} hàng năm", styles.TextCenter);
+
+                foreach (var i in data.Dlg.Dlg9)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    if ( i.LocalCode == "V1" )
+                    {
+                        var row = sheetDlg.GetRow(rowIndexDl9_1) ?? sheetDlg.CreateRow(rowIndexDl9_1);
+                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+
+                        rowIndexDl9_1++;
+                    }
+                    else
+                    {
+                        var row = sheetDlg.GetRow(rowIndexDl9_2) ?? sheetDlg.CreateRow(rowIndexDl9_2);
+
+                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                     
+                        rowIndexDl9_2++;
+                    }
+
+                }
+                #endregion
+
+                #region thay đổi chiết khấu
+                int rowIndexDl10 = 95;
+                foreach (var i in data.Dlg.Dlg10)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetDlg.GetRow(rowIndexDl10) ?? sheetDlg.CreateRow(rowIndexDl10);
+                    ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+
+                    rowIndexDl10++;
+                }
+                #endregion
 
                 #endregion
 
