@@ -37,11 +37,7 @@ export class CalculateDiscountComponent implements OnInit {
   filter = new BaseFilter()
   paginationResult = new PaginationResult()
 
-  statusModel = {
-    title: '',
-    des: '',
-    value: '',
-  }
+
   input: any = {
     header: {},
     inputPrice: [],
@@ -67,36 +63,7 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
-  changeStatus(value: string, status: string) {
-    switch (value) {
-      case '01':
-        this.statusModel.title = 'TRÌNH DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-        break
-      case '02':
-        this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
-        this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
-        break
-      case '03':
-        this.statusModel.title = 'PHÊ DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
-        break
-      case '04':
-        this.statusModel.title = 'TỪ CHỐI'
-        this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
-        break
-      case '05':
-        this.statusModel.title = 'HỦY TRÌNH DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
-        break
-      case '06':
-        this.statusModel.title = 'HỦY PHÊ DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-        break
-    }
-    this.input.status.code = status
-    this.isVisibleStatus = true
-  }
+ 
   genarateCreate() {
     this._service.genarateCreate().subscribe({
       next: (data) => {
