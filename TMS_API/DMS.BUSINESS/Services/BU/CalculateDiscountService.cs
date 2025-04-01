@@ -13,6 +13,22 @@ using NPOI.HSSF.Record.Chart;
 using NPOI.OpenXml4Net.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
+using PROJECT.Service.Extention;
+using Aspose.Words;
+using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+using DocumentFormat.OpenXml;
+using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
+using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
+using FontSize = DocumentFormat.OpenXml.Wordprocessing.FontSize;
+using TopBorder = DocumentFormat.OpenXml.Wordprocessing.TopBorder;
+using BottomBorder = DocumentFormat.OpenXml.Wordprocessing.BottomBorder;
+using LeftBorder = DocumentFormat.OpenXml.Wordprocessing.LeftBorder;
+using RightBorder = DocumentFormat.OpenXml.Wordprocessing.RightBorder;
+using DMS.CORE.Entities.IN;
+using NPOI.XSSF.UserModel.Helpers;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -24,6 +40,11 @@ namespace DMS.BUSINESS.Services.BU
         Task Create(CalculateDiscountInputModel input);
         Task<CalculateDiscountOutputModel> CalculateDiscountOutput(string id);
         Task<string> ExportExcel(string headerId);
+        Task<string> GenarateWordTrinhKy(string headerId, string nameTeam);
+        Task<string> GenarateWord(List<string> lstCustomerChecked, string headerId);
+        Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateResultModel data);
+        Task<string> ExportExcelTrinhKy(string headerId);
+        Task<InsertModel> GetDataInput(string code);
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
@@ -332,6 +353,7 @@ namespace DMS.BUSINESS.Services.BU
                 var currentData = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var previousHeader = await _dbContext.TblBuCalculateDiscount.Where(x => x.Date < currentHeader.Date).OrderByDescending(x => x.Date).FirstOrDefaultAsync();
                 var previousData = new List<TblBuInputPrice>();
+                data.Dlg.NameOld = "";
                 if (previousHeader != null)
                 {
                     previousData = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == previousHeader.Id).ToListAsync();
@@ -516,6 +538,175 @@ namespace DMS.BUSINESS.Services.BU
                     });
                     _o2++;
                 }
+
+                // Lãi gộp
+                foreach (var g in lstGoods)
+                {
+                    var oldData = previousData.Where(x => x.GoodCode == g.Code).ToList();
+                    var k = new DlgModel
+                    {
+                        GoodCode = g.Code,
+                        LocalCode = "V1",
+                        GoodName = g.Name,
+                        Col1 = oldData.Sum(x => x.Vcf),
+                        Col2 = oldData.Sum(x => x.ThueBvmt),
+                        Col3 = oldData.Sum(x => x.L15Nbl),
+                        Col4 = oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl),
+                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * 1.1M,
+                        Col6 = oldData.Sum(x => x.GblV1 + x.ChenhLech),
+                        Col14 = oldData.Sum(x => x.FobV1),
+                        Col10 = oldData.Sum(x => x.LaiGop) == null ? 0 : oldData.Sum(x => x.LaiGop),
+                    };
+                    if (k.Col6 != 0)
+                    {
+                        k.Col7 = k.Col6 / 1.1M - k.Col2;
+                    }
+                    k.Col8 = k.Col6 - k.Col5;
+                    if (k.Col8 != 0)
+                    {
+                        k.Col9 = k.Col8 / 1.1M;
+                    }
+                    k.Col11 = k.Col1 * k.Col10 * 1.1M;
+                    k.Col13 = k.Col11 + k.Col9;
+                    k.Col12 = k.Col13 * 1.1M;
+                    k.Col15 = (k.Col12 - k.Col14) * k.Col1;
+                    k.Col16 = k.Col12 - k.Col14;
+                    data.Dlg.Dlg6Old.Add(k);
+                }
+                foreach (var g in lstGoods)
+                {
+                    var oldData = previousData.Where(x => x.GoodCode == g.Code).ToList();
+                    //var dlg1 = data.DLG.Dlg_3.Where(x => x.Code == g.Code).ToList();
+                    var k = new DlgModel
+                    {
+                        GoodCode = g.Code,
+                        LocalCode = "V2",
+                        GoodName = g.Name,
+                        Col1 = oldData.Sum(x => x.Vcf),
+                        Col2 = oldData.Sum(x => x.ThueBvmt),
+                        Col3 = oldData.Sum(x => x.L15Nbl),
+                        Col4 = oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl),
+                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * 1.1M,
+                        Col6 = oldData.Sum(x => x.GblV2),
+                        Col14 = oldData.Sum(x => x.FobV2),
+                        Col10 = oldData.Sum(x => x.LaiGop) == null ? 0 : oldData.Sum(x => x.LaiGop),
+                    };
+                    if (k.Col6 != 0)
+                    {
+                        k.Col7 = k.Col6 / 1.1M - k.Col2;
+                    }
+                    k.Col8 = k.Col6 - k.Col5;
+                    if (k.Col8 != 0)
+                    {
+                        k.Col9 = k.Col8 / 1.1M;
+                    }
+                    k.Col11 = k.Col1 * k.Col10 * 1.1M;
+                    k.Col13 = k.Col11 + k.Col9;
+                    k.Col12 = k.Col13 * 1.1M;
+                    k.Col15 = (k.Col12 - k.Col14) * k.Col1;
+                    k.Col16 = k.Col12 - k.Col14;
+                    data.Dlg.Dlg6Old.Add(k);
+
+                }
+                foreach (var g in lstGoods)
+                {
+                    var dlg_6 = data.Dlg.Dlg6;
+                    var dlg_6_Old = data.Dlg.Dlg6Old;
+                    foreach (var n in dlg_6)
+                    {
+                        if (g.Code == n.GoodCode)
+                        {
+                            var i = new DlgModel
+                            {
+                                GoodCode = g.Code,
+                                GoodName = g.Name,
+                                LocalCode = n.LocalCode,
+                                Col1 = dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == n.LocalCode).Sum(x => x.Col12),
+                                Col2 = n.Col12,
+                                Col3 = n.Col12 - dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == n.LocalCode).Sum(x => x.Col12),
+                            };
+
+                            data.Dlg.Dlg9.Add(i);
+                        }
+                    }
+                }
+
+                foreach (var g in lstGoods)
+                {
+                    var hsmh = previousData.Where(x => x.GoodCode == g.Code).ToList();
+                    var dlg_2 = data.Dlg.Dlg2;
+                    foreach (var n in dlg_2)
+                    {
+                        if (g.Code == n.GoodCode)
+                        {
+                            var i = new DlgModel
+                            {
+                                GoodCode = g.Code,
+                                GoodName = g.Name,
+                                Col1 = hsmh.Sum(x => x.GblV1 + x.ChenhLech), // lấy giá niêm yết ở kì trước
+                                Col2 = n.Col1,
+                                Col3 = n.Col1 - hsmh.Sum(x => x.GblV1 + x.ChenhLech),
+
+                                Col4 = hsmh.Sum(x => x.GblV2), // lấy giá niêm yết ở kì trước
+                                Col5 = n.Col2,
+                                Col6 = n.Col2 - hsmh.Sum(x => x.GblV2),
+                            };
+
+                            data.Dlg.DlgTDGBL.Add(i);
+                        }
+
+                    }
+                }
+
+                // Đề xuất mức giảm giá
+                foreach (var g in lstGoods)
+                {
+                    var dlg_6 = data.Dlg.Dlg6;
+                    var dlg_6_Old = data.Dlg.Dlg6Old;
+
+                    foreach (var n in dlg_6)
+                    {
+                        if (g.Code == n.GoodCode && n.LocalCode == "V2")
+                        {
+                            var i = new DlgModel
+                            {
+                                GoodCode = g.Code,
+                                GoodName = g.Name,
+                                LocalCode = n.LocalCode,
+                                Col1 = dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == "V2").Sum(x => x.Col14),
+                                Col2 = n.Col14,
+                                Col3 = n.Col14 - dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == "V2").Sum(x => x.Col14),
+                            };
+                            data.Dlg.Dlg10.Add(i);
+                        }
+
+                    }
+                }
+
+                // thay đổi giá giao phương thức bán lẻ
+                foreach (var g in lstGoods)
+                {
+                    var hsmh = previousData.Where(x => x.GoodCode == g.Code).ToList();
+                    var dlg_4 = data.Dlg.Dlg4;
+                    foreach (var n in dlg_4)
+                    {
+                        if (g.Code == n.GoodCode)
+                        {
+                            var i = new DlgModel
+                            {
+                                GoodCode = g.Code,
+                                GoodName = g.Name,
+                                Col1 = hsmh.Sum(x => x.L15Blv2),
+                                Col2 = n.Col3,
+                                Col3 = n.Col3 - hsmh.Sum(x => x.L15Blv2),
+                            };
+
+                            data.Dlg.DlgTdGgptbl.Add(i);
+                        }
+
+                    }
+                }
+
                 #endregion
 
                 #region PT
@@ -2121,5 +2312,1327 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         #endregion
+
+        public async Task<string> ExportExcelTrinhKy(string headerId)
+        {
+            try
+            {
+
+                var data = await CalculateDiscountOutput(headerId);
+                var header = await _dbContext.TblBuCalculateResultList.FindAsync(headerId);
+                var model = await GetDataInput(headerId);
+                var goods = await _dbContext.TblMdGoods.ToListAsync();
+                var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
+                var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {header.FDate.Day:D2}/{header.FDate.Month:D2}/{header.FDate.Year} của Công ty Xăng dầu Nghệ An)";
+                var A24 = $" + Căn cứ Quyết định số {header.QuyetDinhSo} ngày {header.FDate.Day:D2}/{header.FDate.Month:D2}/{header.FDate.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
+                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ 15 giờ 00 ngày {header.FDate.Day} tháng {header.FDate.Month} năm {header.FDate.Year}";
+                // 1. Đường dẫn file gốc
+                var filePathTemplate = Path.Combine(Directory.GetCurrentDirectory(), "Template", "TempTrinhKy", "KeKhaiGiaChiTiet.xlsx");
+
+                // 2. Tạo thư mục lưu file
+                var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+                if (!Directory.Exists(folderName))
+                {
+                    Directory.CreateDirectory(folderName);
+                }
+
+                // 3. Tạo tên file mới
+                var fileName = $"{DateTime.Now:ddMMyyyy_HHmmss}_KeKhaiGiaChiTiet.xlsx";
+                var fullPath = Path.Combine(folderName, fileName);
+
+                // 4. Copy file từ Template sang Upload
+                File.Copy(filePathTemplate, fullPath, true);
+
+                // 5. Mở file để sửa
+                IWorkbook workbook;
+
+                using (var fs = new FileStream(fullPath, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    workbook = new XSSFWorkbook(fs);
+                    ISheet sheet = workbook.GetSheetAt(0);
+                    IRow rowA5 = sheet.GetRow(4);
+                    ICell cellA5 = rowA5?.GetCell(0);
+
+                    if (cellA5 != null)
+                    {
+                        cellA5.SetCellValue(A5);
+                    }
+
+                    IRow rowA24 = sheet.GetRow(23);
+                    ICell cellA24 = rowA24?.GetCell(0);
+
+                    if (cellA24 != null)
+                    {
+                        cellA24.SetCellValue(A24);
+                    }
+
+                    IRow rowB25 = sheet.GetRow(24);
+                    ICell cellB25 = rowB25?.GetCell(1);
+
+                    if (cellB25 != null)
+                    {
+                        cellB25.SetCellValue(B25);
+                    }
+                    int rowIndex = 10; // Bắt đầu từ row 11 (index = 10)
+                    foreach (var item in data.Dlg.DlgTDGBL)
+                    {
+                        IRow row = sheet.GetRow(rowIndex); // Chỉ lấy row, không cần CreateRow
+                        if (row != null && !item.GoodCode.Trim().Equals("701001", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // B11 -> colA
+                            ICell cellB = row.GetCell(1);
+                            if (cellB != null)
+                            {
+                                cellB.SetCellValue(item.GoodName);
+                            }
+
+                            // E11 -> col1
+                            ICell cellE = row.GetCell(4);
+                            if (cellE != null)
+                            {
+                                cellE.SetCellValue((double)item.Col1);
+                            }
+
+                            // F11 -> col2
+                            ICell cellF = row.GetCell(5);
+                            if (cellF != null)
+                            {
+                                cellF.SetCellValue((double)item.Col2);
+                            }
+
+                            // G11 -> tangGiam1_2
+                            ICell cellG = row.GetCell(6);
+                            if (cellG != null)
+                            {
+                                cellG.SetCellValue((double)item.Col3);
+                            }
+
+                            ICell cellH = row.GetCell(7);
+                            if (cellH != null)
+                            {
+                                if (item.Col1 != 0)
+                                {
+                                    double rateOfIncreaseAndDecrease = (double)((item.Col2 - item.Col1) / item.Col1);
+                                    cellH.SetCellValue(rateOfIncreaseAndDecrease);
+                                }
+                                else
+                                {
+                                    cellH.SetCellValue(0);
+                                }
+                            }
+
+                        }
+
+                        rowIndex++;
+                    }
+
+                    int rowIndex2 = 15;
+                    foreach (var item in data.Dlg.DlgTDGBL)
+                    {
+                        IRow row = sheet.GetRow(rowIndex2); // Chỉ lấy row, không cần CreateRow
+                        if (row != null && !item.GoodCode.Trim().Equals("701001", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // B11 -> colA
+                            ICell cellB = row.GetCell(1);
+                            if (cellB != null)
+                            {
+                                cellB.SetCellValue(item.GoodName);
+                            }
+
+                            // E11 -> col1
+                            ICell cellE = row.GetCell(4);
+                            if (cellE != null)
+                            {
+                                cellE.SetCellValue((double)item.Col3);
+                            }
+
+                            // F11 -> col2
+                            ICell cellF = row.GetCell(5);
+                            if (cellF != null)
+                            {
+                                cellF.SetCellValue((double)item.Col4);
+                            }
+
+                            // G11 -> tangGiam1_2
+                            ICell cellG = row.GetCell(6);
+                            if (cellG != null)
+                            {
+                                cellG.SetCellValue((double)item.Col3);
+                            }
+
+                            ICell cellH = row.GetCell(7);
+                            if (cellH != null)
+                            {
+                                if (item.Col3 != 0)
+                                {
+                                    double rateOfIncreaseAndDecrease = (double)((item.Col4 - item.Col3) / item.Col3);
+                                    cellH.SetCellValue(rateOfIncreaseAndDecrease);
+                                }
+                                else
+                                {
+                                    cellH.SetCellValue(0);
+                                }
+                            }
+
+                        }
+
+                        rowIndex2++;
+                    }
+
+                    ISheet sheetCheck = workbook.GetSheetAt(0);
+                    IRow rowCheck = sheetCheck.GetRow(4);
+                    ICell cellCheck = rowCheck?.GetCell(0);
+                    Console.WriteLine($"Giá trị trước khi lưu file: {cellCheck?.StringCellValue}");
+
+                    // Ghi file
+                    using (var fsOut = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
+                    {
+                        workbook.Write(fsOut);
+                        Console.WriteLine("Ghi file thành công");
+                    }
+                    workbook.Close();
+                    return $"{folderName}/{fileName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<InsertModel> GetDataInput(string code)
+        {
+
+            try
+            {
+                var data = new InsertModel();
+
+                data.FOB = await _dbContext.TbLInCustomerFob.Where(x => x.HeaderCode == code).ToListAsync();
+                if (data.FOB.Count == 0)
+                {
+                    var lstCustomer = await _dbContext.TblMdCustomer.Where(x => x.IsActive == true && x.Fob > 0).ToListAsync();
+                    if (lstCustomer.Count > 0)
+                    {
+                        var obj = new InsertModel();
+                        foreach (var c in lstCustomer)
+                        {
+                            obj.FOB.Add(new TbLInCustomerFob
+                            {
+                                Code = Guid.NewGuid().ToString(),
+                                HeaderCode = code,
+                                CustomerName = c.Name,
+                                CustomerCode = c.Code,
+                                Fob = c.Fob,
+                                IsActive = true,
+                                CreateDate = DateTime.Now,
+                            });
+                        }
+                        _dbContext.TbLInCustomerFob.AddRange(obj.FOB);
+                        _dbContext.SaveChangesAsync();
+                        data.FOB = obj.FOB;
+                    }
+                }
+
+                data.Header = await _dbContext.TblBuCalculateResultList.FindAsync(code);
+                data.HS1 = await _dbContext.TblInHeSoMatHang.Where(x => x.HeaderCode == code).ToListAsync();
+                data.HS2 = await _dbContext.TblInVinhCuaLo.Where(x => x.HeaderCode == code).ToListAsync();
+                data.Status.Code = "01";
+                return data;
+            }
+            catch (Exception ex)
+            {
+
+                return new InsertModel();
+            }
+        }
+
+        public async Task<string> GenarateWordTrinhKy(string headerId, string nameTemp)
+        {
+            #region Tạo 1 file word mới từ file template    
+            var filePathTemplate = Directory.GetCurrentDirectory() + $"/Template/TempTrinhKy/{nameTemp}.docx";
+            var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+            if (!Directory.Exists(folderName))
+            {
+                Directory.CreateDirectory(folderName);
+            }
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = $"{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}_{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}_{nameTemp}.docx";
+            var fullPath = Path.Combine(pathToSave, fileName);
+            File.Copy(filePathTemplate, fullPath, true);
+            #endregion
+
+            #region Lấy các text element
+            List<string> lstTextElement = new List<string>();
+            WordDocumentService wordDocumentService = new WordDocumentService();
+            using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+            {
+                lstTextElement = wordDocumentService.FindTextElement(doc);
+                lstTextElement = lstTextElement.Distinct().ToList();
+            }
+            #endregion
+
+            #region Fill dữ liệu
+            var data = await CalculateDiscountOutput(headerId);
+
+            var header = await _dbContext.TblBuCalculateResultList.FindAsync(headerId);
+            var model = await GetDataInput(headerId);
+            var goods = await _dbContext.TblMdGoods.ToListAsync();
+            var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
+            var f_date = $"{header.FDate.Day:D2} tháng {header.FDate.Month:D2} năm {header.FDate.Year}";
+            var date = header.FDate.ToString("dd/MM/yyyy");
+            var f_date_hour = $"kể từ {header.FDate.Hour:D2} giờ {header.FDate.Minute:D2} ngày {header.FDate.Day:D2} tháng {header.FDate.Month:D2} năm {header.FDate.Year}";
+
+            var OldCalculate = await _dbContext.TblBuCalculateResultList
+                                    .Where(x => x.FDate < header.FDate)
+                                    .Where(x => x.Status == "04")
+                                    .OrderByDescending(x => x.FDate)
+                                    .FirstOrDefaultAsync();
+            var model_Old = await GetDataInput(OldCalculate.Code);
+            var data__DLG_DLG_2_Old = new List<DLG_2>();
+            var dataVCL = await _dbContext.TblInVinhCuaLo.Where(x => x.HeaderCode == OldCalculate.Code).ToListAsync();
+            if (dataVCL.Count() == 0)
+            {
+                return "lỗi k có dữ liệu dataVCL hoặc dataHSMH";
+            }
+            foreach (var g in goods)
+            {
+                var vcl = dataVCL.Where(x => x.GoodsCode == g.Code).ToList();
+
+                data__DLG_DLG_2_Old.Add(new DLG_2
+                {
+                    Code = g.Code,
+                    Col1 = g.Name,
+                    Col2 = vcl.Sum(x => x.GblV2),
+                });
+
+            }
+
+            TableCell CreateCell(string text, bool isBold = true, int fontSize = 26, bool isCenter = true, string width = "2400", int? gridSpan = null, int v = 0)
+            {
+                Run run = new Run(new Text(text));
+
+                RunProperties runProperties = new RunProperties(
+                    new RunFonts()
+                    {
+                        Ascii = "Times New Roman",
+                        HighAnsi = "Times New Roman",
+                        ComplexScript = "Times New Roman"
+                    },
+                    new FontSize() { Val = new StringValue(fontSize.ToString()) }
+                );
+
+                if (isBold)
+                {
+                    runProperties.Append(new Bold());
+                }
+
+                run.RunProperties = runProperties;
+
+                Paragraph paragraph = new Paragraph(run);
+
+                if (isCenter)
+                {
+                    paragraph.ParagraphProperties = new ParagraphProperties(
+                        new Justification() { Val = JustificationValues.Center }
+                    );
+                }
+
+                TableCellProperties cellProperties = new TableCellProperties(
+                    new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center }
+                );
+
+                if (!string.IsNullOrEmpty(width))
+                {
+                    cellProperties.Append(new TableCellWidth() { Width = width, Type = TableWidthUnitValues.Dxa });
+                }
+
+                // Nếu có gridSpan, áp dụng thuộc tính gộp ô
+                if (gridSpan.HasValue && gridSpan > 1)
+                {
+                    cellProperties.Append(new GridSpan() { Val = gridSpan });
+                }
+
+                TableCell cell = new TableCell();
+                cell.Append(cellProperties);
+                cell.Append(paragraph);
+
+                return cell;
+            }
+
+            #region fill dữ liệu file
+            if (nameTemp == "CongDienKKGiaBanLe")
+            {
+                var sortedHS2 = model.HS2.OrderBy(x => int.Parse(x.GoodsCode)).ToList();
+                var dlg1 = data.Dlg.Dlg1;
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                var text = $"ngày {header.FDate.Day} tháng {header.FDate.Month} năm {header.FDate.Year}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, text);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo ?? "");
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                            case "##TABLE_TT@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                               .FirstOrDefault(p => p.InnerText.Contains("##TABLE_TT@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    DocumentFormat.OpenXml.Wordprocessing.TableProperties tblProperties = new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                       new TableCellMarginDefault(
+                                           new LeftMargin() { Width = "115" },
+                                           new RightMargin() { Width = "115" },
+                                           new TopMargin() { Width = "50" },
+                                           new BottomMargin() { Width = "50" }
+
+                                       )
+                                   );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Gendata table
+                                    var o = 1;
+                                    var goodsList = goods.Where(x => x.IsActive == true)
+                                                         .OrderByDescending(x => x.ThueBvmt)
+                                                         .ToList();
+                                    foreach (var i in goodsList)
+                                    {
+                                        var HS2Item = model.HS2.FirstOrDefault(x => x.GoodsCode == i.Code);
+                                        if (HS2Item != null)
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell("+ " + i.Name, true, 26, false, "3500"));
+                                            row.Append(CreateCell(":", false, 26, true, "1"));
+                                            row.Append(CreateCell(HS2Item.Gny.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+                                    #endregion
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+                            case "##TABLE_VCL@@":
+                                Paragraph paragraph2 = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE_VCL@@"));
+                                if (paragraph2 != null)
+                                {
+                                    Table table = new Table();
+                                    DocumentFormat.OpenXml.Wordprocessing.TableProperties tblProperties = new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                       new TableCellMarginDefault(
+                                           new LeftMargin() { Width = "115" },
+                                           new RightMargin() { Width = "115" },
+                                           new TopMargin() { Width = "50" },
+                                           new BottomMargin() { Width = "50" }
+
+                                       )
+                                   );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Gendata table
+                                    var o = 1;
+                                    foreach (var i in data.Dlg.Dlg2)
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell("+ " + i.Col1, true, 26, false, "3500"));
+                                            row.Append(CreateCell(":", false, 26, true, "1"));
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+
+                                    #endregion
+
+                                    paragraph2.Parent.InsertAfter(table, paragraph2);
+                                    paragraph2.Remove();
+                                }
+                                break;
+                        }
+                    }
+                }
+                //}
+
+                //if (code != lstCustomerChecked.LastOrDefault())
+                //{
+                //    AppendWordFilesToNewDocument(filePathTemplate, fullPath);
+                //}
+            }
+
+            else if (nameTemp == "QDGNoiDung")
+            {
+                var dlg5 = data.Dlg.Dlg5;
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                            case "##TABLE_ND@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE_ND@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    TableProperties tblProperties = new TableProperties(
+                                        new TableBorders(
+                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
+                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                                        ),
+                                        new TableCellMarginDefault(
+                                            new LeftMargin() { Width = "115" },
+                                            new RightMargin() { Width = "115" },
+                                            new TopMargin() { Width = "50" },
+                                            new BottomMargin() { Width = "50" }
+                                        )
+                                    );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Header table
+                                    TableRow rowHeader = new TableRow();
+
+                                    TableCell cell1 = CreateCell("TT", true, 26, true, "1");
+                                    TableCell cell2 = CreateCell("MẶT HÀNG", true, 26, true, "3000");
+                                    TableCell cell3 = CreateCell("ĐƠN GIÁ", true, 26, true, "3000");
+                                    TableCell cell4 = CreateCell("ĐƠN VỊ TÍNH", true, 26, true, "3000");
+
+                                    rowHeader.Append(cell1);
+                                    rowHeader.Append(cell2);
+                                    rowHeader.Append(cell3);
+                                    rowHeader.Append(cell4);
+
+                                    table.Append(rowHeader);
+                                    #endregion
+
+                                    #region Gendata table
+                                    var o = 1;
+                                    foreach (var i in dlg5)
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell(i.Stt, true, 26, true, "1"));
+                                            row.Append(CreateCell(i.GoodName, true, 26, true));
+                                            row.Append(CreateCell(i.Col5.ToString("N0"), true, 26));
+                                            row.Append(CreateCell("đ/ lít thực tế", true, 26));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+                                    #endregion
+
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "QDGCtyPTS")
+            {
+                var dlg6 = data.Dlg.Dlg6;
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                            case "##TABLE_PTS@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE_PTS@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    TableProperties tblProperties = new TableProperties(
+                                        new TableBorders(
+                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
+                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                                        ),
+                                        new TableCellMarginDefault(
+                                            new LeftMargin() { Width = "115" },
+                                            new RightMargin() { Width = "115" },
+                                            new TopMargin() { Width = "50" },
+                                            new BottomMargin() { Width = "50" }
+                                        )
+                                    );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Header table
+                                    TableRow rowHeader = new TableRow();
+
+                                    TableCell cell1 = CreateCell("TT", true, 26, true, "1");
+                                    TableCell cell2 = CreateCell("MẶT HÀNG", true, 26, true, "3000");
+                                    TableCell cell3 = CreateCell("GIÁ BÁN", true, 26, true, "3000");
+                                    TableCell cell4 = CreateCell("ĐƠN VỊ TÍNH", true, 26, true, "3000");
+
+                                    rowHeader.Append(cell1);
+                                    rowHeader.Append(cell2);
+                                    rowHeader.Append(cell3);
+                                    rowHeader.Append(cell4);
+
+                                    table.Append(rowHeader);
+                                    #endregion
+
+                                    #region Gendata table
+                                    var o = 1;
+                                    foreach (var i in dlg6)
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell(i.Stt, true, 26, true, "1"));
+                                            row.Append(CreateCell(i.GoodName, true, 26, true, "3000"));
+                                            row.Append(CreateCell(i.Col6.ToString("N0"), true, 26, true, "3000"));
+                                            row.Append(CreateCell("đ/ lít thực tế", true, 26, true, "3000"));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+                                    #endregion
+
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "QDGBanBuon")
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##F_DATE_HOUR@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "MucGiamGiaNQTM")
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##F_DATE_HOUR@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "KeKhaiGia")
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "ToTrinh")
+            {
+                var dlg6 = data.Dlg.Dlg6;
+                var dlg8 = data.Dlg.Dlg8;
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##F_DATE_HOURE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                                break;
+                            case "##TABLE_LAI_GOP@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                       .FirstOrDefault(p => p.InnerText.Contains("##TABLE_LAI_GOP@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    TableProperties tblProperties = new TableProperties(
+                                        new TableBorders(
+                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
+                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                                        )
+                                    );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Header table
+
+
+                                    TableRow headerRow1 = new TableRow();
+                                    headerRow1.Append(CreateCell("So sánh lãi gộp giữa hai kỳ", true, 26, true, "2082", 4, 1));
+
+                                    TableRow headerRow2 = new TableRow();
+                                    headerRow2.Append(CreateCell("Mặt hàng", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("LG Cũ", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("LG Mới", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("Tăng/Giảm", true, 26, true, "2082"));
+
+                                    table.Append(headerRow1);
+                                    table.Append(headerRow2);
+
+                                    // Thêm dòng tiêu đề "Vùng thị trường trung tâm"
+                                    TableRow regionRow1 = new TableRow();
+                                    regionRow1.Append(CreateCell("Vùng thị trường trung tâm", true, 26, true, "2082", 4, 1));
+                                    table.Append(regionRow1);
+                                    #endregion
+
+                                    #region Gendata table                                   
+                                    foreach (var i in dlg6.Where(x => x.LocalCode == "V1"))
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
+                                            row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
+                                            table.Append(row);
+                                        }
+
+                                    }
+
+                                    // Thêm dòng tiêu đề "Các vùng thị trường còn lại"
+                                    TableRow regionRow2 = new TableRow();
+                                    regionRow2.Append(CreateCell("Các vùng thị trường còn lại", true, 26, true, "2082", 4, 1)); // Gộp 4 cột
+                                    table.Append(regionRow2);
+
+                                    // Duyệt danh sách dlg6, in từng mặt hàng thuộc vùng còn lại
+                                    foreach (var i in dlg6.Where(x => x.LocalCode == "V2"))
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
+                                            row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
+                                            table.Append(row);
+                                        }
+
+                                    }
+                                    #endregion
+
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+                            case "##TABLE_GIAM_GIA@@":
+                                Paragraph paragraph1 = body.Descendants<Paragraph>()
+                                        .FirstOrDefault(p => p.InnerText.Contains("##TABLE_GIAM_GIA@@"));
+                                if (paragraph1 != null)
+                                {
+                                    Table table = new Table();
+                                    TableProperties tblProperties = new TableProperties(
+                                        new TableBorders(
+                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
+                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                                        )
+                                    );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Header table
+                                    TableRow headerRow1 = new TableRow();
+
+                                    headerRow1.Append(CreateCell("So sánh lãi gộp giữa hai kỳ", true, 26, true, "2082", 4, 1));
+
+                                    TableRow headerRow2 = new TableRow();
+                                    headerRow2.Append(CreateCell("Mặt hàng", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("CK Cũ", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("CK Mới", true, 26, true, "2082"));
+                                    headerRow2.Append(CreateCell("Tăng/Giảm", true, 26, true, "2082"));
+
+                                    table.Append(headerRow1);
+                                    table.Append(headerRow2);
+
+                                    #endregion
+
+                                    #region Gendata table
+                                    foreach (var i in dlg8)
+                                    {
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
+                                            row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
+                                            table.Append(row);
+                                        }
+
+                                    }
+                                    #endregion
+
+                                    paragraph1.Parent.InsertAfter(table, paragraph1);
+                                    paragraph1.Remove();
+                                }
+                                break;
+                        }
+
+                    }
+                }
+            }
+
+            else if (nameTemp == "QDGBanLe")
+            {
+                var sortedHS2 = model.HS2.OrderBy(x => int.Parse(x.GoodsCode)).ToList();
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##F_DATE_HOUR@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                                break;
+                            case "##QUYET_DINH_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                            case "##TABLE_TT@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE_TT@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    DocumentFormat.OpenXml.Wordprocessing.TableProperties tblProperties = new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                       new TableCellMarginDefault(
+                                           new LeftMargin() { Width = "115" },
+                                           new RightMargin() { Width = "115" },
+                                           new TopMargin() { Width = "50" },
+                                           new BottomMargin() { Width = "50" }
+
+                                       )
+                                   );
+                                    table.AppendChild(tblProperties);
+
+                                    Console.WriteLine("Dữ liệu model đợt cũ" + model_Old.Header.Name);
+                                    #region Gendata table
+                                    var o = 1;
+                                    var goodsList = goods.Where(x => x.IsActive == true)
+                                                         .OrderByDescending(x => x.ThueBvmt)
+                                                         .ToList();
+                                    foreach (var i in goodsList)
+                                    {
+
+                                        var HS2Item = model.HS2.FirstOrDefault(x => x.GoodsCode == i.Code);
+                                        var HS2Item_Old = model_Old.HS2.FirstOrDefault(x => x.GoodsCode == i.Code);
+                                        Console.WriteLine("Dữ liệu model đợt cũ" + HS2Item_Old.Gny);
+                                        if (HS2Item != null && HS2Item_Old != null)
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell("+ " + i.Name, true, 26, false, "3500"));
+                                            row.Append(CreateCell(":", false, 26, true, "1"));
+                                            row.Append(CreateCell(HS2Item.Gny.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
+                                            row.Append(CreateCell(HS2Item.Gny != HS2Item_Old.Gny ? "Thay đổi" : "Không thay đổi", false, 26, false, "2400"));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+                                    #endregion
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+                            case "##TABLE_CL@@":
+                                Paragraph paragraph2 = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE_CL@@"));
+                                if (paragraph2 != null)
+                                {
+                                    Table table = new Table();
+                                    DocumentFormat.OpenXml.Wordprocessing.TableProperties tblProperties = new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                       new TableCellMarginDefault(
+                                           new LeftMargin() { Width = "115" },
+                                           new RightMargin() { Width = "115" },
+                                           new TopMargin() { Width = "50" },
+                                           new BottomMargin() { Width = "50" }
+
+                                       )
+                                   );
+                                    table.AppendChild(tblProperties);
+
+                                    #region Gendata table
+                                    var o = 1;
+
+                                    for (int index = 0; index < data.Dlg.Dlg2.Count; index++)
+                                    {
+                                        var i = data.Dlg.Dlg2[index];
+                                        var i_Old = data__DLG_DLG_2_Old.FirstOrDefault(x => decimal.TryParse(x.Col1, out var col1Value) && col1Value == i.Col1);
+                                        if (i.GoodCode != "701001")
+                                        {
+                                            TableRow row = new TableRow();
+                                            row.Append(CreateCell("+ " + i.Col1, true, 26, false, "3500"));
+                                            row.Append(CreateCell(":", false, 26, true, "1"));
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
+                                            row.Append(CreateCell(i.Col2 != i_Old.Col2 ? "Thay đổi" : "Không thay đổi", false, 26, false, "2400"));
+                                            table.Append(row);
+                                            o++;
+                                        }
+                                    }
+
+
+                                    #endregion
+
+                                    paragraph2.Parent.InsertAfter(table, paragraph2);
+                                    paragraph2.Remove();
+                                }
+                                break;
+                        }
+
+                    }
+                }
+            }
+            #endregion
+
+
+
+
+
+
+            #endregion
+
+            return $"{folderName}/{fileName}";
+        }
+
+        public async Task<string> GenarateWord(List<string> lstCustomerChecked, string headerId)
+        {
+            #region Tạo 1 file word mới từ file template
+            var filePathTemplate = Directory.GetCurrentDirectory() + "/Template/ThongBaoGia.docx";
+            var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+            if (!Directory.Exists(folderName))
+            {
+                Directory.CreateDirectory(folderName);
+            }
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = $"{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}_{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}_ThongBaoGia.docx";
+            var fullPath = Path.Combine(pathToSave, fileName);
+            File.Copy(filePathTemplate, fullPath, true);
+            #endregion
+
+            #region Lấy các text element
+            List<string> lstTextElement = new List<string>();
+            WordDocumentService wordDocumentService = new WordDocumentService();
+            using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+            {
+                lstTextElement = wordDocumentService.FindTextElement(doc);
+                lstTextElement = lstTextElement.Distinct().ToList();
+            }
+            #endregion
+
+            #region Fill dữ liệu 
+            var data = await CalculateDiscountOutput(headerId);
+            var header = await _dbContext.TblBuCalculateResultList.FindAsync(headerId);
+            var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).ToListAsync();
+            foreach (var code in lstCustomerChecked)
+            {
+                var d = data.Vk11Bb.Where(x => x.Col2.ToString() == code).ToList();
+                var c = await _dbContext.TblMdCustomer.FindAsync(code);
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##DATE@@":
+                                var text = $"{header.FDate.Hour}h{header.FDate.Minute} ngày {header.FDate.Day} tháng {header.FDate.Month} năm {header.FDate.Year}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, text);
+                                break;
+                            case "##COMPANY@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, c.Name);
+                                break;
+                            case "##ADDRESS@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, c.Address);
+                                break;
+                            case "##TABLE@@":
+                                Paragraph paragraph = body.Descendants<Paragraph>()
+                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE@@"));
+                                if (paragraph != null)
+                                {
+                                    Table table = new Table();
+                                    TableProperties tblProperties = new TableProperties(
+                                        new TableBorders(
+                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
+                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                                        )
+                                    );
+                                    table.AppendChild(tblProperties);
+                                    #region Header table
+                                    TableRow rowHeader = new TableRow();
+
+
+                                    TableCell CreateHeaderCell(string text, int gridSpan, int fontSize = 16)
+                                    {
+                                        TableCell cell = new TableCell();
+                                        Paragraph paragraph = new Paragraph(new Run(new Text(text)));
+                                        paragraph.ParagraphProperties = new ParagraphProperties(new Justification() { Val = JustificationValues.Center });
+                                        Run run = paragraph.Elements<Run>().First();
+                                        run.RunProperties = new RunProperties(
+                                           new Bold(),
+                                           new FontSize() { Val = new StringValue(fontSize.ToString()) }
+                                       );
+
+                                        cell.Append(paragraph);
+                                        TableCellProperties cellProperties = new TableCellProperties(
+                                            new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center }
+                                        );
+                                        if (gridSpan > 1)
+                                        {
+                                            cellProperties.Append(new GridSpan() { Val = gridSpan });
+                                        }
+                                        cell.Append(cellProperties);
+                                        return cell;
+                                    }
+
+
+                                    TableCell CreateCell(string text, bool isBold, int fontSize = 26)
+                                    {
+                                        Run run = new Run(new Text(text));
+                                        RunProperties runProperties = new RunProperties(
+                                            new FontSize() { Val = new StringValue(fontSize.ToString()) }
+                                        );
+                                        if (isBold)
+                                        {
+                                            runProperties.AppendChild(new Bold());
+                                        }
+                                        run.RunProperties = runProperties;
+                                        Paragraph paragraph = new Paragraph(run);
+                                        return new TableCell(paragraph);
+                                    }
+                                    TableCell cell1 = CreateHeaderCell("STT", 1, 26);
+                                    TableCell cell2 = CreateHeaderCell("Mặt hàng", 1, 26);
+                                    TableCell cell3 = CreateHeaderCell("Điểm giao hàng", 1, 26);
+                                    TableCell cell4 = CreateHeaderCell("Đơn giá", 2, 26);
+                                    rowHeader.Append(cell1);
+                                    rowHeader.Append(cell2);
+                                    rowHeader.Append(cell3);
+                                    rowHeader.Append(cell4);
+                                    table.Append(rowHeader);
+                                    #endregion
+
+                                    #region Gendata table
+                                    var o = 1;
+                                    foreach (var i in d)
+                                    {
+                                        var good = lstGoods.FirstOrDefault(x => x.Code == i.Col5);
+                                        TableRow row = new TableRow();
+                                        row.Append(CreateCell(o.ToString(), false, 26));
+                                        row.Append(CreateCell(good.Name, false, 26));
+                                        row.Append(CreateCell(i.Address, false, 26));
+                                        row.Append(CreateCell(i.Col8.ToString("N0"), false, 26));
+                                        row.Append(CreateCell("Đ/lít tt", false, 26));
+                                        table.Append(row);
+                                        o++;
+                                    }
+                                    #endregion
+
+                                    paragraph.Parent.InsertAfter(table, paragraph);
+                                    paragraph.Remove();
+                                }
+                                break;
+                        }
+                    }
+                }
+
+                //if (code != lstCustomerChecked.LastOrDefault())
+                //{
+                //    AppendWordFilesToNewDocument(filePathTemplate, fullPath);
+                //}
+            }
+            #endregion
+
+            return $"{folderName}/{fileName}";
+        }
+
+        public async Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateResultModel data)
+        {
+
+            if (type == "WORD")
+            {
+                var path = await GenarateWord(lstCustomerChecked, headerId);
+                _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = headerId,
+                    Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+                    Type = "docx",
+                    Path = path
+                });
+                await _dbContext.SaveChangesAsync();
+                return path;
+            }
+            //if (type == "WORDTRINHKY")
+            //{
+            //    foreach (var n in lstCustomerChecked)
+            //    {
+            //        if (n == "KeKhaiGiaChiTiet")
+            //        {
+            //            var path = await ExportExcelTrinhKy(headerId);
+            //            _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+            //            {
+            //                Code = Guid.NewGuid().ToString(),
+            //                HeaderCode = headerId,
+            //                Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+            //                Type = "xlsx",
+            //                Path = path
+            //            });
+            //            await _dbContext.SaveChangesAsync();
+            //        }
+            //        else
+            //        {
+            //            var path = await GenarateWordTrinhKy(headerId, n);
+            //            _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+            //            {
+            //                Code = Guid.NewGuid().ToString(),
+            //                HeaderCode = headerId,
+            //                Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+            //                Type = "docx",
+            //                Path = path
+            //            });
+            //            await _dbContext.SaveChangesAsync();
+            //        }
+            //    }
+            //    return null;
+            //}
+            //if (type == "EXCEL")
+            //{
+
+            //    var path = await ExportExcelPlus(headerId, data);
+            //    _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+            //    {
+            //        Code = Guid.NewGuid().ToString(),
+            //        HeaderCode = headerId,
+            //        Name = path.Replace($"Upload/", ""),
+            //        Type = "xlsx",
+            //        Path = path
+            //    });
+            //    await _dbContext.SaveChangesAsync();
+            //    return path;
+
+
+            //}
+            else
+            {
+                var w = await GenarateWord(lstCustomerChecked, headerId);
+                var pathWord = Directory.GetCurrentDirectory() + "/" + w;
+                Aspose.Words.Document doc = new Aspose.Words.Document(pathWord);
+                var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+                if (!Directory.Exists(folderName))
+                {
+                    Directory.CreateDirectory(folderName);
+                }
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var fileName = $"{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}_{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}_ThongBaoGia.pdf";
+                var fullPath = Path.Combine(pathToSave, fileName);
+                doc.Save(fullPath, SaveFormat.Pdf);
+
+                _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = headerId,
+                    Name = fileName,
+                    Type = "pdf",
+                    Path = $"{folderName}/{fileName}",
+                });
+                await _dbContext.SaveChangesAsync();
+                return $"{folderName}/{fileName}";
+            }
+        }
     }
 }
+

@@ -51,7 +51,7 @@
     <div>
         <nz-tabset [(nzSelectedIndex)]="selectedIndex">
             <!-- #region Dữ liệu gốc -->
-            <nz-tab nzTitle="Dữ liệu gốc" (click)="onClickTab('Dữ liệu gốc')">
+            <nz-tab nzTitle="Dữ liệu gốc">
                 <div class="overflow-tab" *ngIf="selectedIndex === 0">
                     <div nz-row [nzGutter]="12">
                         <div nz-col class="gutter-row" [nzSpan]="6">
@@ -455,15 +455,189 @@
                                 </tr>
                             </tbody>
                         </nz-table>
-
-
                     </div>
+                    <nz-divider [nzText]="'SO SÁNH VỚI KỲ - ' + (output.dlg?.nameOld ? output.dlg.nameOld : 'Không có đợt nào trước đó để so sánh')" nzOrientation="left"></nz-divider>
+
+                    <nz-divider nzText="THAY ĐỔI GIÁ BÁN LẺ" nzOrientation="left"></nz-divider>
+                    <div nz-row [nzGutter]="16">
+                      <div nz-col class="gutter-row" [nzSpan]="16">
+                        <div class="inner-box">
+                          <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered #dlg_tdgbl
+                            [nzData]="output.dlg.dlgTDGBL">
+                            <thead>
+                              <tr>
+                                <th class="align-center" rowspan="2">Mặt hàng</th>
+                                <th class="align-center" colSpan="3">
+                                  Thay đổi giá bán lẻ <br />
+                                  (Tp Vinh, TX Cửa Lò)
+                                </th>
+                                <th class="align-center" colSpan="3">
+                                  Thay đổi giá bán lẻ <br />
+                                  (Vùng còn lại)
+                                </th>
+                              </tr>
+                              <tr>
+                                <th class="align-center">Giá cũ</th>
+                                <th class="align-center">Giá mới</th>
+                                <th class="align-center">Tăng/Giảm</th>
+                                <th class="align-center">Giá cũ</th>
+                                <th class="align-center">Giá mới</th>
+                                <th class="align-center">Tăng/Giảm</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (d of dlg_tdgbl.data; track d) {
+                              <tr>
+                                <td>{{ d.goodName }}</td>
+                                <td class="align-right">{{ d.col1 | number }}</td>
+                                <td class="align-right">{{ d.col2 | number }}</td>
+                                <td class="align-right">
+                                  {{ d.col3 | number }}
+                                </td>
+
+                                <td class="align-right">{{ d.col4 | number }}</td>
+                                <td class="align-right">{{ d.col5 | number }}</td>
+                                <td class="align-right">
+                                  {{ d.col6 | number }}
+                                </td>
+                              </tr>
+                              }
+                            </tbody>
+                          </nz-table>
+                        </div>
+                      </div>
+                      <div nz-col class="gutter-row" [nzSpan]="8">
+                        <div class="inner-box">
+                          <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered #dlg_TdGgptbl
+                            [nzData]="output.dlg.dlgTdGgptbl">
+                            <thead>
+                              <tr>
+                                <th class="align-center" rowspan="2">Mặt hàng</th>
+                                <th class="align-center" colSpan="3">
+                                  Thay đổi giá giao <br />
+                                  phương thức bán lẻ
+                                </th>
+                              </tr>
+                              <tr>
+                                <th class="align-center">Giá cũ</th>
+                                <th class="align-center">Giá mới</th>
+                                <th class="align-center">Tăng/Giảm</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (d of dlg_TdGgptbl.data; track d) {
+                              <tr>
+                                <td>{{ d.goodName }}</td>
+                                <td class="align-right">{{ d.col1 | number }}</td>
+                                <td class="align-right">{{ d.col2 | number }}</td>
+                                <td class="align-right">
+                                  {{ d.col3 | number }}
+                                </td>
+                              </tr>
+                              }
+                            </tbody>
+                          </nz-table>
+                        </div>
+                      </div>
+                    </div>
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col class="gutter-row" [nzSpan]="12">
+                          <div class="inner-box">
+                            <nz-divider nzText="LÃI GỘP" nzOrientation="left"></nz-divider>
+                            <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered #dlgTable_7
+                              [nzData]="output.dlg.dlg9">
+                              <thead>
+                                <tr>
+                                  <th class="align-center" rowspan="2">Mặt hàng</th>
+                                  <th class="align-center" colspan="3">
+                                    So sánh lãi gộp giữa hai kỳ
+                                  </th>
+                                </tr>
+                                <tr>
+                                  <th class="align-center">LG cũ</th>
+                                  <th class="align-center">LG mới</th>
+                                  <th class="align-center">Tăng/Giảm</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td class="bold-text" style="font-weight:bold" colspan="4">Vùng thị trường trung tâm</td>
+                                </tr>
+                                @for (d of dlgTable_7.data; track d) {
+                                <tr *ngIf="d.localCode == 'V1'">
+                                  <td>{{ d.goodName }}</td>
+                                  <td class="align-right">
+                                    {{ d.col1 | number: '1.0-0' }}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ d.col2 | number: '1.0-0' }}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ d.col3 | number: '1.0-0' }}
+                                  </td>
+                                </tr>
+                                }
+                                <tr>
+                                  <td class="bold-text" style="font-weight:bold" colspan="4">Các vùng thị trường còn lại</td>
+                                </tr>
+                                @for (d of dlgTable_7.data; track d) {
+                                <tr *ngIf="d.localCode === 'V2'">
+                                  <td>{{ d.goodName }}</td>
+                                  <td class="align-right">
+                                    {{ d.col1 | number: '1.0-0' }}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ d.col2 | number: '1.0-0' }}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ d.col3 | number: '1.0-0' }}
+                                  </td>
+                                </tr>
+                                }
+                              </tbody>
+                            </nz-table>
+                          </div>
+                        </div>
+                        <div nz-col class="gutter-row" [nzSpan]="12">
+                          <div class="inner-box">
+                            <nz-divider nzText="ĐỀ XUẤT MỨC GIẢM GIÁ" nzOrientation="left"></nz-divider>
+                            <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered #dlgTable_8
+                              [nzData]="output.dlg.dlg10">
+                              <thead>
+                                <tr>
+                                  <th class="align-center" rowspan="2">Mặt hàng</th>
+                                  <th class="align-center" colspan="3">
+                                    So sánh chiết khấu giữa hai kỳ
+                                  </th>
+                                </tr>
+                                <tr>
+                                  <th class="align-center">CK cũ</th>
+                                  <th class="align-center">CK mới</th>
+                                  <th class="align-center">Tăng/Giảm</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                @for (d of dlgTable_8.data; track d) {
+                                <tr *ngIf="d.localCode == 'V2'">
+                                  <td>{{ d.goodName }}</td>
+                                  <td class="align-right">{{ d.col1 | number }}</td>
+                                  <td class="align-right">{{ d.col2 | number }}</td>
+                                  <td class="align-right">
+                                    {{ d.col3 | number }}
+                                  </td>
+                                </tr>
+                                }
+                              </tbody>
+                            </nz-table>
+                          </div>
+                        </div>
+                      </div>
                 </div>
             </nz-tab>
             <!-- #endregion Dữ liệu gốc -->
 
             <!-- #region PT -->
-            <nz-tab nzTitle="PT" (click)="onClickTab('PT')">
+            <nz-tab nzTitle="PT">
                 <div class="overflow-tab" *ngIf="selectedIndex === 1">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pt">
@@ -573,7 +747,7 @@
             <!-- #endregion PT -->
 
             <!-- #region ĐB -->
-            <nz-tab nzTitle="ĐB" (click)="onClickTab('ĐB')">
+            <nz-tab nzTitle="ĐB">
                 <div class="overflow-tab" *ngIf="selectedIndex === 2">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pt">
@@ -710,7 +884,7 @@
             <!-- #endregion ĐB -->
 
             <!-- #region FOB -->
-            <nz-tab nzTitle="FOB" (click)="onClickTab('FOB')">
+            <nz-tab nzTitle="FOB">
                 <div class="overflow-tab" *ngIf="selectedIndex === 3">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.fob">
@@ -825,7 +999,7 @@
             <!-- #endregion FOB -->
 
             <!-- #region PT09 -->
-            <nz-tab nzTitle="PT09" (click)="onClickTab('PT09')">
+            <nz-tab nzTitle="PT09">
                 <div class="overflow-tab" *ngIf="selectedIndex === 4">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pt09">
@@ -938,7 +1112,7 @@
             <!-- #endregion PT09 -->
 
             <!-- #region BBDO -->
-            <nz-tab nzTitle="BB DO" (click)="onClickTab('BB DO')">
+            <nz-tab nzTitle="BB DO">
                 <div class="overflow-tab" *ngIf="selectedIndex === 5">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.bbdo">
@@ -1021,7 +1195,7 @@
             <!-- #endregion BBDO -->
 
             <!-- #region PL1 -->
-            <nz-tab nzTitle="PL1" (click)="onClickTab('PL1')">
+            <nz-tab nzTitle="PL1">
                 <div class="overflow-tab" *ngIf="selectedIndex === 6">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pl1" style="width: 50%;">
@@ -1067,7 +1241,7 @@
             <!-- #endregion PL1 -->
 
             <!-- #region PL2 -->
-            <nz-tab nzTitle="PL2" (click)="onClickTab('PL2')">
+            <nz-tab nzTitle="PL2">
                 <div class="overflow-tab" *ngIf="selectedIndex === 7">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pl2" style="width: 50%;">
@@ -1113,7 +1287,7 @@
             <!-- #endregion PL2 -->
 
             <!-- #region PL3 -->
-            <nz-tab nzTitle="PL3" (click)="onClickTab('PL3')">
+            <nz-tab nzTitle="PL3">
                 <div class="overflow-tab" *ngIf="selectedIndex === 8">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pl3" style="width: 70%;">
@@ -1155,7 +1329,7 @@
             <!-- #endregion PL3 -->
 
             <!-- #region PL4 -->
-            <nz-tab nzTitle="PL4" (click)="onClickTab('PL4')">
+            <nz-tab nzTitle="PL4">
                 <div class="overflow-tab" *ngIf="selectedIndex === 9">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.pl1" style="width: 50%;">
@@ -1201,7 +1375,7 @@
             <!-- #endregion PL4 -->
 
             <!-- #region VK11 PT -->
-            <nz-tab nzTitle="VK11 PT" (click)="onClickTab('VK11 PT')">
+            <nz-tab nzTitle="VK11 PT">
                 <div class="overflow-tab" *ngIf="selectedIndex === 10">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.vk11Pt">
@@ -1261,7 +1435,7 @@
              <!-- #endregion VK11 PT -->
 
             <!-- #region VK11 ĐB -->
-            <nz-tab nzTitle="VK11 ĐB" (click)="onClickTab('VK11 ĐB')">
+            <nz-tab nzTitle="VK11 ĐB">
                 <div class="overflow-tab" *ngIf="selectedIndex === 11">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.vk11Db">
@@ -1321,7 +1495,7 @@
              <!-- #endregion VK11 ĐB -->
 
             <!-- #region VK11 FOB -->
-            <nz-tab nzTitle="VK11 FOB" (click)="onClickTab('VK11 FOB')">
+            <nz-tab nzTitle="VK11 FOB">
                 <div class="overflow-tab" *ngIf="selectedIndex === 12">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.vk11Fob">
@@ -1381,7 +1555,7 @@
              <!-- #endregion VK11 FOB -->
 
             <!-- #region VK11 TNPP -->
-            <nz-tab nzTitle="VK11 TNPP" (click)="onClickTab('VK11 TNPP')">
+            <nz-tab nzTitle="VK11 TNPP">
                 <div class="overflow-tab" *ngIf="selectedIndex === 13">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.vk11Tnpp">
@@ -1440,14 +1614,14 @@
              <!-- #endregion VK11 TNPP -->
 
             <!-- #region PTS -->
-            <nz-tab nzTitle="PTS" (click)="onClickTab('PTS')">
+            <nz-tab nzTitle="PTS">
                 <div class="overflow-tab" *ngIf="selectedIndex === 14">
                 </div>
             </nz-tab>
             <!-- #endregion PTS -->
 
             <!-- #region VK11 BB -->
-            <nz-tab nzTitle="VK11 BB" (click)="onClickTab('VK11 BB')">
+            <nz-tab nzTitle="VK11 BB">
                 <div class="overflow-tab" *ngIf="selectedIndex === 15">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.vk11Bb">
@@ -1503,7 +1677,7 @@
             <!-- #endregion VK11 BB -->
 
             <!-- #region Tổng hợp -->
-            <nz-tab nzTitle="Tổng hợp" (click)="onClickTab('Tổng hợp')">
+            <nz-tab nzTitle="Tổng hợp">
                 <div class="overflow-tab" *ngIf="selectedIndex === 16">
                     <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
                         [nzData]="output.summary">

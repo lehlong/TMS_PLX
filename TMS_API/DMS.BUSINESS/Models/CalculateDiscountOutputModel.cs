@@ -28,8 +28,14 @@
         public IList<DlgModel> Dlg4 { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg5 { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg6 { get; } = new List<DlgModel>();
+        public IList<DlgModel> Dlg6Old { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg7 { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg8 { get; } = new List<DlgModel>();
+        public IList<DlgModel> Dlg9 { get; } = new List<DlgModel>();
+        public IList<DlgModel> Dlg10 { get; } = new List<DlgModel>();
+        public IList<DlgModel> DlgTDGBL { get; } = new List<DlgModel>();
+        public IList<DlgModel> DlgTdGgptbl { get; } = new List<DlgModel>();
+        public string? NameOld { get; set; }
     }
 
     public class DlgModel
