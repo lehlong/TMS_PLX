@@ -37,4 +37,8 @@ export class CalculateDiscountService {
     exportExcel(id: any): Observable<any> {
         return this.commonService.get(`CalculateDiscount/ExportExcel?headerId=${id}`);
     }
+
+    ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {
+        return this.commonService.post(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
+      }
 }

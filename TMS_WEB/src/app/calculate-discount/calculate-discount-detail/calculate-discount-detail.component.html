@@ -50,7 +50,7 @@
                             <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
                             <li nz-menu-item>Xuất Word</li>
                             <li nz-menu-item>Xuất PDF</li>
-                            <li nz-menu-item>Xuất Trình ký</li>
+                            <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
                         </ul>
                     </nz-dropdown-menu>
        
@@ -1770,6 +1770,29 @@
     </div>
 </div>
 
+<!-- danh sach trình ký -->
+<nz-modal [(nzVisible)]="isVisibleLstTrinhKy" nzTitle="CHỌN TRÌNH KÝ" (nzOnCancel)="exportWordTrinhKy()"
+  (nzOnOk)="confirmExportWordTrinhKy()" nzCancelText="Đóng">
+  <ng-container *nzModalContent>
+    <nz-table #customerTable [nzData]="lstTrinhKy" nzSize="small">
+      <thead>
+        <tr>
+          <th [(nzChecked)]="checked" (nzCheckedChange)="onAllCheckedLstTrinhKy($event)"></th>
+          <td style="font-weight:bold" >Xuất trình ký</td>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of lstTrinhKy; track data) {
+        <tr *ngIf="input.header.status != '04' ? data.status == true : true">
+          <td [nzChecked]="lstTrinhKyChecked.includes(data.code)"
+            (nzCheckedChange)="onItemTrinhKyChecked(data.code, $event)"></td>
+          <td>{{ data.name }}</td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+  </ng-container>
+</nz-modal>
 
 <!-- #region Dữ liệu đầu vào -->
 <nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visibleInput" nzPlacement="right" [nzTitle]="'Tạo mới đợt tính'"

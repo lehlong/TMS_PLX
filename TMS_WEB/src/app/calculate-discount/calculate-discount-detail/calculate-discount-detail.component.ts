@@ -4,6 +4,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service';
 import { GlobalService } from '../../services/global.service';
 import { ShareModule } from '../../shared/share-module';
+import { environment } from '../../../environments/environment.prod'
 import {
   CALCULATE_RESULT_RIGHT,
   IMPORT_BATCH,
@@ -57,8 +58,26 @@ export class CalculateDiscountDetailComponent implements OnInit {
     vk11Bb: [],
     summary: [],
   }
+  checked = false
   headerId: any = '';
   signerResult: any[] = []
+  isVisibleLstTrinhKy: boolean = false
+  lstTrinhKyChecked: any[] = []
+  lstTrinhKy: any[] = [
+    {
+      code: 'CongDienKKGiaBanLe',
+      name: 'Công Điện Kiểm Kê Giá Bán Lẻ',
+      status: true,
+    },
+    { code: 'MucGiamGiaNQTM', name: 'Mức Giảm Giá NQTM', status: false },
+    { code: 'QDGBanBuon', name: 'Quyết Định Giá bán Buôn', status: false },
+    { code: 'QDGBanLe', name: 'Quyết Định Giá Bán lẻ', status: true },
+    { code: 'QDGCtyPTS', name: 'Quyết Định Công Ty PTS', status: false },
+    { code: 'QDGNoiDung', name: 'Quyết Giá Nội Dụng', status: false },
+    { code: 'ToTrinh', name: 'Tờ Trình', status: false },
+    { code: 'KeKhaiGia', name: 'Kê Khai Giá', status: true },
+    { code: 'KeKhaiGiaChiTiet', name: 'Kê Khai Giá Chi Tiết', status: true },
+  ]
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
@@ -107,6 +126,59 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+
+  exportWordTrinhKy() {
+    
+    this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
+    console.log(this.isVisibleLstTrinhKy);
+  }
+  updateTrinhKyCheckedSet(code: any, checked: boolean): void {
+    if (checked) {
+      this.lstTrinhKyChecked.push(code)
+    } else {
+      this.lstTrinhKyChecked = this.lstTrinhKyChecked.filter((x) => x != code)
+    }
+  }
+
+  onItemTrinhKyChecked(code: String, checked: boolean): void {
+    this.updateTrinhKyCheckedSet(code, checked)
+    console.log(this.lstTrinhKyChecked)
+  }
+
+  onAllCheckedLstTrinhKy(value: boolean): void {
+    this.lstTrinhKyChecked = []
+    if (value) {
+      this.lstTrinhKy.forEach((i) => {
+        this.lstTrinhKyChecked.push(i.code)
+      })
+    } else {
+      this.lstTrinhKyChecked = []
+    }
+  }
+  confirmExportWordTrinhKy() {
+    if (this.lstTrinhKyChecked.length == 0) {
+      this.message.create('warning', 'Vui lòng chọn trình ky xuất ra file')
+      return
+    } else {
+      this._service
+        .ExportWordTrinhKy(this.lstTrinhKyChecked, this.headerId)
+        .subscribe({
+          next: (data) => {
+            this.lstTrinhKyChecked = []
+            var a = document.createElement('a')
+            a.href = environment.apiUrl + data
+            a.target = '_blank'
+            a.click()
+            a.remove()
+          },
+          error: (err) => {
+            console.log(err)
+          },
+        })
+      this.lstTrinhKyChecked = []
+    }
+  }
+
   onClickTab(title: string, tab: number) {
     this.titleTab = title;
   }
