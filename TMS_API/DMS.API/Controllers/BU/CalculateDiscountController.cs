@@ -143,5 +143,25 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+
+        [HttpPost("ExportWordTrinhKy")]
+        public async Task<IActionResult> ExportWordTrinhky([FromBody] List<string> lstTrinhKyChecked, [FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GenarateFile(lstTrinhKyChecked, "WORDTRINHKY", headerId, new CalculateDiscountInputModel());
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
     }
 }

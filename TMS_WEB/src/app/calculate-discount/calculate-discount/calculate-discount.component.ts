@@ -5,6 +5,8 @@ import { GlobalService } from '../../services/global.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseFilter, PaginationResult } from '../../models/base.model';
 import { Router } from '@angular/router';
+import {FormControl } from '@angular/forms'
+import { SignerService } from '../../services/master-data/signer.service';
 
 @Component({
   selector: 'app-calculate-discount',
@@ -19,6 +21,7 @@ export class CalculateDiscountComponent implements OnInit {
     private globalService: GlobalService,
     private message: NzMessageService,
     private router: Router,
+    private _signerService: SignerService,
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -48,10 +51,12 @@ export class CalculateDiscountComponent implements OnInit {
     customerTnpp: [],
     customerBbdo: [],
   };
-
+  nguoiKyControl = new FormControl({code:"",name:"",position:""});
+  signerResult: any[] = []
+  selectedValue = {}
   ngOnInit(): void {
     this.search();
-  
+    this.getAllSigner()
   }
   search() {
     this._service.search(this.filter).subscribe({
@@ -76,7 +81,21 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
+
+  getAllSigner() {
+    this._signerService.getall().subscribe({
+      next: (data) => {
+        this.signerResult = data
+        this.selectedValue = this.signerResult.find(item => item.code === "TongGiamDoc");
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
   onCreate() {
+    this.input.header.signerCode = this.nguoiKyControl.value?.code || ''
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);

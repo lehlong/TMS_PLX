@@ -8,6 +8,8 @@ import {
   CALCULATE_RESULT_RIGHT,
   IMPORT_BATCH,
 } from '../../shared/constants/access-right.constants'
+import { SignerService } from '../../services/master-data/signer.service';
+
 @Component({
   selector: 'app-calculate-discount-detail',
   standalone: true,
@@ -56,12 +58,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
     summary: [],
   }
   headerId: any = '';
+  signerResult: any[] = []
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private router: Router,
     private route: ActivatedRoute,
+    private _signerService: SignerService,
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -137,6 +141,17 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isVisibleStatus = true
   }
 
+  getAllSigner() {
+    this._signerService.getall().subscribe({
+      next: (data) => {
+        this.signerResult = data
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
   openInput() {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
@@ -147,6 +162,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
         console.log(response)
       },
     })
+    this.getAllSigner()
   }
   onUpdateInput() {
     this._service.updateInput(this.input).subscribe({

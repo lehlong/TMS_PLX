@@ -70,9 +70,29 @@
                         [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;" (nzOnOk)="onOk($event)"></nz-date-picker>
                 </div>
             </div>
-        </div>
-
-
+            <div nz-col [nzSpan]="12">
+                <label>Người ký</label>
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="Không được để trống">
+                    <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'" [formControl]="nguoiKyControl"
+                      [(ngModel)]="selectedValue">
+            
+            
+                      <nz-option *ngFor="let item of signerResult" [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item">
+                      </nz-option>
+            
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            <div nz-col class="gutter-row" [nzSpan]="12">
+                <div class="inner-box">
+                  <label>Quyết định số</label>
+                  <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
+                </div>
+              </div>
+            </div>
+        
         <nz-tabset>
             <nz-tab nzTitle="THÔNG TIN GIÁ">
                 <nz-table nzBordered nzSize="small" [nzData]="input.inputPrice" [nzFrontPagination]="false"
