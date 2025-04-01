@@ -9,6 +9,7 @@ import {
   IMPORT_BATCH,
 } from '../../shared/constants/access-right.constants'
 import { SignerService } from '../../services/master-data/signer.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-calculate-discount-detail',
@@ -137,8 +138,23 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
         break
     }
-    this.input.status.code = status
-    this.isVisibleStatus = true
+    // this.input.status.code = status
+    // this.isVisibleStatus = true
+    Swal.fire({
+      title: this.statusModel.title,
+      text: this.statusModel.des,
+      input: 'text',
+      inputPlaceholder: 'Ý kiến',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(result.value)
+      }
+    });
+
   }
 
   getAllSigner() {
