@@ -4,7 +4,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service';
 import { GlobalService } from '../../services/global.service';
 import { ShareModule } from '../../shared/share-module';
-
+import {
+  CALCULATE_RESULT_RIGHT,
+  IMPORT_BATCH,
+} from '../../shared/constants/access-right.constants'
 @Component({
   selector: 'app-calculate-discount-detail',
   standalone: true,
@@ -17,6 +20,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   loading: boolean = false;
   visibleInput: boolean = false;
   selectedIndex : number = 0;
+  IMPORT_BATCH = IMPORT_BATCH
   input: any = {
     header: {},
     inputPrice: [],
@@ -71,6 +75,16 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.getOutput(this.headerId);
       }
     })
+    this._service.getInput(this.headerId).subscribe({
+      next: (data) => {
+        this.input = data;
+     
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+    console.log(this.input)
   }
   getOutput(id: any) {
     this._service.getOutput(id).subscribe({

@@ -3,6 +3,36 @@
         <nz-page-header nzBackIcon [nzTitle]="titleTab" class="site-page-header">
             <nz-page-header-extra>
                 <nz-space [nzWrap]="true" class="gap-[5px]">
+            <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('01', '02')"
+            [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
+            *ngIf="input.header.status == '01' || input.header.status == '03'">
+            <span nz-icon nzType="send"></span> Trình duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '06')"
+            [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="close"></span> Hủy trình duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('02', '03')"
+            [appPermission]="IMPORT_BATCH.REQUEST_IMPORT_BATCH_EDIT" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('03', '04')"
+            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="check"></span> Phê duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '07')"
+            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
+            <span nz-icon nzType="close"></span> Hủy phê duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('04', '05')"
+            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="close"></span> Từ chối
+          </button>
                     <button nzType="default" nz-button (click)="openInput()">
                         <span nz-icon nzType="right-square"></span> Dữ liệu đầu vào
                     </button>
@@ -23,7 +53,7 @@
                             <li nz-menu-item>Xuất Trình ký</li>
                         </ul>
                     </nz-dropdown-menu>
-                    
+       
                     <button nz-button nz-dropdown [nzDropdownMenu]="history">
                         <span nz-icon nzType="history"></span>
                         Lịch sử

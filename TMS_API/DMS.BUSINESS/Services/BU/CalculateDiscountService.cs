@@ -93,7 +93,7 @@ namespace DMS.BUSINESS.Services.BU
                         Id = headerId,
                         Date = DateTime.Now,
                         IsActive = true,
-                        Status = "00"
+                        Status = "01"
                     },
                     InputPrice = lstGoods.Select(g => new TblBuInputPrice
                     {
