@@ -19,6 +19,9 @@ namespace DMS.BUSINESS.Dtos.MD
 
         [Key]
         [Description("Mã")]
+        public string Id { get; set; }
+
+        [Description("Mã")]
         public string Code { get; set; }
 
         [Description("Tên")]

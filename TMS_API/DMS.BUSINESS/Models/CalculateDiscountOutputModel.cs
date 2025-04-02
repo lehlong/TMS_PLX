@@ -116,6 +116,31 @@
         public bool IsBold { get; set; } = false;
         public string Note { get; set; }
     }
+    public class Pts
+    {
+        public string Stt { get; set; }
+        public bool IsBold { get; set; } = false;
+        public string CustomerName { get; set; }
+        public string GoodsName { get; set; }
+        public string Address { get; set; }
+        public string MarketCode { get; set; }
+        public string MarketName { get; set; }
+        public decimal Col1 { get; set; }
+        public decimal Col2 { get; set; }
+        public string Col3 { get; set; }
+        public string Col4 { get; set; }
+        public string Col5 { get; set; }
+        public string Col6 { get; set; } = "L";
+        public string Col7 { get; set; }
+        public decimal Col8 { get; set; }
+        public string Col9 { get; set; } = "VND";
+        public int Col10 { get; set; } = 1;
+        public string Col11 { get; set; } = "L";
+        public string Col12 { get; set; } = "C";
+        public string Col13 { get; set; }
+        public string Col14 { get; set; }
+        public string Col15 { get; set; } = "31.12.9999";
+    }
     public class VK11Model
     {
         public string Stt { get; set; }

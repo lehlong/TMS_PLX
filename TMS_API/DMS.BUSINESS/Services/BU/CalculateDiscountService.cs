@@ -40,6 +40,8 @@ namespace DMS.BUSINESS.Services.BU
         Task<CalculateDiscountInputModel> GetInput(string id);
         Task UpdateInput(CalculateDiscountInputModel input);
         Task Create(CalculateDiscountInputModel input);
+        Task<List<TblBuHistoryAction>> GetHistoryAction(string code);
+        Task HandleQuyTrinh(QuyTrinhModel data);
         Task<CalculateDiscountOutputModel> CalculateDiscountOutput(string id);
         Task<string> ExportExcel(string headerId);
         Task<string> GenarateWordTrinhKy(string headerId, string nameTeam);
@@ -94,6 +96,7 @@ namespace DMS.BUSINESS.Services.BU
                 var lstCustomerFob = await _dbContext.TblMdCustomerFob.OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPts = await _dbContext.TblMdCustomerPts.OrderBy(x => x.Order).ToListAsync();
 
                 return new CalculateDiscountInputModel
                 {
@@ -171,6 +174,27 @@ namespace DMS.BUSINESS.Services.BU
                         Name = x.Name,
                         LocalCode = x.LocalCode,
                         MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true
+                    }).ToList(),
+                    CustomerPts = lstCustomerPts.Select(x => new TblBuInputCustomerPts
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = headerId,
+                        Code = x.Code,
+                        Name = x.Name,
                         CuLyBq = x.CuLyBq,
                         Cpccvc = x.Cpccvc,
                         Cvcbq = x.Cvcbq,
@@ -280,6 +304,7 @@ namespace DMS.BUSINESS.Services.BU
                 _dbContext.TblBuInputMarket.AddRange(input.Market);
                 _dbContext.TblBuInputCustomerDb.AddRange(input.CustomerDb);
                 _dbContext.TblBuInputCustomerPt.AddRange(input.CustomerPt);
+                _dbContext.TblBuInputCustomerPts.AddRange(input.CustomerPts);
                 _dbContext.TblBuInputCustomerFob.AddRange(input.CustomerFob);
                 _dbContext.TblBuInputCustomerTnpp.AddRange(input.CustomerTnpp);
                 _dbContext.TblBuInputCustomerBbdo.AddRange(input.CustomerBbdo);
@@ -305,6 +330,7 @@ namespace DMS.BUSINESS.Services.BU
                     Market = await _dbContext.TblBuInputMarket.Where(x => x.HeaderId == id).OrderBy(x => x.Code).ToListAsync(),
                     CustomerDb = await _dbContext.TblBuInputCustomerDb.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerPt = await _dbContext.TblBuInputCustomerPt.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
+                    CustomerPts = await _dbContext.TblBuInputCustomerPts.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerTnpp = await _dbContext.TblBuInputCustomerTnpp.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
                     CustomerBbdo = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync(),
@@ -322,15 +348,27 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                _dbContext.TblBuCalculateDiscount.Update(input.Header);
-                _dbContext.TblBuInputPrice.UpdateRange(input.InputPrice);
-                _dbContext.TblBuInputMarket.UpdateRange(input.Market);
-                _dbContext.TblBuInputCustomerDb.UpdateRange(input.CustomerDb);
-                _dbContext.TblBuInputCustomerPt.UpdateRange(input.CustomerPt);
-                _dbContext.TblBuInputCustomerFob.UpdateRange(input.CustomerFob);
-                _dbContext.TblBuInputCustomerTnpp.UpdateRange(input.CustomerTnpp);
-                _dbContext.TblBuInputCustomerBbdo.UpdateRange(input.CustomerBbdo);
-                await _dbContext.SaveChangesAsync();
+                if (input.Header.Status == "01")
+                {
+                    _dbContext.TblBuCalculateDiscount.Update(input.Header);
+                    _dbContext.TblBuInputPrice.UpdateRange(input.InputPrice);
+                    _dbContext.TblBuInputMarket.UpdateRange(input.Market);
+                    _dbContext.TblBuInputCustomerDb.UpdateRange(input.CustomerDb);
+                    _dbContext.TblBuInputCustomerPt.UpdateRange(input.CustomerPt);
+                    _dbContext.TblBuInputCustomerPts.UpdateRange(input.CustomerPts);
+                    _dbContext.TblBuInputCustomerFob.UpdateRange(input.CustomerFob);
+                    _dbContext.TblBuInputCustomerTnpp.UpdateRange(input.CustomerTnpp);
+                    _dbContext.TblBuInputCustomerBbdo.UpdateRange(input.CustomerBbdo);
+                    var h = new TblBuHistoryAction()
+                    {
+                        Code = Guid.NewGuid().ToString(),
+                        HeaderCode = input.Header.Id,
+                        Action = "Cập nhật thông tin",
+                    };
+                    _dbContext.TblBuHistoryAction.Add(h);
+
+                    await _dbContext.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -353,6 +391,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 var lstCustomerDb = await _dbContext.TblBuInputCustomerDb.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerPt = await _dbContext.TblBuInputCustomerPt.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPts = await _dbContext.TblBuInputCustomerPts.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerTnpp = await _dbContext.TblBuInputCustomerTnpp.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var lstCustomerBbdo = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
@@ -1384,6 +1423,9 @@ namespace DMS.BUSINESS.Services.BU
                 #endregion
 
                 #region PTS
+
+
+
                 #endregion
 
                 #region VK11-BB
@@ -4020,6 +4062,51 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         #endregion
+
+
+        #region xử lý quy trình xét duyệt
+
+        public async Task HandleQuyTrinh(QuyTrinhModel data)
+        {
+            try
+            {
+                data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
+                _dbContext.TblBuCalculateDiscount.Update(data.header);
+
+                var h = new TblBuHistoryAction()
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = data.header.Id,
+                    Action = data.Status.Code == "02" ? "Trình duyệt" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa" : data.Status.Code == "04" ? "Phê duyệt" : data.Status.Code == "05" ? "Từ chối" : data.Status.Code == "06" ? "Hủy trình duyệt" : "Hủy phê duyệt",
+                    Contents = data.Status.Content
+                };
+                _dbContext.TblBuHistoryAction.Add(h);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
+
+        #endregion
+
+        #region
+        public async Task<List<TblBuHistoryAction>> GetHistoryAction(string code)
+        {
+            try
+            {
+                var data = await _dbContext.TblBuHistoryAction.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new List<TblBuHistoryAction>();
+            }
+        }
+        #endregion
+
         #region history dowload file
         public async Task<List<TblBuHistoryDownload>> GetHistoryFile(string code)
         {

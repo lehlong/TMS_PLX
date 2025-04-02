@@ -36,12 +36,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
     customerTnpp: [],
     customerBbdo: [],
   };
+  dataQuyTrinh: any = {
+    header: {},
+    status:{},
+  }
   input2: any = this.input;
+
   statusModel = {
     title: '',
     des: '',
     value: '',
   }
+
   output: any = {
     dlg: {},
     pt: [],
@@ -64,6 +70,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   headerId: any = '';
   signerResult: any[] = []
   isVisibleLstTrinhKy: boolean = false
+  isVisibleHistory: boolean = false
   isVisibleEmail: boolean = false
   isVisibleSms: boolean = false
   isVisibleExport: boolean = false
@@ -71,7 +78,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstSMS: any[] = []
   lstEmail: any[] = []
   lstHistoryFile: any[] = []
-  
+  lstHistory: any[] = []
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -116,7 +123,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data;
-     
+
       },
       error: (response) => {
         console.log(response)
@@ -124,6 +131,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
     console.log(this.input)
   }
+
   getOutput(id: any) {
     this._service.getOutput(id).subscribe({
       next: (data) => {
@@ -135,6 +143,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+
   showEmailAction() {
     console.log("tc")
     this._service.Getmail(this.headerId).subscribe({
@@ -148,12 +157,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+
   removeHtmlTags(html: string): string {
     if (!html) return '';
     return html.replace(/<\/?[^>]+(>|$)/g, "");
   }
+
   showSMSAction() {
-    console.log("tc")
     this._service.GetSms(this.headerId).subscribe({
       next: (data) => {
         this.lstSMS = data
@@ -207,12 +217,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   handleCancel() {
+    this.isVisibleHistory = false
     this.isVisibleEmail = false
     this.isVisibleSms = false
     this.isVisibleExport = false
   }
   exportWordTrinhKy() {
-    
+
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
     console.log(this.isVisibleLstTrinhKy);
   }
@@ -271,6 +282,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       case '01':
         this.statusModel.title = 'TRÌNH DUYỆT'
         this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
+        this.input.header.status = "01"
         break
       case '02':
         this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
@@ -293,8 +305,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
         break
     }
-    // this.input.status.code = status
-    // this.isVisibleStatus = true
+    this.dataQuyTrinh.status.code = status
+    this.dataQuyTrinh.header = this.input.header
+    this.isVisibleStatus = true
     Swal.fire({
       title: this.statusModel.title,
       text: this.statusModel.des,
@@ -306,7 +319,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
       cancelButtonText: 'Hủy'
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(result.value)
+        this.dataQuyTrinh.status.content = result.value
+
+        console.log(this.dataQuyTrinh)
+        this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe({
+          next: (data) => {
+            window.location.reload()
+          }})
       }
     });
 
@@ -337,6 +356,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
     this.getAllSigner()
   }
+
   onUpdateInput() {
     this._service.updateInput(this.input).subscribe({
       next: (data) => {
@@ -346,12 +366,39 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+
+
+  handleQuyTrinh() {
+    this._service.HandleQuyTrinh(this.input).subscribe({
+      next: (data) => {
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
   close(): void {
     this.visibleInput = false;
   }
+
   reCalculate(){
     this.getOutput(this.headerId);
   }
+
+  showHistoryAction() {
+    this._service.GetHistoryAction(this.headerId).subscribe({
+      next: (data) => {
+        this.lstHistory = data
+        // console.log(data)
+        this.isVisibleHistory = true
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+
   exportExcel(){
     this._service.exportExcel(this.headerId).subscribe({
       next: (data) => {
@@ -362,6 +409,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+
 
   onInputNumberFormat(data: any, field: string) {
     let value = data[field];
@@ -413,7 +461,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       const index = this.input2.inputPrice.findIndex((x: any) => x.goodCode === data.goodCode);
       if (index !== -1) {
         this.input.inputPrice[index][field] = finalNumber;
-      }      
+      }
   }
 
   onKeyDownNumberOnly(event: KeyboardEvent) {
@@ -431,10 +479,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
-  
+
     const num = parseFloat(value.toString().replace(/,/g, ''));
     if (isNaN(num)) return '';
-  
+
     // Format giữ 4 chữ số sau dấu phẩy (mày có thể chỉnh lại tuỳ)
     return num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 });
   }
@@ -455,4 +503,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       });
     }
   }
+
+  cancelSendSMS() { }
+  cancelSendEmail() { }
 }

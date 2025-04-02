@@ -238,6 +238,7 @@ namespace DMS.CORE
         public DbSet<TblBuInputCustomerFob> TblBuInputCustomerFob { get; set; }
         public DbSet<TblBuInputCustomerTnpp> TblBuInputCustomerTnpp { get; set; }
         public DbSet<TblBuInputCustomerPt> TblBuInputCustomerPt { get; set; }
+        public DbSet<TblBuInputCustomerPts> TblBuInputCustomerPts { get; set; }
         public DbSet<TblBuInputCustomerBbdo> TblBuInputCustomerBbdo { get; set; }
         #endregion
     }

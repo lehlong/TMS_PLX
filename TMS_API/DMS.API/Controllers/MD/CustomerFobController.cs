@@ -3,6 +3,7 @@ using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
 using DMS.BUSINESS.Dtos.MD;
 using DMS.BUSINESS.Services.MD;
+using DMS.CORE.Entities.MD;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,10 +68,11 @@ namespace DMS.API.Controllers.MD
         //}
 
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] CustomerFobDto CustomerFob)
+        public async Task<IActionResult> Insert([FromBody] TblMdCustomerFob CustomerFob)
         {
             var transferObject = new TransferObject();
-            var result = await _service.Add(CustomerFob);
+            
+            var result = await _service.InsertData(CustomerFob);
             if (_service.Status)
             {
                 transferObject.Data = result;

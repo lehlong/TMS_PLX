@@ -15,7 +15,7 @@ namespace DMS.BUSINESS.Services.MD
     public interface ICustomerFobService : IGenericService<TblMdCustomerFob, CustomerFobDto>
     {
         Task<IList<CustomerFobDto>> GetAll(BaseMdFilter filter);
-
+        Task<TblMdCustomerFob> InsertData(TblMdCustomerFob Data);
         Task<PagedResponseDto> Search(BaseFilter filter);
         Task<byte[]> Export(BaseMdFilter filter);
     }
@@ -61,6 +61,25 @@ namespace DMS.BUSINESS.Services.MD
                 Status = false;
                 Exception = ex;
                 return null;
+            }
+        }
+
+        public async Task<TblMdCustomerFob> InsertData (TblMdCustomerFob Data)
+        {
+            try
+            {
+                Data.Id = Guid.NewGuid().ToString();
+                _dbContext.TblMdCustomerFob.AddRange(Data);
+                _dbContext.SaveChanges();
+
+                return Data;
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+                return Data;
+
             }
         }
 

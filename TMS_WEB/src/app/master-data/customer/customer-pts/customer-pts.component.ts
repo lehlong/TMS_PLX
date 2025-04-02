@@ -184,12 +184,7 @@ export class CustomerPtsComponent {
         },
       })
     } else {
-      if (this.isCodeExist(formData.code)) {
-        this.message.error(
-          `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
-        )
-        return
-      }
+
       this._service.createCustomerPts(formData).subscribe({
         next: (data) => {
           this.search()

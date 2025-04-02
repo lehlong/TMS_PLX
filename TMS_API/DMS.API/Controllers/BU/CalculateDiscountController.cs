@@ -3,6 +3,7 @@ using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
 using DMS.BUSINESS.Models;
 using DMS.BUSINESS.Services.BU;
+using DMS.CORE.Entities.BU;
 using DMS.CORE.Entities.MD;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -108,6 +109,26 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
+        [HttpPut("HandleQuyTrinh")]
+        public async Task<IActionResult> HandleQuyTrinh([FromBody] QuyTrinhModel data)
+        {
+            var transferObject = new TransferObject();
+            await _service.HandleQuyTrinh(data);
+            if (_service.Status)
+            {
+                transferObject.Status = true;
+                transferObject.MessageObject.MessageType = MessageType.Success;
+                transferObject.GetMessage("0100", _service);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("0101", _service);
+            }
+            return Ok(transferObject);
+        }
+
         [HttpGet("GetOutput")]
         public async Task<IActionResult> GetOutput([FromQuery] string id)
         {
@@ -163,6 +184,26 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+
+        [HttpGet("GetHistoryAction")]
+        [Authorize]
+        public async Task<IActionResult> GetHistoryAction([FromQuery] string code)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GetHistoryAction(code);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                //transferObject.GetMessage("2000", _service);
+            }
+            return Ok(transferObject);
+        }
+
         [HttpGet("SendMail")]
         [Authorize]
         public async Task<IActionResult> SendMail([FromQuery] string headerId)
