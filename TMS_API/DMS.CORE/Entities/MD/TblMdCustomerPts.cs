@@ -1,27 +1,21 @@
-﻿using DMS.CORE.Common;
+using DMS.CORE.Common;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_CUSTOMER_DB")]
-    public class TblMdCustomerDb : SoftDeleteEntity
+    [Table("T_MD_CUSTOMER_PTS")]
+    public class TblMdCustomerPts : SoftDeleteEntity
     {
         [Key]
+        [Column("ID", TypeName = "NVARCHAR(50)")]
+        public string Id { get; set; }
+
         [Column("CODE", TypeName = "NVARCHAR(50)")]
         public string Code { get; set; }
 
         [Column("NAME", TypeName = "NVARCHAR(1000)")]
         public string Name { get; set; }
-
-        [Column("LOCAL_CODE", TypeName = "NVARCHAR(50)")]
-        public string LocalCode { get; set; }
-
-        [Column("LOCAL2", TypeName = "NVARCHAR(500)")]
-        public string? Local2 { get; set; }
-
-        [Column("MARKET_CODE", TypeName = "NVARCHAR(50)")]
-        public string MarketCode { get; set; }
 
         [Column("CU_LY_BQ", TypeName = "DECIMAL(18,0)")]
         public decimal CuLyBq { get; set; }
@@ -31,6 +25,9 @@ namespace DMS.CORE.Entities.MD
 
         [Column("CVCBQ", TypeName = "DECIMAL(18,0)")]
         public decimal Cvcbq { get; set; }
+
+        [Column("GOODS_CODE", TypeName = "NVARCHAR(50)")]
+        public string? GoodsCode { get; set; }
 
         [Column("LVNH", TypeName = "DECIMAL(18,0)")]
         public decimal Lvnh { get; set; }

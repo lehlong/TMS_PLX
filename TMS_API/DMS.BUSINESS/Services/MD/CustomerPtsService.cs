@@ -12,29 +12,31 @@ using System.Threading.Tasks;
 
 namespace DMS.BUSINESS.Services.MD
 {
-    public interface IDeliveryGroupService : IGenericService<TblMdDeliveryGroup, DeliveryGroupDto>
+    public interface ICustomerPtsService : IGenericService<TblMdCustomerPts, CustomerPtsDto>
     {
-        Task<IList<DeliveryGroupDto>> GetAll(BaseMdFilter filter);
+        Task<IList<CustomerPtsDto>> GetAll(BaseMdFilter filter);
+
+        Task<PagedResponseDto> Search(BaseFilter filter);
         Task<byte[]> Export(BaseMdFilter filter);
     }
-    public class DeliveryGroupService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdDeliveryGroup, DeliveryGroupDto>(dbContext, mapper), IDeliveryGroupService
+    public class CustomerPtsService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdCustomerPts, CustomerPtsDto>(dbContext, mapper), ICustomerPtsService
     {
         public override async Task<PagedResponseDto> Search(BaseFilter filter)
         {
             try
             {
-                var query = _dbContext.TblMdDeliveryGroup.AsQueryable();
+                var query = _dbContext.TblMdCustomerPts.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
                     query = query.Where(x =>
-                    x.Name.Contains(filter.KeyWord));
+                    x.Code.Contains(filter.KeyWord) || x.Name.Contains(filter.KeyWord)).OrderBy(x => x.Order);
                 }
                 if (filter.IsActive.HasValue)
                 {
                     query = query.Where(x => x.IsActive == filter.IsActive);
                 }
-                return await Paging(query, filter);
+                return await Paging(query.OrderBy(x => x.Order), filter);
             }
             catch (Exception ex)
             {
@@ -43,11 +45,11 @@ namespace DMS.BUSINESS.Services.MD
                 return null;
             }
         }
-        public async Task<IList<DeliveryGroupDto>> GetAll(BaseMdFilter filter)
+        public async Task<IList<CustomerPtsDto>> GetAll(BaseMdFilter filter)
         {
             try
             {
-                var query = _dbContext.TblMdDeliveryGroup.AsQueryable();
+                var query = _dbContext.TblMdCustomerPts.AsQueryable();
                 if (filter.IsActive.HasValue)
                 {
                     query = query.Where(x => x.IsActive == filter.IsActive);
@@ -61,14 +63,15 @@ namespace DMS.BUSINESS.Services.MD
                 return null;
             }
         }
+
         public async Task<byte[]> Export(BaseMdFilter filter)
         {
             try
             {
-                var query = _dbContext.TblMdDeliveryGroup.AsQueryable();
+                var query = _dbContext.TblMdCustomerPts.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(filter.KeyWord));
+                    query = query.Where(x => x.Code.Contains(filter.KeyWord));
                 }
                 if (filter.IsActive.HasValue)
                 {

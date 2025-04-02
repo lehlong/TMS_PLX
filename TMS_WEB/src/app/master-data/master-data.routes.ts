@@ -12,11 +12,14 @@ import { MarketComponent } from './market/market.component'
 import { TermOfPaymentComponent } from './term-of-payment/term-of-payment.component'
 import { customerRoutes } from './customer/customer.routes'
 import AuthGuard from '../guards/auth.guard'
+import { DeliveryGroupComponent } from './delivery-group/delivery-group.component'
+
 export const masterDataRoutes: Routes = [
   { path: 'unit', component: UnitComponent },
   { path: 'local', component: LocalComponent },
   { path: 'area', component: AreaComponent },
   { path: 'account-type', component: AccountTypeComponent },
+  { path: 'delivery-group', component: DeliveryGroupComponent },
 
   { path: 'goods', component: GoodsComponent },
   { path: 'customer', children: customerRoutes, canActivate: [AuthGuard]},
