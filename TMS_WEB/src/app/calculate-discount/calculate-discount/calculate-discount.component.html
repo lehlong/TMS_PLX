@@ -56,7 +56,7 @@
     [nzExtra]="extra" (nzOnClose)="close()">
     <ng-container *nzDrawerContent>
         <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-            <div nz-col class="gutter-row" [nzSpan]="18">
+            <div nz-col class="gutter-row" [nzSpan]="6">
                 <div class="inner-box">
                     <label>Tên đợt tính</label>
                     <input nz-input placeholder="Nhập tên đợt tính" [(ngModel)]="input.header.name" type="text" />
@@ -66,11 +66,11 @@
             <div nz-col class="gutter-row" [nzSpan]="6">
                 <div class="inner-box">
                     <label>Ngày hiệu lực</label>
-                    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" ngModel (ngModelChange)="onChange($event)"
-                        [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;" (nzOnOk)="onOk($event)"></nz-date-picker>
+                    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="input.header.date"
+                        [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
                 </div>
             </div>
-            <div nz-col [nzSpan]="12">
+            <div nz-col [nzSpan]="6">
                 <label>Người ký</label>
                 <nz-form-item>
                   <nz-form-control nzErrorTip="Không được để trống">
@@ -85,7 +85,7 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-            <div nz-col class="gutter-row" [nzSpan]="12">
+            <div nz-col class="gutter-row" [nzSpan]="6">
                 <div class="inner-box">
                   <label>Quyết định số</label>
                   <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
@@ -95,7 +95,7 @@
         
         <nz-tabset>
             <nz-tab nzTitle="THÔNG TIN GIÁ">
-                <nz-table nzBordered nzSize="small" [nzData]="input.inputPrice" [nzFrontPagination]="false"
+                <nz-table nzBordered nzSize="small" [nzData]="input2.inputPrice" [nzFrontPagination]="false"
                     [nzShowPagination]="false">
                     <thead>
                         <tr>
@@ -116,18 +116,58 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let data of input.inputPrice; let rowIndex = index">
+                        <tr *ngFor="let data of input2.inputPrice; let rowIndex = index">
                             <td>{{ data.goodName }}</td>
-                            <td><input nz-input [(ngModel)]="data.thueBvmt" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.vcf" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.chenhLech" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.gblV1" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.gblV2" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.l15Blv2" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.l15Nbl" type="number"></td>
-                            <td><input nz-input [(ngModel)]="data.laiGop" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.fobV1" type="number" /></td>
-                            <td><input nz-input [(ngModel)]="data.fobV2" type="number" /></td>
+                            <td><input nz-input [(ngModel)]="data.thueBvmt"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'thueBvmt')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.vcf"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'vcf')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.chenhLech"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'chenhLech')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.gblV1"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'gblV1')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.gblV2"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'gblV2')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.l15Blv2"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'l15Blv2')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.l15Nbl"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'l15Nbl')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.laiGop"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'laiGop')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.fobV1"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'fobV1')"
+                                type="text" /></td>
+                            <td><input nz-input [(ngModel)]="data.fobV2"
+                                style="text-align: right;"
+                                (keydown)="onKeyDownNumberOnly($event)"
+                                (input)="onInputNumberFormat(data,'fobV2')"
+                                type="text" /></td>
                         </tr>
                     </tbody>
                 </nz-table>

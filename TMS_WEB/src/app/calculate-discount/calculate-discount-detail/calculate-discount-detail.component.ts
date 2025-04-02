@@ -36,6 +36,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     customerTnpp: [],
     customerBbdo: [],
   };
+  input2: any = this.input;
   statusModel = {
     title: '',
     des: '',
@@ -244,6 +245,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data;
+        this.input2 = structuredClone(data)
+        this.formatVcfAndBvmtData()
         this.visibleInput = true;
       },
       error: (response) => {
@@ -276,5 +279,98 @@ export class CalculateDiscountDetailComponent implements OnInit {
         console.log(response)
       },
     })
+  }
+
+  onInputNumberFormat(data: any, field: string) {
+    let value = data[field];
+    // 1. Bỏ ký tự không hợp lệ (chỉ giữ số, '-', '.')
+    value = value.replace(/[^0-9\-.]/g, '');
+
+    // 2. Đảm bảo chỉ có 1 dấu '-' và nó đứng đầu
+    const minusMatches = value.match(/-/g);
+    if (minusMatches && minusMatches.length > 1) {
+      value = value.replace(/-/g, ''); // Xoá hết
+      value = '-' + value; // Thêm 1 dấu '-' đầu tiên
+    } else if (minusMatches && !value.startsWith('-')) {
+      value = value.replace(/-/g, '');
+      value = '-' + value;
+    }
+
+    // 3. Xử lý dấu '.': chỉ cho sau '0' hoặc '-0' và duy nhất
+    const dotIndex = value.indexOf('.');
+    if (dotIndex !== -1) {
+      const beforeDot = value.substring(0, dotIndex);
+      const afterDot = value.substring(dotIndex + 1).replace(/\./g, '');
+
+      if (beforeDot === '0' || beforeDot === '-0') {
+        value = beforeDot + '.' + afterDot;
+      } else {
+        // Loại bỏ dấu '.' nếu không đúng điều kiện
+        value = beforeDot + afterDot;
+      }
+    }
+
+    // 4. Format phần nguyên với dấu ','
+    const parts = value.split('.');
+    let integerPart = parts[0].replace(/[^0-9\-]/g, ''); // giữ dấu '-'
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // 5. Ghép lại
+    let formattedValue = integerPart;
+    if (parts[1]) {
+      formattedValue += '.' + parts[1];
+    }
+
+    // 6. Cập nhật lại giá trị hiển thị
+    data[field] = formattedValue;
+    // 7. Parse về số
+    const rawNumber = formattedValue.replace(/,/g, '');
+    const numberValue = parseFloat(rawNumber);
+    const finalNumber = isNaN(numberValue) ? 0 : numberValue;
+    // 8. Update vào model chuẩn
+      const index = this.input2.inputPrice.findIndex((x: any) => x.goodCode === data.goodCode);
+      if (index !== -1) {
+        this.input.inputPrice[index][field] = finalNumber;
+      }      
+  }
+
+  onKeyDownNumberOnly(event: KeyboardEvent) {
+    const allowedKeys = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', '-', '.', // Thêm "-" và "."
+    ];
+
+    if (
+      (event.key >= '0' && event.key <= '9') || allowedKeys.includes(event.key)
+    ) {
+      return; // Cho phép số, -, .
+    } else {
+      event.preventDefault(); // Chặn ký tự khác
+    }
+  }
+  formatNumber(value: any): string {
+    if (value == null || value === '') return '';
+  
+    const num = parseFloat(value.toString().replace(/,/g, ''));
+    if (isNaN(num)) return '';
+  
+    // Format giữ 4 chữ số sau dấu phẩy (mày có thể chỉnh lại tuỳ)
+    return num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 });
+  }
+  formatVcfAndBvmtData() {
+    if (this.input2.inputPrice && Array.isArray(this.input2.inputPrice)) {
+      this.input2.inputPrice.forEach((item:any) => {
+        // Format các trường số cần format
+        item.vcf = this.formatNumber(item.vcf);
+        item.thueBvmt = this.formatNumber(item.thueBvmt);
+        item.chenhLech = this.formatNumber(item.chenhLech);
+        item.gblV1 = this.formatNumber(item.gblV1);
+        item.gblV2 = this.formatNumber(item.gblV2);
+        item.l15Blv2 = this.formatNumber(item.l15Blv2);
+        item.l15Nbl = this.formatNumber(item.l15Nbl);
+        item.laiGop = this.formatNumber(item.laiGop);
+        item.fobV1 = this.formatNumber(item.fobV1);
+        item.fobV2 = this.formatNumber(item.fobV2);
+      });
+    }
   }
 }
