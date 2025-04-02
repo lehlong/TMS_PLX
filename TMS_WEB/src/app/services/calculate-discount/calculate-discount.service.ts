@@ -53,4 +53,7 @@ export class CalculateDiscountService {
       GetSms(model: any): Observable<any> {
         return this.commonService.get(`CalculateDiscount/GetSms?headerId=${model}`)
       }
+      GetHistoryFile(code : any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/GetHistoryFile?code=${code}`)
+      }
 }

@@ -66,9 +66,12 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleLstTrinhKy: boolean = false
   isVisibleEmail: boolean = false
   isVisibleSms: boolean = false
+  isVisibleExport: boolean = false
   lstTrinhKyChecked: any[] = []
   lstSMS: any[] = []
   lstEmail: any[] = []
+  lstHistoryFile: any[] = []
+  
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -187,10 +190,26 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+  showHistoryExport() {
+    this._service.GetHistoryFile(this.headerId).subscribe({
+      next: (data) => {
+        this.lstHistoryFile = data
+        this.isVisibleExport = true
+        this.lstHistoryFile.forEach((item) => {
+          item.pathDownload = environment.apiUrl + item.path
+          item.pathView = environment.apiUrl + item.path
+        })
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
 
   handleCancel() {
     this.isVisibleEmail = false
     this.isVisibleSms = false
+    this.isVisibleExport = false
   }
   exportWordTrinhKy() {
     

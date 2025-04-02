@@ -243,5 +243,23 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+        [HttpGet("GetHistoryFile")]
+        [Authorize]
+        public async Task<IActionResult> GetHistoryFile([FromQuery] string code)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GetHistoryFile(code);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                //transferObject.GetMessage("2000", _service);
+            }
+            return Ok(transferObject);
+        }
     }
 }

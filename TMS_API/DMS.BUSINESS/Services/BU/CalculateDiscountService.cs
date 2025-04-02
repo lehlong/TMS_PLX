@@ -30,6 +30,7 @@ using RightBorder = DocumentFormat.OpenXml.Wordprocessing.RightBorder;
 using DMS.CORE.Entities.IN;
 using NPOI.XSSF.UserModel.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using NPOI.SS.Formula.Functions;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -45,6 +46,7 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> GenarateWord(List<string> lstCustomerChecked, string headerId);
         Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data);
         Task<string> ExportExcelTrinhKy(string headerId);
+        Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
         Task SendSMS(string headerId);
         Task<List<TblNotifyEmail>> GetMail(string headerId);
@@ -2592,8 +2594,23 @@ namespace DMS.BUSINESS.Services.BU
                 var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
                 Directory.CreateDirectory(uploadPath);
                 var outputPath = Path.Combine(uploadPath, $"{DateTime.Now:ddMMyyyy_HHmmss}_CSTMGG.xlsx");
+                string keyword = "Upload";
+                int index = outputPath.IndexOf(keyword);
+                string Pathaddress = outputPath.Substring(index).Replace("\\","/");
+                string namePath = Pathaddress.Replace($"Upload/", "").Replace("\\","/");
+               
                 using var outFile = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
                 workbook.Write(outFile);
+
+                _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = headerId,
+                    Name = namePath,
+                    Type = "xlsx",
+                    Path = Pathaddress
+                });
+                await _dbContext.SaveChangesAsync();
 
                 return outputPath;
             }
@@ -4000,6 +4017,20 @@ namespace DMS.BUSINESS.Services.BU
                 this.Status = false;
                 this.Exception = ex;
                 return new List<TblNotifyEmail>();
+            }
+        }
+        #endregion
+        #region history dowload file
+        public async Task<List<TblBuHistoryDownload>> GetHistoryFile(string code)
+        {
+            try
+            {
+                var data = await _dbContext.TblBuHistoryDownload.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new List<TblBuHistoryDownload>();
             }
         }
         #endregion
