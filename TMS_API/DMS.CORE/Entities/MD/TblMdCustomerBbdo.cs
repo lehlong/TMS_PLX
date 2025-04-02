@@ -15,6 +15,7 @@ namespace DMS.CORE.Entities.MD
         [Key]
         [Column("ID", TypeName = "NVARCHAR(50)")]
         public string Id { get; set; }
+
         [Column("CODE", TypeName = "NVARCHAR(50)")]
         public string Code { get; set; }
 
@@ -23,8 +24,10 @@ namespace DMS.CORE.Entities.MD
 
         [Column("LOCAL_CODE", TypeName = "NVARCHAR(50)")]
         public string? LocalCode { get; set; }
+
         [Column("DELIVERY_POINT", TypeName = "NVARCHAR(500)")]
         public string? DeliveryPoint { get; set; }
+
         [Column("DELIVERY_GROUP_CODE", TypeName = "NVARCHAR(50)")]
         public string? DeliveryGroupCode { get; set; }
 

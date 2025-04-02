@@ -5,32 +5,25 @@ import { PaginationResult } from '../../../models/base.model'
 import { GlobalService } from '../../../services/global.service'
 import { MASTER_DATA_MANAGEMENT } from '../../../shared/constants'
 import { ShareModule } from '../../../shared/share-module'
-import { LocalService } from '../../../services/master-data/local.service'
 import { MarketService } from '../../../services/master-data/market.service'
+import { CustomerPtFilter } from '../../../models/master-data/customer-pt.model'
+import { CustomerPtsService } from '../../../services/master-data/customer-pts.service'
 import { TermOfPaymentService } from '../../../services/master-data/term-of-payment.service'
-import { CustomerBbdoFilter } from '../../../models/master-data/customer-bbdo.model'
-import { CustomerBbdoService } from '../../../services/master-data/customer-bbdo.service'
 import { GoodsService } from '../../../services/master-data/goods.service'
-import { DeliveryPointService } from '../../../services/master-data/delivery-point.service'
-import { DeliveryGroupService } from '../../../services/master-data/delivery-group.service'
 @Component({
-  selector: 'bbdo',
+  selector: 'pts',
   standalone: true,
   imports: [ShareModule],
-  templateUrl: './customer-bbdo.component.html',
-  styleUrl: './customer-bbdo.component.scss',
+  templateUrl: './customer-pts.component.html',
+  styleUrl: './customer-pts.component.scss',
 })
-export class CustomerBbdoComponent {
+export class CustomerPtsComponent {
   validateForm: FormGroup = this.fb.group({
+    id: [''],
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
-    marketCode: [''],
-    localCode: [''],
-    local2: [''],
-    cuLyBq: [0],
     goodsCode: [''],
-    deliveryGroupCode: [""],
-    deliveryPoint: [''],
+    cuLyBq: [0],
     cvcbq: [0],
     cpccvc: [0],
     ckXang: [0],
@@ -49,25 +42,23 @@ export class CustomerBbdoComponent {
   isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
-  filter = new CustomerBbdoFilter()
+  filter = new CustomerPtFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
   lstType: any[] = []
   data: any = []
-  localResult: any = []
+  lstGoods: any = []
   marketResult: any = []
-  lstGoods : any = []
-  lstDeliveryGroup : any = []
+
   thttLst: any = []
 
+
   constructor(
+    private _service: CustomerPtsService,
     private _thttService: TermOfPaymentService,
-    private _service: CustomerBbdoService,
-    private _localService: LocalService,
-    private _marketService: MarketService,
     private _goodsService: GoodsService,
-    private _deliveryGroupService: DeliveryGroupService,
+    private _marketService: MarketService,
     private fb: NonNullableFormBuilder,
     private globalService: GlobalService,
     private message: NzMessageService,
@@ -75,7 +66,7 @@ export class CustomerBbdoComponent {
     this.globalService.setBreadcrumb([
       {
         name: 'Danh sách khách hàng',
-        path: 'master-data/customer/db',
+        path: 'master-data/customer/pt',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -89,11 +80,9 @@ export class CustomerBbdoComponent {
 
   ngOnInit(): void {
     this.search()
-    this.getAllLocal()
+    this.getAllGoods()
     this.getAllThtt()
     this.getAllMarket()
-    this.getAllGoods()
-    this.getAllDeliveryGroup()
     this.lstType = [
       { code: 'X', name: 'Xăng' },
       { code: 'D', name: 'Dầu' }
@@ -111,7 +100,7 @@ export class CustomerBbdoComponent {
 
   search() {
     this.isSubmit = false
-    this._service.searchCustomerBbdo(this.filter).subscribe({
+    this._service.searchCustomerPts(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
         console.log(this.paginationResult);
@@ -122,7 +111,6 @@ export class CustomerBbdoComponent {
       },
     })
   }
-
 
   getAllThtt() {
     this.isSubmit = false
@@ -136,11 +124,12 @@ export class CustomerBbdoComponent {
     })
   }
 
-  getAllLocal() {
+
+  getAllGoods() {
     this.isSubmit = false
-    this._localService.getall().subscribe({
+    this._goodsService.getall().subscribe({
       next: (data) => {
-        this.localResult = data
+        this.lstGoods = data
       },
       error: (response) => {
         console.log(response)
@@ -162,33 +151,9 @@ export class CustomerBbdoComponent {
     })
   }
 
-  getAllGoods() {
-    this.isSubmit = false
-    this._goodsService.getall().subscribe({
-      next: (data) => {
-        this.lstGoods = data
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-
-  getAllDeliveryGroup() {
-    this.isSubmit = false
-    this._deliveryGroupService.getall().subscribe({
-      next: (data) => {
-        this.lstDeliveryGroup = data
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-
   exportExcel() {
     return this._service
-      .exportExcelCustomerBbdo(this.filter)
+      .exportExcelCustomerPts(this.filter)
       .subscribe((result: Blob) => {
         const blob = new Blob([result], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -210,7 +175,7 @@ export class CustomerBbdoComponent {
     if (this.edit) {
       console.log(formData);
 
-      this._service.updateCustomerBbdo(formData).subscribe({
+      this._service.updateCustomerPts(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -225,7 +190,7 @@ export class CustomerBbdoComponent {
         )
         return
       }
-      this._service.createCustomerBbdo(formData).subscribe({
+      this._service.createCustomerPts(formData).subscribe({
         next: (data) => {
           this.search()
         },
@@ -250,7 +215,7 @@ export class CustomerBbdoComponent {
   }
 
   reset() {
-    this.filter = new CustomerBbdoFilter()
+    this.filter = new CustomerPtFilter()
     this.search()
   }
 
@@ -265,7 +230,7 @@ export class CustomerBbdoComponent {
   }
 
   deleteItem(code: string | number) {
-    this._service.deleteCustomerBbdo(code).subscribe({
+    this._service.deleteCustomerPts(code).subscribe({
       next: (data) => {
         this.search()
       },
@@ -278,13 +243,10 @@ export class CustomerBbdoComponent {
   openEdit(data: any) {
     console.log(data)
     this.validateForm.setValue({
+      id: data.id,
       code: data.code,
       name: data.name,
-      localCode: data.localCode,
-      marketCode: data.marketCode,
       goodsCode: data.goodsCode,
-      deliveryGroupCode: data.deliveryGroupCode,
-      deliveryPoint: data.deliveryPoint,
       ckDau: data.ckDau,
       ckXang: data.ckXang,
       ckv2: data.ckv2,
@@ -299,7 +261,6 @@ export class CustomerBbdoComponent {
       phuongThuc: data.phuongThuc,
       thtt: data.thtt,
       adrress: data.adrress,
-      local2 : data.local2
     })
     setTimeout(() => {
       this.edit = true

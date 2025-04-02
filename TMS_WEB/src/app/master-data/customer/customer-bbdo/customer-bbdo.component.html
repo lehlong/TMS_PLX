@@ -48,7 +48,7 @@
           <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
           <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
           <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
-          <th nzAlign="center" rowspan="2" style="width: 24%;">ĐỊA CHỈ</th>
+          <th nzAlign="center" rowspan="2" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
         </tr>
         <tr>
           <th nzAlign="center">XĂNG</th>
@@ -69,15 +69,15 @@
               <span *ngIf="item.code === data.marketCode">{{ item.name }}</span>
             </span>
           </td>
-          <td nzAlign="center">{{data.cuLyBq }}</td>
-          <td nzAlign="center">{{data.cvcbq }}</td>
-          <td nzAlign="center">{{data.cpccvc }}</td>
-          <td nzAlign="center">{{data.ckXang }}</td>
-          <td nzAlign="center">{{data.ckDau }}</td>
-          <td nzAlign="center">{{data.htcvc }}</td>
-          <td nzAlign="center">{{data.httVb1370 }}</td>
-          <td nzAlign="center">{{data.ckv2 }}</td>
-          <td>{{data.adrress }}</td>
+          <td nzAlign="center">{{ data.cuLyBq }}</td>
+          <td nzAlign="center">{{ data.cvcbq }}</td>
+          <td nzAlign="center">{{ data.cpccvc }}</td>
+          <td nzAlign="center">{{ data.ckXang }}</td>
+          <td nzAlign="center">{{ data.ckDau }}</td>
+          <td nzAlign="center">{{ data.htcvc }}</td>
+          <td nzAlign="center">{{ data.httVb1370 }}</td>
+          <td nzAlign="center">{{ data.ckv2 }}</td>
+          <td>{{ data.deliveryPoint }}</td>
         </tr>
       </tbody>
     </nz-table>
@@ -125,7 +125,32 @@
         </nz-form-item>
 
         <app-input-clear nz-col nzSpan="11" placeholder="Nhập vùng thị trường" [required]="true" label="Vùng thị trường"
-        [control]="$any(validateForm).controls['local2']"></app-input-clear>
+          [control]="$any(validateForm).controls['local2']"></app-input-clear>
+      </div>
+      <div nz-row nzJustify="space-evenly">
+        <nz-form-item nz-col nzSpan="5">
+          <nz-form-label>Mặt hàng</nz-form-label>
+          <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear placeholder="Chọn mặt hàng" formControlName="goodsCode">
+              <nz-option cdkScrollable *ngFor="let item of lstGoods" [nzLabel]="item.name" [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item nz-col nzSpan="7">
+          <nz-form-label>Nhóm giao hàng</nz-form-label>
+          <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear placeholder="Chọn nhóm giao hàng" formControlName="deliveryGroupCode">
+              <nz-option cdkScrollable *ngFor="let item of lstDeliveryGroup" [nzLabel]="item.name"
+                [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <app-input-clear nz-col nzSpan="11" placeholder="Nhập điểm giao hàng" [required]="true" label="Điểm giao hàng"
+          [control]="$any(validateForm).controls['deliveryPoint']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
 
@@ -144,11 +169,11 @@
         <app-input-clear nz-col nzSpan="7" placeholder="Nhập hỗ trợ cước vận chuyển" [required]="true"
           label="Hỗ trợ cước vận chuyển" [control]="$any(validateForm).controls['htcvc']"></app-input-clear>
 
-          <app-input-clear nz-col nzSpan="8" placeholder="Nhập hỗ trợ theo VB1370/PLX" [required]="true" label="Hỗ trợ theo VB1370/PLX"
-          [control]="$any(validateForm).controls['httVb1370']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập hỗ trợ theo VB1370/PLX" [required]="true"
+          label="Hỗ trợ theo VB1370/PLX" [control]="$any(validateForm).controls['httVb1370']"></app-input-clear>
 
-        <app-input-clear nz-col nzSpan="8" placeholder="Nhập chiết khấu Vùng 2" [required]="true" label="Chiết khấu Vùng 2"
-          [control]="$any(validateForm).controls['ckv2']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập chiết khấu Vùng 2" [required]="true"
+          label="Chiết khấu Vùng 2" [control]="$any(validateForm).controls['ckv2']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
         <app-input-clear nz-col nzSpan="11" placeholder="Nhập chiết khấu xăng" [required]="true" label="Chiết khấu xăng"
@@ -158,36 +183,37 @@
           [control]="$any(validateForm).controls['ckDau']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
-        <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true"
-          label="Phương thức" [control]="$any(validateForm).controls['phuongThuc']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true" label="Phương thức"
+          [control]="$any(validateForm).controls['phuongThuc']"></app-input-clear>
 
-          <app-input-clear nz-col nzSpan="6" placeholder="Nhập lãi vay ngân hàng" [required]="true" label="Lãi vay ngân hàng"
-          [control]="$any(validateForm).controls['lvnh']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="6" placeholder="Nhập lãi vay ngân hàng" [required]="true"
+          label="Lãi vay ngân hàng" [control]="$any(validateForm).controls['lvnh']"></app-input-clear>
 
-          <nz-form-item nz-col nzSpan="11">
-            <nz-form-label>Thời hạn thanh toán</nz-form-label>
-            <nz-form-control>
-              <nz-select nzShowSearch nzAllowClear placeholder="Chọn hạn thanh toán" formControlName="thtt">
-                <nz-option cdkScrollable *ngFor="let item of thttLst" [nzLabel]="item.code + ' - '+ item.name" [nzValue]="item.code">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
+        <nz-form-item nz-col nzSpan="11">
+          <nz-form-label>Thời hạn thanh toán</nz-form-label>
+          <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear placeholder="Chọn hạn thanh toán" formControlName="thtt">
+              <nz-option cdkScrollable *ngFor="let item of thttLst" [nzLabel]="item.code + ' - '+ item.name"
+                [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
       </div>
       <div nz-row nzJustify="space-evenly" style="padding: 0 18px;">
 
-      <app-input-clear nz-col nzSpan="24" placeholder="Nhập địa chỉ" [required]="true" label="Địa chỉ"
-        [control]="$any(validateForm).controls['adrress']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="24" placeholder="Nhập địa chỉ" [required]="true" label="Địa chỉ"
+          [control]="$any(validateForm).controls['adrress']"></app-input-clear>
 
-      <nz-form-item nz-col nzSpan="24">
-        <nz-form-label>Trạng thái</nz-form-label>
-        <nz-form-control>
-          <nz-radio-group formControlName="isActive">
-            <label nz-radio [nzValue]="true">Kích hoạt</label>
-            <label nz-radio [nzValue]="false">Khoá</label>
-          </nz-radio-group>
-        </nz-form-control>
-      </nz-form-item>
+        <nz-form-item nz-col nzSpan="24">
+          <nz-form-label>Trạng thái</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="isActive">
+              <label nz-radio [nzValue]="true">Kích hoạt</label>
+              <label nz-radio [nzValue]="false">Khoá</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
       </div>
     </form>
   </ng-container>

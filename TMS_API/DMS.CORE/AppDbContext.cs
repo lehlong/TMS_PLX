@@ -134,6 +134,7 @@ namespace DMS.CORE
         public DbSet<TblMdCustomerFob> TblMdCustomerFob { get; set; }
         public DbSet<TblMdCustomerTnpp> TblMdCustomerTnpp { get; set; }
         public DbSet<TblMdCustomerBbdo> TblMdCustomerBbdo { get; set; }
+        public DbSet<TblMdCustomerPts> TblMdCustomerPts { get; set; }
 
 
 
