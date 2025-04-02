@@ -163,5 +163,85 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+        [HttpGet("SendMail")]
+        [Authorize]
+        public async Task<IActionResult> SendMail([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            await _service.SendEmail(headerId);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+        [HttpGet("SendSMS")]
+        [Authorize]
+        public async Task<IActionResult> SendSMS([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            await _service.SendSMS(headerId);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+        [HttpGet("Getmail")]
+        [Authorize]
+        public async Task<IActionResult> Getmail([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GetMail(headerId);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+        [HttpGet("GetSms")]
+        [Authorize]
+        public async Task<IActionResult> GetSms([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GetSms(headerId);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
     }
 }

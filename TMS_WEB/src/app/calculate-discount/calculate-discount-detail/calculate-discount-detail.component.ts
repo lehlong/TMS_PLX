@@ -64,7 +64,11 @@ export class CalculateDiscountDetailComponent implements OnInit {
   headerId: any = '';
   signerResult: any[] = []
   isVisibleLstTrinhKy: boolean = false
+  isVisibleEmail: boolean = false
+  isVisibleSms: boolean = false
   lstTrinhKyChecked: any[] = []
+  lstSMS: any[] = []
+  lstEmail: any[] = []
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -128,7 +132,66 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+  showEmailAction() {
+    console.log("tc")
+    this._service.Getmail(this.headerId).subscribe({
+      next: (data) => {
+        this.lstEmail = data
+        console.log(data)
+        this.isVisibleEmail = true
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+  removeHtmlTags(html: string): string {
+    if (!html) return '';
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+  }
+  showSMSAction() {
+    console.log("tc")
+    this._service.GetSms(this.headerId).subscribe({
+      next: (data) => {
+        this.lstSMS = data
+        console.log(data)
+        this.isVisibleSms = true
 
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+  confirmSendSMS() {
+    console.log("err")
+    this._service.SendSMS(this.headerId).subscribe({
+
+      next: (data) => {
+        this.message.create('success', 'Gửi mail thành công')
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+  confirmSendsMail() {
+    console.log("err")
+    this._service.SendMail(this.headerId).subscribe({
+
+      next: (data) => {
+        this.message.create('success', 'Gửi mail thành công')
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+
+  handleCancel() {
+    this.isVisibleEmail = false
+    this.isVisibleSms = false
+  }
   exportWordTrinhKy() {
     
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy

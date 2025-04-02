@@ -41,4 +41,16 @@ export class CalculateDiscountService {
     ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {
         return this.commonService.post(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
       }
+      SendMail(model: any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/SendMail?headerId=${model}`)
+      }
+      SendSMS(model: any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/SendSMS?headerId=${model}`)
+      }
+      Getmail(model: any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/Getmail?headerId=${model}`)
+      }
+      GetSms(model: any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/GetSms?headerId=${model}`)
+      }
 }

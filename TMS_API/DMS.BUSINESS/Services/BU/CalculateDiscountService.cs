@@ -45,6 +45,10 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> GenarateWord(List<string> lstCustomerChecked, string headerId);
         Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data);
         Task<string> ExportExcelTrinhKy(string headerId);
+        Task SendEmail(string headerId);
+        Task SendSMS(string headerId);
+        Task<List<TblNotifyEmail>> GetMail(string headerId);
+        Task<List<TblNotifySms>> GetSms(string headerId);
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
@@ -3891,6 +3895,110 @@ namespace DMS.BUSINESS.Services.BU
                 });
                 await _dbContext.SaveChangesAsync();
                 return $"{folderName}/{fileName}";
+            }
+        }
+        #endregion
+ 
+        #region mail ,sms
+        public async Task SendEmail(string headerId)
+
+        {
+            var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "email" && x.IsActive == true);
+            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "Mẫu email gửi đi").FirstOrDefault();
+            try
+            {
+                DateTime Date = DateTime.Now;
+                var Ngay = $"Từ {Date.Hour}h ngày {Date:dd/MM/yyyy}";
+
+
+                foreach (var item in customer)
+                {
+                    var info = new TblNotifyEmail()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = item.Value,
+                        Subject = Template.Title,
+                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay),
+                        IsSend = "N",
+                        NumberRetry = 0,
+                        HeaderId = headerId
+                    };
+                    _dbContext.TblCmNotifiEmail.Add(info);
+                }
+                _dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                this.Status = false;
+                this.Exception = ex;
+
+            }
+        }
+
+        public async Task SendSMS(string headerId)
+
+        {
+            var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "phone" && x.IsActive == true);
+            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo giá bán lẻ").FirstOrDefault();
+            try
+            {
+                DateTime Date = DateTime.Now;
+                var Ngay = $"Từ {Date.Hour}h ngày {Date:dd/MM/yyyy}";
+
+
+                foreach (var item in customer)
+                {
+                    var info = new TblNotifySms()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        PhoneNumber = item.Value,
+                        Subject = Template.Title,
+                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay),
+                        IsSend = "N",
+                        NumberRetry = 0,
+                        HeaderId = headerId
+                    };
+                    _dbContext.TblCmNotifySms.Add(info);
+                }
+                _dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                this.Status = false;
+                this.Exception = ex;
+
+            }
+        }
+
+        public async Task<List<TblNotifySms>> GetSms(string headerID)
+        {
+            try
+            {
+                var data = await _dbContext.TblCmNotifySms.Where(x => x.HeaderId == headerID).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                this.Status = false;
+                this.Exception = ex;
+                return new List<TblNotifySms>();
+            }
+        }
+
+        public async Task<List<TblNotifyEmail>> GetMail(string headerID)
+        {
+            try
+            {
+                var data = await _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == headerID).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                this.Status = false;
+                this.Exception = ex;
+                return new List<TblNotifyEmail>();
             }
         }
         #endregion
