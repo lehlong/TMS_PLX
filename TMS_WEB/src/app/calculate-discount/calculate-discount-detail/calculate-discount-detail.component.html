@@ -51,7 +51,7 @@
             <ul nz-menu>
               <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
               <li nz-menu-item (click)="exportWord()">Xuất Word</li>
-              <li nz-menu-item>Xuất PDF</li>
+              <li nz-menu-item (click)="exportPDF()">Xuất PDF</li>
               <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
             </ul>
           </nz-dropdown-menu>
@@ -1842,13 +1842,36 @@
       <thead>
         <tr>
           <th [(nzChecked)]="checked" (nzCheckedChange)="onAllChecked($event)"></th>
+          <td style="font-weight:bold">Tên khách hàng</td>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of customerTable.data; track data) {
+        <tr>
+          <td [nzChecked]="isChecked(data.code)" (nzCheckedChange)="onItemChecked(data.code, data.deliveryGroupCode, $event)">
+          </td>
+          <td>{{ data.name }}</td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+  </ng-container>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisibleCustomerPDF" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="confirmExportPDF()" nzCancelText="Đóng">
+  <ng-container *nzModalContent>
+    <nz-table #customerTable [nzData]="lstCustomer" nzSize="small">
+      <thead>
+        <tr>
+          <th [(nzChecked)]="checked" (nzCheckedChange)="onAllChecked($event)"></th>
           <th>Tên khách hàng</th>
         </tr>
       </thead>
       <tbody>
         @for (data of customerTable.data; track data) {
         <tr>
-          <td [nzChecked]="lstCustomerChecked.includes(data.code)" (nzCheckedChange)="onItemChecked(data.code, data.deliveryGroupCode, $event)">
+          <td [nzChecked]="isChecked(data.code)" (nzCheckedChange)="onItemChecked(data.code, data.deliveryGroupCode, $event)">
           </td>
           <td>{{ data.name }}</td>
         </tr>

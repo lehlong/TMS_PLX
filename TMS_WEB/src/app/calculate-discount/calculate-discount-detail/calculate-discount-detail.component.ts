@@ -100,6 +100,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   ]
   lstCustomer: any[] = []
   isVisibleCustomer: boolean = false
+  isVisibleCustomerPDF: boolean = false
   lstCustomerChecked: any[] = []
   accountGroups: any = {}
   constructor(
@@ -238,6 +239,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isVisibleSms = false
     this.isVisibleExport = false
     this.isVisibleCustomer = false
+    this.isVisibleCustomerPDF = false
   }
   exportWordTrinhKy() {
 
@@ -594,6 +596,44 @@ export class CalculateDiscountDetailComponent implements OnInit {
       next: (data) => {
         this.lstCustomer = data
         this.isVisibleCustomer = true
+      },
+    })
+  }
+  isChecked(code: string): boolean {
+    return this.lstCustomerChecked.some(item => item.code === code);
+  }
+
+    confirmExportPDF() {
+    if (this.lstCustomerChecked.length == 0) {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn khách hàng cần xuất ra file',
+      )
+      return
+    } else {
+      this._service
+        .ExportPDF(this.lstCustomerChecked, this.headerId)
+        .subscribe({
+          next: (data) => {
+            this.isVisibleCustomer = false
+            this.lstCustomerChecked = []
+            var a = document.createElement('a')
+            a.href = environment.apiUrl + data
+            a.target = '_blank'
+            a.click()
+            a.remove()
+          },
+          error: (err) => {
+            console.log(err)
+          },
+        })
+    }
+  }
+  exportPDF() {
+    this._service.GetCustomerBbdo(this.headerId).subscribe({
+      next: (data) => {
+        this.lstCustomer = data
+        this.isVisibleCustomerPDF = true
       },
     })
   }

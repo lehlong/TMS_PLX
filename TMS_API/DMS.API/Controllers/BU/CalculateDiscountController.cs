@@ -323,6 +323,27 @@ namespace DMS.API.Controllers.BU
             }
         }
 
+        [HttpPost("ExportPDF")]
+        [Authorize]
+        public async Task<IActionResult> ExportPDF([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GenarateFile([], "PDF", headerId, new CalculateDiscountInputModel(), lstCustomerChecked);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
         [HttpGet("GetCustomerBbdo")]
         [Authorize]
         public async Task<IActionResult> GetCustomerBBDO([FromQuery] string id)

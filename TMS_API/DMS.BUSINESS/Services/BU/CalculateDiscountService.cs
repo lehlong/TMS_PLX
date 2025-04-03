@@ -3961,7 +3961,7 @@ namespace DMS.BUSINESS.Services.BU
 
                                         TableCell cell1 = CreateHeaderCell("STT", 1, 2, 26, 200); // Gộp 2 hàng
                                         TableCell cell2 = CreateHeaderCell("Mặt hàng, quy cách", 1, 2, 26, 5500); // Gộp 2 hàng
-                                        TableCell cell3 = CreateHeaderCell("Đơn vị tính", 1, 2, 26, 2500); // Gộp 2 hàng
+                                        TableCell cell3 = CreateHeaderCell("Đơn vị tính", 1, 2, 26, 1500); // Gộp 2 hàng
                                         TableCell cell4 = CreateHeaderCell("Đơn giá đã có 10% VAT", 3, 1, 26, 3000); // Gộp 3 cột
 
                                         rowHeader.Append(cell1);
@@ -3972,12 +3972,12 @@ namespace DMS.BUSINESS.Services.BU
                                         TableRow rowHeader2 = new TableRow();
                                         TableCell cell1_2 = CreateHeaderCell("", -1, 1, 26,200);
                                         TableCell cell2_2 = CreateHeaderCell("", -1, 1, 26, 5500);
-                                        TableCell cell3_2 = CreateHeaderCell("", -1, 1, 26, 2500);
+                                        TableCell cell3_2 = CreateHeaderCell("", -1, 1, 26, 1500);
 
                                         // Cần phải thêm VerticalMerge để tiếp tục gộp các ô
-                                        TableCell cell4_2 = CreateHeaderCell("Giá bán lẻ Petrolimex công tại Vùng 2", 1, 1, 26, 5000);
-                                        TableCell cell5_2 = CreateHeaderCell("Chiết khấu", 1, 1, 26, 2500);
-                                        TableCell cell6_2 = CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 2500);
+                                        TableCell cell4_2 = CreateHeaderCell("Giá bán lẻ Petrolimex công tại Vùng 2", 1, 1, 26, 3000);
+                                        TableCell cell5_2 = CreateHeaderCell("Chiết khấu", 1, 1, 26, 1000);
+                                        TableCell cell6_2 = CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 1500);
 
                                         // Thiết lập VerticalMerge cho các ô trong dòng 2
                                         cell1_2.TableCellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
@@ -4004,11 +4004,11 @@ namespace DMS.BUSINESS.Services.BU
                                             {
                                                 TableRow row = new TableRow();
                                                 row.Append(CreateCell(o.ToString(), true, 26, 200));
-                                                row.Append(CreateCell(i?.GoodName, true, 26,3000));
-                                                row.Append(CreateCell("Đ/lít tt", true, 26, 3000));
-                                                row.Append(CreateCell(i?.Col6.ToString("N0"), true, 26, 5000));
-                                                row.Append(CreateCell(i?.Col14.ToString("N0"), true, 26, 3000));
-                                                row.Append(CreateCell((i.Col6 - i.Col14).ToString("N0"), true, 26, 3000));
+                                                row.Append(CreateCell(i?.GoodName, true, 26,5500));
+                                                row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
+                                                row.Append(CreateCell(i?.Col6.ToString("N0"), true, 26, 3000));
+                                                row.Append(CreateCell(i?.Col14.ToString("N0"), true, 26, 1000));
+                                                row.Append(CreateCell((i.Col6 - i.Col14).ToString("N0"), true, 26, 1500));
                                                 table.Append(row);
                                                 o++;
                                             }
@@ -4068,14 +4068,6 @@ namespace DMS.BUSINESS.Services.BU
                 if (l.code != lstCustomerChecked.LastOrDefault().code)
                 {
                     AppendWordFilesToNewDocument(filePathTemplate, fullPath);
-                    //using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
-                    //{
-                    //    MainDocumentPart mainPart = doc.MainDocumentPart;
-                    //    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
-
-                    //    // Thêm ngắt trang vào cuối body
-                    //    body.AppendChild(new Paragraph(new Run(new Break() { Type = BreakValues.Page })));
-                    //}
                 }
             }
             #endregion
