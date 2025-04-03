@@ -96,10 +96,10 @@
     </nz-page-header>
   </div>
   <div>
-    <nz-tabset [(nzSelectedIndex)]="selectedIndex">
+    <nz-tabset>
 
-      <nz-tab nzTitle="Dữ liệu gốc">
-        <div class="overflow-tab" *ngIf="selectedIndex === 0">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DLG)" nzTitle="Dữ liệu gốc">
+        <div class="overflow-tab">
           <div nz-row [nzGutter]="12">
             <div nz-col class="gutter-row" [nzSpan]="6">
               <div class="inner-box">
@@ -123,7 +123,6 @@
                     </tr>
                   </tbody>
                 </nz-table>
-
               </div>
             </div>
             <div nz-col class="gutter-row" [nzSpan]="9">
@@ -682,26 +681,26 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="PT">
-        <div class="overflow-tab" *ngIf="selectedIndex === 1">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT)" nzTitle="PT">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt">
             <thead>
               <tr>
-                <th rowspan="3">TT</th>
-                <th rowspan="3">THỊ TRƯỜNG</th>
-                <th rowspan="3">CỰ LY <br> BQ (Km)</th>
-                <th colspan="4">Lãi gộp chưa VAT</th>
-                <th colspan="3">Chi phí phát sinh chưa có VAT</th>
-                <th colspan="2">CK điều tiết <br> (-/+)</th>
-                <th colspan="8">Đề xuất mức giảm giá tại kho khách hàng</th>
-                <th colspan="4">Lợi nhuận chưa VAT</th>
+                <th rowspan="3" *ngIf="accountGroups" >TT</th>
+                <th rowspan="3" *ngIf="accountGroups" >THỊ TRƯỜNG</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'" >CỰ LY <br> BQ (Km)</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'" >Lãi gộp chưa VAT</th>
+                <th colspan="3" *ngIf="accountGroups != 'G_NV_K'" >Chi phí phát sinh chưa có VAT</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'" >CK điều tiết <br> (-/+)</th>
+                <th colspan="8" *ngIf="accountGroups != 'G_NV_K'" >Đề xuất mức giảm giá tại kho khách hàng</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'" >Lợi nhuận chưa VAT</th>
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th rowspan="2">Ron 95 III</th>
                 <th rowspan="2">E5 - Ron 92 II</th>
                 <th rowspan="2">DO 0.001S</th>
@@ -731,7 +730,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
 
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th>Có VAT</th>
                 <th>Có VAT</th>
 
@@ -752,30 +751,31 @@
                 <td *ngIf="data.isBold" nzAlign="left" colspan="31" style="font-weight: bold;">
                   {{data.marketName}}</td>
 
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
+                <td *ngIf="!data.isBold " nzAlign="center">{{ data.stt}}</td>
+                <td *ngIf="!data.isBold " nzAlign="left">{{ data.marketName }}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>               
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'">{{ data.col22 | number}}</td>
+
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
@@ -790,8 +790,8 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="ĐB">
-        <div class="overflow-tab" *ngIf="selectedIndex === 2">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DB)" nzTitle="ĐB">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt">
             <thead>
@@ -799,40 +799,40 @@
                 <th rowspan="3">TT</th>
                 <th rowspan="3">KHÁCH HÀNG</th>
                 <th rowspan="3">THỊ TRƯỜNG</th>
-                <th rowspan="3">CỰ LY <br> BQ (Km)</th>
-                <th colspan="4">Lãi gộp chưa VAT</th>
-                <th colspan="4">Chi phí phát sinh chưa có VAT</th>
-                <th rowspan="3">Hỗ trợ <br> cước v/c</th>
-                <th rowspan="3">Hỗ trợ <br> theo VB1370/PLX <br> ngày 12/6/2024</th>
-                <th colspan="2">CK điều tiết <br> (-/+)</th>
-                <th colspan="8">Đề xuất mức giảm giá tại kho khách hàng</th>
-                <th rowspan="3">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
-                <th colspan="4">Lợi nhuận chưa VAT</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CỰ LY <br> BQ (Km)</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lãi gộp chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Chi phí phát sinh chưa có VAT</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">Hỗ trợ <br> cước v/c</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">Hỗ trợ <br> theo VB1370/PLX <br> ngày 12/6/2024</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">CK điều tiết <br> (-/+)</th>
+                <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá tại kho khách hàng</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
               </tr>
               <tr>
-                <th rowspan="2">Ron 95 III</th>
-                <th rowspan="2">E5 - Ron 92 II</th>
-                <th rowspan="2">DO 0.001S</th>
-                <th rowspan="2">DO 0.05S</th>
-                <th rowspan="2">Tổng <br> chi phí</th>
-                <th rowspan="2">CP chung <br> chưa<br> cước vc</th>
-                <th rowspan="2">Cước VC <br> bình quân</th>
-                <th rowspan="2">Lãi vay <br> NH (đ/l)</th>
-                <th>Xăng</th>
-                <th>Dầu</th>
-                <th colspan="2">Ron 95 III</th>
-                <th colspan="2">E5 - Ron 92 II</th>
-                <th colspan="2">DO 0.001S</th>
-                <th colspan="2">DO 0.05S</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">Tổng <br> chi phí</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">CP chung <br> chưa<br> cước vc</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">Cước VC <br> bình quân</th>
+                <th rowspan="2"  *ngIf="accountGroups != 'G_NV_K'">Lãi vay <br> NH (đ/l)</th>
+                <th *ngIf="accountGroups != 'G_NV_K'">Xăng</th>
+                <th *ngIf="accountGroups != 'G_NV_K'">Dầu</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
-                <th rowspan="2">Ron 95 III</th>
-                <th rowspan="2">E5 - Ron 92 II</th>
-                <th rowspan="2">DO 0.001S</th>
-                <th rowspan="2">DO 0.05S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
@@ -844,7 +844,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
 
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th>Có VAT</th>
                 <th>Có VAT</th>
 
@@ -867,51 +867,51 @@
                 <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
 
-                <td *ngIf="!data.isBold && data.col23 >= 0" nzAlign="right">{{ data.col23 | number}}
+                <td *ngIf="!data.isBold && data.col23 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}
                 </td>
-                <td *ngIf="!data.isBold && data.col23 < 0" nzAlign="right" style="color: red;">
+                <td *ngIf="!data.isBold && data.col23 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
                   {{data.col23 - data.col23 * 2 | number}}
                 </td>
-                <td *ngIf="!data.isBold && data.col24 >= 0" nzAlign="right">
+                <td *ngIf="!data.isBold && data.col24 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
                   {{ data.col24 | number}}
                 </td>
-                <td *ngIf="!data.isBold && data.col24 < 0" nzAlign="right" style="color: red;">
+                <td *ngIf="!data.isBold && data.col24 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
                   {{ data.col24 - data.col24 * 2| number}}
                 </td>
 
-                <td *ngIf="!data.isBold && data.col25 >= 0" nzAlign="right">
+                <td *ngIf="!data.isBold && data.col25 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
                   {{ data.col25 | number}}
                 </td>
-                <td *ngIf="!data.isBold && data.col25 < 0" nzAlign="right" style="color: red;">
+                <td *ngIf="!data.isBold && data.col25 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
                   {{ data.col25 - data.col25 * 2 | number }}
                 </td>
 
-                <td *ngIf="!data.isBold && data.col26 >= 0" nzAlign="right">{{ data.col26 | number}}
+                <td *ngIf="!data.isBold && data.col26 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col26 | number}}
                 </td>
-                <td *ngIf="!data.isBold && data.col26 < 0" nzAlign="right" style="color: red;">
+                <td *ngIf="!data.isBold && data.col26 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
                   {{ data.col26 - data.col26 * 2 | number }}
                 </td>
 
@@ -929,27 +929,27 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="FOB">
-        <div class="overflow-tab" *ngIf="selectedIndex === 3">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_FOB)"  nzTitle="FOB">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.fob">
             <thead>
               <tr>
                 <th rowspan="3">TT</th>
                 <th rowspan="3">THỊ TRƯỜNG</th>
-                <th colspan="4">Lãi gộp chưa VAT</th>
-                <th colspan="4">Chi phí phát sinh chưa có VAT</th>
-                <th rowspan="3">Hỗ trợ <br> theo VB1370/PLX <br> ngày 12/6/2024</th>
-                <th colspan="2">CK điều tiết <br> (-/+)</th>
-                <th colspan="8">Đề xuất mức giảm giá</th>
-                <th rowspan="3">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
-                <th colspan="4">Lợi nhuận chưa VAT</th>
-                <th colspan="2">Ron 95 III</th>
-                <th colspan="2">E5 - Ron 92 II</th>
-                <th colspan="2">DO 0.001S</th>
-                <th colspan="2">DO 0.05S</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lãi gộp chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Chi phí phát sinh chưa có VAT</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">Hỗ trợ <br> theo VB1370/PLX <br> ngày 12/6/2024</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">CK điều tiết <br> (-/+)</th>
+                <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
+                <th colspan="2" >Ron 95 III</th>
+                <th colspan="2" >E5 - Ron 92 II</th>
+                <th colspan="2" >DO 0.001S</th>
+                <th colspan="2" >DO 0.05S</th>
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th rowspan="2">Ron 95 III</th>
                 <th rowspan="2">E5 - Ron 92 II</th>
                 <th rowspan="2">DO 0.001S</th>
@@ -980,7 +980,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
 
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th>Có VAT</th>
                 <th>Có VAT</th>
 
@@ -1004,30 +1004,30 @@
                 <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
 
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -1042,45 +1042,45 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="PT09">
-        <div class="overflow-tab" *ngIf="selectedIndex === 4">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT09)" nzTitle="PT09">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt09">
             <thead>
               <tr>
                 <th rowspan="3">TT</th>
                 <th rowspan="3">THỊ TRƯỜNG</th>
-                <th colspan="4">Lãi gộp chưa VAT</th>
-                <th colspan="4">Chi phí phát sinh chưa có VAT</th>
-                <th colspan="2">CK điều tiết <br> (-/+)</th>
-                <th colspan="8">Đề xuất mức giảm giá</th>
-                <th rowspan="3">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
-                <th colspan="4">Lợi nhuận chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lãi gộp chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Chi phí phát sinh chưa có VAT</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">CK điều tiết <br> (-/+)</th>
+                <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá</th>
+                <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
+                <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
               </tr>
               <tr>
-                <th rowspan="2">Ron 95 III</th>
-                <th rowspan="2">E5 - Ron 92 II</th>
-                <th rowspan="2">DO 0.001S</th>
-                <th rowspan="2">DO 0.05S</th>
-                <th rowspan="2">Tổng <br> chi phí</th>
-                <th rowspan="2">CP chung <br> chưa<br> cước vc</th>
-                <th rowspan="2">Cước VC <br> bình quân</th>
-                <th rowspan="2">Lãi vay <br> NH (đ/l)</th>
-                <th>Xăng</th>
-                <th>Dầu</th>
-                <th colspan="2">Ron 95 III</th>
-                <th colspan="2">E5 - Ron 92 II</th>
-                <th colspan="2">DO 0.001S</th>
-                <th colspan="2">DO 0.05S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Tổng <br> chi phí</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">CP chung <br> chưa<br> cước vc</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Cước VC <br> bình quân</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Lãi vay <br> NH (đ/l)</th>
+                <th *ngIf="accountGroups != 'G_NV_K'">Xăng</th>
+                <th *ngIf="accountGroups != 'G_NV_K'">Dầu</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
-                <th rowspan="2">Ron 95 III</th>
-                <th rowspan="2">E5 - Ron 92 II</th>
-                <th rowspan="2">DO 0.001S</th>
-                <th rowspan="2">DO 0.05S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">E5 - Ron 92 II</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
+                <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
@@ -1092,7 +1092,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
 
               </tr>
-              <tr>
+              <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th>Có VAT</th>
                 <th>Có VAT</th>
 
@@ -1116,29 +1116,29 @@
                 <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
 
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col22 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -1153,8 +1153,8 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="BB DO">
-        <div class="overflow-tab" *ngIf="selectedIndex === 5">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_BB_DO)" nzTitle="BB DO">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.bbdo">
             <thead>
@@ -1163,36 +1163,36 @@
                 <th class="align-center" rowspan="2">TÊN KHÁCH HÀNG</th>
                 <th class="align-center" rowspan="2">ĐỊA ĐIỂM GIAO HÀNG</th>
                 <th class="align-center" rowspan="2">MẶT HÀNG</th>
-                <th class="align-center" rowspan="2">PHƯƠNG <br> THỨC</th>
-                <th class="align-center" rowspan="2">MÃ KHÁCH</th>
-                <th class="align-center" rowspan="2">MÃ <br> HÀNG HOÁ</th>
-                <th class="align-center" rowspan="2">ĐVT</th>
-                <th class="align-center" rowspan="2">HẠN <br> THANH <br> TOÁN</th>
-                <th class="align-center" colspan="2">Mức lãi gộp TĐ giao (vùng 2)</th>
-                <th class="align-center" colspan="4">Chi phí tạm tính chưa VAT </th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" rowspan="2">PHƯƠNG <br> THỨC</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" rowspan="2">MÃ KHÁCH</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" rowspan="2">MÃ <br> HÀNG HOÁ</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" rowspan="2">ĐVT</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" rowspan="2">HẠN <br> THANH <br> TOÁN</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="2">Mức lãi gộp TĐ giao (vùng 2)</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="4">Chi phí tạm tính chưa VAT </th>
 
-                <th class="align-center" colspan="2">Đề xuất mức giảm giá <br> tại kho bên bán (FOB)</th>
-                <th class="align-center" colspan="2">Mức giảm giá tại kho bên mua</th>
-                <th class="align-center" colspan="2">LỢI NHUẬN (Đ/Ltt)</th>
-                <th class="align-center" colspan="2">GIÁ BÁN CHO KHÁCH HÀNG (Đ/L)</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="2">Đề xuất mức giảm giá <br> tại kho bên bán (FOB)</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="2">Mức giảm giá tại kho bên mua</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="2">LỢI NHUẬN (Đ/Ltt)</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'" colspan="2">GIÁ BÁN CHO KHÁCH HÀNG (Đ/L)</th>
               </tr>
               <tr>
-                <th class="align-center">Đã có thuế</th>
-                <th class="align-center">Chưa thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Đã có thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Chưa thuế</th>
 
-                <th class="align-center">Tổng <br>chi phí</th>
-                <th class="align-center">CP chung <br> chưa cước vc</th>
-                <th class="align-center">Cước vận <br> chuyển</th>
-                <th class="align-center">Lãi vay <br> NH, phí <br> bơm rót, ≠</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Tổng <br>chi phí</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">CP chung <br> chưa cước vc</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Cước vận <br> chuyển</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Lãi vay <br> NH, phí <br> bơm rót, ≠</th>
 
-                <th class="align-center">Đã có thuế</th>
-                <th class="align-center">Chưa thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Đã có thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Chưa thuế</th>
 
-                <th class="align-center">Đã có thuế</th>
-                <th class="align-center">Chưa thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Đã có thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Chưa thuế</th>
 
-                <th class="align-center">Đã có thuế</th>
-                <th class="align-center">Chưa thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Đã có thuế</th>
+                <th class="align-center"*ngIf="accountGroups != 'G_NV_K'">Chưa thuế</th>
 
                 <th class="align-center">CHƯA VAT, <br> BVMT</th>
                 <th class="align-center">CÓ VAT, <br> BVMT</th>
@@ -1208,23 +1208,23 @@
                 <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
                 <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.pThuc}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerCode}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodCode}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.dvt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.tToan}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col12 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.customerCode}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.goodCode}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.dvt}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.tToan}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
                 <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
 
@@ -1234,8 +1234,8 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="PL1">
-        <div class="overflow-tab" *ngIf="selectedIndex === 6">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL1)" nzTitle="PL1">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl1" style="width: 50%;">
             <thead>
@@ -1280,8 +1280,8 @@
       <!-- #endregion PL1 -->
 
       <!-- #region PL2 -->
-      <nz-tab nzTitle="PL2">
-        <div class="overflow-tab" *ngIf="selectedIndex === 7">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL2)" nzTitle="PL2">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl2" style="width: 50%;">
             <thead>
@@ -1326,8 +1326,8 @@
       <!-- #endregion PL2 -->
 
       <!-- #region PL3 -->
-      <nz-tab nzTitle="PL3">
-        <div class="overflow-tab" *ngIf="selectedIndex === 8">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL3)" nzTitle="PL3">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl3" style="width: 70%;">
             <thead>
@@ -1368,8 +1368,8 @@
       <!-- #endregion PL3 -->
 
       <!-- #region PL4 -->
-      <nz-tab nzTitle="PL4">
-        <div class="overflow-tab" *ngIf="selectedIndex === 9">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL4)" nzTitle="PL4">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl1" style="width: 50%;">
             <thead>
@@ -1414,8 +1414,8 @@
       <!-- #endregion PL4 -->
 
       <!-- #region VK11 PT -->
-      <nz-tab nzTitle="VK11 PT">
-        <div class="overflow-tab" *ngIf="selectedIndex === 10">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_PT)" nzTitle="VK11 PT">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Pt">
             <thead>
@@ -1474,8 +1474,8 @@
       <!-- #endregion VK11 PT -->
 
       <!-- #region VK11 ĐB -->
-      <nz-tab nzTitle="VK11 ĐB">
-        <div class="overflow-tab" *ngIf="selectedIndex === 11">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_DB)" nzTitle="VK11 ĐB">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Db">
             <thead>
@@ -1534,8 +1534,8 @@
       <!-- #endregion VK11 ĐB -->
 
       <!-- #region VK11 FOB -->
-      <nz-tab nzTitle="VK11 FOB">
-        <div class="overflow-tab" *ngIf="selectedIndex === 12">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_FOB)" nzTitle="VK11 FOB">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Fob">
             <thead>
@@ -1594,8 +1594,8 @@
       <!-- #endregion VK11 FOB -->
 
       <!-- #region VK11 TNPP -->
-      <nz-tab nzTitle="VK11 TNPP">
-        <div class="overflow-tab" *ngIf="selectedIndex === 13">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_TNPP)" nzTitle="VK11 TNPP">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Tnpp">
             <thead>
@@ -1653,8 +1653,8 @@
       <!-- #endregion VK11 TNPP -->
 
       <!-- #region PTS -->
-      <nz-tab nzTitle="PTS">
-        <div class="overflow-tab" *ngIf="selectedIndex === 14">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PTS)" nzTitle="PTS">
+        <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pts">
             <thead>
@@ -1691,8 +1691,8 @@
       <!-- #endregion PTS -->
 
       <!-- #region VK11 BB -->
-      <nz-tab nzTitle="VK11 BB">
-        <div class="overflow-tab" *ngIf="selectedIndex === 15">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_BB)" nzTitle="VK11 BB">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Bb">
             <thead>
@@ -1747,8 +1747,8 @@
       <!-- #endregion VK11 BB -->
 
       <!-- #region Tổng hợp -->
-      <nz-tab nzTitle="Tổng hợp">
-        <div class="overflow-tab" *ngIf="selectedIndex === 16">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_TONG_HOP)" nzTitle="Tổng hợp">
+        <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.summary">
             <thead>

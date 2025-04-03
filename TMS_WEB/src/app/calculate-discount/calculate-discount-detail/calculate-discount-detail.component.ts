@@ -27,7 +27,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
   loading: boolean = false;
   visibleInput: boolean = false;
   isVisibleStatus: boolean = false;
-  selectedIndex : number = 0;
   IMPORT_BATCH = IMPORT_BATCH
   isVisiblePreview: boolean = false
   UrlOffice: string = ''
@@ -46,7 +45,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     status:{},
   }
   input2: any = this.input;
-
+  rightList: any = []
   statusModel = {
     title: '',
     des: '',
@@ -102,13 +101,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstCustomer: any[] = []
   isVisibleCustomer: boolean = false
   lstCustomerChecked: any[] = []
+  accountGroups: any = {}
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private route: ActivatedRoute,
     private _signerService: SignerService,
-    private _CustomerBBDOService: CustomerBbdoService
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -131,12 +130,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data;
-
+        this.titleTab = data.header.name
       },
       error: (response) => {
         console.log(response)
       },
     })
+    this.getRight()
     console.log(this.input)
   }
 
@@ -222,6 +222,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
         console.log(err)
       },
     })
+  }
+
+  getRight() {
+    const rights = localStorage.getItem('userRights');
+    this.rightList = rights ? JSON.parse(rights) : [];
+
+    const accountGroups = localStorage.getItem('UserInfo');
+    this.accountGroups = accountGroups ? JSON.parse(accountGroups).accountGroups[0].name : [];
   }
 
   handleCancel() {
