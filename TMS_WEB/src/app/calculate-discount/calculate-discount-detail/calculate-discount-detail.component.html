@@ -50,7 +50,7 @@
           <nz-dropdown-menu #export="nzDropdownMenu">
             <ul nz-menu>
               <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
-              <li nz-menu-item (click)="confirmExportWord()">Xuất Word</li>
+              <li nz-menu-item (click)="exportWord()">Xuất Word</li>
               <li nz-menu-item>Xuất PDF</li>
               <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
             </ul>
@@ -2266,10 +2266,7 @@
   </ng-container>
 </nz-modal>
 
-
-
 <!-- SMS -->
-
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleSms" nzTitle="LỊCH SỬ GỬI SMS" (nzOnCancel)="handleCancel()"
   nzCancelText="Đóng" nzFooter=" ">
   <ng-container *nzModalContent>
@@ -2369,6 +2366,7 @@
     </nz-table>
   </ng-container>
 </nz-modal>
+
 <nz-modal nzWidth="90%" [(nzVisible)]="isVisiblePreview" nzTitle="Xem trước" (nzOnCancel)="cancelPreview()">
   <ng-container *nzModalContent>
     <ngx-doc-viewer [url]="UrlOffice" viewer="google" style="width:100%;height:93vh;">

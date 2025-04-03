@@ -229,6 +229,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isVisibleEmail = false
     this.isVisibleSms = false
     this.isVisibleExport = false
+    this.isVisibleCustomer = false
   }
   exportWordTrinhKy() {
 

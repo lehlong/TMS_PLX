@@ -4087,7 +4087,11 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                var query = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).ToListAsync();
+                var query = await _dbContext.TblBuInputCustomerBbdo
+                    .Where(x => x.HeaderId == id)
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.FirstOrDefault())
+                    .ToListAsync();
                 return query;
             }
             catch (Exception ex)
@@ -4368,6 +4372,6 @@ namespace DMS.BUSINESS.Services.BU
 
         #endregion
 
-    }
+    }   
 }
 
