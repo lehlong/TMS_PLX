@@ -204,6 +204,7 @@ namespace DMS.BUSINESS.Services.BU
                         Htcvc = x.Htcvc,
                         HttVb1370 = x.HttVb1370,
                         Ckv2 = x.Ckv2,
+                        GoodsCode = x.GoodsCode,
                         PhuongThuc = x.PhuongThuc,
                         Thtt = x.Thtt,
                         Order = x.Order,
@@ -350,7 +351,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                if (input.Header.Status == "01")
+                if (input.Header.Status == "01" || input.Header.Status == "02")
                 {
                     _dbContext.TblBuCalculateDiscount.Update(input.Header);
                     _dbContext.TblBuInputPrice.UpdateRange(input.InputPrice);
@@ -1426,7 +1427,25 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region PTS
 
-
+                var Pts = 1;
+                foreach (var i in lstCustomerPts)
+                {
+                    data.Pts.Add(new DataModel
+                    {
+                        Stt = Pts.ToString(),
+                        CustomerName = i.Name,
+                        DeliveryPoint = i.Adrress,
+                        Col1 = i.CuLyBq,
+                        Col2 = i.Cvcbq,
+                        Col3 = data.Dlg.Dlg8.Where(x => x.GoodCode == i.GoodsCode).Sum(x => x.Col4),
+                        PThuc = i.PhuongThuc,
+                        CustomerCode = i.Code,
+                        GoodCode = i.GoodsCode,
+                        MarketName = currentHeader.Date.ToString("dd.MM.yyyy"),
+                        TToan = i.Thtt,
+                    });
+                    Pts++;
+                }
 
                 #endregion
 
@@ -2595,7 +2614,37 @@ namespace DMS.BUSINESS.Services.BU
                 #endregion
 
                 #region PTS
+                var sheetPts = workbook.GetSheetAt(16);
+                //ExcelNPOIExtention.SetCellValue(sheetVk11Pt.GetRow(3) ?? sheetVk11Pt.CreateRow(3), 0, $"Thực hiện: từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
+                int rowIndexPts = 4;
+                foreach (var i in data.Pts)
+                {
+                    var text = i.IsBold ? styles.TextBold : styles.Text;
+                    var number = i.IsBold ? styles.NumberBold : styles.Number;
+                    var row = sheetPts.GetRow(rowIndexPts) ?? sheetPts.CreateRow(rowIndexPts);
+                    ExcelNPOIExtention.SetCellValueText(row, 0, i.Stt, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 1, i.PThuc, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 2, i.CustomerCode, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 3, i.GoodCode, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 4, "L15", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 5, i.TToan, text);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 6, "", number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 7, "", number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 8, "", number);
+                    ExcelNPOIExtention.SetCellValueNumber(row, 9, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 10, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 11, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 12, "L15", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 13, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 14, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 15, i.MarketName, text);
+                    ExcelNPOIExtention.SetCellValueText(row, 16, "31.12.9999", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 17, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 18, "", text);
+                    ExcelNPOIExtention.SetCellValueText(row, 19, "PTS", text);
 
+                    rowIndexPts++;
+                }
                 #endregion
 
                 #region Tổng hợp
@@ -4307,6 +4356,18 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         #endregion
+
+        #region 1
+        
+        
+        #endregion
+
+
+        #region 2
+
+
+        #endregion
+
     }
 }
 

@@ -6,6 +6,8 @@ import { CalculateDiscountService } from '../../services/calculate-discount/calc
 import { GlobalService } from '../../services/global.service';
 import { ShareModule } from '../../shared/share-module';
 import { environment } from '../../../environments/environment.prod'
+import { isVisible } from 'ckeditor5'
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import {
   CALCULATE_RESULT_RIGHT,
   IMPORT_BATCH,
@@ -16,7 +18,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-calculate-discount-detail',
   standalone: true,
-  imports: [ShareModule],
+  imports: [ShareModule, NgxDocViewerModule],
   templateUrl: './calculate-discount-detail.component.html',
   styleUrl: './calculate-discount-detail.component.scss'
 })
@@ -27,6 +29,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleStatus: boolean = false;
   selectedIndex : number = 0;
   IMPORT_BATCH = IMPORT_BATCH
+  isVisiblePreview: boolean = false
+  UrlOffice: string = ''
   input: any = {
     header: {},
     inputPrice: [],
@@ -454,6 +458,11 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
+  openNewTab(url: string) {
+    console.log(url)
+    window.open(url, '_blank')
+  }
+
   exportExcel(){
     this._service.exportExcel(this.headerId).subscribe({
       next: (data) => {
@@ -465,6 +474,16 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
+  Preview(url: string) {
+
+    this.UrlOffice = url
+    console.log(this.UrlOffice)
+    this.isVisiblePreview = true
+
+  }
+  cancelPreview() {
+    this.isVisiblePreview = !this.isVisiblePreview
+  }
 
   onInputNumberFormat(data: any, field: string) {
     let value = data[field];

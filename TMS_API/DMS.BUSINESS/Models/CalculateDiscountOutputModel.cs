@@ -4,6 +4,7 @@
     {
         public Dlg Dlg { get; } = new Dlg();
         public List<DataModel> Pt { get; } = new List<DataModel>();
+        public List<DataModel> Pts { get; } = new List<DataModel>();
         public List<DataModel> Db { get; } = new List<DataModel>();
         public List<DataModel> Fob { get; } = new List<DataModel>();
         public List<DataModel> Pt09 { get; } = new List<DataModel>();

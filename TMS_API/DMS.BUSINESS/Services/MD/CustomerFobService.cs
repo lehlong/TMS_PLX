@@ -68,7 +68,7 @@ namespace DMS.BUSINESS.Services.MD
         {
             try
             {
-                Data.Id = Guid.NewGuid().ToString();
+                //Data.Id = Guid.NewGuid().ToString();
                 _dbContext.TblMdCustomerFob.AddRange(Data);
                 _dbContext.SaveChanges();
 

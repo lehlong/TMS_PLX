@@ -8,9 +8,6 @@ namespace DMS.CORE.Entities.MD
     public class TblMdCustomerFob : SoftDeleteEntity
     {
         [Key]
-        [Column("ID", TypeName = "NVARCHAR(50)")]
-        public string Id { get; set; }
-
         [Column("CODE", TypeName = "NVARCHAR(50)")]
         public string Code { get; set; }
 

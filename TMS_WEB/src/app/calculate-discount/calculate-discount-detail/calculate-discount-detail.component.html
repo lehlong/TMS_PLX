@@ -33,80 +33,96 @@
             [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '02'">
             <span nz-icon nzType="close"></span> Từ chối
           </button>
+
           <button nzType="default" nz-button (click)="openInput()">
             <span nz-icon nzType="right-square"></span> Dữ liệu đầu vào
           </button>
+
           <button nzType="default" nz-button (click)="reCalculate()">
             <span nz-icon nzType="calculator"></span> Tính toán lại
           </button>
 
-                    <button nz-button nz-dropdown [nzDropdownMenu]="export">
-                        <span nz-icon nzType="file"></span>
-                        Xuất file
-                        <span nz-icon nzType="down"></span>
-                    </button>
-                    <nz-dropdown-menu #export="nzDropdownMenu">
-                        <ul nz-menu>
-                            <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
-                            <li nz-menu-item>Xuất Word</li>
-                            <li nz-menu-item>Xuất PDF</li>
-                            <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
-                        </ul>
-                    </nz-dropdown-menu>
-       
-                    <button nz-button nz-dropdown [nzDropdownMenu]="history">
-                        <span nz-icon nzType="history"></span>
-                        Lịch sử
-                        <span nz-icon nzType="down"></span>
-                    </button>
-                    <nz-dropdown-menu #history="nzDropdownMenu">
-                        <ul nz-menu>
-                          <li nz-menu-item (click)="showHistoryAction()"
-                          [appPermission]="IMPORT_BATCH.HISTORY">Lịch sử hành động</li>
-                          <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
-                          <li nz-menu-item (click)="showEmailAction()">Lịch sử gửi Mail</li>
-                          <li nz-menu-item (click)="showSMSAction()">Lịch sử gửi SMS</li>
-                        </ul>
-                    </nz-dropdown-menu>
-                    <nz-space>
-                        <app-input-clear placeholder="Tìm kiếm"></app-input-clear>
-                        <button class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
-                            nzType="default">
-                            <span nz-icon nzType="search"></span>
-                        </button>
-                    </nz-space>
-                </nz-space>
-            </nz-page-header-extra>
-        </nz-page-header>
-    </div>
-    <div>
-        <nz-tabset [(nzSelectedIndex)]="selectedIndex">
-            <!-- #region Dữ liệu gốc -->
-            <nz-tab nzTitle="Dữ liệu gốc">
-                <div class="overflow-tab" *ngIf="selectedIndex === 0">
-                    <div nz-row [nzGutter]="12">
-                        <div nz-col class="gutter-row" [nzSpan]="6">
-                            <div class="inner-box">
-                                <nz-divider nzOrientation="left" nzText="GIÁ TẬP ĐOÀN CÔNG BỐ"></nz-divider>
-                                <nz-table nzBordered nzSize="small" [nzFrontPagination]="'false'"
-                                    [nzShowPagination]="'false'" [nzData]="output.dlg.dlg1">
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2">MẶT HÀNG</th>
-                                            <th rowspan="2">GBL V1</th>
-                                            <th rowspan="2">GBL V2</th>
-                                            <th rowspan="2">CL 2V <br> TĐ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let data of output.dlg.dlg1;">
-                                            <td nzAlign="left">{{data.goodName}}</td>
-                                            <td nzAlign="right">{{ data.col1 | number}}</td>
-                                            <td nzAlign="right">{{ data.col2 | number }}</td>
-                                            <td nzAlign="right">{{ data.col3 | number}}</td>
-                                        </tr>
-                                    </tbody>
-                                </nz-table>
+          <button nz-button nz-dropdown [nzDropdownMenu]="export">
+            <span nz-icon nzType="file"></span>
+            Xuất file
+            <span nz-icon nzType="down"></span>
+          </button>
+          <nz-dropdown-menu #export="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
+              <li nz-menu-item (click)="confirmExportWord()">Xuất Word</li>
+              <li nz-menu-item>Xuất PDF</li>
+              <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
+            </ul>
+          </nz-dropdown-menu>
+
+          <button nz-button nz-dropdown [nzDropdownMenu]="history">
+            <span nz-icon nzType="history"></span>
+            Lịch sử
+            <span nz-icon nzType="down"></span>
+          </button>
+          <nz-dropdown-menu #history="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="showHistoryAction()" [appPermission]="IMPORT_BATCH.HISTORY">Lịch sử hành động</li>
+              <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
+              <li nz-menu-item (click)="showEmailAction()">Lịch sử gửi Mail</li>
+              <li nz-menu-item (click)="showSMSAction()">Lịch sử gửi SMS</li>
+            </ul>
+          </nz-dropdown-menu>
+
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" nz-popconfirm class="!flex !items-center btn-email"
+            nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi Email thông báo cho các khách hàng?"
+            (nzOnConfirm)="confirmSendsMail()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'"
+            (nzOnCancel)="cancelSendEmail()" nzPopconfirmPlacement="bottom" nz-button>
+            <span nz-icon nzType="mail"></span> Gửi Email
+          </button>
+
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" nz-popconfirm class="!flex !items-center btn-sms"
+            nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi Email thông báo cho các khách hàng?"
+            (nzOnConfirm)="confirmSendSMS()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'" (nzOnCancel)="cancelSendEmail()"
+            nzPopconfirmPlacement="bottom" nz-button>
+            <span nz-icon nzType="mail"></span> Gửi SMS
+          </button>
+
+          <nz-space>
+            <app-input-clear placeholder="Tìm kiếm"></app-input-clear>
+            <button class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button nzType="default">
+              <span nz-icon nzType="search"></span>
+            </button>
+          </nz-space>
+
+        </nz-space>
+      </nz-page-header-extra>
+    </nz-page-header>
+  </div>
+  <div>
+    <nz-tabset [(nzSelectedIndex)]="selectedIndex">
+
+      <nz-tab nzTitle="Dữ liệu gốc">
+        <div class="overflow-tab" *ngIf="selectedIndex === 0">
+          <div nz-row [nzGutter]="12">
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div class="inner-box">
+                <nz-divider nzOrientation="left" nzText="GIÁ TẬP ĐOÀN CÔNG BỐ"></nz-divider>
+                <nz-table nzBordered nzSize="small" [nzFrontPagination]="'false'" [nzShowPagination]="'false'"
+                  [nzData]="output.dlg.dlg1">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">MẶT HÀNG</th>
+                      <th rowspan="2">GBL V1</th>
+                      <th rowspan="2">GBL V2</th>
+                      <th rowspan="2">CL 2V <br> TĐ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of output.dlg.dlg1;">
+                      <td nzAlign="left">{{data.goodName}}</td>
+                      <td nzAlign="right">{{ data.col1 | number}}</td>
+                      <td nzAlign="right">{{ data.col2 | number }}</td>
+                      <td nzAlign="right">{{ data.col3 | number}}</td>
+                    </tr>
+                  </tbody>
+                </nz-table>
 
               </div>
             </div>
@@ -1639,6 +1655,37 @@
       <!-- #region PTS -->
       <nz-tab nzTitle="PTS">
         <div class="overflow-tab" *ngIf="selectedIndex === 14">
+          <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
+            [nzData]="output.pts">
+            <thead>
+              <tr>
+                <th class="align-center">TT</th>
+                <th class="align-center">P THỨC</th>
+                <th class="align-center">KHÁCH HÀNG</th>
+                <th class="align-center">MẶT HÀNG</th>
+                <th class="align-center">DVT</th>
+                <th class="align-center">GIÁ CHƯA VAT&BVMT</th>
+                <th class="align-center">THỜI HẠN THANH TOÁN</th>
+                <th class="align-center">NGÀY HIỆU LỰC</th>
+                <th class="align-center">ĐẾN</th>
+                <th class="align-center">ĐIỂM GIAO HÀNG</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of output.pts;">
+                <td nzAlign="center">{{data.stt}}</td>
+                <td nzAlign="left">{{data.pThuc}}</td>
+                <td nzAlign="left">{{data.customerCode}}</td>
+                <td nzAlign="left">{{ data.goodCode}}</td>
+                <td nzAlign="left">L15</td>
+                <td nzAlign="center">{{ data.col3 }}</td>
+                <td nzAlign="center">{{ data.tToan }}</td>
+                <td nzAlign="center">{{ data.marketName }}</td>
+                <td nzAlign="center">31.12.9999</td>
+                <td nzAlign="center">{{ data.deliveryPoint }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
         </div>
       </nz-tab>
       <!-- #endregion PTS -->
@@ -1909,6 +1956,7 @@
           </tbody>
         </nz-table>
       </nz-tab>
+
       <nz-tab nzTitle="THỊ TRƯỜNG">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.market" [nzFrontPagination]="'false'"
@@ -2141,6 +2189,32 @@
       </nz-tab>
 
 
+      <nz-tab nzTitle="KHÁCH HÀNG PTS">
+        <div class="overflow-input">
+          <nz-table nzBordered nzSize="small" [nzData]="input.customerPts" [nzFrontPagination]="'false'"
+            [nzShowPagination]="'false'">
+            <thead>
+              <tr>
+                <th nzAlign="center">MÃ</th>
+                <th nzAlign="center">KHÁCH HÀNG</th>
+                <th nzAlign="center">MẶT HÀNG</th>
+                <th nzAlign="center">THỜI HẠN THANH TOÁN</th>
+                <th nzAlign="center">PHƯƠNG THỨC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of input.customerPts">
+                <td>{{data.code }}</td>
+                <td>{{data.name }}</td>
+                <td nzAlign="center"><input nz-input [(ngModel)]="data.goodsCode" type="number" /></td>
+                <td nzAlign="center"><input nz-input [(ngModel)]="data.thtt" type="text" /></td>
+                <td><input nz-input [(ngModel)]="data.phuongThuc" type="text" /></td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-tab>
+
     </nz-tabset>
   </ng-container>
 </nz-drawer>
@@ -2150,7 +2224,9 @@
   <nz-space>
     <ng-container>
       <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
-        (click)="onUpdateInput()">
+        (click)="onUpdateInput()"
+        [appPermission]="IMPORT_BATCH.UPDATE_IMPORT_BATCH"
+        [disabled]="input.header.status != 01 && input.header.status != 03">
         <span nz-icon nzType="save" nzTheme="outline"></span> Cập nhật
       </button>
     </ng-container>
@@ -2161,11 +2237,11 @@
 
 
 <!-- History -->
-<nz-modal nzWidth="60%" nzHeight="60%" [(nzVisible)]="isVisibleHistory" nzTitle="LỊCH SỬ THỰC HIỆN" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng" nzFooter=" ">
+<nz-modal nzWidth="60%" nzHeight="60%" [(nzVisible)]="isVisibleHistory" nzTitle="LỊCH SỬ THỰC HIỆN"
+  (nzOnCancel)="handleCancel()" nzCancelText="Đóng" nzFooter=" ">
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstHistory" nzSize="small" [nzFrontPagination]="'false'"
-    [nzShowPagination]="'false'">
+      [nzShowPagination]="'false'">
       <thead>
         <tr>
           <th>Hành động</th>
@@ -2195,7 +2271,7 @@
 <!-- SMS -->
 
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleSms" nzTitle="LỊCH SỬ GỬI SMS" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng">
+  nzCancelText="Đóng" nzFooter=" ">
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstSMS" nzSize="small">
       <thead>
@@ -2221,7 +2297,7 @@
 
 <!-- MAIL -->
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleEmail" nzTitle="LỊCH SỬ GỬI MAIL" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng">
+  nzCancelText="Đóng" nzFooter=" ">
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstEmail" nzSize="small">
       <thead>
@@ -2239,15 +2315,16 @@
           <!-- <td >{{ data.contents }}</td> -->
           <td [innerText]="removeHtmlTags(data.contents)"></td>
           <td>{{ data.isSend == "Y" ? "Đã gửi" : "Chưa gửi" }}</td>
-      </tr>
-      }
-    </tbody>
-  </nz-table>
-</ng-container>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+  </ng-container>
 </nz-modal>
+
 <!-- History Export File-->
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleExport" nzTitle="LỊCH SỬ XUẤT FILE" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng">
+  nzCancelText="Đóng" nzFooter=" ">
   <ng-container *nzModalContent>
     <nz-table #historyTableFile [nzData]="lstHistoryFile" nzSize="small">
       <thead>
@@ -2256,7 +2333,7 @@
           <th class="align-center">Tên file</th>
           <th class="align-center">Người xuất</th>
           <th class="align-center">Thời gian</th>
-          <th class="align-center">Hành động</th>
+          <th class="align-center" colspan="2">Hành động</th>
         </tr>
       </thead>
       <tbody>
@@ -2274,19 +2351,28 @@
           <td>{{ data.name }}</td>
           <td class="align-center">{{ data.createBy }}</td>
           <td class="align-center">
-            {{ data.createDate | date: 'dd/MM/yyyy hh:mm:ss' }}
+            {{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}
           </td>
-          <td class="align-center">
-            <button nz-button nzType="default" (click)="Preview(data.pathView)">
-                <span nz-icon nzType="eye"></span>Xem trực tiếp
-              </button>
-              <button nz-button nzType="default" (click)="openNewTab(data.pathDownload)" style="margin-left: 12px">
-                <span nz-icon nzType="download"></span>Tải xuống
-              </button>
+          <td class="align-center" >
+            <button nzAlign="center" nz-button nzType="default" (click)="Preview(data.pathView)">
+              <span nz-icon nzType="eye"></span>Xem trực tiếp
+            </button>
+          </td>
+          <td class="align-center" nzAlign="center">
+            <button nzAlign="center" nz-button nzType="default" (click)="openNewTab(data.pathDownload)">
+              <span nz-icon nzType="download"></span>Tải xuống
+            </button>
           </td>
         </tr>
         }
       </tbody>
     </nz-table>
   </ng-container>
+</nz-modal>
+<nz-modal nzWidth="90%" [(nzVisible)]="isVisiblePreview" nzTitle="Xem trước" (nzOnCancel)="cancelPreview()">
+  <ng-container *nzModalContent>
+    <ngx-doc-viewer [url]="UrlOffice" viewer="google" style="width:100%;height:93vh;">
+    </ngx-doc-viewer>
+  </ng-container>
+
 </nz-modal>
