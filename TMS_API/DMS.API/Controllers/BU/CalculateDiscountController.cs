@@ -169,7 +169,7 @@ namespace DMS.API.Controllers.BU
         public async Task<IActionResult> ExportWordTrinhky([FromBody] List<string> lstTrinhKyChecked, [FromQuery] string headerId)
         {
             var transferObject = new TransferObject();
-            var result = await _service.GenarateFile(lstTrinhKyChecked, "WORDTRINHKY", headerId, new CalculateDiscountInputModel());
+            var result = await _service.GenarateFile(lstTrinhKyChecked, "WORDTRINHKY", headerId, new CalculateDiscountInputModel(), []);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -301,6 +301,46 @@ namespace DMS.API.Controllers.BU
                 //transferObject.GetMessage("2000", _service);
             }
             return Ok(transferObject);
+        }
+        [HttpPost("ExportWord")]
+        [Authorize]
+        public async Task<IActionResult> ExportWord([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.GenarateFile([], "WORD", headerId, new CalculateDiscountInputModel(), lstCustomerChecked);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
+        [HttpGet("GetCustomerBbdo")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomerBBDO([FromQuery] string id)
+        {
+            var transferObject = new TransferObject();
+            var data = await _service.GetCustomerBbdo(id);
+
+            if (_service.Status)
+            {
+                transferObject.Data = data;
+                return Ok(transferObject);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                return BadRequest(transferObject);
+            }
         }
     }
 }

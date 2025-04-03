@@ -1,3 +1,4 @@
+import { CustomerBbdoService } from './../../services/master-data/customer-bbdo.service';
 import { Component, OnInit, output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -94,13 +95,16 @@ export class CalculateDiscountDetailComponent implements OnInit {
     { code: 'KeKhaiGia', name: 'Kê Khai Giá', status: true },
     { code: 'KeKhaiGiaChiTiet', name: 'Kê Khai Giá Chi Tiết', status: true },
   ]
+  lstCustomer: any[] = []
+  isVisibleCustomer: boolean = false
+  lstCustomerChecked: any[] = []
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
     private message: NzMessageService,
-    private router: Router,
     private route: ActivatedRoute,
     private _signerService: SignerService,
+    private _CustomerBBDOService: CustomerBbdoService
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -272,6 +276,57 @@ export class CalculateDiscountDetailComponent implements OnInit {
         })
       this.lstTrinhKyChecked = []
     }
+  }
+
+  onAllChecked(value: boolean): void {
+    this.lstCustomerChecked = []
+    if (value) {
+      this.lstCustomer.forEach((i) => {
+        this.lstCustomerChecked.push({code:i.code,deliveryGroupCode:i.deliveryGroupCode})
+      })
+    } else {
+      this.lstCustomerChecked = []
+    }
+  }
+
+  confirmExportWord() {
+    console.log(this.lstCustomerChecked)
+    if (this.lstCustomerChecked.length == 0) {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn khách hàng cần xuất ra file',
+      )
+      return
+    } else {
+      this._service
+        .ExportWord(this.lstCustomerChecked, this.headerId)
+        .subscribe({
+          next: (data) => {
+            this.isVisibleCustomer = false
+            this.lstCustomerChecked = []
+            var a = document.createElement('a')
+            a.href = environment.apiUrl + data
+            a.target = '_blank'
+            a.click()
+            a.remove()
+          },
+          error: (err) => {
+            console.log(err)
+          },
+        })
+    }
+  }
+
+  updateCheckedSet(code: any, deliveryGroupCode: string, checked: boolean): void {
+    if (checked) {
+      this.lstCustomerChecked.push({code:code,deliveryGroupCode:deliveryGroupCode})
+    } else {
+      this.lstCustomerChecked = this.lstCustomerChecked.filter((x) => x != code)
+    }
+  }
+
+  onItemChecked(code: String, deliveryGroupCode:string, checked: boolean): void {
+    this.updateCheckedSet(code,deliveryGroupCode, checked)
   }
 
   onClickTab(title: string, tab: number) {
@@ -506,4 +561,12 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   cancelSendSMS() { }
   cancelSendEmail() { }
+  exportWord() {
+    this._service.GetCustomerBbdo(this.headerId).subscribe({
+      next: (data) => {
+        this.lstCustomer = data
+        this.isVisibleCustomer = true
+      },
+    })
+  }
 }

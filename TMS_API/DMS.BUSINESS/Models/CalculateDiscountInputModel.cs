@@ -14,4 +14,10 @@ namespace DMS.BUSINESS.Models
         public List<TblBuInputCustomerTnpp> CustomerTnpp { get; set; } = new List<TblBuInputCustomerTnpp>();
         public List<TblBuInputCustomerBbdo> CustomerBbdo { get; set; } = new List<TblBuInputCustomerBbdo>();
     }
+
+    public class CustomBBDOExportWord
+    {
+        public string code { get; set; }
+        public string deliveryGroupCode { get; set; }
+    }
 }

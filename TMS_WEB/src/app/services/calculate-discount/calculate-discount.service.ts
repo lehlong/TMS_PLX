@@ -63,5 +63,14 @@ export class CalculateDiscountService {
     }
     GetHistoryFile(code : any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/GetHistoryFile?code=${code}`)
+
+      }
+
+    ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
+        return this.commonService.post(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)
+    }
+
+    GetCustomerBbdo(id : any): Observable<any> {
+        return this.commonService.get(`CalculateDiscount/GetCustomerBbdo?id=${id}`)
     }
 }
