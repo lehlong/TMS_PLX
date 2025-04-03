@@ -84,13 +84,13 @@
             <span nz-icon nzType="mail"></span> Gửi SMS
           </button>
 
-          <nz-space>
-            <app-input-clear placeholder="Tìm kiếm"></app-input-clear>
-            <button class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button nzType="default">
+          <ng-container *ngIf="currentTab !== '' && currentTab !== 'DLG'">
+            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search(currentTab)" [(value)]="searchInput"></app-input-clear>
+            <button (click)="search(currentTab)" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
               <span nz-icon nzType="search"></span>
             </button>
-          </nz-space>
-
+        </ng-container>
         </nz-space>
       </nz-page-header-extra>
     </nz-page-header>
@@ -98,7 +98,7 @@
   <div>
     <nz-tabset>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DLG)" nzTitle="Dữ liệu gốc">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DLG)" nzTitle="Dữ liệu gốc" (nzClick)="reset('DLG')">
         <div class="overflow-tab">
           <div nz-row [nzGutter]="12">
             <div nz-col class="gutter-row" [nzSpan]="6">
@@ -681,7 +681,7 @@
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT)" nzTitle="PT">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT)" nzTitle="PT" (nzClick)="reset('PT')" >
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt">
@@ -746,51 +746,53 @@
 
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pt;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" nzAlign="left" colspan="31" style="font-weight: bold;">
-                  {{data.marketName}}</td>
-
-                <td *ngIf="!data.isBold " nzAlign="center">{{ data.stt}}</td>
-                <td *ngIf="!data.isBold " nzAlign="left">{{ data.marketName }}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>               
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'">{{ data.col22 | number}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pt">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" nzAlign="left" colspan="31" style="font-weight: bold;">
+                    {{data.marketName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('PT') || data?.marketName?.toLowerCase().includes(getSearchTerm('PT').toLowerCase())">
+                      <td *ngIf="!data.isBold " nzAlign="center">{{ data.stt}}</td>
+                      <td *ngIf="!data.isBold " nzAlign="left">{{ data.marketName }}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>               
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'">{{ data.col22 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DB)" nzTitle="ĐB">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_DB)" nzTitle="ĐB" (nzClick)="reset('DB')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt">
@@ -860,76 +862,80 @@
 
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.db;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">{{data.customerName}}
-                </td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
-
-                <td *ngIf="!data.isBold && data.col23 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}
-                </td>
-                <td *ngIf="!data.isBold && data.col23 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
-                  {{data.col23 - data.col23 * 2 | number}}
-                </td>
-                <td *ngIf="!data.isBold && data.col24 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
-                  {{ data.col24 | number}}
-                </td>
-                <td *ngIf="!data.isBold && data.col24 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
-                  {{ data.col24 - data.col24 * 2| number}}
-                </td>
-
-                <td *ngIf="!data.isBold && data.col25 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
-                  {{ data.col25 | number}}
-                </td>
-                <td *ngIf="!data.isBold && data.col25 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
-                  {{ data.col25 - data.col25 * 2 | number }}
-                </td>
-
-                <td *ngIf="!data.isBold && data.col26 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col26 | number}}
-                </td>
-                <td *ngIf="!data.isBold && data.col26 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
-                  {{ data.col26 - data.col26 * 2 | number }}
-                </td>
-
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col33 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col34 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.db;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">{{data.customerName}}
+                  </td>
+                  <ng-container *ngIf="!getSearchTerm('DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('DB').toLowerCase())">
+                    <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
+    
+                    <td *ngIf="!data.isBold && data.col23 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}
+                    </td>
+                    <td *ngIf="!data.isBold && data.col23 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
+                      {{data.col23 - data.col23 * 2 | number}}
+                    </td>
+                    <td *ngIf="!data.isBold && data.col24 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
+                      {{ data.col24 | number}}
+                    </td>
+                    <td *ngIf="!data.isBold && data.col24 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
+                      {{ data.col24 - data.col24 * 2| number}}
+                    </td>
+    
+                    <td *ngIf="!data.isBold && data.col25 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
+                      {{ data.col25 | number}}
+                    </td>
+                    <td *ngIf="!data.isBold && data.col25 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
+                      {{ data.col25 - data.col25 * 2 | number }}
+                    </td>
+    
+                    <td *ngIf="!data.isBold && data.col26 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col26 | number}}
+                    </td>
+                    <td *ngIf="!data.isBold && data.col26 < 0 && accountGroups != 'G_NV_K'" nzAlign="right" style="color: red;">
+                      {{ data.col26 - data.col26 * 2 | number }}
+                    </td>
+    
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col33 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col34 | number}}</td>
+                  </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_FOB)"  nzTitle="FOB">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_FOB)"  nzTitle="FOB" (nzClick)="reset('FOB')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.fob">
@@ -996,53 +1002,56 @@
 
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.fob;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
-
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.fob;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
+                    {{data.customerName}}</td>
+                  <ng-container *ngIf="!getSearchTerm('FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('FOB').toLowerCase())">
+                    <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+    
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                  </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT09)" nzTitle="PT09">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PT09)" nzTitle="PT09" (nzClick)="reset('PT09')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pt09">
@@ -1108,52 +1117,54 @@
 
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pt09;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
-
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pt09;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('PT09') || data?.customerName?.toLowerCase().includes(getSearchTerm('PT09').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_BB_DO)" nzTitle="BB DO">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_BB_DO)" nzTitle="BB DO" (nzClick)="reset('BBDO')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.bbdo">
@@ -1199,42 +1210,44 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.bbdo;">
-                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="22">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.customerCode}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.goodCode}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.dvt}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.tToan}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
-
-              </tr>
+              <ng-container  *ngFor="let data of output.bbdo;">
+                <tr>
+                  <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="22">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('BBDO') || data?.customerName?.toLowerCase().includes(getSearchTerm('BBDO').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.customerCode}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.goodCode}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.dvt}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.tToan}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL1)" nzTitle="PL1">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL1)" nzTitle="PL1" (nzClick)="reset('PL1')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl1" style="width: 50%;">
@@ -1261,18 +1274,22 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pl1;">
-                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
-                  {{data.marketName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pl1;">
+                <tr>
+                  <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                    {{data.marketName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('PL1') || data?.marketName?.toLowerCase().includes(getSearchTerm('PL1').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
+              
             </tbody>
           </nz-table>
         </div>
@@ -1280,7 +1297,7 @@
       <!-- #endregion PL1 -->
 
       <!-- #region PL2 -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL2)" nzTitle="PL2">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL2)" nzTitle="PL2" (nzClick)="reset('PL2')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl2" style="width: 50%;">
@@ -1307,18 +1324,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pl2;">
-                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pl2;">
+                <tr>
+                  <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('PL2') || data?.customerName?.toLowerCase().includes(getSearchTerm('PL2').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1326,7 +1346,7 @@
       <!-- #endregion PL2 -->
 
       <!-- #region PL3 -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL3)" nzTitle="PL3">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL3)" nzTitle="PL3" (nzClick)="reset('PL3')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl3" style="width: 70%;">
@@ -1353,14 +1373,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pl3;">
-                <td nzAlign="center">{{data.stt}}</td>
-                <td nzAlign="left">{{data.customerName}}</td>
-                <td nzAlign="center">{{ data.col1 | number}}</td>
-                <td nzAlign="center">{{ data.col2 | number}}</td>
-                <td nzAlign="center">{{ data.col3 | number}}</td>
-                <td nzAlign="center">{{ data.col4 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pl3;">
+                <tr *ngIf="!getSearchTerm('PL3') || data?.customerName?.toLowerCase().includes(getSearchTerm('PL3').toLowerCase())">
+                  <td nzAlign="center">{{data.stt}}</td>
+                  <td nzAlign="left">{{data.customerName}}</td>
+                  <td nzAlign="center">{{ data.col1 | number}}</td>
+                  <td nzAlign="center">{{ data.col2 | number}}</td>
+                  <td nzAlign="center">{{ data.col3 | number}}</td>
+                  <td nzAlign="center">{{ data.col4 | number}}</td>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1368,7 +1390,7 @@
       <!-- #endregion PL3 -->
 
       <!-- #region PL4 -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL4)" nzTitle="PL4">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PL4)" nzTitle="PL4" (nzClick)="reset('PL4')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pl1" style="width: 50%;">
@@ -1395,18 +1417,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pl1;">
-                <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
-                  {{data.marketName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pl1;">
+                <tr>
+                  <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                    {{data.marketName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('PL4') || data?.marketName?.toLowerCase().includes(getSearchTerm('PL4').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4 | number}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1414,7 +1439,7 @@
       <!-- #endregion PL4 -->
 
       <!-- #region VK11 PT -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_PT)" nzTitle="VK11 PT">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_PT)" nzTitle="VK11 PT" (nzClick)="reset('VK11PT')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Pt">
@@ -1442,31 +1467,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.vk11Pt;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.vk11Pt;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('VK11PT') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11PT').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1474,7 +1502,7 @@
       <!-- #endregion VK11 PT -->
 
       <!-- #region VK11 ĐB -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_DB)" nzTitle="VK11 ĐB">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_DB)" nzTitle="VK11 ĐB" (nzClick)="reset('VK11DB')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Db">
@@ -1502,31 +1530,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.vk11Db;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container  *ngFor="let data of output.vk11Db;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('VK11DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11DB').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1534,7 +1565,7 @@
       <!-- #endregion VK11 ĐB -->
 
       <!-- #region VK11 FOB -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_FOB)" nzTitle="VK11 FOB">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_FOB)" nzTitle="VK11 FOB" (nzClick)="reset('VK11FOB')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Fob">
@@ -1562,31 +1593,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.vk11Fob;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.vk11Fob;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('VK11FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11FOB').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1594,7 +1628,7 @@
       <!-- #endregion VK11 FOB -->
 
       <!-- #region VK11 TNPP -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_TNPP)" nzTitle="VK11 TNPP">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_TNPP)" nzTitle="VK11 TNPP" (nzClick)="reset('VK11TNPP')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Tnpp">
@@ -1621,31 +1655,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.vk11Tnpp;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.vk11Tnpp;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('VK11TNPP') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11TNPP').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1653,7 +1690,7 @@
       <!-- #endregion VK11 TNPP -->
 
       <!-- #region PTS -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PTS)" nzTitle="PTS">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_PTS)" nzTitle="PTS" (nzClick)="reset('PTS')">
         <div class="overflow-tab">
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.pts">
@@ -1672,18 +1709,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.pts;">
-                <td nzAlign="center">{{data.stt}}</td>
-                <td nzAlign="left">{{data.pThuc}}</td>
-                <td nzAlign="left">{{data.customerCode}}</td>
-                <td nzAlign="left">{{ data.goodCode}}</td>
-                <td nzAlign="left">L15</td>
-                <td nzAlign="center">{{ data.col3 }}</td>
-                <td nzAlign="center">{{ data.tToan }}</td>
-                <td nzAlign="center">{{ data.marketName }}</td>
-                <td nzAlign="center">31.12.9999</td>
-                <td nzAlign="center">{{ data.deliveryPoint }}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.pts;">
+                <tr *ngIf="!getSearchTerm('PTS') || data?.marketName?.toLowerCase().includes(getSearchTerm('PTS').toLowerCase())">
+                  <td nzAlign="center">{{data.stt}}</td>
+                  <td nzAlign="left">{{data.pThuc}}</td>
+                  <td nzAlign="left">{{data.customerCode}}</td>
+                  <td nzAlign="left">{{ data.goodCode}}</td>
+                  <td nzAlign="left">L15</td>
+                  <td nzAlign="center">{{ data.col3 }}</td>
+                  <td nzAlign="center">{{ data.tToan }}</td>
+                  <td nzAlign="center">{{ data.marketName }}</td>
+                  <td nzAlign="center">31.12.9999</td>
+                  <td nzAlign="center">{{ data.deliveryPoint }}</td>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1691,7 +1730,7 @@
       <!-- #endregion PTS -->
 
       <!-- #region VK11 BB -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_BB)" nzTitle="VK11 BB">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_VK11_BB)" nzTitle="VK11 BB" (nzClick)="reset('VK11BB')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.vk11Bb">
@@ -1719,27 +1758,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.vk11Bb;">
-                <td nzAlign="center">{{data.stt}}</td>
-                <td nzAlign="left">{{data.customerName}}</td>
-                <td nzAlign="left">{{ data.address}}</td>
-                <td nzAlign="left">{{ data.goodsName}}</td>
-                <td nzAlign="center">{{ data.col1 | number}}</td>
-                <td nzAlign="center">{{ data.col2 | number}}</td>
-                <td nzAlign="center">{{ data.col3}}</td>
-                <td nzAlign="center">{{ data.col4}}</td>
-                <td nzAlign="center">{{ data.col5}}</td>
-                <td nzAlign="center">{{ data.col6}}</td>
-                <td nzAlign="center">{{ data.col7}}</td>
-                <td nzAlign="right">{{ data.col8 | number}}</td>
-                <td nzAlign="center">{{ data.col9}}</td>
-                <td nzAlign="center">{{ data.col10}}</td>
-                <td nzAlign="center">{{ data.col11}}</td>
-                <td nzAlign="center">{{ data.col12}}</td>
-                <td nzAlign="center">{{ data.col13}}</td>
-                <td nzAlign="center">{{ data.col14}}</td>
-                <td nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.vk11Bb;">
+                <tr *ngIf="!getSearchTerm('VK11BB') || data?.customerName.toLowerCase().includes(getSearchTerm('VK11BB').toLowerCase())">
+                  <td nzAlign="center">{{data.stt}}</td>
+                  <td nzAlign="left">{{data.customerName}}</td>
+                  <td nzAlign="left">{{ data.address}}</td>
+                  <td nzAlign="left">{{ data.goodsName}}</td>
+                  <td nzAlign="center">{{ data.col1 | number}}</td>
+                  <td nzAlign="center">{{ data.col2 | number}}</td>
+                  <td nzAlign="center">{{ data.col3}}</td>
+                  <td nzAlign="center">{{ data.col4}}</td>
+                  <td nzAlign="center">{{ data.col5}}</td>
+                  <td nzAlign="center">{{ data.col6}}</td>
+                  <td nzAlign="center">{{ data.col7}}</td>
+                  <td nzAlign="right">{{ data.col8 | number}}</td>
+                  <td nzAlign="center">{{ data.col9}}</td>
+                  <td nzAlign="center">{{ data.col10}}</td>
+                  <td nzAlign="center">{{ data.col11}}</td>
+                  <td nzAlign="center">{{ data.col12}}</td>
+                  <td nzAlign="center">{{ data.col13}}</td>
+                  <td nzAlign="center">{{ data.col14}}</td>
+                  <td nzAlign="center">{{ data.col15}}</td>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>
@@ -1747,7 +1788,7 @@
       <!-- #endregion VK11 BB -->
 
       <!-- #region Tổng hợp -->
-      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_TONG_HOP)" nzTitle="Tổng hợp">
+      <nz-tab *ngIf="rightList.includes(IMPORT_BATCH.WATCH_IMPORT_BATCH_LIST_TONG_HOP)" nzTitle="Tổng hợp" (nzClick)="reset('TH')">
         <div class="overflow-tab" >
           <nz-table [nzShowPagination]="false" nzSize="small" [nzFrontPagination]="false" nzBordered
             [nzData]="output.summary">
@@ -1775,31 +1816,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of output.summary;">
-                <td *ngIf="data.isBold"></td>
-                <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
-                  {{data.customerName}}</td>
-
-                <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
-                <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
-                <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
-                <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
-              </tr>
+              <ng-container *ngFor="let data of output.summary;">
+                <tr>
+                  <td *ngIf="data.isBold"></td>
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    {{data.customerName}}</td>
+                    <ng-container *ngIf="!getSearchTerm('TH') || data?.customerName?.toLowerCase().includes(getSearchTerm('TH').toLowerCase())">
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col4}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col5}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col6}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col7}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="right">{{ data.col8 | number}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col9}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col10}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col11}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col12}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col13}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col14}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{ data.col15}}</td>
+                    </ng-container>
+                </tr>
+              </ng-container>
             </tbody>
           </nz-table>
         </div>

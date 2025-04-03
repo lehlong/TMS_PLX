@@ -103,6 +103,26 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleCustomerPDF: boolean = false
   lstCustomerChecked: any[] = []
   accountGroups: any = {}
+  searchInput = ''
+  searchTerm: { [key: string]: string } = {
+    PT: "",
+    DB: "",
+    FOB: "",
+    PT09: "",
+    BBDO: "",
+    PL1: "",
+    PL2: "",
+    PL3: "",
+    PL4: "",
+    VK11PT: "",
+    VK11DB: "",
+    VK11FOB: "",
+    VK11TNPP: "",
+    PTS: "",
+    VK11BB: "",
+    TH: ""
+};
+ currentTab = ""
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
@@ -138,7 +158,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
     this.getRight()
-    console.log(this.input)
   }
 
   getOutput(id: any) {
@@ -231,6 +250,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
     const accountGroups = localStorage.getItem('UserInfo');
     this.accountGroups = accountGroups ? JSON.parse(accountGroups).accountGroups[0].name : [];
+    this.accountGroups == 'G_NV_K' ? this.currentTab = 'PT':'' 
   }
 
   handleCancel() {
@@ -636,5 +656,20 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.isVisibleCustomerPDF = true
       },
     })
+  }
+  search(sheetName:string) {
+    this.searchTerm[sheetName] = this.searchInput;
+  }
+  reset(tabName:string){
+    const keys = Object.keys(this.searchTerm); 
+    keys.forEach(key => this.searchTerm[key] = ""); 
+    this.searchInput = "";
+    this.currentTab = tabName
+    console.log(tabName);
+    
+    
+}
+  getSearchTerm(key: string): string {
+    return this.searchTerm[key] || "";
   }
 }
