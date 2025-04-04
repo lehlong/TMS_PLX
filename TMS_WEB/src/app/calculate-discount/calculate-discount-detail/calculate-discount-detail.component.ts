@@ -672,4 +672,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
   getSearchTerm(key: string): string {
     return this.searchTerm[key] || "";
   }
+  hasExportPermission(): boolean {
+    return this.rightList.includes(IMPORT_BATCH.EXPORT_TO_EXCEL) ||
+           this.rightList.includes(IMPORT_BATCH.EXPORT_TO_PDF) ||
+           this.rightList.includes(IMPORT_BATCH.EXPORT_TO_WORD);
+  }
 }

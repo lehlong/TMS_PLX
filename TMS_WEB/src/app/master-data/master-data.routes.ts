@@ -16,6 +16,8 @@ import { DeliveryGroupComponent } from './delivery-group/delivery-group.componen
 import { CuocVanChuyenListComponent } from './cuoc-van-chuyen-list/cuoc-van-chuyen-list.component'
 import { CuocVanChuyenComponent } from './cuoc-van-chuyen/cuoc-van-chuyen.component'
 import { SignerComponent } from './signer/signer.component'
+import { CustomerPhoneComponent } from './customer-phone/customer-phone.component'
+import { CustomerEmailComponent } from './customer-email/customer-email.component'
 
 export const masterDataRoutes: Routes = [
   { path: 'unit', component: UnitComponent },
@@ -34,4 +36,6 @@ export const masterDataRoutes: Routes = [
   { path: 'cuoc-van-chuyen/detail/:code', component: CuocVanChuyenComponent },
   { path: 'cuoc-van-chuyen-list', component: CuocVanChuyenListComponent },
   { path: 'signer', component: SignerComponent },
+  { path: 'customer-phone', component: CustomerPhoneComponent },
+  { path: 'customer-email', component: CustomerEmailComponent },
 ]

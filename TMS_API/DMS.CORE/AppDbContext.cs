@@ -191,8 +191,8 @@ namespace DMS.CORE
         public DbSet<TblMdTemplateReportElement> tblMdTemplateReportElement { get; set; }
         public DbSet<TblMdTemplateReportMapping> tblMdTemplateReportMapping { get; set; }
 
-
-
+        public DbSet<TblMdCustomerPhone> TblMdCustomerPhone { get; set; }
+        public DbSet<TblMdCustomerEmail> TblMdCustomerEmail { get; set; }
 
         #endregion
 

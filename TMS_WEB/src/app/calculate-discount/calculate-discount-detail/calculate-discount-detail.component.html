@@ -34,36 +34,36 @@
             <span nz-icon nzType="close"></span> Từ chối
           </button>
 
-          <button nzType="default" nz-button (click)="openInput()">
+          <button [appPermission]="IMPORT_BATCH.INPUT_DATA" nzType="default" nz-button (click)="openInput()">
             <span nz-icon nzType="right-square"></span> Dữ liệu đầu vào
           </button>
 
-          <button nzType="default" nz-button (click)="reCalculate()">
+          <button [appPermission]="IMPORT_BATCH.RECALCULATE" nzType="default" nz-button (click)="reCalculate()">
             <span nz-icon nzType="calculator"></span> Tính toán lại
           </button>
 
-          <button nz-button nz-dropdown [nzDropdownMenu]="export">
+          <button nz-button nz-dropdown [nzDropdownMenu]="export" *ngIf="hasExportPermission()">
             <span nz-icon nzType="file"></span>
             Xuất file
             <span nz-icon nzType="down"></span>
           </button>
           <nz-dropdown-menu #export="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="exportExcel()">Xuất Excel</li>
-              <li nz-menu-item (click)="exportWord()">Xuất Word</li>
-              <li nz-menu-item (click)="exportPDF()">Xuất PDF</li>
-              <li nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
+              <li [appPermission]="IMPORT_BATCH.EXPORT_TO_EXCEL" nz-menu-item (click)="exportExcel()">Xuất Excel</li>
+              <li [appPermission]="IMPORT_BATCH.EXPORT_TO_WORD" nz-menu-item (click)="exportWord()">Xuất Word</li>
+              <li [appPermission]="IMPORT_BATCH.EXPORT_TO_PDF" nz-menu-item (click)="exportPDF()">Xuất PDF</li>
+              <li [appPermission]="IMPORT_BATCH.EXPORT_TO_EXCEL" nz-menu-item><button (click)="exportWordTrinhKy()">Xuất Trình ký</button></li>
             </ul>
           </nz-dropdown-menu>
 
-          <button nz-button nz-dropdown [nzDropdownMenu]="history">
+          <button nz-button nz-dropdown [nzDropdownMenu]="history" [appPermission]="IMPORT_BATCH.HISTORY">
             <span nz-icon nzType="history"></span>
             Lịch sử
             <span nz-icon nzType="down"></span>
           </button>
           <nz-dropdown-menu #history="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="showHistoryAction()" [appPermission]="IMPORT_BATCH.HISTORY">Lịch sử hành động</li>
+              <li nz-menu-item (click)="showHistoryAction()">Lịch sử hành động</li>
               <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
               <li nz-menu-item (click)="showEmailAction()">Lịch sử gửi Mail</li>
               <li nz-menu-item (click)="showSMSAction()">Lịch sử gửi SMS</li>
@@ -77,7 +77,7 @@
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" nz-popconfirm class="!flex !items-center btn-sms"
+          <button [appPermission]="IMPORT_BATCH.SEND_SMS" nz-popconfirm class="!flex !items-center btn-sms"
             nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi Email thông báo cho các khách hàng?"
             (nzOnConfirm)="confirmSendSMS()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'" (nzOnCancel)="cancelSendEmail()"
             nzPopconfirmPlacement="bottom" nz-button>

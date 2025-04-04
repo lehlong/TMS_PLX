@@ -363,5 +363,24 @@ namespace DMS.API.Controllers.BU
                 return BadRequest(transferObject);
             }
         }
+        [HttpGet("GetAllInputCustomer")]
+        [Authorize]
+        public async Task<IActionResult> GetAllInputCustomer()
+        {
+            var transferObject = new TransferObject();
+            var data = await _service.GetAllInputCustomer();
+
+            if (_service.Status)
+            {
+                transferObject.Data = data;
+                return Ok(transferObject);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                return BadRequest(transferObject);
+            }
+        }
     }
 }

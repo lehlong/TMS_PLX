@@ -77,4 +77,8 @@ export class CalculateDiscountService {
     ExportPDF(lstCustomerChecked: any, headerId: any): Observable<any> {
       return this.commonService.post(`CalculateDiscount/ExportPDF?headerId=${headerId}`, lstCustomerChecked)
     }
+
+    GetAllInputCustomer(): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/GetAllInputCustomer`)
+  }
 }

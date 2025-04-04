@@ -55,6 +55,7 @@ namespace DMS.BUSINESS.Services.BU
         Task<List<TblNotifyEmail>> GetMail(string headerId);
         Task<List<TblNotifySms>> GetSms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
+        Task<List<CustomInput>> GetAllInputCustomer();
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
@@ -4093,6 +4094,60 @@ namespace DMS.BUSINESS.Services.BU
                 return null;
             }
         }
+
+        public async Task<List<CustomInput>> GetAllInputCustomer()
+        {
+            try
+            {
+                var customerBbdo = await _dbContext.TblMdCustomerBbdo
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                var customerPt = await _dbContext.TblMdCustomerPt
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                var customerFob = await _dbContext.TblMdCustomerFob
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                var customerDb = await _dbContext.TblMdCustomerDb
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                var customerPts = await _dbContext.TblMdCustomerPts
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                var customerTnpp = await _dbContext.TblMdCustomerTnpp
+                    .GroupBy(x => x.Code)
+                    .Select(g => g.Select(x => new CustomInput { code = x.Code, name = x.Name }).FirstOrDefault())
+                    .ToListAsync();
+
+                // Gộp danh sách nhưng đảm bảo kiểu trả về là List<CustomInput>
+                var result = customerBbdo
+                    .Concat(customerPt)
+                    .Concat(customerFob)
+                    .Concat(customerDb)
+                    .Concat(customerPts)
+                    .Concat(customerTnpp)
+                    .ToList(); // Loại bỏ kiểu dynamic
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+                return new List<CustomInput>(); // Trả về danh sách rỗng thay vì null
+            }
+        }
+
 
         public async Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null)
         {

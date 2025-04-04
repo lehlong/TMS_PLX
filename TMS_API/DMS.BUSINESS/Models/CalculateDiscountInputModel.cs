@@ -20,4 +20,9 @@ namespace DMS.BUSINESS.Models
         public string code { get; set; }
         public string deliveryGroupCode { get; set; }
     }
+    public class CustomInput
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+    }
 }
