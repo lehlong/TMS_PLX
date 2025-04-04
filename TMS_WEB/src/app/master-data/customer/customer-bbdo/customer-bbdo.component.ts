@@ -22,6 +22,7 @@ import { DeliveryGroupService } from '../../../services/master-data/delivery-gro
 })
 export class CustomerBbdoComponent {
   validateForm: FormGroup = this.fb.group({
+    id:'',
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
     marketCode: [''],
@@ -36,6 +37,7 @@ export class CustomerBbdoComponent {
     ckXang: [0],
     ckDau: [0],
     htcvc: [0],
+    fob:[0],
     httVb1370: [0],
     ckv2: [0],
     adrress: [''],
@@ -278,6 +280,7 @@ export class CustomerBbdoComponent {
   openEdit(data: any) {
     console.log(data)
     this.validateForm.setValue({
+      id:data.id,
       code: data.code,
       name: data.name,
       localCode: data.localCode,
@@ -289,6 +292,7 @@ export class CustomerBbdoComponent {
       ckXang: data.ckXang,
       ckv2: data.ckv2,
       cpccvc: data.cpccvc,
+      fob: data.fob,
       cuLyBq: data.cuLyBq,
       cvcbq: data.cvcbq,
       htcvc: data.htcvc,

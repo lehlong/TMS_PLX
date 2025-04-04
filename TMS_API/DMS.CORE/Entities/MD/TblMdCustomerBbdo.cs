@@ -67,6 +67,9 @@ namespace DMS.CORE.Entities.MD
         [Column("PHUONG_THUC", TypeName = "NVARCHAR(50)")]
         public string? PhuongThuc { get; set; }
 
+        [Column("FOB", TypeName = "DECIMAL(18,0)")]
+        public decimal? Fob { get; set; }
+
         [Column("THTT", TypeName = "NVARCHAR(50)")]
         public string? Thtt { get; set; }
 

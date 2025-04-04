@@ -365,6 +365,7 @@
                 <th nzAlign="center">KHÁCH HÀNG</th>
                 <th nzAlign="center">CƯỚC <br> VC BQ</th>
                 <th nzAlign="center">CP CHUNG <br> CHƯA CƯỚC VC</th>
+                <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
                 <th nzAlign="center">LÃI VAY NH</th>
                 <th nzAlign="center" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
               </tr>
@@ -375,6 +376,7 @@
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
               </tr>

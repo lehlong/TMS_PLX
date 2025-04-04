@@ -44,6 +44,7 @@
           <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
           <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
           <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
+          <th nzAlign="center" rowspan="2">	Mức giảm giá <br> tại kho bên bán (FOB)</th>
           <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
           <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
           <th nzAlign="center" rowspan="2">HỖ TRỢ <br> THEO <br> VB1370/PLX</th>
@@ -72,6 +73,7 @@
           <td nzAlign="center">{{ data.cuLyBq }}</td>
           <td nzAlign="center">{{ data.cvcbq }}</td>
           <td nzAlign="center">{{ data.cpccvc }}</td>
+          <td nzAlign="center">{{ data.fob }}</td>
           <td nzAlign="center">{{ data.ckXang }}</td>
           <td nzAlign="center">{{ data.ckDau }}</td>
           <td nzAlign="center">{{ data.htcvc }}</td>
@@ -176,11 +178,14 @@
           label="Chiết khấu Vùng 2" [control]="$any(validateForm).controls['ckv2']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
-        <app-input-clear nz-col nzSpan="11" placeholder="Nhập chiết khấu xăng" [required]="true" label="Chiết khấu xăng"
+        <app-input-clear nz-col nzSpan="7" placeholder="Nhập chiết khấu xăng" [required]="true" label="Chiết khấu xăng"
           [control]="$any(validateForm).controls['ckXang']"></app-input-clear>
 
-        <app-input-clear nz-col nzSpan="12" placeholder="Nhập chiết khấu dầu" [required]="true" label="Chiết khấu dầu"
+        <app-input-clear nz-col nzSpan="8" placeholder="Nhập chiết khấu dầu" [required]="true" label="Chiết khấu dầu"
           [control]="$any(validateForm).controls['ckDau']"></app-input-clear>
+
+          <app-input-clear nz-col nzSpan="8" placeholder="Mức giảm giá tại kho bên bán (FOB)" [required]="true" label="Múc giảm giá tại kho bên bán FOB"
+          [control]="$any(validateForm).controls['fob']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
         <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true" label="Phương thức"

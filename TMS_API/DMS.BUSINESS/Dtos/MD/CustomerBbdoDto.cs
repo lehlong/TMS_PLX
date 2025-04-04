@@ -73,6 +73,9 @@ namespace DMS.BUSINESS.Dtos.MD
         [Description("Phương thức")]
         public string? PhuongThuc { get; set; }
 
+        [Description("Mức giảm giá tại kho bên bán (FOB)")]
+        public decimal? Fob { get; set; }
+
         [Description("Thời hạn thanh toán")]
         public string? Thtt { get; set; }
 

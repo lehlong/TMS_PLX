@@ -275,6 +275,7 @@ namespace DMS.BUSINESS.Services.BU
                         Cpccvc = x.Cpccvc ?? 0,
                         Cvcbq = x.Cvcbq ?? 0,
                         Lvnh = x.Lvnh ?? 0,
+                        Fob = x.Fob ?? 0,
                         Htcvc = x.Htcvc ?? 0,
                         HttVb1370 = x.HttVb1370 ?? 0,
                         Ckv2 = x.Ckv2 ?? 0,
@@ -1066,8 +1067,9 @@ namespace DMS.BUSINESS.Services.BU
                             Col4 = i.Cpccvc,
                             Col5 = i.Cvcbq,
                             Col6 = i.Lvnh,
-                            Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) + 50,
-                            Col8 = (data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) + 50) / 1.1M,
+                            Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob,
+                            Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / 1.1M,
+
                         };
                         j.Col9 = j.Col7 - j.Col5 * 1.1M;
                         j.Col10 = j.Col9 / 1.1M;
