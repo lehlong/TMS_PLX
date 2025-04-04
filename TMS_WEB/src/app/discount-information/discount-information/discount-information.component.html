@@ -90,8 +90,6 @@
     <ng-container *nzDrawerContent>
 
       <nz-divider nzText={{headerName}} nzOrientation="left"> {{model.headerName}}</nz-divider>
-
-
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col class="gutter-row" [nzSpan]="18">
           <div class="inner-box">
@@ -102,20 +100,13 @@
               Tên đợt nhập là bắt buộc!
             </div>
           </div>
-
         </div>
-
-
-
-        <!-- <div nz-col class="gutter-row" [nzSpan]="6">
-          <div class="inner-box">
-            <label>Ngày hiệu lực</label>
-            <nz-date-picker nzShowTime nzFormat="dd-MM-yyyy HH:mm:ss" [(ngModel)]="model.header.fDate"></nz-date-picker>
-          </div>
-        </div> -->
       </div>
+
       <nz-divider nzText="HỆ SỐ MẶT HÀNG" nzOrientation="left"></nz-divider>
 
+      <nz-tabset>
+        <nz-tab nzTitle="THÔNG TIN GIÁ">
       <nz-table #hsTable [nzData]="model.goodss" nzSize="small">
         <thead>
           <tr>
@@ -150,8 +141,33 @@
           }
         </tbody>
       </nz-table>
+      </nz-tab>
+
+      <nz-tab nzTitle="THỊ TRƯỜNG">
+        <nz-table #hsTable [nzData]="model.inMarketCompetitor" [nzFrontPagination]="false" nzSize="small">
+          <thead>
+            <tr>
+              <th rowspan="2" [nzAlign]="'left'">Công ty đối thủ</th>
+              <th rowspan="2" [nzAlign]="'left'">Thị trường</th>
+              <th rowspan="2" [nzAlign]="'center'">Cự li</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of model.inMarketCompetitor; track data) {
+              <tr>
+                <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.competitorName"></td>
+                <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.marketName"></td>
+                <td><input nz-input nzAlign="center" type="number" [(ngModel)]="data.gap"></td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      </nz-tabset>
     </ng-container>
   </nz-drawer>
+
+
   <ng-template #extra>
     <nz-space>
       <ng-container>

@@ -11,7 +11,6 @@ namespace DMS.API.Controllers.BU
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DiscountInformationListController(IDiscountInformationListService service) : ControllerBase
     {
         public readonly IDiscountInformationListService _service = service;
@@ -34,8 +33,8 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
-        [HttpPost("Insert")]        
-        public async Task<IActionResult> Insert([FromBody] CompetitorModel model)
+        [HttpPost("InsertData")]        
+        public async Task<IActionResult> InsertData([FromBody] CompetitorModel model)
         {
             var transferObject = new TransferObject();
 
@@ -60,7 +59,7 @@ namespace DMS.API.Controllers.BU
         {
             var i = code;
             var transferObject = new TransferObject();
-            var result = await _service.BuildObjectCreate(code);
+            var result = await _service.BuildObjCreate(code);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -92,13 +91,24 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
-        //[HttpGet("GetDataInput")]
-        //public async Task<IActionResult> GetDataInput(string code)
-        //{
-        //    var transferObject = new TransferObject();
-        //    var result = await _service.BuidDataInput(code);
+        [HttpGet("GetListCalculateDiscount")]
+        public async Task<IActionResult> GetListCalculateDiscount()
+        {
+            var transferObject = new TransferObject();
+            var result = await _service.getLstCalculateDiscount();
 
-        //    return null;
-        //}
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                return Ok(transferObject);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
     }
 }

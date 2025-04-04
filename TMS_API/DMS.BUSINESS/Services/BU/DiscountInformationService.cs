@@ -23,6 +23,7 @@ using System.IO.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using NPOI.SS.Util;
 using DMS.CORE.Entities.IN;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -31,7 +32,6 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> SaveFileHistory(MemoryStream outFileStream, string headerId);
         void ExportExcel(ref MemoryStream outFileStream, string path, string headerId);
         Task<DiscountInformationModel> getAll(string Code);
-        //Task<CompetitorModel> GetDataInput(string code);
         Task UpdateDataInput(CompetitorModel model);
 
     }
@@ -44,11 +44,14 @@ namespace DMS.BUSINESS.Services.BU
                 var data = new DiscountInformationModel();
                 var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountCompetitor = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == Code).ToListAsync();
-                var lstMarketCompetitor = await _dbContext.TblMdMarketCompetitor.OrderBy(x => x.Code).ToListAsync();
-                var vinhCuaLo =  await _dbContext.TblInVinhCuaLo.Where(x=> x.HeaderCode == Code).ToListAsync();
+                var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.OrderBy(x => x.Code).ToListAsync();
+                
+                //var vinhCuaLo =  await _dbContext.TblInVinhCuaLo.Where(x=> x.HeaderCode == Code).ToListAsync();
+                var lstCalculate =  await _dbContext.TblBuInputPrice.Where(x=> x.HeaderId == Code).ToListAsync();
 
                 var lstDIL = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == Code).ToListAsync();
                 data.lstDIL = lstDIL;
+                
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
                 var discountCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == Code).ToListAsync();
                 data.lstGoods = lstGoods;
@@ -80,10 +83,10 @@ namespace DMS.BUSINESS.Services.BU
 
                     foreach (var c in lstCompetitor)
                     {
-                        var item = vinhCuaLo.FirstOrDefault(v => v.GoodsCode == g.Code);
+                        var item = lstCalculate.FirstOrDefault(v => v.GoodCode == g.Code);
                         var dt = new DT();
 
-                        var ck1 = (c.Code == "APP" ? (0.02m * item.GblcsV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
+                        var ck1 = (c.Code == "APP" ? (0.02m * item.GblV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
                         dt.ckCl.Add(Math.Round((decimal)ck1, 0));
                         dt.ckCl.Add(Math.Round(ck1 - discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0, 0));
 
@@ -122,8 +125,8 @@ namespace DMS.BUSINESS.Services.BU
 
                     foreach (var c in lstCompetitor)
                     {
-                        var gap = lstMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
-                        var cuocVc = c.Code == "APP" ? lstMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap * (decimal)z11 / 1000 ?? 0) : m.CuocVCBQ + 200;
+                        var gap = lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
+                        var cuocVc = c.Code == "APP" ? lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap * (decimal)z11 / 1000 ?? 0) : m.CuocVCBQ + 200;
                         d.gaps.Add(Math.Round(gap ?? 0)); 
                         d.cuocVCs.Add(cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
                     }
@@ -135,13 +138,13 @@ namespace DMS.BUSINESS.Services.BU
                         };
                         foreach (var c in lstCompetitor)
                         {
-                            var item = vinhCuaLo.FirstOrDefault(v => v.GoodsCode == g.Code);
+                            var item = lstCalculate.FirstOrDefault(v => v.GoodCode == g.Code);
                             var dt = new DT();
                             var discountCompetitor = lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount) ?? 0m;
-                            var gap = lstMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
+                            var gap = lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
                             var cuocVc = c.Code == "APP" ? gap * z11 / 1000 : m.CuocVCBQ + 200;
                             var ck1 = c.Code == "APP"
-                            ? 0.02m * item.GblcsV1 + Math.Round(discountCompetitor , 0) - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0)
+                            ? 0.02m * item.GblV1 + Math.Round(discountCompetitor , 0) - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0)
                             : discountCompetitor - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
                             dt.ckCl.Add(Math.Round((decimal)ck1, 0));
                             dt.ckCl.Add(Math.Round((decimal)(ck1 - (discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0));
@@ -163,6 +166,73 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
+        public async Task<CompetitorModel> getDataInput(string code)
+        {
+            try
+            {
+                var discoutCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == code).FirstOrDefaultAsync();
+                var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
+                var lstCompetitor = await _dbContext.TblMdCompetitor.OrderBy(x => x.Code).ToListAsync();
+                var lstDiscountInformation = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == code).ToListAsync();
+                var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.Where(x => x.HeaderCode == code).ToListAsync();
+
+                var lstInMarket = await _dbContext.TblBuInputMarket.OrderBy(x => x.Code).ToListAsync();
+                List<GOODSs> goodss = new List<GOODSs>();
+
+                foreach (var g in lstGoods)
+                {
+                    var goods = new GOODSs();
+                    goods.Code = g.Code;
+                    foreach (var c in lstCompetitor)
+                    {
+                        goods.HS.Add(new TblInDiscountCompetitor
+                        {
+                            Code = lstDiscountInformation.Where(x => x.GoodsCode == g.Code && x.CompetitorCode == c.Code).Select(x => x.Code).FirstOrDefault(),
+                            HeaderCode = code,
+                            GoodsCode = g.Code,
+                            Discount = lstDiscountInformation.Where(x => x.GoodsCode == g.Code && x.CompetitorCode == c.Code).Sum(x => x.Discount ?? 0.00M),
+                            CompetitorCode = c.Code,
+                            IsActive = true,
+                        });
+                    }
+                    goods.DiscountCompany.Add(new TblInDiscountCompany
+                    {
+                        Code = discoutCompany.Code,
+                        HeaderCode = code,
+                        Discount = discoutCompany.Discount,
+                        GoodsCode = g.Code,
+                    });
+
+                    goodss.Add(goods);
+                }
+
+                return new CompetitorModel
+                {
+                    Header = new TblBuDiscountInformationList
+                    {
+                        Code = code,
+                        Name = "",
+                        IsActive = true,
+                    },
+                    InMarketCompetitor = lstInMarketCompetitor.Select(x => new TblInMarketCompetitor
+                    {
+                        Code = Guid.NewGuid().ToString(),
+                        HeaderCode = code,
+                        CompetitorCode = x.CompetitorCode,
+                        CompetitorName = x.CompetitorName,
+                        MarketCode = x.MarketCode,
+                        MarketName = x.MarketName,
+                        Gap = x.Gap,
+
+                    }).OrderBy(x => x.CompetitorName).ThenBy(x => x.MarketCode).ToList(),
+                    Goodss = goodss,
+                };
+            }
+            catch
+            {
+                return new CompetitorModel();
+            }
+        }
 
         public async Task UpdateDataInput(CompetitorModel model)
         {
@@ -170,8 +240,9 @@ namespace DMS.BUSINESS.Services.BU
             {
                 
                 _dbContext.TblBuDiscountInformationList.Update(model.Header);
+                _dbContext.TblInMarketCompetitor.UpdateRange(model.InMarketCompetitor);
 
-                foreach (var g in model.goodss)
+                foreach (var g in model.Goodss)
                 {
                     _dbContext.TblInDiscountCompetitor.UpdateRange(g.HS);
                     _dbContext.TblInDiscountCompany.UpdateRange(g.DiscountCompany);
@@ -185,6 +256,7 @@ namespace DMS.BUSINESS.Services.BU
                 Exception = ex;
             }
         }
+     
         public void ExportExcel(ref MemoryStream outFileStream, string path, string headerId)
         {
             try
@@ -340,6 +412,7 @@ namespace DMS.BUSINESS.Services.BU
                 this.Exception = ex;
             }
         }
+        
         public ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
@@ -383,6 +456,7 @@ namespace DMS.BUSINESS.Services.BU
             }
             return path;
         }
+       
         public static IFormFile ConvertMemoryStreamToIFormFile(MemoryStream memoryStream, string fileName)
         {
             memoryStream.Position = 0; // Reset the stream position to the beginning
@@ -394,6 +468,9 @@ namespace DMS.BUSINESS.Services.BU
             return formFile;
 
         }
+    
+        
+    
     }
 
     

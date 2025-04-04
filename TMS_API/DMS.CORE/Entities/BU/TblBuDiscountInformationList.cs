@@ -14,11 +14,11 @@ namespace DMS.CORE.Entities.BU
     public class TblBuDiscountInformationList : SoftDeleteEntity
     {
         [Key]
-        [Column("CODE", TypeName = "VARCHAR(50)")]
+        [Column("CODE", TypeName = "NVARCHAR(100)")]
         public string Code { get; set; }
 
         [Column("NAME", TypeName = "NVARCHAR(255)")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Column("F_DATE", TypeName = "DATETIME")]
         public DateTime? FDate { get; set; }

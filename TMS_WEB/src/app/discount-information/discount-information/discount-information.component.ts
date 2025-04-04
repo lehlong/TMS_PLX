@@ -110,6 +110,7 @@ export class DiscountInformationComponent {
 
   updateDataInput() {
     if (this.model.header.name != ''){
+      console.log(this.model);
 
       this._service.UpdateDataInput(this.model).subscribe({
         next: (data) => {

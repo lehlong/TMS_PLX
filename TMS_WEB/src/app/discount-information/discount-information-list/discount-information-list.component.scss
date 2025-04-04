@@ -5,3 +5,13 @@
   background: none;
   text-align: right;
 }
+td > input[type=number]{
+  border: none;
+  background: transparent;
+  text-align: right;
+}
+td > input[type=text]{
+  border: none;
+  background: transparent;
+  text-align: left;
+}

@@ -199,6 +199,7 @@ namespace DMS.CORE
         #region Input
         public DbSet<TblInNguoiKyTen> TblInNguoiKyTen { get; set; }
         public DbSet<TblInVinhCuaLo> TblInVinhCuaLo { get; set; }
+        public DbSet<TblInMarketCompetitor> TblInMarketCompetitor { get; set; }
         public DbSet<TblInHeSoMatHang> TblInHeSoMatHang { get; set; }
         public DbSet<TblInDiscountCompetitor> TblInDiscountCompetitor { get; set; }
         public DbSet<TbLInCustomerFob> TbLInCustomerFob { get; set; }

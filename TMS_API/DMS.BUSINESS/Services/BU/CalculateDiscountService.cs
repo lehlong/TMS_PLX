@@ -71,10 +71,6 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     query = query.Where(x => x.Name.Contains(filter.KeyWord));
                 }
-                if (filter.KeyWord == "04")
-                {
-                    query = query.Where(x => x.Status == "04");
-                }
                 return await Paging(query.OrderByDescending(x => x.CreateDate), filter);
             }
             catch (Exception ex)

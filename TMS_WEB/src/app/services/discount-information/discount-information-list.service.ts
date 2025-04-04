@@ -16,12 +16,16 @@ export class DiscountInformationListService {
     return this.commonService.get('DiscountInformationList/GetAll');
   }
 
+  getLstCalculate(): Observable<any> {
+    return this.commonService.get('DiscountInformationList/GetListCalculateDiscount');
+  }
+
   getObjectCreate(params : any): Observable<any> {
     return this.commonService.get(`DiscountInformationList/GetObjectCreate?code=${params}`);
   }
 
   createData(params: any): Observable<any> {
-    return this.commonService.post('DiscountInformationList/Insert', params);
+    return this.commonService.post('DiscountInformationList/InsertData', params);
   }
 
 

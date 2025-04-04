@@ -18,6 +18,8 @@ import { CuocVanChuyenComponent } from './cuoc-van-chuyen/cuoc-van-chuyen.compon
 import { SignerComponent } from './signer/signer.component'
 import { CustomerPhoneComponent } from './customer-phone/customer-phone.component'
 import { CustomerEmailComponent } from './customer-email/customer-email.component'
+import { CompetitorComponent } from './competitor/competitor.component'
+import { MarketCompetitorComponent } from './market-competitor/market-competitor.component'
 
 export const masterDataRoutes: Routes = [
   { path: 'unit', component: UnitComponent },
@@ -25,7 +27,8 @@ export const masterDataRoutes: Routes = [
   { path: 'area', component: AreaComponent },
   { path: 'account-type', component: AccountTypeComponent },
   { path: 'delivery-group', component: DeliveryGroupComponent },
-
+  { path: 'competitor', component: CompetitorComponent },
+  { path: 'market-competitor', component: MarketCompetitorComponent },
   { path: 'goods', component: GoodsComponent },
   { path: 'customer', children: customerRoutes, canActivate: [AuthGuard]},
   { path: 'delivery-point', component: DeliveryPointComponent },

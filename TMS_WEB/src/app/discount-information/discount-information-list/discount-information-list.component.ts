@@ -100,7 +100,7 @@ export class DiscountInformationListComponent {
 
   searchLstCaculate() {
     this.isSubmit = false;
-    this._caculateResultServicer.getByStatus("04").subscribe({
+    this._service.getLstCalculate().subscribe({
       next: (data) => {
         const temp = data;
         console.log(data);
@@ -136,6 +136,8 @@ export class DiscountInformationListComponent {
       // return
     }
     if (this.model.header.name != '') {
+      console.log(this.model);
+
       this._service.createData(this.model).subscribe({
         next: (data) => {
           this.router.navigate([`/discount-information/detail/${this.model.header.code}`])
