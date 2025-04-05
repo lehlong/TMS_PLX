@@ -571,17 +571,23 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   onKeyDownNumberOnly(event: KeyboardEvent) {
     const allowedKeys = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', '-', '.', // Thêm "-" và "."
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', '-', '.',
     ];
-
-    if (
-      (event.key >= '0' && event.key <= '9') || allowedKeys.includes(event.key)
-    ) {
-      return; // Cho phép số, -, .
-    } else {
-      event.preventDefault(); // Chặn ký tự khác
+  
+    // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
+    if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
+      return;
     }
+  
+    // Cho phép nhập số hoặc phím được phép
+    if ((event.key >= '0' && event.key <= '9') || allowedKeys.includes(event.key)) {
+      return;
+    }
+  
+    // Chặn các phím còn lại
+    event.preventDefault();
   }
+  
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
 

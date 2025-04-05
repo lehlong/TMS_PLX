@@ -34,8 +34,6 @@
         public IList<DlgModel> Dlg8 { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg9 { get; } = new List<DlgModel>();
         public IList<DlgModel> Dlg10 { get; } = new List<DlgModel>();
-        public IList<DlgModel> DlgTDGBL { get; } = new List<DlgModel>();
-        public IList<DlgModel> DlgTdGgptbl { get; } = new List<DlgModel>();
         public string? NameOld { get; set; }
     }
 

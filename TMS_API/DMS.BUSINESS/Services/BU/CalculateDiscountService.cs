@@ -681,33 +681,6 @@ namespace DMS.BUSINESS.Services.BU
                     }
                 }
 
-                foreach (var g in lstGoods)
-                {
-                    var hsmh = previousData.Where(x => x.GoodCode == g.Code).ToList();
-                    var dlg_2 = data.Dlg.Dlg2;
-                    foreach (var n in dlg_2)
-                    {
-                        if (g.Code == n.GoodCode)
-                        {
-                            var i = new DlgModel
-                            {
-                                GoodCode = g.Code,
-                                GoodName = g.Name,
-                                Col1 = hsmh.Sum(x => x.GblV1 + x.ChenhLech), // lấy giá niêm yết ở kì trước
-                                Col2 = n.Col1,
-                                Col3 = n.Col1 - hsmh.Sum(x => x.GblV1 + x.ChenhLech),
-
-                                Col4 = hsmh.Sum(x => x.GblV2), // lấy giá niêm yết ở kì trước
-                                Col5 = n.Col2,
-                                Col6 = n.Col2 - hsmh.Sum(x => x.GblV2),
-                            };
-
-                            data.Dlg.DlgTDGBL.Add(i);
-                        }
-
-                    }
-                }
-
                 // Đề xuất mức giảm giá
                 foreach (var g in lstGoods)
                 {
@@ -728,30 +701,6 @@ namespace DMS.BUSINESS.Services.BU
                                 Col3 = n.Col14 - dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == "V2").Sum(x => x.Col14),
                             };
                             data.Dlg.Dlg10.Add(i);
-                        }
-
-                    }
-                }
-
-                // thay đổi giá giao phương thức bán lẻ
-                foreach (var g in lstGoods)
-                {
-                    var hsmh = previousData.Where(x => x.GoodCode == g.Code).ToList();
-                    var dlg_4 = data.Dlg.Dlg4;
-                    foreach (var n in dlg_4)
-                    {
-                        if (g.Code == n.GoodCode)
-                        {
-                            var i = new DlgModel
-                            {
-                                GoodCode = g.Code,
-                                GoodName = g.Name,
-                                Col1 = hsmh.Sum(x => x.L15Blv2),
-                                Col2 = n.Col3,
-                                Col3 = n.Col3 - hsmh.Sum(x => x.L15Blv2),
-                            };
-
-                            data.Dlg.DlgTdGgptbl.Add(i);
                         }
 
                     }
@@ -2727,7 +2676,7 @@ namespace DMS.BUSINESS.Services.BU
                 var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
                 var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Công ty Xăng dầu Nghệ An)";
                 var A24 = $" + Căn cứ Quyết định số {header.QuyetDinhSo} ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
-                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ 15 giờ 00 ngày {header.Date.Day} tháng {header.Date.Month} năm {header.Date.Year}";
+                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {header.Date.Hour} giờ 00 ngày {header.Date.Day} tháng {header.Date.Month} năm {header.Date.Year}";
                 // 1. Đường dẫn file gốc
                 var filePathTemplate = Path.Combine(Directory.GetCurrentDirectory(), "Template", "TempTrinhKy", "KeKhaiGiaChiTiet.xlsx");
 
@@ -2935,7 +2884,7 @@ namespace DMS.BUSINESS.Services.BU
             var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
             var f_date = $"{header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
             var date = header.Date.ToString("dd/MM/yyyy");
-            var f_date_hour = $"kể từ {header.Date.Hour:D2} giờ {header.Date.Minute:D2} ngày {header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
+            var f_date_hour = $"kể từ {header.Date.Hour} giờ 00 ngày {header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
 
             var calculateDiscountIdOld = await _dbContext.TblBuCalculateDiscount
                         .Where(x => x.Date < header.Date)
@@ -3063,6 +3012,13 @@ namespace DMS.BUSINESS.Services.BU
                                 var text = $"ngày {header.Date.Day} tháng {header.Date.Month} năm {header.Date.Year}";
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, text);
                                 break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##HOUR@@":
+                                var hour = $"{header.Date.Hour}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                                break;
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo ?? "");
                                 break;
@@ -3179,6 +3135,10 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         switch (t)
                         {
+                            case "##HOUR@@":
+                                var hour = $"{header.Date.Hour}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                                break;
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
                                 break;
@@ -3279,6 +3239,10 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         switch (t)
                         {
+                            case "##HOUR@@":
+                                var hour = $"{header.Date.Hour}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                                break;
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
                                 break;
@@ -3450,6 +3414,10 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         switch (t)
                         {
+                            case "##HOUR@@":
+                                var hour = $"{header.Date.Hour}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                                break;
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
                                 break;
