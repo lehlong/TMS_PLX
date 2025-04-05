@@ -14,6 +14,7 @@ import {
 } from '../../shared/constants/access-right.constants'
 import { SignerService } from '../../services/master-data/signer.service';
 import Swal from 'sweetalert2';
+import { GoodsService } from '../../services/master-data/goods.service';
 
 @Component({
   selector: 'app-calculate-discount-detail',
@@ -123,12 +124,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
     TH: ""
 };
  currentTab = ""
+ lstgoods: any[]= []
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private route: ActivatedRoute,
     private _signerService: SignerService,
+    private _goodService: GoodsService,
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -165,6 +168,17 @@ export class CalculateDiscountDetailComponent implements OnInit {
       next: (data) => {
         this.output = data;
         console.log(data)
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
+  getAllGood() {
+    this._goodService.getall().subscribe({
+      next: (data) => {
+        this.lstgoods = data
       },
       error: (response) => {
         console.log(response)
@@ -433,6 +447,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   openInput() {
+    this.getAllGood()
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data;
@@ -575,7 +590,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     ];
   
     // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
-    if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
+    if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x', 'z'].includes(event.key.toLowerCase())) {
       return;
     }
   
@@ -682,5 +697,23 @@ export class CalculateDiscountDetailComponent implements OnInit {
     return this.rightList.includes(IMPORT_BATCH.EXPORT_TO_EXCEL) ||
            this.rightList.includes(IMPORT_BATCH.EXPORT_TO_PDF) ||
            this.rightList.includes(IMPORT_BATCH.EXPORT_TO_WORD);
+  }
+  onDateChange(date: Date) {
+    const month = new Date(date).getMonth() + 1;
+  
+    // Tạo array mới để Angular detect thay đổi
+    const temp= this.input.inputPrice.map((item1: any) => {
+      const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
+      const vcfValue = matched
+        ? (month >= 5 && month <= 10 ? matched.vfcHt : matched.vfcDx)
+        : item1.vcf;
+  
+      return { ...item1, vcf: vcfValue }; // tạo object mới luôn
+    });
+
+    this.input.inputPrice = temp;
+    this.input2.inputPrice = structuredClone(temp);
+  
+    this.formatVcfAndBvmtData();
   }
 }

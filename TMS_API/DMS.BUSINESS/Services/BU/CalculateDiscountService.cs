@@ -2676,7 +2676,7 @@ namespace DMS.BUSINESS.Services.BU
                 var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
                 var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Công ty Xăng dầu Nghệ An)";
                 var A24 = $" + Căn cứ Quyết định số {header.QuyetDinhSo} ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
-                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {header.Date.Hour} giờ 00 ngày {header.Date.Day} tháng {header.Date.Month} năm {header.Date.Year}";
+                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {header.Date.Hour} giờ 00 ngày {header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
                 // 1. Đường dẫn file gốc
                 var filePathTemplate = Path.Combine(Directory.GetCurrentDirectory(), "Template", "TempTrinhKy", "KeKhaiGiaChiTiet.xlsx");
 
@@ -2996,7 +2996,7 @@ namespace DMS.BUSINESS.Services.BU
             }
 
             #region fill dữ liệu file
-            if (nameTemp == "CongDienKKGiaBanLe")
+            if (nameTemp == "CongDienKKGiaBanLe")   
             {
                 var dlg1 = data.Dlg.Dlg1;
                 using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
@@ -3009,8 +3009,7 @@ namespace DMS.BUSINESS.Services.BU
                         switch (t)
                         {
                             case "##F_DATE@@":
-                                var text = $"ngày {header.Date.Day} tháng {header.Date.Month} năm {header.Date.Year}";
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, text);
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
                                 break;
                             case "##DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
@@ -3455,8 +3454,9 @@ namespace DMS.BUSINESS.Services.BU
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
                                 break;
-                            case "##F_DATE_HOURE@@":
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                            case "##HOUR@@":
+                                var hour = $"{header.Date.Hour}";
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
                                 break;
                             case "##TABLE_LAI_GOP@@":
                                 Paragraph paragraph = body.Descendants<Paragraph>()

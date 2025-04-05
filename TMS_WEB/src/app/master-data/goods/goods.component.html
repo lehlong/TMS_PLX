@@ -51,8 +51,11 @@
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('thueBvmt', $event)" nzAlign="center">
             Thuế BVMT
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('vfc', $event)" nzAlign="center">
-            Hệ số VFC BQ mùa miền
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('vfcDx', $event)" nzAlign="center">
+            Hệ số VFC BQ mùa miền <br> đông xuân
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('vfcHt', $event)" nzAlign="center">
+            Hệ số VFC BQ mùa miền <br> hè thu
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('mtsV1', $event)" nzAlign="center">
             Mức tăng so với vùng 1
@@ -87,7 +90,8 @@
             </span>
           </td>
           <td nzAlign="right">{{ data.thueBvmt }}</td>
-          <td nzAlign="right">{{ data.vfc }}</td>
+          <td nzAlign="right">{{ data.vfcDx }}</td>
+          <td nzAlign="right">{{ data.vfcHt }}</td>
           <td nzAlign="right">{{ data.mtsV1 }}</td>
           <td nzAlign="center">{{ data.createDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td nzAlign="center">
@@ -133,8 +137,11 @@
       <app-input-clear placeholder="Nhập thuế bảo vệ môi trường" [required]="true" label="Thuế bảo vệ môi trường"
         [control]="$any(validateForm).controls['thueBvmt']"></app-input-clear>
 
-      <app-input-clear placeholder="Nhập thuế hệ số VFC" [required]="true" label="Hệ số VFC"
-      [control]="$any(validateForm).controls['vfc']"></app-input-clear>
+      <app-input-clear placeholder="Nhập thuế hệ số VFC đông xuân" [required]="true" label="Hệ số VFC đông xuân"
+      [control]="$any(validateForm).controls['vfcDx']"></app-input-clear>
+
+      <app-input-clear placeholder="Nhập thuế hệ số VFC hè thu" [required]="true" label="Hệ số VFC hè thu"
+      [control]="$any(validateForm).controls['vfcHt']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập mức tăng so với Vùng 1" [required]="true" label="Mức tăng so với Vùng 1"
         [control]="$any(validateForm).controls['mtsV1']"></app-input-clear>

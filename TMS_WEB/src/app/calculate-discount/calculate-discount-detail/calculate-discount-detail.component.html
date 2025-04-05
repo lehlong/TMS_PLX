@@ -1859,7 +1859,7 @@
       <div nz-col class="gutter-row" [nzSpan]="6">
         <div class="inner-box">
           <label>Ngày hiệu lực</label>
-          <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="input.header.date"
+          <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="input.header.date"
             [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>

@@ -22,7 +22,8 @@ export class GoodsComponent {
     name: ['', [Validators.required]],
     type: [''],
     thueBvmt: ['', [Validators.required]],
-    vfc: ['', [Validators.required]],
+    vfcDx: ['', [Validators.required]],
+    vfcHt: ['', [Validators.required]],
     mtsV1: ['', [Validators.required]],
     order: ['', [Validators.required]],
     createDate: [new Date(), [Validators.required]],
@@ -188,12 +189,14 @@ export class GoodsComponent {
       name: data.name,
       type: data.type,
       thueBvmt: data.thueBvmt,
-      vfc: data.vfc,
+      vfcDx: data.vfcDx,
+      vfcHt: data.vfcHt,
       mtsV1: data.mtsV1,
       order: data.order,
       createDate: data.createDate,
       isActive: data.isActive,
     })
+    
     setTimeout(() => {
       this.edit = true
       this.visible = true

@@ -26,6 +26,12 @@ namespace DMS.CORE.Entities.MD
         [Column("VFC", TypeName = "DECIMAL(10,4)")]
         public decimal Vfc { get; set; }
 
+        [Column("VFC_HE_THU", TypeName = "DECIMAL(10,4)")]
+        public decimal VfcHt { get; set; }
+
+        [Column("VFC_DONG_XUAN", TypeName = "DECIMAL(10,4)")]
+        public decimal VfcDx { get; set; }
+
         [Column("TYPE", TypeName = "NVARCHAR(50)")]
         public string? Type { get; set; }
 

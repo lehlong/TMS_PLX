@@ -7,6 +7,7 @@ import { BaseFilter, PaginationResult } from '../../models/base.model';
 import { Router } from '@angular/router';
 import {FormControl } from '@angular/forms'
 import { SignerService } from '../../services/master-data/signer.service';
+import { GoodsService } from '../../services/master-data/goods.service';
 
 @Component({
   selector: 'app-calculate-discount',
@@ -22,6 +23,7 @@ export class CalculateDiscountComponent implements OnInit {
     private message: NzMessageService,
     private router: Router,
     private _signerService: SignerService,
+    private _goodService: GoodsService,
   ) {
     this.globalService.setBreadcrumb([
       {
@@ -55,9 +57,11 @@ export class CalculateDiscountComponent implements OnInit {
   nguoiKyControl = new FormControl({code:"",name:"",position:""});
   signerResult: any[] = []
   selectedValue = {}
+  lstgoods: any[]= []
   ngOnInit(): void {
     this.search();
-    this.getAllSigner()
+    this.getAllSigner();
+    this.getAllGood();
   }
   search() {
     this._service.search(this.filter).subscribe({
@@ -69,11 +73,30 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
+
+  getAllGood() {
+    this._goodService.getall().subscribe({
+      next: (data) => {
+        this.lstgoods = data
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
  
   genarateCreate() {
     this._service.genarateCreate().subscribe({
       next: (data) => {
         this.input = data;
+        const month = new Date(this.input.header.date).getMonth() + 1;
+        this.input.inputPrice.forEach((item1:any) => {
+            const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
+            if (matched) {
+              item1.vcf = (month>=5 && month <=10)? matched.vfcHt : matched.vfcDx;
+            }
+          });
+
         this.input2 = structuredClone(data)
         this.formatVcfAndBvmtData()
         this.visible = true;
@@ -99,6 +122,7 @@ export class CalculateDiscountComponent implements OnInit {
 
   onCreate() {    
     this.input.header.signerCode = this.nguoiKyControl.value?.code || ''
+    console.log(this.input)
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);
@@ -170,9 +194,9 @@ export class CalculateDiscountComponent implements OnInit {
     if (parts[1]) {
       formattedValue += '.' + parts[1];
     }
-
     // 6. Cập nhật lại giá trị hiển thị
     data[field] = formattedValue;
+    console.log(formattedValue)
     // 7. Parse về số
     const rawNumber = formattedValue.replace(/,/g, '');
     const numberValue = parseFloat(rawNumber);
@@ -190,7 +214,7 @@ export class CalculateDiscountComponent implements OnInit {
     ];
   
     // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
-    if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
+    if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x', 'z'].includes(event.key.toLowerCase())) {
       return;
     }
   
@@ -218,7 +242,33 @@ export class CalculateDiscountComponent implements OnInit {
         // Format các trường số cần format
         item.vcf = this.formatNumber(item.vcf);
         item.thueBvmt = this.formatNumber(item.thueBvmt);
+        item.chenhLech = this.formatNumber(item.chenhLech);
+        item.gblV1 = this.formatNumber(item.gblV1);
+        item.gblV2 = this.formatNumber(item.gblV2);
+        item.l15Blv2 = this.formatNumber(item.l15Blv2);
+        item.l15Nbl = this.formatNumber(item.l15Nbl);
+        item.laiGop = this.formatNumber(item.laiGop);
+        item.fobV1 = this.formatNumber(item.fobV1);
+        item.fobV2 = this.formatNumber(item.fobV2);
       });
     }
+  }
+  onDateChange(date: Date) {
+    const month = new Date(date).getMonth() + 1;
+  
+    // Tạo array mới để Angular detect thay đổi
+    const temp= this.input.inputPrice.map((item1: any) => {
+      const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
+      const vcfValue = matched
+        ? (month >= 5 && month <= 10 ? matched.vfcHt : matched.vfcDx)
+        : item1.vcf;
+  
+      return { ...item1, vcf: vcfValue }; // tạo object mới luôn
+    });
+
+    this.input.inputPrice = temp;
+    this.input2.inputPrice = structuredClone(temp);
+  
+    this.formatVcfAndBvmtData();
   }
 }

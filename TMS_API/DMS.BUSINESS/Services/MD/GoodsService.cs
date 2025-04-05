@@ -51,6 +51,7 @@ namespace DMS.BUSINESS.Services.MD
                     query = query.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate);
                 if (filter.IsActive.HasValue)
                 {
+                    query = query.Where(x => x.IsActive == filter.IsActive);
                 }
                 return await base.GetAllMd(query, filter);
             }

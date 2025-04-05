@@ -13,7 +13,7 @@ export class GoodsService {
   }
 
   getall(): Observable<any> {
-    return this.commonService.get('Goods/GetAll');
+    return this.commonService.get('Goods/GetAll?IsActive=true');
   }
 
   createGoods(params: any): Observable<any> {
