@@ -33,7 +33,7 @@ namespace DMS.BUSINESS.Services.BU
         void ExportExcel(ref MemoryStream outFileStream, string path, string headerId);
         Task<DiscountInformationModel> getAll(string Code);
         Task UpdateDataInput(CompetitorModel model);
-
+        Task<CompetitorModel> getDataInput(string code);
     }
     public class DiscountInformationService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdGoods, GoodsDto> (dbContext, mapper), IDiscountInformationService
     {
@@ -208,12 +208,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 return new CompetitorModel
                 {
-                    Header = new TblBuDiscountInformationList
-                    {
-                        Code = code,
-                        Name = "",
-                        IsActive = true,
-                    },
+                    Header = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == code).FirstOrDefaultAsync(),
                     InMarketCompetitor = lstInMarketCompetitor.Select(x => new TblInMarketCompetitor
                     {
                         Code = Guid.NewGuid().ToString(),

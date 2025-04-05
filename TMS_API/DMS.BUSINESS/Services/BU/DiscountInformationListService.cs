@@ -264,7 +264,6 @@ namespace DMS.BUSINESS.Services.BU
     public class CompetitorModel
     {
         public string? HeaderName { get; set; }
-
         public TblBuDiscountInformationList Header { get; set; } = new TblBuDiscountInformationList();
         public List<GOODSs> Goodss { get; set; } = new List<GOODSs>();
         public List<TblInMarketCompetitor> InMarketCompetitor { get; set; } = new List<TblInMarketCompetitor>();

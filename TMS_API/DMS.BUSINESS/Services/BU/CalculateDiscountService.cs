@@ -1720,7 +1720,7 @@ namespace DMS.BUSINESS.Services.BU
                     Number = ExcelNPOIExtention.SetCellStyleNumber(workbook, false, HorizontalAlignment.Right, true),
                     NumberBold = ExcelNPOIExtention.SetCellStyleNumber(workbook, true, HorizontalAlignment.Right, true),
                 };
-                if(header.Date.Month > 3 && header.Date.Month < 10)
+                if(header.Date.Month > 4 && header.Date.Month < 11)
                 {
                     muaMien = "Hè Thu";
                     tuThang = "5 - 10";

@@ -37,23 +37,23 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
-        //[HttpGet("GetDataInput")]
-        //public async Task<IActionResult> GetDataInput([FromQuery] string code)
-        //{
-        //    var transferObject = new TransferObject();
-        //    var result = await _service.GetDataInput(code);
-        //    if (_service.Status)
-        //    {
-        //        transferObject.Data = result;
-        //    }
-        //    else
-        //    {
-        //        transferObject.Status = false;
-        //        transferObject.MessageObject.MessageType = MessageType.Error;
-        //        //transferObject.GetMessage("2000", _service);
-        //    }
-        //    return Ok(transferObject);
-        //}
+        [HttpGet("GetDataInput")]
+        public async Task<IActionResult> GetDataInput(string code)
+        {
+            var transferObject = new TransferObject();  
+            var result = await _service.getDataInput(code);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("0001", _service);
+            }
+            return Ok(transferObject);
+        }
 
         [HttpPost("UpdateDataInput")]
         [Authorize]

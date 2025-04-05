@@ -30,6 +30,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleStatus: boolean = false;
   IMPORT_BATCH = IMPORT_BATCH
   isVisiblePreview: boolean = false
+  isZoom = false
   UrlOffice: string = ''
   input: any = {
     header: {},
@@ -264,7 +265,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
     const accountGroups = localStorage.getItem('UserInfo');
     this.accountGroups = accountGroups ? JSON.parse(accountGroups).accountGroups[0].name : [];
-    this.accountGroups == 'G_NV_K' ? this.currentTab = 'PT':'' 
+    this.accountGroups == 'G_NV_K' ? this.currentTab = 'PT':''
   }
 
   handleCancel() {
@@ -491,6 +492,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.getOutput(this.headerId);
   }
 
+  fullScreen() {
+    this.isZoom = true
+    document.documentElement.requestFullscreen()
+  }
+
+  closeFullScreen() {
+    this.isZoom = false
+    document
+      .exitFullscreen()
+      .then(() => { })
+      .catch(() => { })
+  }
   showHistoryAction() {
     this._service.GetHistoryAction(this.headerId).subscribe({
       next: (data) => {
@@ -588,21 +601,21 @@ export class CalculateDiscountDetailComponent implements OnInit {
     const allowedKeys = [
       'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', '-', '.',
     ];
-  
+
     // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
     if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x', 'z'].includes(event.key.toLowerCase())) {
       return;
     }
-  
+
     // Cho phép nhập số hoặc phím được phép
     if ((event.key >= '0' && event.key <= '9') || allowedKeys.includes(event.key)) {
       return;
     }
-  
+
     // Chặn các phím còn lại
     event.preventDefault();
   }
-  
+
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
 
@@ -681,18 +694,19 @@ export class CalculateDiscountDetailComponent implements OnInit {
   search(sheetName:string) {
     this.searchTerm[sheetName] = this.searchInput;
   }
+
   reset(tabName:string){
-    const keys = Object.keys(this.searchTerm); 
-    keys.forEach(key => this.searchTerm[key] = ""); 
+    const keys = Object.keys(this.searchTerm);
+    keys.forEach(key => this.searchTerm[key] = "");
     this.searchInput = "";
     this.currentTab = tabName
     console.log(tabName);
-    
-    
-}
+  }
+
   getSearchTerm(key: string): string {
     return this.searchTerm[key] || "";
   }
+
   hasExportPermission(): boolean {
     return this.rightList.includes(IMPORT_BATCH.EXPORT_TO_EXCEL) ||
            this.rightList.includes(IMPORT_BATCH.EXPORT_TO_PDF) ||

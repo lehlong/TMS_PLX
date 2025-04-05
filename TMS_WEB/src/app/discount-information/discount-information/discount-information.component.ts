@@ -88,7 +88,7 @@ export class DiscountInformationComponent {
         console.log(this.data);
         this.name = this.data.lstDIL[0].name
         this.fDate = new Date(this.data.lstDIL[0].fDate).toLocaleDateString()
-        this.changeTitle(this.name, this.fDate)
+        this.changeTitle(this.fDate)
       },
       error: (response) => {
         console.log(response)
@@ -124,19 +124,18 @@ export class DiscountInformationComponent {
     }
   }
 
-  changeTitle(name: string, fDate: string){
+  changeTitle(fDate: string){
     this.title = 'Phân tích chiết khấu ngày ' + fDate
-    console.log(name + fDate);
+    this.headerName = this.headerName + fDate
+    // console.log(name + fDate);
 
   }
 
   getDataHeader(){
-    this._discountInformationList.getObjectCreate(this.code).subscribe({
+    this._service.getDataInput(this.code).subscribe({
       next: (data) => {
         this.visible = true
-
         this.model = data
-        this.headerName = this.headerName + data.headerName
         console.log(this.model);
 
       },
