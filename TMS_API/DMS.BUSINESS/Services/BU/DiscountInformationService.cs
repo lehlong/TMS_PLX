@@ -24,6 +24,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using NPOI.SS.Util;
 using DMS.CORE.Entities.IN;
 using System.Reflection.Metadata.Ecma335;
+using DMS.BUSINESS.Extentions;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -49,7 +51,7 @@ namespace DMS.BUSINESS.Services.BU
                 //var vinhCuaLo =  await _dbContext.TblInVinhCuaLo.Where(x=> x.HeaderCode == Code).ToListAsync();
                 var lstCalculate =  await _dbContext.TblBuInputPrice.Where(x=> x.HeaderId == Code).ToListAsync();
 
-                var lstDIL = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == Code).ToListAsync();
+                var lstDIL = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == Code).FirstOrDefaultAsync();
                 data.lstDIL = lstDIL;
                 
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
@@ -147,7 +149,7 @@ namespace DMS.BUSINESS.Services.BU
                             ? 0.02m * item.GblV1 + Math.Round(discountCompetitor , 0) - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0)
                             : discountCompetitor - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
                             dt.ckCl.Add(Math.Round((decimal)ck1, 0));
-                            dt.ckCl.Add(Math.Round((decimal)(ck1 - (discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0));
+                            dt.ckCl.Add(Math.Round((decimal)((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0) - ck1);
 
                             ck.DT.Add(dt);
                         }
@@ -257,8 +259,7 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
-                IWorkbook templateWorkbook;
-                templateWorkbook = new XSSFWorkbook(fs);
+                IWorkbook templateWorkbook = new XSSFWorkbook(fs);
                 fs.Close();
 
                 //Define Style
@@ -285,6 +286,7 @@ namespace DMS.BUSINESS.Services.BU
                 //styleCellBold.CloneStyleFrom(sheetPTCK.GetRow(1).Cells[0].CellStyle);
                 var cellH = 1;
                 ISheet sheetPTCK = templateWorkbook.GetSheetAt(0);
+                ExcelNPOIExtention.SetCellValue(sheetPTCK.GetRow(1) ?? sheetPTCK.CreateRow(1), 0, $"TỪ: {data.Result.lstDIL.FDate?.ToString("hh:mm")} ngày {data.Result.lstDIL.FDate?.ToString("dd/MM/yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(templateWorkbook, true, HorizontalAlignment.Center, false, 12));
 
                 // row 1
                 #region exp header
@@ -397,6 +399,8 @@ namespace DMS.BUSINESS.Services.BU
 
                     startCell = 1;
                 }
+                startRow++;
+                    ExcelNPOIExtention.SetCellValue(sheetPTCK.GetRow(startRow++) ?? sheetPTCK.CreateRow(startRow++), 26, $"PHÒNG KINH DOANH XĂNG DẦU", ExcelNPOIExtention.SetCellFreeStyle(templateWorkbook, true, HorizontalAlignment.Center, false, 12));
 
                 #endregion
                 templateWorkbook.Write(outFileStream);

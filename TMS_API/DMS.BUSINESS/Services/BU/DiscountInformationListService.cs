@@ -73,7 +73,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try 
             {
-
+                var header = await _dbContext.TblBuCalculateDiscount.Where(x => x.Id == code).FirstOrDefaultAsync();
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
                 var lstCompetitor = await _dbContext.TblMdCompetitor.OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountInformation = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == code).ToArrayAsync();
@@ -115,6 +115,7 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         Code = code,
                         Name = "",
+                        FDate = header.Date,
                         IsActive = true,
                     },
                     InMarketCompetitor = lstMarketCompetitor.Select(x => new TblInMarketCompetitor

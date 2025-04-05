@@ -13,7 +13,7 @@ namespace DMS.BUSINESS.Models
         public List<TblMdGoods> lstGoods { get; set; }
         public List<TblMdCompetitor> lstCompetitor { get; set; }
         public List<discout> discount { get; set; } = new List<discout>();
-        public List<TblBuDiscountInformationList> lstDIL { get; set; } = new List<TblBuDiscountInformationList>();
+        public TblBuDiscountInformationList lstDIL { get; set; } = new TblBuDiscountInformationList();
     }
 
     public class discout
