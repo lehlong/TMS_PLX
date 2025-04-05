@@ -369,11 +369,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   updateCheckedSet(code: any, deliveryGroupCode: string, checked: boolean): void {
     if (checked) {
-      this.lstCustomerChecked.push({code:code,deliveryGroupCode:deliveryGroupCode})
+      this.lstCustomerChecked.push({ code: code, deliveryGroupCode: deliveryGroupCode });
     } else {
-      this.lstCustomerChecked = this.lstCustomerChecked.filter((x) => x != code)
+      this.lstCustomerChecked = this.lstCustomerChecked.filter(
+        (x) => x.code !== code || x.deliveryGroupCode !== deliveryGroupCode
+      );
     }
   }
+  
 
   onItemChecked(code: String, deliveryGroupCode:string, checked: boolean): void {
     this.updateCheckedSet(code,deliveryGroupCode, checked)
@@ -464,6 +467,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   onUpdateInput() {
+    console.log(this.input.header.date)
     this._service.updateInput(this.input).subscribe({
       next: (data) => {
       },
@@ -713,8 +717,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
            this.rightList.includes(IMPORT_BATCH.EXPORT_TO_WORD);
   }
   onDateChange(date: Date) {
+    
     const month = new Date(date).getMonth() + 1;
-  
     // Tạo array mới để Angular detect thay đổi
     const temp= this.input.inputPrice.map((item1: any) => {
       const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
