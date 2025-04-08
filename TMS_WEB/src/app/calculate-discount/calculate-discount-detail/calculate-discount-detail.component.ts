@@ -315,6 +315,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
       this.lstTrinhKyChecked = []
+      this.checked = false;
     }
   }
 
@@ -357,6 +358,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
     }
+    this.lstCustomerChecked = [];
+    this.checked = false;
   }
 
   updateCheckedSet(
@@ -703,6 +706,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
     }
+    this.lstCustomerChecked = []
+    this.checked = false;
   }
   exportPDF() {
     this._service.GetCustomerBbdo(this.headerId).subscribe({

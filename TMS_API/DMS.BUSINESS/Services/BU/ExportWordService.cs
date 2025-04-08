@@ -50,6 +50,7 @@ namespace DMS.BUSINESS.Services.BU
 
                     ReplaceStringInWordBody(tempBody, "##COMPANY@@", customerInfo?.Name);
                     ReplaceStringInWordBody(tempBody, "##ADDRESS@@", customerInfo?.Adrress);
+                    ReplaceStringInWordBody(tempBody, "##CHIPHI@@", customerInfo.DeliveryGroupCode != "N1" ? "và chi phí vân chuyển" : "");
 
                     AppendCustomerTable(tempBody, customer, data, goodsList, customerData, out isN1);
 
@@ -78,7 +79,6 @@ namespace DMS.BUSINESS.Services.BU
                     ["##DAI_DIEN@@"] = signer?.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "",
                     ["##NGUOI_DAI_DIEN@@"] = signer.Position,
                     ["##TEN@@"] = signer.Name,
-                    ["##CHIPHI@@"] = !isN1 ? "và chi phí vân chuyển" : ""
                 };
 
                 foreach (var (key, value) in replacements)
