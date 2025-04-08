@@ -1,35 +1,17 @@
 <div class="container-list">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header
-      nzBackIcon
-      nzTitle="Cước vận chuyển"
-      nzSubtitle="Chi Tiết cước vận chuyển"
-      class="site-page-header"
-    >
+    <nz-page-header nzBackIcon nzTitle="Cước vận chuyển" nzSubtitle="Chi Tiết cước vận chuyển" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
-            <app-input-clear
-              placeholder="Tìm kiếm"
-              (enterEvent)="search()"
-              [(value)]="filter.keyWord"
-            ></app-input-clear>
-            <button
-              (click)="search()"
-              class="flex !items-center !border-l-0 gray-btn"
-              nzType="default"
-              nz-button
-              nzType="default"
-            >
+            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
+              [(value)]="filter.keyWord"></app-input-clear>
+            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
               <span nz-icon nzType="search"></span>
             </button>
-            <button
-              (click)="reset()"
-              class="flex !items-center !border-l-0 gray-btn"
-              nzType="default"
-              nz-button
-              nzType="default"
-            >
+            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
+              nzType="default">
               <span nz-icon nzType="redo"></span>
             </button>
           </nz-space>
@@ -38,101 +20,56 @@
     </nz-page-header>
   </div>
   <div class="overflow-auto flex-grow">
-    <nz-table
-      [nzScroll]="{ x: 'max-content' }"
-      nzTableLayout="fixed"
-      [nzShowPagination]="false"
-      [nzFrontPagination]="false"
-      #headerTable
-      [nzData]="paginationResult.data"
-    >
+    <nz-table [nzScroll]="{ x: 'max-content' }" nzTableLayout="fixed" [nzShowPagination]="false"
+      [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
       <thead>
         <tr>
           <th nzWidth="30px">STT</th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('VSART', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('VSART', $event)">
             VSART
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('TDLNR', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('TDLNR', $event)">
             TDLNR
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('KNOTA', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('KNOTA', $event)">
             KNOTA
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('OIGKNOTD', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('OIGKNOTD', $event)">
             OIGKNOTD
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('MATNR', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('MATNR', $event)">
             MATNR
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('VRKME', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('VRKME', $event)">
             VRKME
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('KBETR', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('KBETR', $event)">
             KBETR
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('KONWA', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('KONWA', $event)">
             KONWA
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('KPEIN', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('KPEIN', $event)">
             KPEIN
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('KMEIN', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('KMEIN', $event)">
             KMEIN
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('DATAB', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('DATAB', $event)">
             DATAB
           </th>
-          <th
-            [nzSortFn]="true"
-            (nzSortOrderChange)="onSortChange('DATBI', $event)"
-          >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('DATBI', $event)">
             DATBI
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let data of headerTable.data; let i = index"
-          (dblclick)="openEdit(data)"
-        >
+        <tr *ngFor="let data of headerTable.data; let i = index" (dblclick)="openEdit(data)">
           <td>
             {{
-              (paginationResult.currentPage - 1) * paginationResult.pageSize +
-                i +
-                1
+            (paginationResult.currentPage - 1) * paginationResult.pageSize +
+            i +
+            1
             }}
           </td>
           <td>{{ data.vsart }}</td>
@@ -151,51 +88,23 @@
       </tbody>
     </nz-table>
   </div>
-  <div
-    *ngIf="paginationResult?.data"
-    class="flex justify-end p-[10px] border-t border-custom-gray border-solid"
-  >
-    <nz-pagination
-      nzShowSizeChanger
-      [nzPageIndex]="filter.currentPage"
-      [nzTotal]="paginationResult.totalRecord"
-      [nzPageSize]="filter.pageSize"
-      (nzPageIndexChange)="pageIndexChange($event)"
-      (nzPageSizeChange)="pageSizeChange($event)"
-    ></nz-pagination>
+  <div *ngIf="paginationResult?.data" class="flex justify-end p-[10px] border-t border-custom-gray border-solid">
+    <nz-pagination nzShowSizeChanger [nzPageIndex]="filter.currentPage" [nzTotal]="paginationResult.totalRecord"
+      [nzPageSize]="filter.pageSize" (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"></nz-pagination>
   </div>
 </div>
 
 <!--Create Update-->
-<nz-drawer
-  [nzMask]="!edit"
-  nzSize="default"
-  [nzVisible]="visible"
-  nzPlacement="right"
-  [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '"
-  [nzExtra]="extra"
-  (nzOnClose)="close()"
->
+<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
+  [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
-    <form
-      nz-form
-      nzLayout="vertical"
-      [formGroup]="validateForm"
-      (ngSubmit)="submitForm()"
-    >
-      <app-input-clear
-        placeholder="Nhập tên"
-        [required]="true"
-        label="Tên"
-        [control]="$any(validateForm).controls['name']"
-      ></app-input-clear>
+    <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <app-input-clear placeholder="Nhập tên" [required]="true" label="Tên"
+        [control]="$any(validateForm).controls['name']"></app-input-clear>
 
-      <nz-upload
-        [nzShowUploadList]="true"
-        [nzFileList]="fileList"
-        nzAccept=".xlsx,.xls"
-        (nzChange)="handleChange($event)"
-      >
+      <nz-upload [nzShowUploadList]="true" [nzFileList]="fileList" nzAccept=".xlsx,.xls"
+        (nzChange)="handleChange($event)">
         <button nz-button>
           <nz-comment-action nzType="upload" />
           Upload
@@ -217,40 +126,19 @@
 <ng-template #extra>
   <nz-space>
     <ng-container *ngIf="edit">
-      <button
-        [nzLoading]="loading"
-        [appPermission]="CUOC_VAN_CHUYEN_RIGHTS.EDIT"
-        *nzSpaceItem
-        nz-button
-        nzType="primary"
-        class="!flex !items-center"
-        (click)="submitForm()"
-      >
+      <button [nzLoading]="loading" [appPermission]="CUOC_VAN_CHUYEN_RIGHTS.EDIT" *nzSpaceItem nz-button
+        nzType="primary" class="!flex !items-center" (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>
     <ng-container *ngIf="!edit">
-      <button
-        [nzLoading]="loading"
-        *nzSpaceItem
-
-        nz-button
-        nzType="primary"
-        class="!flex !items-center"
-        (click)="submitForm()"
-      >
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>
-    <button
-      *nzSpaceItem
-      nz-button
-      nzType="default"
-      nzType="primary"
-      class="!flex !items-center"
-      nzDanger
-      (click)="close()"
-    >
+    <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
+      (click)="close()">
       <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
     </button>
   </nz-space>

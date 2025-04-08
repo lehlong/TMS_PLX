@@ -75,7 +75,6 @@ isSubmit: boolean = false
     this._service.search(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
-
       },
       error: (response) => {
         console.log(response)
@@ -88,7 +87,6 @@ isSubmit: boolean = false
     if (this.validateForm.valid) {
       const formData = this.validateForm.getRawValue()
       formData.code = ''
-      console.log(formData)
       this._service.create(formData).subscribe({
         next: (data) => {
           this.search()
@@ -111,7 +109,6 @@ isSubmit: boolean = false
     this._CalculateDiscountservice.GetAllInputCustomer().subscribe({
       next: (data) => {
         this.lstCustomer = data
-        console.log(data)
       },
       error: (response) => {
         console.log(response)
@@ -162,7 +159,6 @@ isSubmit: boolean = false
   }
 
   openEdit(data: any) {
-    console.log(data)
     this.validateForm.setValue({
       code: data.code,
       customerCode: data.customerCode,

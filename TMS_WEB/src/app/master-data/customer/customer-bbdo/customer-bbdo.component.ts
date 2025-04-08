@@ -116,8 +116,6 @@ export class CustomerBbdoComponent {
     this._service.searchCustomerBbdo(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
-        console.log(this.paginationResult);
-
       },
       error: (response) => {
         console.log(response)
@@ -155,8 +153,6 @@ export class CustomerBbdoComponent {
     this._marketService.getall().subscribe({
       next: (data) => {
         this.marketResult = data
-        console.log(this.marketResult);
-
       },
       error: (response) => {
         console.log(response)
@@ -202,16 +198,15 @@ export class CustomerBbdoComponent {
         anchor.click()
       })
   }
+
   isCodeExist(code: string): boolean {
     return this.paginationResult.data?.some((local: any) => local.code === code)
   }
+
   submitForm(): void {
     this.isSubmit = true
-    // if (this.validateForm.valid) {
     const formData = this.validateForm.getRawValue()
     if (this.edit) {
-      console.log(formData);
-
       this._service.updateCustomerBbdo(formData).subscribe({
         next: (data) => {
           this.search()
@@ -236,14 +231,6 @@ export class CustomerBbdoComponent {
         },
       })
     }
-    // } else {
-    //   Object.values(this.validateForm.controls).forEach((control) => {
-    //     if (control.invalid) {
-    //       control.markAsDirty()
-    //       control.updateValueAndValidity({ onlySelf: true })
-    //     }
-    //   })
-    // }
   }
 
   close() {
@@ -278,7 +265,6 @@ export class CustomerBbdoComponent {
   }
 
   openEdit(data: any) {
-    console.log(data)
     this.validateForm.setValue({
       id:data.id,
       code: data.code,

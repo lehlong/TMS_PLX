@@ -71,21 +71,14 @@ export class DiscountInformationComponent {
       next: (params) => {
         this.code = params.get('code')
         this.getAll()
-
       },
     })
-    // this.changeTitle()
-    console.log(this.name);
-
-
-    console.log(this.title);
   }
 
   getAll() {
     this._service.getAll(this.code).subscribe({
       next: (data) => {
         this.data = data
-        console.log(this.data);
         this.name = this.data.lstDIL[0].name
         this.fDate = new Date(this.data.lstDIL[0].fDate).toLocaleDateString()
         this.changeTitle(this.fDate)
@@ -110,11 +103,8 @@ export class DiscountInformationComponent {
 
   updateDataInput() {
     if (this.model.header.name != ''){
-      console.log(this.model);
-
       this._service.UpdateDataInput(this.model).subscribe({
         next: (data) => {
-          console.log(data)
           window.location.reload()
         },
         error: (err) => {
@@ -127,8 +117,6 @@ export class DiscountInformationComponent {
   changeTitle(fDate: string){
     this.title = 'Phân tích chiết khấu ngày ' + fDate
     this.headerName = this.headerName + fDate
-    // console.log(name + fDate);
-
   }
 
   getDataHeader(){
@@ -136,8 +124,6 @@ export class DiscountInformationComponent {
       next: (data) => {
         this.visible = true
         this.model = data
-        console.log(this.model);
-
       },
     })
   }

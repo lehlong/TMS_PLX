@@ -1,8 +1,6 @@
 import { Component } from '@angular/core'
 import { ShareModule } from '../../shared/share-module'
-import { LocalFilter } from '../../models/master-data/local.model'
 import { GlobalService } from '../../services/global.service'
-import { LocalService } from '../../services/master-data/local.service'
 import { PaginationResult } from '../../models/base.model'
 import { FormGroup, Validators, NonNullableFormBuilder } from '@angular/forms'
 import { LOCAL_RIGHTS, GOODS_RIGHTS, MASTER_DATA_MANAGEMENT } from '../../shared/constants'
@@ -63,8 +61,8 @@ export class GoodsComponent {
   ngOnInit(): void {
     this.search()
     this.lstType = [
-      {code:'X', name: 'Xăng'},
-      {code:'D', name: 'Dầu'}
+      { code: 'X', name: 'Xăng' },
+      { code: 'D', name: 'Dầu' }
     ]
   }
 
@@ -82,8 +80,6 @@ export class GoodsComponent {
     this._service.searchGoods(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
-        console.log(this.paginationResult);
-
       },
       error: (response) => {
         console.log(response)
@@ -107,48 +103,39 @@ export class GoodsComponent {
         anchor.click()
       })
   }
+
   isCodeExist(code: string): boolean {
     return this.paginationResult.data?.some((local: any) => local.code === code)
   }
+
   submitForm(): void {
     this.isSubmit = true
-    // if (this.validateForm.valid) {
-      const formData = this.validateForm.getRawValue()
-      if (this.edit) {
-        console.log(formData);
-
-        this._service.updateGoods(formData).subscribe({
-          next: (data) => {
-            this.search()
-          },
-          error: (response) => {
-            console.log(response)
-          },
-        })
-      } else {
-        if (this.isCodeExist(formData.code)) {
-          this.message.error(
-            `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
-          )
-          return
-        }
-        this._service.createGoods(formData).subscribe({
-          next: (data) => {
-            this.search()
-          },
-          error: (response) => {
-            console.log(response)
-          },
-        })
+    const formData = this.validateForm.getRawValue()
+    if (this.edit) {
+      this._service.updateGoods(formData).subscribe({
+        next: (data) => {
+          this.search()
+        },
+        error: (response) => {
+          console.log(response)
+        },
+      })
+    } else {
+      if (this.isCodeExist(formData.code)) {
+        this.message.error(
+          `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
+        )
+        return
       }
-    // } else {
-    //   Object.values(this.validateForm.controls).forEach((control) => {
-    //     if (control.invalid) {
-    //       control.markAsDirty()
-    //       control.updateValueAndValidity({ onlySelf: true })
-    //     }
-    //   })
-    // }
+      this._service.createGoods(formData).subscribe({
+        next: (data) => {
+          this.search()
+        },
+        error: (response) => {
+          console.log(response)
+        },
+      })
+    }
   }
 
   close() {
@@ -183,7 +170,6 @@ export class GoodsComponent {
   }
 
   openEdit(data: any) {
-    console.log(data)
     this.validateForm.setValue({
       code: data.code,
       name: data.name,
@@ -196,7 +182,7 @@ export class GoodsComponent {
       createDate: data.createDate,
       isActive: data.isActive,
     })
-    
+
     setTimeout(() => {
       this.edit = true
       this.visible = true

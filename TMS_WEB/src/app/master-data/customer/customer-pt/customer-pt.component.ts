@@ -50,7 +50,6 @@ export class CustomerPtComponent {
   data: any = []
   localResult: any = []
   marketResult: any = []
-
   thttLst: any = []
 
 
@@ -103,8 +102,6 @@ export class CustomerPtComponent {
     this._service.searchCustomerPt(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
-        console.log(this.paginationResult);
-
       },
       error: (response) => {
         console.log(response)
@@ -142,8 +139,6 @@ export class CustomerPtComponent {
     this._marketService.getall().subscribe({
       next: (data) => {
         this.marketResult = data
-        console.log(this.marketResult);
-
       },
       error: (response) => {
         console.log(response)
@@ -165,16 +160,15 @@ export class CustomerPtComponent {
         anchor.click()
       })
   }
+
   isCodeExist(code: string): boolean {
     return this.paginationResult.data?.some((local: any) => local.code === code)
   }
+
   submitForm(): void {
     this.isSubmit = true
-    // if (this.validateForm.valid) {
     const formData = this.validateForm.getRawValue()
     if (this.edit) {
-      console.log(formData);
-
       this._service.updateCustomerPt(formData).subscribe({
         next: (data) => {
           this.search()
@@ -241,7 +235,6 @@ export class CustomerPtComponent {
   }
 
   openEdit(data: any) {
-    console.log(data)
     this.validateForm.setValue({
       code: data.code,
       name: data.name,

@@ -25,9 +25,11 @@ namespace DMS.CORE.Entities.BU
         public string Contents { get; set; }
 
         [Column("NUMBER_RETRY")]
-            public int? NumberRetry { get; set; }
+        public int? NumberRetry { get; set; }
+
         [Column("IS_SEND")]
         public string IsSend { get; set; }
+
         [Column("PHONE_NUMBER")]
         public string PhoneNumber { get; set; }
 

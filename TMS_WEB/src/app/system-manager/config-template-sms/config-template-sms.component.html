@@ -18,7 +18,7 @@
   <nz-tabset [(nzSelectedIndex)]="tabs.length" (nzAdd)="newTab()" (nzClose)="closeTab($event)">
     <!-- @for (tab of data; track tab) { -->
       <nz-tab *ngFor="let tab of data" (nzSelect)="openEdit(tab)" (nzContextmenu)="openEdit(tab)" [nzTitle]="tab.name" class="ant-tabs-tab">
-        <form style="width: fit-content;" nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <form nzWidth="60%" nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
           <div class="d-flex" style="margin-bottom: 15px;" >
             <span nz-icon nzType="edit" nzTheme="outline"></span>
             <input nz-input style="border: none; " placeholder="Name" formControlName="name" type="text" />
@@ -40,13 +40,18 @@
             <button class="btn-pram" (click)="addPram($event, '[toDate]')" nz-button>
               <span >[toDate]</span>
             </button>
+            <button class="btn-pram" (click)="addPram($event, '[market]')" nz-button>
+              <span >[market]</span>
+            </button>
             <button class="btn-pram" (click)="addPram($event, '[goods]')" nz-button>
               <span >[goods]</span>
             </button>
           </div>
 
           <div>
-            <div class="main-container" nzWidth="100%">
+            <textarea nz-input placeholder="Nhập nội dung tin nhắn" [nzAutosize]="{ minRows: 4, maxRows: 10 }" formControlName="htmlSource" ></textarea>
+
+            <!-- <div class="main-container" nzWidth="100%">
               <div class="editor-container editor-container_classic-editor" #editorContainerElement>
                 <div class="editor-container__editor" style="height: calc(100vh - 352px) !important;">
                   <div #editorElement class="ck-editor__editable_inline">
@@ -57,7 +62,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </form>
       </nz-tab>

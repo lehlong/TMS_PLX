@@ -103,8 +103,6 @@ export class DiscountInformationListComponent {
     this._service.getLstCalculate().subscribe({
       next: (data) => {
         const temp = data;
-        console.log(data);
-
         this.lstCaculate = temp.filter((t: any) =>
           !this.paginationResult.data.some((item:any) => item.code == t.id)
         );
@@ -133,11 +131,8 @@ export class DiscountInformationListComponent {
       this.message.error(
         `Vui lòng nhập tên đợt nhập`,
       )
-      // return
     }
     if (this.model.header.name != '') {
-      console.log(this.model);
-
       this._service.createData(this.model).subscribe({
         next: (data) => {
           this.router.navigate([`/discount-information/detail/${this.model.header.code}`])
@@ -151,16 +146,6 @@ export class DiscountInformationListComponent {
     this.searchLstCaculate()
     this.edit = false
     this.visible = true
-    // this._service.getObjectCreate(this.code).subscribe({
-    //   next: (data) => {
-    //     this.model = data
-    //     console.log(this.model)
-    //     this.visible = true
-    //   },
-    //   error: (err) => {
-    //     console.log(err)
-    //   },
-    // })
   }
 
   getOjCreByCode(){
@@ -168,7 +153,6 @@ export class DiscountInformationListComponent {
     this._service.getObjectCreate(this.code).subscribe({
       next: (data) => {
         this.model = data
-        console.log(this.model)
         this.visible = true
       },
       error: (err) => {
@@ -239,7 +223,6 @@ export class DiscountInformationListComponent {
         this.goodsResult = data
       },
       error: (response) => {
-        console.log(response)
       },
     })
   }

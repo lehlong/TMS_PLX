@@ -352,7 +352,7 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 input.Header.Date = input.Header.Date.AddHours(7);
-                if (input.Header.Status == "01" || input.Header.Status == "02")
+                if (input.Header.Status == "01" || input.Header.Status == "03")
                 {
                     _dbContext.TblBuCalculateDiscount.Update(input.Header);
                     _dbContext.TblBuInputPrice.UpdateRange(input.InputPrice);
@@ -4035,7 +4035,7 @@ namespace DMS.BUSINESS.Services.BU
         public async Task SendEmail(string headerId)
 
         {
-            var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "email" && x.IsActive == true);
+            var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == headerId).OrderBy(x => x.CreateDate).ToListAsync();
             var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "Mẫu email gửi đi").FirstOrDefault();
             try
             {
@@ -4043,19 +4043,28 @@ namespace DMS.BUSINESS.Services.BU
                 var Ngay = $"Từ {Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
 
 
-                foreach (var item in customer)
+                foreach (var item in lstCustomerFob)
                 {
-                    var info = new TblNotifyEmail()
+                    var lstCustomerPhone = await _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == item.Code).ToListAsync() ?? null;
+                    if (lstCustomerPhone != null)
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        Email = item.Value,
-                        Subject = Template.Title,
-                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay),
-                        IsSend = "N",
-                        NumberRetry = 0,
-                        HeaderId = headerId
-                    };
-                    _dbContext.TblCmNotifiEmail.Add(info);
+                        foreach (var cusPhone in lstCustomerPhone)
+                        {
+                            var marketName = await _dbContext.TblMdMarket.Where(x => x.Code == item.MarketCode).Select(x => x.Name).FirstOrDefaultAsync();
+
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = cusPhone.Phone,
+                                Subject = Template.Title,
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", marketName),
+                                IsSend = "N",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifiEmail.Add(info);
+                        }
+                    }
                 }
                 _dbContext.SaveChanges();
 
