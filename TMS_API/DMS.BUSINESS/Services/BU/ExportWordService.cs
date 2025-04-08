@@ -194,9 +194,9 @@ namespace DMS.BUSINESS.Services.BU
             row1.Append(CreateHeaderCell("Đơn giá đã có 10% VAT", 3, 1, 26, 3000));
 
             var row2 = new TableRow();
-            row2.Append(CreateHeaderCell("", -1, 1, 26, 200));
-            row2.Append(CreateHeaderCell("", -1, 1, 26, 5500));
-            row2.Append(CreateHeaderCell("", -1, 1, 26, 1500));
+            row2.Append(CreateHeaderCell("", 1, -1, 26, 200));
+            row2.Append(CreateHeaderCell("", 1, -1, 26, 5500));
+            row2.Append(CreateHeaderCell("", 1, -1, 26, 1500));
             row2.Append(CreateHeaderCell("Giá bán lẻ Petrolimex công tại Vùng 2", 1, 1, 26, 3000));
             row2.Append(CreateHeaderCell("Chiết khấu", 1, 1, 26, 1000));
             row2.Append(CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 1500));

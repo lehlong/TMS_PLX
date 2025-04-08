@@ -755,4 +755,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
     this.formatVcfAndBvmtData()
   }
+
+  formatNegativeNumber(value: number | null | undefined): string {
+    if (value == null || isNaN(value)) return '';
+  
+    const formatted = Math.abs(value).toLocaleString('en-US'); // format dấu phẩy phần nghìn
+  
+    return value < 0
+      ? `(${formatted})`
+      : formatted;
+  }
 }

@@ -700,31 +700,19 @@
                       <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
                       <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
                       <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}
-                      </td>
-                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'">{{ data.col22 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col13 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col14 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col15 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col16 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col19 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col19)}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col20 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col20)}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col21)}}</td>
+                      <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col22)}}</td>
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
@@ -847,36 +835,10 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
 
-                    <td *ngIf="!data.isBold && data.col23 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{
-                      data.col23 | number}}
-                    </td>
-                    <td *ngIf="!data.isBold && data.col23 < 0 && accountGroups != 'G_NV_K'" nzAlign="right"
-                      style="color: red;">
-                      {{data.col23 - data.col23 * 2 | number}}
-                    </td>
-                    <td *ngIf="!data.isBold && data.col24 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
-                      {{ data.col24 | number}}
-                    </td>
-                    <td *ngIf="!data.isBold && data.col24 < 0 && accountGroups != 'G_NV_K'" nzAlign="right"
-                      style="color: red;">
-                      {{ data.col24 - data.col24 * 2| number}}
-                    </td>
-
-                    <td *ngIf="!data.isBold && data.col25 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">
-                      {{ data.col25 | number}}
-                    </td>
-                    <td *ngIf="!data.isBold && data.col25 < 0 && accountGroups != 'G_NV_K'" nzAlign="right"
-                      style="color: red;">
-                      {{ data.col25 - data.col25 * 2 | number }}
-                    </td>
-
-                    <td *ngIf="!data.isBold && data.col26 >= 0 && accountGroups != 'G_NV_K'" nzAlign="right">{{
-                      data.col26 | number}}
-                    </td>
-                    <td *ngIf="!data.isBold && data.col26 < 0 && accountGroups != 'G_NV_K'" nzAlign="right"
-                      style="color: red;">
-                      {{ data.col26 - data.col26 * 2 | number }}
-                    </td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col25 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col25) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col26 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col26) }}</td>
 
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
@@ -995,10 +957,10 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col21) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col22) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -1113,10 +1075,10 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col21 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col23 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col24 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col21) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col22) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -1210,8 +1172,8 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col11 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col12 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col11 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col11)}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right" [style.color]="data.col12 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col12)}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
                   </ng-container>

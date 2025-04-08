@@ -4004,17 +4004,18 @@ namespace DMS.BUSINESS.Services.BU
             //}
             else
             {
+
                 var w = await GenarateWord(lstCustomerCheckedWord, headerId);
                 var pathWord = Directory.GetCurrentDirectory() + "/" + w;
                 Aspose.Words.Document doc = new Aspose.Words.Document(pathWord);
-                var folderName = Path.Combine($"Uploads/{DateTime.Now.ToString("yyyy/MM/dd")}/");
+                var folderName = Path.Combine($"Uploads/Pdf/{DateTime.Now.ToString("yyyy/MM/dd")}");
                 if (!Directory.Exists(folderName))
                 {
                     Directory.CreateDirectory(folderName);
                 }
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var fileName = $"{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}_{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}_ThongBaoGia.pdf";
-                var fullPath = Path.Combine(pathToSave, fileName);
+                var fileName = $"ThongBaoGia_{DateTime.Now:ddMMyyyy_HHmmss}.pdf";
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderName, fileName);
                 doc.Save(fullPath, SaveFormat.Pdf);
 
                 _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
