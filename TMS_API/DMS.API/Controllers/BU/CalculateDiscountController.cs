@@ -249,7 +249,7 @@ namespace DMS.API.Controllers.BU
         public async Task<IActionResult> Getmail([FromQuery] string headerId)
         {
             var transferObject = new TransferObject();
-            var result = await _service.GetMail(headerId);
+            var result = await _service.GetHistoryMail(headerId);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -269,7 +269,7 @@ namespace DMS.API.Controllers.BU
         public async Task<IActionResult> GetSms([FromQuery] string headerId)
         {
             var transferObject = new TransferObject();
-            var result = await _service.GetSms(headerId);
+            var result = await _service.GetHistorySms(headerId);
             if (_service.Status)
             {
                 transferObject.Data = result;

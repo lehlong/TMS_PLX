@@ -53,8 +53,8 @@ namespace DMS.BUSINESS.Services.BU
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
         Task SendSMS(string headerId);
-        Task<List<TblNotifyEmail>> GetMail(string headerId);
-        Task<List<TblNotifySms>> GetSms(string headerId);
+        Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
+        Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
         Task<List<CustomInput>> GetAllInputCustomer();
     }
@@ -2682,7 +2682,7 @@ namespace DMS.BUSINESS.Services.BU
                 var filePathTemplate = Path.Combine(Directory.GetCurrentDirectory(), "Template", "TempTrinhKy", "KeKhaiGiaChiTiet.xlsx");
 
                 // 2. Tạo thư mục lưu file
-                var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+                var folderName = Path.Combine($"Uploads/Excel/{DateTime.Now.ToString("yyyy/MM/dd")}");
                 if (!Directory.Exists(folderName))
                 {
                     Directory.CreateDirectory(folderName);
@@ -2857,7 +2857,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             #region Tạo 1 file word mới từ file template    
             var filePathTemplate = Directory.GetCurrentDirectory() + $"/Template/TempTrinhKy/{nameTemp}.docx";
-            var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+            var folderName = Path.Combine($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}/");
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
@@ -3775,7 +3775,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             #region Tạo 1 file word mới từ file template
             var filePathTemplate = Directory.GetCurrentDirectory() + "/Template/ThongBaoGia.docx";
-            var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+            var folderName = Path.Combine($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}");
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
@@ -3963,7 +3963,7 @@ namespace DMS.BUSINESS.Services.BU
                         {
                             Code = Guid.NewGuid().ToString(),
                             HeaderCode = headerId,
-                            Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+                            Name = path.Replace($"Uploads/Excel/{DateTime.Now.ToString("yyyy/MM/dd")}/", ""),
                             Type = "xlsx",
                             Path = path
                         });
@@ -3976,7 +3976,7 @@ namespace DMS.BUSINESS.Services.BU
                         {
                             Code = Guid.NewGuid().ToString(),
                             HeaderCode = headerId,
-                            Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+                            Name = path.Replace($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}/", ""),
                             Type = "docx",
                             Path = path
                         });
@@ -4007,7 +4007,7 @@ namespace DMS.BUSINESS.Services.BU
                 var w = await GenarateWord(lstCustomerCheckedWord, headerId);
                 var pathWord = Directory.GetCurrentDirectory() + "/" + w;
                 Aspose.Words.Document doc = new Aspose.Words.Document(pathWord);
-                var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+                var folderName = Path.Combine($"Uploads/{DateTime.Now.ToString("yyyy/MM/dd")}/");
                 if (!Directory.Exists(folderName))
                 {
                     Directory.CreateDirectory(folderName);
@@ -4032,7 +4032,7 @@ namespace DMS.BUSINESS.Services.BU
         #endregion
  
         #region mail ,sms
-        public async Task SendEmail(string headerId)
+        public async Task SendSMS(string headerId)
 
         {
             var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == headerId).OrderBy(x => x.CreateDate).ToListAsync();
@@ -4040,30 +4040,31 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 DateTime Date = DateTime.Now;
-                var Ngay = $"Từ {Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
+                var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
 
 
                 foreach (var item in lstCustomerFob)
                 {
                     var lstCustomerPhone = await _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == item.Code).ToListAsync() ?? null;
-                    if (lstCustomerPhone != null)
-                    {
+                    //if (lstCustomerPhone != null)
+                    //{
                         foreach (var cusPhone in lstCustomerPhone)
                         {
                             var marketName = await _dbContext.TblMdMarket.Where(x => x.Code == item.MarketCode).Select(x => x.Name).FirstOrDefaultAsync();
+                        var goods = "chưa có dữ liệu";
 
-                            var info = new TblNotifySms()
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                PhoneNumber = cusPhone.Phone,
-                                Subject = Template.Title,
-                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", marketName),
-                                IsSend = "N",
-                                NumberRetry = 0,
-                                HeaderId = headerId
-                            };
-                            _dbContext.TblCmNotifiEmail.Add(info);
-                        }
+                        var info = new TblNotifySms()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            PhoneNumber = cusPhone.Phone,
+                            Subject = Template.Title ?? "",
+                            Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", marketName).Replace("[goods]", goods),
+                            IsSend = "N",
+                            NumberRetry = 0,
+                            HeaderId = headerId
+                        };
+                        _dbContext.TblCmNotifySms.Add(info);
+                        //}
                     }
                 }
                 _dbContext.SaveChanges();
@@ -4077,43 +4078,43 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
-        public async Task SendSMS(string headerId)
+        public async Task SendEmail(string headerId)
 
         {
-            var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "phone" && x.IsActive == true);
-            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo giá bán lẻ").FirstOrDefault();
-            try
-            {
-                DateTime Date = DateTime.Now;
-                var Ngay = $"Từ {Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
+            //    var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "phone" && x.IsActive == true);
+            //    var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo giá bán lẻ").FirstOrDefault();
+            //    try
+            //    {
+            //        DateTime Date = DateTime.Now;
+            //        var Ngay = $"Từ {Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
 
 
-                foreach (var item in customer)
-                {
-                    var info = new TblNotifySms()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        PhoneNumber = item.Value,
-                        Subject = Template.Title,
-                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay),
-                        IsSend = "N",
-                        NumberRetry = 0,
-                        HeaderId = headerId
-                    };
-                    _dbContext.TblCmNotifySms.Add(info);
-                }
-                _dbContext.SaveChanges();
+            //        foreach (var item in customer)
+            //        {
+            //            var info = new TblNotifySms()
+            //            {
+            //                Id = Guid.NewGuid().ToString(),
+            //                PhoneNumber = item.Value,
+            //                Subject = Template.Title,
+            //                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay),
+            //                IsSend = "N",
+            //                NumberRetry = 0,
+            //                HeaderId = headerId
+            //            };
+            //            _dbContext.TblNotifySms.Add(info);
+            //        }
+            //        _dbContext.SaveChanges();
 
-            }
-            catch (Exception ex)
-            {
-                this.Status = false;
-                this.Exception = ex;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        this.Status = false;
+            //        this.Exception = ex;
 
-            }
+            //    }
         }
 
-        public async Task<List<TblNotifySms>> GetSms(string headerID)
+        public async Task<List<TblNotifySms>> GetHistorySms(string headerID)
         {
             try
             {
@@ -4128,7 +4129,7 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
-        public async Task<List<TblNotifyEmail>> GetMail(string headerID)
+        public async Task<List<TblNotifyEmail>> GetHistoryMail(string headerID)
         {
             try
             {

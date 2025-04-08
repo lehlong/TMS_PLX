@@ -538,6 +538,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   Preview(url: string) {
     this.UrlOffice = url
+    console.log(
+      this.UrlOffice
+    );
+
     this.isVisiblePreview = true
   }
   cancelPreview() {
