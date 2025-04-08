@@ -2857,7 +2857,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             #region Tạo 1 file word mới từ file template    
             var filePathTemplate = Directory.GetCurrentDirectory() + $"/Template/TempTrinhKy/{nameTemp}.docx";
-            var folderName = Path.Combine($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}/");
+            var folderName = Path.Combine($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}");
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
@@ -3062,9 +3062,9 @@ namespace DMS.BUSINESS.Services.BU
                                             TableRow row = new TableRow();
                                             row.Append(CreateCell("+ " + i.Name, true, 26, false, "3500"));
                                             row.Append(CreateCell(":", false, 26, true, "1"));
-                                            row.Append(CreateCell(item.Col1.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell(item.Col1.ToString("N0"), true, 26, false, "2000"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
-                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col1 != item.Col1 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2400"));
+                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col1 != item.Col1 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2800"));
                                             table.Append(row);
                                             o++;
                                         }
@@ -3502,7 +3502,7 @@ namespace DMS.BUSINESS.Services.BU
                                     foreach (var i in dlg9.Where(x => x.LocalCode == "V1"))
                                     {
                                             TableRow row = new TableRow();
-                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
                                             row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
                                             row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
                                             row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
@@ -3518,7 +3518,7 @@ namespace DMS.BUSINESS.Services.BU
                                     foreach (var i in dlg9.Where(x => x.LocalCode == "V2"))
                                     {
                                             TableRow row = new TableRow();
-                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
                                             row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
                                             row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
                                             row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
@@ -3569,7 +3569,7 @@ namespace DMS.BUSINESS.Services.BU
                                     {
                                             TableRow row = new TableRow();
 
-                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3000")); // Tên mặt hàng
+                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
                                             row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
                                             row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
                                             row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
