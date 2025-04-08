@@ -47,7 +47,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3mb",
+                  "maximumWarning": "5mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -77,7 +77,7 @@
               "extractLicenses": false,
               "sourceMap": {
                 "scripts": true,
-                "styles": true, 
+                "styles": true,
                 "vendor": false,
                 "hidden": false
               },

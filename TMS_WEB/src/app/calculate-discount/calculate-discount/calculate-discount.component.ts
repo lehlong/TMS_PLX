@@ -84,7 +84,7 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
- 
+
   genarateCreate() {
     this._service.genarateCreate().subscribe({
       next: (data) => {
@@ -100,7 +100,6 @@ export class CalculateDiscountComponent implements OnInit {
         this.input2 = structuredClone(data)
         this.formatVcfAndBvmtData()
         this.visible = true;
-        console.log(data)
       },
       error: (response) => {
         console.log(response)
@@ -120,9 +119,8 @@ export class CalculateDiscountComponent implements OnInit {
     })
   }
 
-  onCreate() {    
+  onCreate() {
     this.input.header.signerCode = this.nguoiKyControl.value?.code || ''
-    console.log(this.input)
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);
@@ -148,11 +146,11 @@ export class CalculateDiscountComponent implements OnInit {
     };
   }
   onChange(result: Date): void {
-    console.log('Selected Time: ', result);
+    //console.log('Selected Time: ', result);
   }
 
   onOk(result: Date | Date[] | null): void {
-    console.log('onOk', result);
+    //console.log('onOk', result);
   }
 
   onInputNumberFormat(data: any, field: string) {
@@ -196,7 +194,6 @@ export class CalculateDiscountComponent implements OnInit {
     }
     // 6. Cập nhật lại giá trị hiển thị
     data[field] = formattedValue;
-    console.log(formattedValue)
     // 7. Parse về số
     const rawNumber = formattedValue.replace(/,/g, '');
     const numberValue = parseFloat(rawNumber);
@@ -205,34 +202,34 @@ export class CalculateDiscountComponent implements OnInit {
       const index = this.input2.inputPrice.findIndex((x: any) => x.goodCode === data.goodCode);
       if (index !== -1) {
         this.input.inputPrice[index][field] = finalNumber;
-      }      
+      }
   }
 
   onKeyDownNumberOnly(event: KeyboardEvent) {
     const allowedKeys = [
       'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', '-', '.',
     ];
-  
+
     // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
     if ((event.ctrlKey || event.metaKey) && ['a', 'c', 'v', 'x', 'z'].includes(event.key.toLowerCase())) {
       return;
     }
-  
+
     // Cho phép nhập số hoặc phím được phép
     if ((event.key >= '0' && event.key <= '9') || allowedKeys.includes(event.key)) {
       return;
     }
-  
+
     // Chặn các phím còn lại
     event.preventDefault();
   }
-  
+
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
-  
+
     const num = parseFloat(value.toString().replace(/,/g, ''));
     if (isNaN(num)) return '';
-  
+
     // Format giữ 4 chữ số sau dấu phẩy (mày có thể chỉnh lại tuỳ)
     return num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 });
   }
@@ -255,20 +252,20 @@ export class CalculateDiscountComponent implements OnInit {
   }
   onDateChange(date: Date) {
     const month = new Date(date).getMonth() + 1;
-  
+
     // Tạo array mới để Angular detect thay đổi
     const temp= this.input.inputPrice.map((item1: any) => {
       const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
       const vcfValue = matched
         ? (month >= 5 && month <= 10 ? matched.vfcHt : matched.vfcDx)
         : item1.vcf;
-  
+
       return { ...item1, vcf: vcfValue }; // tạo object mới luôn
     });
 
     this.input.inputPrice = temp;
     this.input2.inputPrice = structuredClone(temp);
-  
+
     this.formatVcfAndBvmtData();
   }
 }

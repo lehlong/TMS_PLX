@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Net.Mail;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using DMS.CORE;
-using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Net;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using Microsoft.Extensions.Configuration;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace DMS.BUSINESS.Services.BackgroundHangfire
 {

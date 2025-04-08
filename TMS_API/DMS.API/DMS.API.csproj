@@ -11,17 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Uploads\**" />
-    <Compile Remove="Upload\NewFolder\**" />
+    <Compile Remove="Upload\**" />
     <Compile Remove="wwwroot\**" />
-    <Content Remove="Uploads\**" />
-    <Content Remove="Upload\NewFolder\**" />
+    <Content Remove="Upload\**" />
     <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="Uploads\**" />
-    <EmbeddedResource Remove="Upload\NewFolder\**" />
+    <EmbeddedResource Remove="Upload\**" />
     <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="Uploads\**" />
-    <None Remove="Upload\NewFolder\**" />
+    <None Remove="Upload\**" />
     <None Remove="wwwroot\**" />
   </ItemGroup>
 
@@ -46,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Upload\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
 
 </Project>

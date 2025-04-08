@@ -32,6 +32,7 @@ using NPOI.XSSF.UserModel.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using DMS.BUSINESS.Dtos.MD;
 using NPOI.SS.Formula.Functions;
+using DMS.CORE.Entities.MD;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -2634,14 +2635,13 @@ namespace DMS.BUSINESS.Services.BU
 
 
 
-                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Upload");
-                Directory.CreateDirectory(uploadPath);
-                var outputPath = Path.Combine(uploadPath, $"{DateTime.Now:ddMMyyyy_HHmmss}_CSTMGG.xlsx");
-                string keyword = "Upload";
-                int index = outputPath.IndexOf(keyword);
-                string Pathaddress = outputPath.Substring(index).Replace("\\","/");
-                string namePath = Pathaddress.Replace($"Upload/", "").Replace("\\","/");
-               
+
+                var folderPath = Path.Combine($"Uploads/Excel/{DateTime.Now.ToString("yyyy/MM/dd")}");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+                var fileName = $"CSTMGG_{DateTime.Now:ddMMyyyy_HHmmss}.xlsx";
+                var outputPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath, fileName);
+
                 using var outFile = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
                 workbook.Write(outFile);
 
@@ -2649,17 +2649,16 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = headerId,
-                    Name = namePath,
+                    Name = fileName,
                     Type = "xlsx",
-                    Path = Pathaddress
+                    Path = $"{folderPath}/{fileName}",
                 });
                 await _dbContext.SaveChangesAsync();
 
-                return outputPath;
+                return $"{folderPath}/{fileName}";
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi để dễ debug
                 Console.WriteLine($"Lỗi khi xuất file Excel: {ex.Message}\n{ex.StackTrace}");
                 return string.Empty;
             }
@@ -3758,6 +3757,22 @@ namespace DMS.BUSINESS.Services.BU
 
         public async Task<string> GenarateWord(List<CustomBBDOExportWord> lstCustomerChecked, string headerId)
         {
+            try
+            {
+                var s = new ExportWordService(_dbContext);
+                var data = await CalculateDiscountOutput(headerId);
+                return await s.GenarateWord(lstCustomerChecked, headerId, data);
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+                return null;
+            }
+        }
+
+        public async Task<string> GenarateWord2(List<CustomBBDOExportWord> lstCustomerChecked, string headerId)
+        {
             #region Tạo 1 file word mới từ file template
             var filePathTemplate = Directory.GetCurrentDirectory() + "/Template/ThongBaoGia.docx";
             var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
@@ -3790,7 +3805,7 @@ namespace DMS.BUSINESS.Services.BU
             foreach (var l in lstCustomerChecked)
             {
                 var d = data.Vk11Bb.Where(x => x.Col4 == l.code).ToList();
-                var c = await _dbContext.TblBuInputCustomerBbdo.FirstOrDefaultAsync(x=> x.Code == l.code);
+                var c = await _dbContext.TblBuInputCustomerBbdo.FirstOrDefaultAsync(x => x.Code == l.code);
                 using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
                 {
                     MainDocumentPart mainPart = doc.MainDocumentPart;
@@ -3827,204 +3842,7 @@ namespace DMS.BUSINESS.Services.BU
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, c?.Adrress);
                                 break;
                             case "##TABLE@@":
-                                Paragraph paragraph = body.Descendants<Paragraph>()
-                                           .FirstOrDefault(p => p.InnerText.Contains("##TABLE@@"));
-                                if (paragraph != null)
-                                {
-                                    TableCell CreateHeaderCell(string text, int gridSpan, int rowSpan, int fontSize = 16, int width = 100)
-                                    {
-                                        TableCell cell = new TableCell();
-                                        Paragraph paragraph = new Paragraph(new Run(new Text(text)));
-                                        paragraph.ParagraphProperties = new ParagraphProperties(new Justification() { Val = JustificationValues.Center });
-
-                                        Run run = paragraph.Elements<Run>().First();
-                                        run.RunProperties = new RunProperties(
-                                           new Bold(),
-                                           new FontSize() { Val = new StringValue(fontSize.ToString()) }
-                                        );
-
-                                        cell.Append(paragraph);
-
-                                        TableCellProperties cellProperties = new TableCellProperties(
-                                            new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center }
-                                        );
-
-                                        // Gộp cột (GridSpan)
-                                        if (gridSpan > 1)
-                                        {
-                                            cellProperties.Append(new GridSpan() { Val = gridSpan });
-                                        }
-
-                                        // Gộp hàng (VerticalMerge)
-                                        if (rowSpan > 1)
-                                        {
-                                            cellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Restart });
-                                        }
-                                        else if (rowSpan == -1) // Nếu rowSpan = -1 nghĩa là tiếp tục merge
-                                        {
-                                            cellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
-                                        }
-
-                                        // Thiết lập chiều rộng cho ô
-                                        cellProperties.Append(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = width.ToString() });
-
-                                        cell.Append(cellProperties);
-                                        return cell;
-                                    }
-
-
-
-
-                                    TableCell CreateCell(string text, bool isBold, int fontSize = 26, int width = 100)
-                                    {
-                                        Run run = new Run(new Text(text));
-                                        RunProperties runProperties = new RunProperties(
-                                            new FontSize() { Val = new StringValue(fontSize.ToString()) }
-                                        );
-                                        if (isBold)
-                                        {
-                                            runProperties.AppendChild(new Bold());
-                                        }
-                                        run.RunProperties = runProperties;
-
-                                        Paragraph paragraph = new Paragraph(run);
-
-                                        // Căn giữa theo chiều ngang
-                                        ParagraphProperties paragraphProperties = new ParagraphProperties(
-                                            new Justification() { Val = JustificationValues.Center }
-                                        );
-                                        paragraph.PrependChild(paragraphProperties);
-
-                                        TableCell cell = new TableCell(paragraph);
-
-                                        // Thiết lập thuộc tính ô
-                                        TableCellProperties cellProperties = new TableCellProperties();
-                                        cellProperties.Append(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = width.ToString() });
-
-                                        // Căn giữa theo chiều dọc
-                                        cellProperties.Append(new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center });
-
-                                        cell.Append(cellProperties);
-
-                                        return cell;
-                                    }
-
-                                    Table table = new Table();
-                                    TableProperties tblProperties = new TableProperties(
-                                        new TableBorders(
-                                            new TopBorder { Val = BorderValues.Single, Size = 4 },
-                                            new BottomBorder { Val = BorderValues.Single, Size = 4 },
-                                            new LeftBorder { Val = BorderValues.Single, Size = 4 },
-                                            new RightBorder { Val = BorderValues.Single, Size = 4 },
-                                            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
-                                            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
-                                        )
-                                    );
-                                    table.AppendChild(tblProperties);
-
-                                    if (l.deliveryGroupCode == "N1")
-                                    {
-                                        IsN1 = true;
-                                        #region Header table
-                                        TableRow rowHeader = new TableRow();
-
-                                        TableCell cell1 = CreateHeaderCell("STT", 1, 2, 26, 200); // Gộp 2 hàng
-                                        TableCell cell2 = CreateHeaderCell("Mặt hàng, quy cách", 1, 2, 26, 5500); // Gộp 2 hàng
-                                        TableCell cell3 = CreateHeaderCell("Đơn vị tính", 1, 2, 26, 1500); // Gộp 2 hàng
-                                        TableCell cell4 = CreateHeaderCell("Đơn giá đã có 10% VAT", 3, 1, 26, 3000); // Gộp 3 cột
-
-                                        rowHeader.Append(cell1);
-                                        rowHeader.Append(cell2);
-                                        rowHeader.Append(cell3);
-                                        rowHeader.Append(cell4);
-
-                                        TableRow rowHeader2 = new TableRow();
-                                        TableCell cell1_2 = CreateHeaderCell("", -1, 1, 26,200);
-                                        TableCell cell2_2 = CreateHeaderCell("", -1, 1, 26, 5500);
-                                        TableCell cell3_2 = CreateHeaderCell("", -1, 1, 26, 1500);
-
-                                        // Cần phải thêm VerticalMerge để tiếp tục gộp các ô
-                                        TableCell cell4_2 = CreateHeaderCell("Giá bán lẻ Petrolimex công tại Vùng 2", 1, 1, 26, 3000);
-                                        TableCell cell5_2 = CreateHeaderCell("Chiết khấu", 1, 1, 26, 1000);
-                                        TableCell cell6_2 = CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 1500);
-
-                                        // Thiết lập VerticalMerge cho các ô trong dòng 2
-                                        cell1_2.TableCellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
-                                        cell2_2.TableCellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
-                                        cell3_2.TableCellProperties.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
-
-                                        rowHeader2.Append(cell1_2);
-                                        rowHeader2.Append(cell2_2);
-                                        rowHeader2.Append(cell3_2);
-                                        rowHeader2.Append(cell4_2);
-                                        rowHeader2.Append(cell5_2);
-                                        rowHeader2.Append(cell6_2);
-
-                                        table.Append(rowHeader);
-                                        table.Append(rowHeader2);
-
-                                        #endregion
-
-                                        #region Gendata table
-                                        var o = 1;
-                                        foreach (var i in data?.Dlg?.Dlg6)
-                                        {
-                                            if (i.LocalCode == "V2")
-                                            {
-                                                TableRow row = new TableRow();
-                                                row.Append(CreateCell(o.ToString(), true, 26, 200));
-                                                row.Append(CreateCell(i?.GoodName, true, 26,5500));
-                                                row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
-                                                row.Append(CreateCell(i?.Col6.ToString("N0"), true, 26, 3000));
-                                                row.Append(CreateCell(i?.Col14.ToString("N0"), true, 26, 1000));
-                                                row.Append(CreateCell((i.Col6 - i.Col14).ToString("N0"), true, 26, 1500));
-                                                table.Append(row);
-                                                o++;
-                                            }
-                                        }
-                                        #endregion
-
-                                        paragraph.Parent.InsertAfter(table, paragraph);
-                                        paragraph.Remove();
-                                    }
-                                    else
-                                    {
-                                        IsN1 = false;
-                                        #region Header table
-                                        TableRow rowHeader = new TableRow();
-
-                                        TableCell cell1 = CreateHeaderCell("STT", 1,1, 26, 500);
-                                        TableCell cell2 = CreateHeaderCell("Mặt hàng", 1,1, 26, 4000);
-                                        TableCell cell3 = CreateHeaderCell("Điểm giao hàng", 1,1, 26, 6000);
-                                        TableCell cell4 = CreateHeaderCell("Đơn giá", 2,1, 26, 3000);
-                                        rowHeader.Append(cell1);
-                                        rowHeader.Append(cell2);
-                                        rowHeader.Append(cell3);
-                                        rowHeader.Append(cell4);
-                                        table.Append(rowHeader);
-                                        #endregion
-
-                                        #region Gendata table
-                                        var o = 1;
-                                        foreach (var i in d)
-                                        {
-                                            var good = lstGoods.FirstOrDefault(x => x.Code == i?.Col5);
-                                            TableRow row = new TableRow();
-                                            row.Append(CreateCell(o.ToString(), false, 26, 500));
-                                            row.Append(CreateCell(good?.Name, true, 26, 4000));
-                                            row.Append(CreateCell(i?.Address, false, 26, 6000));
-                                            row.Append(CreateCell(i?.Col8.ToString("N0"), true, 26, 1500));
-                                            row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
-                                            table.Append(row);
-                                            o++;
-                                        }
-                                        #endregion
-
-                                        paragraph.Parent.InsertAfter(table, paragraph);
-                                        paragraph.Remove();
-
-                                    }
-                                }
+                                
                                 break;
                             case "##CHIPHI@@":
                                 var chiphi = IsN1 == false ? "và chi phí vân chuyển" : "";
@@ -4127,7 +3945,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = headerId,
-                    Name = path.Replace($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/", ""),
+                    Name = path.Replace($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}/", ""),
                     Type = "docx",
                     Path = path
                 });
@@ -4317,7 +4135,6 @@ namespace DMS.BUSINESS.Services.BU
         }
         #endregion
 
-
         #region xử lý quy trình xét duyệt
 
         public async Task HandleQuyTrinh(QuyTrinhModel data)
@@ -4374,17 +4191,6 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblBuHistoryDownload>();
             }
         }
-        #endregion
-
-        #region 1
-        
-        
-        #endregion
-
-
-        #region 2
-
-
         #endregion
 
     }   

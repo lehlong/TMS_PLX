@@ -15,6 +15,7 @@ using DMS.BUSINESS.Services.AD;
 using DMS.BUSINESS.Services.HUB;
 using DMS.CORE;
 using DMS.BUSINESS.Services.BackgroundHangfire;
+using Microsoft.Extensions.FileProviders;
 
 var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -159,7 +160,11 @@ app.UseMiddleware<ActionLoggingMiddleware>();
 app.MapHub<SystemTraceServiceHub>("/SystemTrace");
 app.MapHub<RefreshServiceHub>("/Refresh");
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/Uploads"
+});
 
 app.MapControllers();
 app.Run();
