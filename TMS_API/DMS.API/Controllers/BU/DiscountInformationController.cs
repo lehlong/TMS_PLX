@@ -101,6 +101,30 @@ namespace DMS.API.Controllers.BU
             }
         }
 
+        [HttpGet("ExportExcelBaoCaoThuLaoTT")]
+        [Authorize]
+        public IActionResult ExportExcelBaoCaoThuLaoTT([FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+            //MemoryStream outFileStream = new MemoryStream();
+            //var path = Directory.GetCurrentDirectory() + "/Template/PhanTichChietKhau.xlsx";
+            var result = _service.ExportExcelBaoCaoThuLao(headerId);
+            if (_service.Status)
+            {
+                //var result = await _service.SaveFileHistory(outFileStream, headerId);
+                //return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", DateTime.Now.ToString() + "_CoSoTinhMucGiamGia" + ".xlsx");
+                //transferObject.Data = result;
+                return Ok(transferObject);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
 
 
     }

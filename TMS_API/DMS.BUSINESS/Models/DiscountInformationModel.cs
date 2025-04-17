@@ -31,6 +31,7 @@ namespace DMS.BUSINESS.Models
     public class CK
     {
         public decimal? plxna { get; set; }
+        public string? GoodsCode { get; set; }
         public List<DT> DT { get; set; } = new List<DT>();
     }
 

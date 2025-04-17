@@ -23,6 +23,7 @@
     "@aspnet/signalr": "^1.0.27",
     "@ckeditor/ckeditor5-angular": "^9.1.0",
     "@microsoft/signalr": "^8.0.0",
+    "@onlyoffice/document-editor-angular": "^6.4.0",
     "ckeditor5": "^43.3.1",
     "ng-zorro-antd": "^17.4.1",
     "ngx-doc-viewer": "^15.0.1",

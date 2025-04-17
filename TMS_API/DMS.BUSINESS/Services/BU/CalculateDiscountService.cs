@@ -4037,7 +4037,7 @@ namespace DMS.BUSINESS.Services.BU
 
         {
             var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == headerId).OrderBy(x => x.CreateDate).ToListAsync();
-            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "Mẫu email gửi đi").FirstOrDefault();
+            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo thù lao").FirstOrDefault();
             try
             {
                 DateTime Date = DateTime.Now;

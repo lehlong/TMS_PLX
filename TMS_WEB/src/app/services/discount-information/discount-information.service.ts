@@ -27,6 +27,9 @@ export class DiscountInformationService {
   ExportExcel(headerId: any): Observable<any> {
     return this.commonService.get(`DiscountInformation/ExportExcel?headerId=${headerId}`)
   }
+  ExportExcelBaoCaoThuLao(headerId: any): Observable<any> {
+    return this.commonService.get(`DiscountInformation/ExportExcelBaoCaoThuLaoTT?headerId=${headerId}`)
+  }
   updateDiscountInformation(params: any): Observable<any> {
     return this.commonService.put('DiscountInformation/Update', params);
   }

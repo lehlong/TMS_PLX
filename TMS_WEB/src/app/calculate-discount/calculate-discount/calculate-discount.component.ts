@@ -5,7 +5,7 @@ import { GlobalService } from '../../services/global.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseFilter, PaginationResult } from '../../models/base.model';
 import { Router } from '@angular/router';
-import {FormControl } from '@angular/forms'
+import { FormControl } from '@angular/forms'
 import { SignerService } from '../../services/master-data/signer.service';
 import { GoodsService } from '../../services/master-data/goods.service';
 
@@ -54,10 +54,10 @@ export class CalculateDiscountComponent implements OnInit {
     customerBbdo: [],
   };
   input2: any = this.input;
-  nguoiKyControl = new FormControl({code:"",name:"",position:""});
+  nguoiKyControl = new FormControl({ code: "", name: "", position: "" });
   signerResult: any[] = []
   selectedValue = {}
-  lstgoods: any[]= []
+  lstgoods: any[] = []
   ngOnInit(): void {
     this.search();
     this.getAllSigner();
@@ -90,12 +90,12 @@ export class CalculateDiscountComponent implements OnInit {
       next: (data) => {
         this.input = data;
         const month = new Date(this.input.header.date).getMonth() + 1;
-        this.input.inputPrice.forEach((item1:any) => {
-            const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
-            if (matched) {
-              item1.vcf = (month>=5 && month <=10)? matched.vfcHt : matched.vfcDx;
-            }
-          });
+        this.input.inputPrice.forEach((item1: any) => {
+          const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
+          if (matched) {
+            item1.vcf = (month >= 5 && month <= 10) ? matched.vfcHt : matched.vfcDx;
+          }
+        });
 
         this.input2 = structuredClone(data)
         this.formatVcfAndBvmtData()
@@ -121,6 +121,8 @@ export class CalculateDiscountComponent implements OnInit {
 
   onCreate() {
     this.input.header.signerCode = this.nguoiKyControl.value?.code || ''
+    // console.log(this.input);
+
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);
@@ -199,10 +201,10 @@ export class CalculateDiscountComponent implements OnInit {
     const numberValue = parseFloat(rawNumber);
     const finalNumber = isNaN(numberValue) ? 0 : numberValue;
     // 8. Update vào model chuẩn
-      const index = this.input2.inputPrice.findIndex((x: any) => x.goodCode === data.goodCode);
-      if (index !== -1) {
-        this.input.inputPrice[index][field] = finalNumber;
-      }
+    const index = this.input2.inputPrice.findIndex((x: any) => x.goodCode === data.goodCode);
+    if (index !== -1) {
+      this.input.inputPrice[index][field] = finalNumber;
+    }
   }
 
   onKeyDownNumberOnly(event: KeyboardEvent) {
@@ -235,7 +237,7 @@ export class CalculateDiscountComponent implements OnInit {
   }
   formatVcfAndBvmtData() {
     if (this.input2.inputPrice && Array.isArray(this.input2.inputPrice)) {
-      this.input2.inputPrice.forEach((item:any) => {
+      this.input2.inputPrice.forEach((item: any) => {
         // Format các trường số cần format
         item.vcf = this.formatNumber(item.vcf);
         item.thueBvmt = this.formatNumber(item.thueBvmt);
@@ -254,7 +256,7 @@ export class CalculateDiscountComponent implements OnInit {
     const month = new Date(date).getMonth() + 1;
 
     // Tạo array mới để Angular detect thay đổi
-    const temp= this.input.inputPrice.map((item1: any) => {
+    const temp = this.input.inputPrice.map((item1: any) => {
       const matched = this.lstgoods.find(item2 => item2.code === item1.goodCode);
       const vcfValue = matched
         ? (month >= 5 && month <= 10 ? matched.vfcHt : matched.vfcDx)
@@ -268,4 +270,17 @@ export class CalculateDiscountComponent implements OnInit {
 
     this.formatVcfAndBvmtData();
   }
+
+
+  handleAutoInput(row: any) {
+    const index = this.input2.inputPrice.indexOf(row)
+
+    this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10) - 30
+    this.input.inputPrice[index].fobV1 = this.input2.inputPrice[index].fobV1
+    this.input2.inputPrice[index].fobV1 = this.formatNumber(this.input2.inputPrice[index].fobV1)
+    console.log(this.input2.inputPrice[index].fobV1);
+
+  }
+
+
 }

@@ -33,7 +33,7 @@
           style="cursor: pointer;">
           <td>{{(paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
           <td>{{ data.name }}</td>
-          <td>{{ data.date| date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+          <td>{{ data.date| date: 'dd/MM/yyyy hh:mm' }}</td>
           <td> {{
             data.status == '01'
             ? 'Khởi tạo'
@@ -66,7 +66,7 @@
       <div nz-col class="gutter-row" [nzSpan]="6">
           <div class="inner-box">
             <label>Ngày hiệu lực</label>
-            <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="input.header.date"
+            <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="yyyy-MM-dd HH:mm" [(ngModel)]="input.header.date"
               [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
           </div>
       </div>
@@ -103,13 +103,13 @@
               <th nzAlign="center" rowspan="2">LOẠI HÀNG</th>
               <th nzAlign="center" rowspan="2">THUẾ BVMT</th>
               <th nzAlign="center" rowspan="2">Hệ số <br> VCF BQ <br> mùa miền</th>
-              <th nzAlign="center" rowspan="2">MỨC TĂNG SO VỚI V1</th>
+              <th nzAlign="center" rowspan="2">MỨC TĂNG<br> SO VỚI V1</th>
               <th nzAlign="center" colspan="2">GIÁ TẬP ĐOÀN CÔNG BỐ</th>
               <th nzAlign="center" rowspan="2">L15 CHƯA VAT<br> & BVMT<br>(PT bán lẻ - V2)</th>
               <th nzAlign="center" rowspan="2">L15 CHƯA VAT <br> & BVMT<br>(ngoài bán lẻ)</th>
-              <th nzAlign="center" rowspan="2">LÃI GỘP <br>ĐIỀU TIẾT</th>
-              <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
+              <th nzAlign="center" rowspan="2">LÃI GỘP ĐIỀU TIẾT<br>(L15 CHƯA VAT&BVMT)”)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br>(Vùng còn lại)</th>
+              <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
             </tr>
             <tr>
               <th nzAlign="center">GIÁ BÁN LẺ V1</th>
@@ -142,11 +142,11 @@
               <td><input nz-input [(ngModel)]="data.laiGop" style="text-align: right;"
                   (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'laiGop')" type="text" />
               </td>
-              <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
-              </td>
               <td><input nz-input [(ngModel)]="data.fobV2" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV2')" type="text" />
+                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV2')" (keyup)="handleAutoInput(data)" type="text" />
+              </td>
+              <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
+                  (keydown)="onKeyDownNumberOnly($event)"(input)="onInputNumberFormat(data,'fobV1')"   type="text" />
               </td>
             </tr>
           </tbody>

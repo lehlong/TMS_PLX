@@ -15,6 +15,9 @@
           <button class="!flex !items-center btn-excel" nzType="primary" nz-button (click)="exportExcel()" [appPermission]="COMPETITOR_ANALYSIS.EXPORT_TO_EXCEL">
             <span nz-icon nzType="file-excel"></span> Xuất Excel
           </button>
+          <button class="!flex !items-center btn-excel" nzType="primary" nz-button (click)="exportExcelBaoCaoThuLao()" [appPermission]="COMPETITOR_ANALYSIS.EXPORT_TO_EXCEL">
+            <span nz-icon nzType="file-excel"></span>Xuất báo cáo thù lao TĐ
+          </button>
           <!-- <button nz-button nzType="default" (click)="fullScreen()"><span nz-icon nzType="fullscreen"></span></button> -->
         </nz-space>
       </nz-page-header-extra>

@@ -26,6 +26,8 @@ using DMS.CORE.Entities.IN;
 using System.Reflection.Metadata.Ecma335;
 using DMS.BUSINESS.Extentions;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -33,6 +35,7 @@ namespace DMS.BUSINESS.Services.BU
     {
         Task<string> SaveFileHistory(MemoryStream outFileStream, string headerId);
         void ExportExcel(ref MemoryStream outFileStream, string path, string headerId);
+        Task<string> ExportExcelBaoCaoThuLao(string headerId);
         Task<DiscountInformationModel> getAll(string Code);
         Task UpdateDataInput(CompetitorModel model);
         Task<CompetitorModel> getDataInput(string code);
@@ -80,16 +83,19 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     var ck = new CK
                     {
+                        GoodsCode = g.Code,
                         plxna = discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0,
                     };
 
                     foreach (var c in lstCompetitor)
                     {
                         var item = lstCalculate.FirstOrDefault(v => v.GoodCode == g.Code);
-                        var dt = new DT();
+                        var dt = new DT();  
 
-                        var ck1 = (c.Code == "APP" ? (0.02m * item.GblV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
-                        dt.ckCl.Add(Math.Round((decimal)ck1, 0));
+                        var ck1 = (c.Code == "APP" 
+                            ? (0.02m * item.GblV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) 
+                            : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
+                        dt.ckCl.Add(Math.Floor((ck1 / 10)) * 10);
                         dt.ckCl.Add(Math.Round(ck1 - discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0, 0));
 
                         ck.DT.Add(dt);
@@ -412,6 +418,135 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         
+
+        public async Task<string> ExportExcelBaoCaoThuLao(string headerId)
+        {
+            try
+            {
+                var data = getAll(headerId);
+
+                var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "BaoCaoThuLaoTD.xlsx");
+
+                if (!File.Exists(templatePath))
+                {
+                    throw new FileNotFoundException("Không tìm thấy template Excel.", templatePath);
+                }
+                using var file = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                IWorkbook workbook = new XSSFWorkbook(file);
+
+                var styles = new
+                {
+                    FreeText = ExcelNPOIExtention.SetCellFreeStyle(workbook, true, HorizontalAlignment.Center, true, 16),
+                    Text = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Left, true),
+                    TextRight = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Right, true),
+                    TextBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Left, true),
+                    TextCenter = ExcelNPOIExtention.SetCellStyleText(workbook, false, HorizontalAlignment.Center, false),
+                    TextCenterBold = ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false),
+                    Number = ExcelNPOIExtention.SetCellStyleNumber(workbook, false, HorizontalAlignment.Right, true),
+                    NumberBold = ExcelNPOIExtention.SetCellStyleNumber(workbook, true, HorizontalAlignment.Right, true),
+                };
+                var sheetBaoCao = workbook.GetSheetAt(0);
+
+                #region thông báo   
+                int rowIndex = 6;
+                var fDate = data.Result.lstDIL.FDate.Value.ToString("dd.MM.yyyy");
+                var d = data.Result.discount[0];
+                
+                var row = sheetBaoCao.GetRow(rowIndex) ?? sheetBaoCao.CreateRow(rowIndex);
+
+                ExcelNPOIExtention.SetCellValueText(row, 0, fDate, styles.Text);
+                ExcelNPOIExtention.SetCellValueText(row, 1, "31.12.9999", styles.Text);
+                ExcelNPOIExtention.SetCellValueNumber(row, 2, 2810, styles.Number);
+                ExcelNPOIExtention.SetCellValueText(row, 3, "Công ty Xăng dầu Nghệ An", styles.Text);
+                ExcelNPOIExtention.SetCellValueNumber(row, 4, "900001", styles.Number);
+                ExcelNPOIExtention.SetCellValueText(row, 5, "Petrolimex", styles.Text);
+                ExcelNPOIExtention.SetCellValueText(row, 6, "Nghệ An", styles.Text);
+                var indexCk = 7;
+                foreach (var ck in d.CK)
+                {
+                    if (ck.GoodsCode != "0601005")
+                    {
+                        ExcelNPOIExtention.SetCellValueNumber(row, indexCk++, ck.plxna, styles.Number);
+                        ExcelNPOIExtention.SetCellValueNumber(row, indexCk++, ck.plxna, styles.Number);
+                    }
+                }
+                ExcelNPOIExtention.SetCellValueText(row, indexCk++, "Bến thủy/Nghi Hương", styles.Text);
+                ExcelNPOIExtention.SetCellValueText(row, indexCk++, "CK vùng 2", styles.Text);
+                rowIndex++;
+
+                foreach (var i in data.Result.lstCompetitor)
+                {
+                    var khoBenBan = i.Code == "APP" ? "Nghi Sơn" : "Vũng Áng";
+                    var MaDauMoi = i.Code == "APP" ? "900003" : "900002";
+                    var text = d.IsBold ? styles.TextBold : styles.Text;
+                    var number = d.IsBold ? styles.NumberBold : styles.Number;
+                    var row1 = sheetBaoCao.GetRow(rowIndex) ?? sheetBaoCao.CreateRow(rowIndex);
+
+                    ExcelNPOIExtention.SetCellValueText(row1, 0, fDate, styles.Text);
+                    ExcelNPOIExtention.SetCellValueText(row1, 1, "31.12.9999", styles.Text);
+                    ExcelNPOIExtention.SetCellValueNumber(row1, 2, 2810, styles.Number);
+                    ExcelNPOIExtention.SetCellValueText(row1, 3, "Công ty Xăng dầu Nghệ An", styles.Text);
+                    ExcelNPOIExtention.SetCellValueNumber(row1, 4,  MaDauMoi, styles.Number);
+                    ExcelNPOIExtention.SetCellValueText(row1, 5, i.Name, styles.Text);
+                    ExcelNPOIExtention.SetCellValueText(row1, 6, "Hà Tinh/Nghệ An/Thanh Hóa", styles.Text);
+                    indexCk = 7;
+                    foreach (var ck in d.CK)
+                    {
+                        if (ck.GoodsCode != "0601005")
+                        {
+                            var indexCkCl = 0;
+                            //foreach (var ckDt in ck.DT)
+                            //{
+                                if(rowIndex == 7)
+                                {
+                                    ExcelNPOIExtention.SetCellValueNumber(row1, indexCk++, ck.DT[0].ckCl[0], styles.Number);
+                                    ExcelNPOIExtention.SetCellValueNumber(row1, indexCk++, ck.DT[0].ckCl[0], styles.Number);
+                                }
+                                else
+                                {
+                                    ExcelNPOIExtention.SetCellValueNumber(row1, indexCk++, ck.DT[1].ckCl[0], styles.Number);
+                                    ExcelNPOIExtention.SetCellValueNumber(row1, indexCk++, ck.DT[1].ckCl[0], styles.Number);
+                                }
+                            //}
+                        }
+                        //var ckDt = ck.DT[0];
+                    }
+                    ExcelNPOIExtention.SetCellValueText(row1, 13, khoBenBan, styles.Text);
+                    ExcelNPOIExtention.SetCellValueText(row1, 14, "CK vùng 2", styles.Text);
+                    rowIndex++;
+                }
+
+                #endregion
+
+                var folderPath = Path.Combine($"Uploads/Excel/{DateTime.Now.ToString("yyyy/MM/dd")}");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+                var fileName = $"BCThuLaoTD_{DateTime.Now:ddMMyyyy_HHmmss}.xlsx";
+                var outputPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath, fileName);
+
+                using var outFile = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
+                workbook.Write(outFile);
+
+                _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = headerId,
+                    Name = fileName,
+                    Type = "xlsx",
+                    Path = $"{folderPath}/{fileName}",
+                });
+                await _dbContext.SaveChangesAsync();
+
+                return $"{folderPath}/{fileName}";
+                //templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
         public ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
@@ -472,5 +607,5 @@ namespace DMS.BUSINESS.Services.BU
     
     }
 
-    
+
 }

@@ -1,43 +1,48 @@
 .ant-row {
-    margin: 0 !important;
+  margin: 0 !important;
 }
 
 .overflow-tab {
-    overflow: auto !important;
-    height: calc(100vh - 206px) !important;
+  overflow: auto !important;
+  height: calc(100vh - 206px) !important;
 }
-.overflow-input{
-    overflow: auto !important;
-    height: calc(100vh - 234px) !important;
+
+.overflow-input {
+  overflow: auto !important;
+  height: calc(100vh - 234px) !important;
 }
 
 
 th {
-    text-align: center !important;
+  text-align: center !important;
 }
 
-td > input[type=number]{
-    border: none;
-    background: transparent;
-    text-align: right;
+td>input[type=number] {
+  border: none;
+  background: transparent;
+  text-align: right;
 }
-td > input[type=text]{
-    border: none;
-    background: transparent;
-    text-align: left;
+
+td>input[type=text] {
+  border: none;
+  background: transparent;
+  text-align: left;
 }
-button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn-sms{
-    background-color: #EEC900;
-    border-color: #EEC900;
+
+.btn-sms {
+  background-color: #EEC900;
+  border-color: #EEC900;
 }
-.btn-email{
-    background-color: #696969;
-    border-color: #696969;
+
+.btn-email {
+  background-color: #696969;
+  border-color: #696969;
 }
 
 
@@ -48,75 +53,90 @@ button{
 // ::ng-deep  .ant-pagination {
 //   display: none;
 // }
-.align-right{
+.align-right {
   text-align: right;
 }
-.align-center{
+
+.align-center {
   text-align: center;
 }
-.ant-table-content{
+
+.ant-table-content {
   overflow: scroll !important;
   height: calc(100vh - 206px) !important;
 }
-.p-m{
+
+.p-m {
   margin-top: 12px;
 }
-.input-v{
+
+.input-v {
   border: none;
   background: none;
   text-align: right;
 }
-._ngcontent-ng-c3840563359{
-overflow-y: auto !important;
+
+._ngcontent-ng-c3840563359 {
+  overflow-y: auto !important;
   height: calc(100vh - 206px) !important;
 }
 
-.btn-excel{
+.btn-excel {
   background-color: #008B45;
   border-color: #008B45;
 }
-.btn-pdf{
+
+.btn-pdf {
   background-color: #EE6363;
   border-color: #EE6363;
 }
-.btn-sms{
+
+.btn-sms {
   background-color: #EEC900;
   border-color: #EEC900;
 }
-.btn-email{
+
+.btn-email {
   background-color: #696969;
   border-color: #696969;
 }
-.btn-word-trinh-ky{
-background-color: #696969;
-border-color: #696969;
+
+.btn-word-trinh-ky {
+  background-color: #696969;
+  border-color: #696969;
 }
-.zoom{
-top: 0;
-left: 0;
-position: fixed;
-width: 100%;
-height: 100%;
-background-color: white;
-z-index: 10;
-padding: 5px 20px;
+
+.zoom {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  z-index: 10;
+  padding: 5px 20px;
 }
-.close{
-position: absolute;
+
+.close {
+  position: absolute;
   right: 36px;
   top: 10px;
   z-index: 11;
 }
-.d-none{
-display: none;
+
+.d-none {
+  display: none;
 }
-.d-block{
-display: block;
+
+.d-block {
+  display: block;
 }
+
 ::ng-deep .ant-select-item-option-disabled {
-color: black;
+  color: black;
 }
-.zoom{
+
+.zoom {
   top: 0;
   left: 0;
   position: fixed;
@@ -126,6 +146,11 @@ color: black;
   z-index: 10;
   padding: 5px 20px;
 }
+
 .container-list {
-overflow-y: scroll;
+  overflow-y: scroll;
 }
+
+// #header-logo {
+//   display: none !important;
+// }

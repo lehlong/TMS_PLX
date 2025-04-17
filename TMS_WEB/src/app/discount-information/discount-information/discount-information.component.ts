@@ -145,6 +145,17 @@ export class DiscountInformationComponent {
     })
   }
 
+  exportExcelBaoCaoThuLao(){
+    this._service.ExportExcelBaoCaoThuLao(this.code).subscribe({
+      next: (data) => {
+        var a = document.createElement('a')
+        a.href = environment.apiUrl + data
+        a.target = '_blank'
+        a.click()
+        a.remove()
+      },
+    })
+  }
 
   checkName(_name: string){
     _name == '' ? this.isName = true : this.isName = false

@@ -15,11 +15,15 @@ import {
 import { SignerService } from '../../services/master-data/signer.service'
 import Swal from 'sweetalert2'
 import { GoodsService } from '../../services/master-data/goods.service'
+import { DocumentEditorModule } from '@onlyoffice/document-editor-angular';
+import { IConfig } from '@onlyoffice/document-editor-angular';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-calculate-discount-detail',
   standalone: true,
-  imports: [ShareModule, NgxDocViewerModule],
+  imports: [ShareModule, NgxDocViewerModule, DocumentEditorModule],
   templateUrl: './calculate-discount-detail.component.html',
   styleUrl: './calculate-discount-detail.component.scss',
 })
@@ -126,6 +130,11 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
   currentTab = ''
   lstgoods: any[] = []
+  isBrowser: boolean = true;
+  idramdom = new Date().getTime();
+  isVisiblePreviewExcel: boolean = false
+  urlViewExcel = ''
+
   constructor(
     private _service: CalculateDiscountService,
     private globalService: GlobalService,
@@ -133,7 +142,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private _signerService: SignerService,
     private _goodService: GoodsService,
+    // @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    // this.isBrowser = isPlatformBrowser(this.platformId);
     this.globalService.setBreadcrumb([
       {
         name: 'Kết quả tính toán',
@@ -150,6 +161,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
         const id = params.get('id')
         this.headerId = id
         this.getOutput(this.headerId)
+        console.log(this.idramdom);
+
       },
     })
     this._service.getInput(this.headerId).subscribe({
@@ -471,7 +484,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   onUpdateInput() {
     this._service.updateInput(this.input).subscribe({
-      next: (data) => {},
+      next: (data) => { },
       error: (response) => {
         console.log(response)
       },
@@ -480,7 +493,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   handleQuyTrinh() {
     this._service.HandleQuyTrinh(this.input).subscribe({
-      next: (data) => {},
+      next: (data) => { },
       error: (response) => {
         console.log(response)
       },
@@ -504,8 +517,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isZoom = false
     document
       .exitFullscreen()
-      .then(() => {})
-      .catch(() => {})
+      .then(() => { })
+      .catch(() => { })
   }
   showHistoryAction() {
     this._service.GetHistoryAction(this.headerId).subscribe({
@@ -539,16 +552,54 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
-  Preview(url: string) {
-    this.UrlOffice = url
-    console.log(
-      this.UrlOffice
-    );
 
-    this.isVisiblePreview = true
+  Preview(data: any) {
+    // this.UrlOffice = data.
+    if (data.type == "xlsx") {
+      console.log("excel");
+
+      this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
+      this.isVisiblePreviewExcel = true
+      console.log(this.urlViewExcel);
+      this.config = {
+        document: {
+          fileType: 'xlsx',
+          key: `ket${this.idramdom}`,
+          title: 'Example Document Title.xlsx',
+          url: `${this.urlViewExcel}`,
+        },
+        documentType: 'cell',
+        editorConfig: {
+          mode: 'view',
+
+        },
+      };
+    } else {
+      this.UrlOffice
+      this.isVisiblePreview = true
+
+    }
+
   }
+
+  config: IConfig = {
+    document: {
+      fileType: 'xlsx',
+      key: `ket${this.idramdom}`,
+      title: 'Example Document Title.xlsx',
+      url: `${this.urlViewExcel}`,
+    },
+    documentType: 'cell',
+    editorConfig: {
+      mode: 'view',
+
+    },
+  };
+
   cancelPreview() {
-    this.isVisiblePreview = !this.isVisiblePreview
+    this.isVisiblePreview = false;
+    this.isVisiblePreviewExcel = false
+
   }
 
   onInputNumberFormat(data: any, field: string) {
@@ -637,6 +688,15 @@ export class CalculateDiscountDetailComponent implements OnInit {
     event.preventDefault()
   }
 
+  handleAutoInput(row: any) {
+    const index = this.input2.inputPrice.indexOf(row)
+
+    this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10) - 30
+    this.input.inputPrice[index].fobV1 = this.input2.inputPrice[index].fobV1
+    this.input2.inputPrice[index].fobV1 = this.formatNumber(this.input2.inputPrice[index].fobV1)
+    console.log(this.input2.inputPrice[index].fobV1);
+
+  }
   formatNumber(value: any): string {
     if (value == null || value === '') return ''
 
@@ -667,8 +727,38 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  cancelSendSMS() {}
-  cancelSendEmail() {}
+
+  // onDocumentReady(event: any) {
+  //   console.log('Document is ready:', event);
+  // }
+
+  // onLoadComponentError(error: any) {
+  //   console.error('Error loading document editor:', error);
+  // }
+
+  onDocumentReady = () => {
+    if (this.isBrowser) {
+      console.log('Document is loaded');
+    }
+  };
+
+  onLoadComponentError = (errorCode: number, errorDescription: string) => {
+    if (this.isBrowser) {
+      switch (errorCode) {
+        case -1: // Unknown error loading component
+          console.log(errorDescription);
+          break;
+        case -2: // Error loading DocsAPI
+          console.log(errorDescription);
+          break;
+        case -3: // DocsAPI is not defined
+          console.log(errorDescription);
+          break;
+      }
+    }
+  };
+  cancelSendSMS() { }
+  cancelSendEmail() { }
   exportWord() {
     this._service.GetCustomerBbdo(this.headerId).subscribe({
       next: (data) => {
@@ -763,9 +853,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   formatNegativeNumber(value: number | null | undefined): string {
     if (value == null || isNaN(value)) return '';
-  
+
     const formatted = Math.abs(value).toLocaleString('en-US'); // format dấu phẩy phần nghìn
-  
+
     return value < 0
       ? `(${formatted})`
       : formatted;

@@ -44,6 +44,8 @@
   <ItemGroup>
     <Folder Include="Uploads\" />
     <Folder Include="Uploads\" />
+    <Folder Include="Uploads\Pdf\2025\04\09\" />
+    <Folder Include="Uploads\Word\2025\04\08\" />
   </ItemGroup>
 
 </Project>
