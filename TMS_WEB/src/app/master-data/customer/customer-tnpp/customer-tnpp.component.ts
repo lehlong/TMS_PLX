@@ -37,6 +37,7 @@ export class CustomerTnppComponent {
     order: [0],
     phuongThuc: [''],
     isActive: [true, [Validators.required]],
+    lamTronDacBiet: [false, [Validators.required]],
   })
 
   isSubmit: boolean = false
@@ -245,6 +246,8 @@ export class CustomerTnppComponent {
       phuongThuc: data.phuongThuc,
       thtt: data.thtt,
       adrress: data.adrress,
+      lamTronDacBiet: data.lamTronDacBiet,
+
     })
     setTimeout(() => {
       this.edit = true

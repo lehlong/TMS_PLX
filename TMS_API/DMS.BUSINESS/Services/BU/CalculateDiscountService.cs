@@ -48,15 +48,16 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> ExportExcel(string headerId);
         Task<string> GenarateWordTrinhKy(string headerId, string nameTeam);
         Task<string> GenarateWord(List<CustomBBDOExportWord> lstCustomerChecked, string headerId);
-        Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
+        Task<List<string>> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
-        Task SendSMS(string headerId);
+        Task SendSMS(string headerId, string smsName);
         Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
         Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
-        Task<List<CustomInput>> GetAllInputCustomer();
+        Task<List<CustomInput>> GetAllInputCustomer(); 
+        Task<CalculateDiscountInputModel> CopyInput(string headerId, string id);
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
@@ -164,7 +165,8 @@ namespace DMS.BUSINESS.Services.BU
                         Adrress = x.Adrress,
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
-                        IsActive = true
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet 
                     }).ToList(),
                     CustomerPt = lstCustomerPt.Select(x => new TblBuInputCustomerPt
                     {
@@ -187,7 +189,8 @@ namespace DMS.BUSINESS.Services.BU
                         Adrress = x.Adrress,
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
-                        IsActive = true
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
                     }).ToList(),
                     CustomerPts = lstCustomerPts.Select(x => new TblBuInputCustomerPts
                     {
@@ -232,7 +235,8 @@ namespace DMS.BUSINESS.Services.BU
                         Adrress = x.Adrress,
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
-                        IsActive = true
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
                     }).ToList(),
                     CustomerTnpp = lstCustomerTnpp.Select(x => new TblBuInputCustomerTnpp
                     {
@@ -255,7 +259,8 @@ namespace DMS.BUSINESS.Services.BU
                         Adrress = x.Adrress,
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
-                        IsActive = true
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
                     }).ToList(),
                     CustomerBbdo = lstCustomerBbdo.Select(x => new TblBuInputCustomerBbdo
                     {
@@ -282,7 +287,8 @@ namespace DMS.BUSINESS.Services.BU
                         Adrress = x.Adrress ?? "-",
                         CkDau = x.CkDau ?? 0,
                         CkXang = x.CkXang ?? 0,
-                        IsActive = true
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
                     }).ToList(),
                 };
 
@@ -742,17 +748,26 @@ namespace DMS.BUSINESS.Services.BU
                             Col13 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietXang ?? 0,
                             Col15 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietDau ?? 0,
                             Col17 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietDau ?? 0,
-
                         };
-                        p.Col12 = Math.Round(p.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col14 = Math.Round(p.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col16 = Math.Round(p.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col18 = Math.Round(p.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
+                        
+                        p.Col12 = (p.Col11 / 10) * 10 / 1.1M;
+                        p.Col14 = (p.Col13 / 10) * 10 / 1.1M;
+                        p.Col16 = (p.Col15 / 10) * 10 / 1.1M;
+                        p.Col18 = (p.Col17 / 10) * 10 / 1.1M;
+                        //p.Col12 = Math.Round(p.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
+                        //p.Col14 = Math.Round(p.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
+                        //p.Col16 = Math.Round(p.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
+                        //p.Col18 = Math.Round(p.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
 
                         p.Col19 = p.Col2 - p.Col6 - p.Col12;
                         p.Col20 = p.Col3 - p.Col6 - p.Col14;
                         p.Col21 = p.Col4 - p.Col6 - p.Col16;
                         p.Col22 = p.Col5 - p.Col6 - p.Col18;
+
+                        //p.Col24 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col6) - (p.Col11 / 10) * 10;
+                        //p.Col26 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col6) - (p.Col13 / 10) * 10; ;
+                        //p.Col28 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col6) - (p.Col15 / 10) * 10; ;
+                        //p.Col30 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col6) - (p.Col17 / 10) * 10; ;
 
                         p.Col24 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col6) - Math.Round(p.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10;
                         p.Col26 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col6) - Math.Round(p.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10; ;
@@ -795,24 +810,18 @@ namespace DMS.BUSINESS.Services.BU
                             marketCode = "V2_03";
                         }
 
-                        col14 = data.Pt.Where(x => x.MarketCode == marketCode)
-                                   .Sum(x => Math.Round(x.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10);
-                        col16 = data.Pt.Where(x => x.MarketCode == marketCode)
-                                   .Sum(x => Math.Round(x.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                        col14 = data.Pt.Where(x => x.MarketCode == marketCode).Sum(x => Math.Round(x.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                        col16 = data.Pt.Where(x => x.MarketCode == marketCode).Sum(x => Math.Round(x.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10);
 
                         if (i.Code == "906962")
                         {
-                            col18 = data.Pt.Where(x => x.MarketCode == "V2_02")
-                                     .Sum(x => Math.Round(x.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10);
-                            col20 = data.Pt.Where(x => x.MarketCode == "V2_02")
-                                     .Sum(x => Math.Round(x.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                            col18 = data.Pt.Where(x => x.MarketCode == "V2_02").Sum(x => Math.Round(x.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                            col20 = data.Pt.Where(x => x.MarketCode == "V2_02").Sum(x => Math.Round(x.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10);
                         }
                         else
                         {
-                            col18 = data.Pt.Where(x => x.MarketCode == marketCode)
-                                     .Sum(x => Math.Round(x.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10);
-                            col20 = data.Pt.Where(x => x.MarketCode == marketCode)
-                                     .Sum(x => Math.Round(x.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                            col18 = data.Pt.Where(x => x.MarketCode == marketCode).Sum(x => Math.Round(x.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10);
+                            col20 = data.Pt.Where(x => x.MarketCode == marketCode).Sum(x => Math.Round(x.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10);
                         }
 
                         var p = new DataModel
@@ -1017,6 +1026,7 @@ namespace DMS.BUSINESS.Services.BU
                             Col6 = i.Lvnh,
                             Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob,
                             Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / 1.1M,
+                            Col15 = i.LamTronDacBiet == true ? 1 : 0,
 
                         };
                         j.Col9 = j.Col7 - j.Col5 * 1.1M;
@@ -1062,6 +1072,8 @@ namespace DMS.BUSINESS.Services.BU
                         Col6 = i.Lvnh,
                         Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
                         Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                        Col15 = i.LamTronDacBiet == true ? 1 : 0,
+
                     };
                     j.Col9 = j.Col7 - j.Col5 * 1.1M;
                     j.Col10 = j.Col9 / 1.1M;
@@ -1105,6 +1117,7 @@ namespace DMS.BUSINESS.Services.BU
                         Col6 = i.Lvnh,
                         Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
                         Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                        Col15 = i.LamTronDacBiet == true ? 1 : 0,
                     };
                     j.Col9 = j.Col7 - j.Col5 * 1.1M;
                     j.Col10 = j.Col9 / 1.1M;
@@ -1115,6 +1128,7 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+
                     data.Bbdo.Add(j);
                     obb++;
                 }
@@ -1653,15 +1667,18 @@ namespace DMS.BUSINESS.Services.BU
             #region BB DO
             foreach (var i in data.Bbdo)
             {
-                i.Col1 = Math.Round(i.Col1);
-                i.Col2 = Math.Round(i.Col2);
-                i.Col8 = Math.Round(i.Col8);
-                i.Col9 = Math.Round(i.Col9);
-                i.Col10 = Math.Round(i.Col10);
-                i.Col11 = Math.Round(i.Col11);
-                i.Col12 = Math.Round(i.Col12);
-                i.Col13 = Math.Round(i.Col13);
-                i.Col14 = Math.Round(i.Col14);
+                if (i.Col15 == 1)
+                {
+                    i.Col1 = Math.Round(i.Col1);
+                    i.Col2 = Math.Round(i.Col2);
+                    i.Col8 = Math.Round(i.Col8);
+                    i.Col9 = Math.Round(i.Col9);
+                    i.Col10 = Math.Round(i.Col10);
+                    i.Col11 = Math.Round(i.Col11);
+                    i.Col12 = Math.Round(i.Col12);
+                    i.Col13 = Math.Round(i.Col13);
+                    i.Col14 = Math.Round(i.Col14);
+                }
 
             }
             #endregion
@@ -2856,6 +2873,7 @@ namespace DMS.BUSINESS.Services.BU
         public async Task<string> GenarateWordTrinhKy(string headerId, string nameTemp)
         {
             #region Tạo 1 file word mới từ file template    
+            List<string> lstUrl = new List<string>();
             var filePathTemplate = Directory.GetCurrentDirectory() + $"/Template/TempTrinhKy/{nameTemp}.docx";
             var folderName = Path.Combine($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}");
             if (!Directory.Exists(folderName))
@@ -3714,10 +3732,6 @@ namespace DMS.BUSINESS.Services.BU
             #endregion
 
 
-
-
-
-
             #endregion
 
             return $"{folderName}/{fileName}";
@@ -3935,7 +3949,7 @@ namespace DMS.BUSINESS.Services.BU
         }
 
 
-        public async Task<string> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null)
+        public async Task<List<string>> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null)
         {
 
             if (type == "WORD")
@@ -3950,10 +3964,11 @@ namespace DMS.BUSINESS.Services.BU
                     Path = path
                 });
                 await _dbContext.SaveChangesAsync();
-                return path;
+                return new List<string> { path };
             }
             if (type == "WORDTRINHKY")
             {
+                List<string> lstUrl = new List<string>();
                 foreach (var n in lstCustomerChecked)
                 {
                     if (n == "KeKhaiGiaChiTiet")
@@ -3967,10 +3982,12 @@ namespace DMS.BUSINESS.Services.BU
                             Type = "xlsx",
                             Path = path
                         });
+                        lstUrl.Add(path);
                         await _dbContext.SaveChangesAsync();
                     }
                     else
                     {
+
                         var path = await GenarateWordTrinhKy(headerId, n);
                         _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
                         {
@@ -3981,27 +3998,12 @@ namespace DMS.BUSINESS.Services.BU
                             Path = path
                         });
                         await _dbContext.SaveChangesAsync();
+                        lstUrl.Add(path);
+
                     }
                 }
-                return null;
+                return lstUrl;
             }
-            //if (type == "EXCEL")
-            //{
-
-            //    var path = await ExportExcelPlus(headerId, data);
-            //    _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
-            //    {
-            //        Code = Guid.NewGuid().ToString(),
-            //        HeaderCode = headerId,
-            //        Name = path.Replace($"Upload/", ""),
-            //        Type = "xlsx",
-            //        Path = path
-            //    });
-            //    await _dbContext.SaveChangesAsync();
-            //    return path;
-
-
-            //}
             else
             {
 
@@ -4027,47 +4029,164 @@ namespace DMS.BUSINESS.Services.BU
                     Path = $"{folderName}/{fileName}",
                 });
                 await _dbContext.SaveChangesAsync();
-                return $"{folderName}/{fileName}";
+                return new List<string> { $"{folderName}/{fileName}" };
+                //return ;
             }
         }
         #endregion
  
         #region mail ,sms
-        public async Task SendSMS(string headerId)
+        public async Task SendSMS(string headerId, string smsName)
 
         {
-            var lstCustomerFob = await _dbContext.TblBuInputCustomerFob.Where(x => x.HeaderId == headerId).OrderBy(x => x.CreateDate).ToListAsync();
-            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo thù lao").FirstOrDefault();
+            var data = await this.CalculateDiscountOutput(headerId);
+            
+            var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == smsName).FirstOrDefault();
             try
             {
                 DateTime Date = DateTime.Now;
                 var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
 
-
-                foreach (var item in lstCustomerFob)
+                if (smsName == "SMS thông báo thù lao")
                 {
-                    var lstCustomerPhone = await _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == item.Code).ToListAsync() ?? null;
-                    //if (lstCustomerPhone != null)
-                    //{
-                        foreach (var cusPhone in lstCustomerPhone)
+                    foreach (var i in data.Vk11Pt)
+                    {
+                        if (i.MarketCode != null)
                         {
-                            var marketName = await _dbContext.TblMdMarket.Where(x => x.Code == item.MarketCode).Select(x => x.Name).FirstOrDefaultAsync();
-                        var goods = "chưa có dữ liệu";
+                            var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.Col4).Where(x => x.IsActive == true).FirstOrDefault();
 
+                            if (customer != null)
+                            {
+                                var pricePt = data.Pl1.Where(x => x.MarketCode == i.MarketCode).FirstOrDefault();
+
+                                var goods = $"X 95-III: {pricePt.Col1} d/l, X E5-II {pricePt.Col2} d/l, Do 0,001S: {pricePt.Col3} d/l, Do 0,05S-II: {pricePt.Col4} d/l";
+
+                                var info = new TblNotifySms()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    PhoneNumber = customer.Phone,
+                                    Subject = Template.Title ?? "",
+                                    Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", i.MarketName).Replace("[goods]", goods),
+                                    IsSend = "N",
+                                    NumberRetry = 0,
+                                    HeaderId = headerId
+                                };
+                                _dbContext.TblCmNotifySms.Add(info);
+                            }
+                        }
+                    }
+
+
+                    var pl2 = data.Pl2;
+
+                    foreach (var i in pl2)
+                    {
+                        if (i.MarketCode != null)
+                        {
+                            var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                            if (customer != null)
+                            {
+                                var market = "";
+                                if (i.CustomerCode == null)
+                                {
+                                    market = i.CustomerName;
+                                }
+
+                                var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                                var info = new TblNotifySms()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    PhoneNumber = customer.Phone,
+                                    Subject = Template.Title ?? "",
+                                    Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                    IsSend = "N",
+                                    NumberRetry = 0,
+                                    HeaderId = headerId
+                                };
+                                _dbContext.TblCmNotifySms.Add(info);
+                            }
+                        }
+                    }
+
+
+                    var pl3 = data.Pl3;
+
+                    foreach (var i in pl3)
+                    {
+                        var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                        if (customer != null)
+                        {
+                            var market = "kho N.Huong/Ben Thuy";
+
+                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = customer.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                IsSend = "N",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+
+                        }
+                    }
+
+
+                    var pl4 = data.Pl4;
+
+                    foreach (var i in pl4)
+                    {
+                        var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                        if (customer != null)
+                        {
+                            var market = "kho N.Huong/Ben Thuy";
+
+
+                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = customer.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                IsSend = "N",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+
+                        }
+                    }
+                }
+                else
+                {
+                    var lstCustomerPhone = _dbContext.TblMdCustomerPhone.Where(x => x.IsActive == true).ToList();
+                    foreach (var cusPhone in lstCustomerPhone)
+                    {
                         var info = new TblNotifySms()
                         {
                             Id = Guid.NewGuid().ToString(),
                             PhoneNumber = cusPhone.Phone,
                             Subject = Template.Title ?? "",
-                            Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", marketName).Replace("[goods]", goods),
+                            Contents = Template.HtmlSource,
                             IsSend = "N",
                             NumberRetry = 0,
                             HeaderId = headerId
                         };
                         _dbContext.TblCmNotifySms.Add(info);
-                        //}
                     }
+
                 }
+
                 _dbContext.SaveChanges();
 
             }
@@ -4204,6 +4323,224 @@ namespace DMS.BUSINESS.Services.BU
         }
         #endregion
 
-    }   
+        #region copy kỳ
+        public async Task<CalculateDiscountInputModel> CopyInput(string headerId, string id)
+        {
+            try 
+            {
+                var Header = _dbContext.TblBuCalculateDiscount.Find(headerId);
+                Header.Id = id;
+                Header.Date = DateTime.Now;
+                Header.Status = "01";
+                Header.IsActive = true;
+                //var headerId = Guid.NewGuid().ToString();
+                var InputPrice = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == headerId).OrderBy(x => x.Order).ToListAsync();
+                //InputPrice.he
+                var lstGoods = await _dbContext.TblMdGoods.OrderBy(x => x.CreateDate).OrderBy(x => x.Order).ToListAsync();
+                var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
+                var lstCustomerDb = await _dbContext.TblMdCustomerDb.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPt = await _dbContext.TblMdCustomerPt.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerFob = await _dbContext.TblMdCustomerFob.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPts = await _dbContext.TblMdCustomerPts.OrderBy(x => x.Order).ToListAsync();
+
+                return new CalculateDiscountInputModel
+                {
+                    Header = Header,
+                    InputPrice = InputPrice.Select(g => new TblBuInputPrice
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        GoodCode = g.GoodCode,
+                        GoodName = g.GoodName,
+                        ThueBvmt = g.ThueBvmt,
+                        Vcf = g.Vcf,
+                        ChenhLech = g.ChenhLech,
+                        GblV1 = g.GblV1,
+                        GblV2 = g.GblV2,
+                        L15Blv2 = g.L15Blv2,
+                        L15Nbl = g.L15Nbl,
+                        LaiGop = 0,
+                        IsActive = true,
+                        Order = g.Order,
+                    }).ToList(),
+                    Market = lstMarket.Select(x => new TblBuInputMarket
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        FullName = x.FullName,
+                        Local2 = x.Local2,
+                        LocalCode = x.LocalCode,
+                        WarehouseCode = x.WarehouseCode,
+                        Gap = x.Gap,
+                        Coefficient = x.Coefficient,
+                        CuocVCBQ = x.CuocVCBQ,
+                        CPChungChuaCuocVC = x.CPChungChuaCuocVC,
+                        CkDieuTietDau = x.CkDieuTietDau,
+                        CkDieuTietXang = x.CkDieuTietXang,
+                    }).ToList(),
+
+                    CustomerDb = lstCustomerDb.Select(x => new TblBuInputCustomerDb
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        Local2 = x.Local2,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerPt = lstCustomerPt.Select(x => new TblBuInputCustomerPt
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerPts = lstCustomerPts.Select(x => new TblBuInputCustomerPts
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        GoodsCode = x.GoodsCode,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true
+                    }).ToList(),
+                    CustomerFob = lstCustomerFob.Select(x => new TblBuInputCustomerFob
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerTnpp = lstCustomerTnpp.Select(x => new TblBuInputCustomerTnpp
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerBbdo = lstCustomerBbdo.Select(x => new TblBuInputCustomerBbdo
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode ?? "-",
+                        DeliveryPoint = x.DeliveryPoint ?? "-",
+                        DeliveryGroupCode = x.DeliveryGroupCode ?? "-",
+                        GoodsCode = x.GoodsCode ?? "-",
+                        MarketCode = x.MarketCode ?? "-",
+                        CuLyBq = x.CuLyBq ?? 0,
+                        Cpccvc = x.Cpccvc ?? 0,
+                        Cvcbq = x.Cvcbq ?? 0,
+                        Lvnh = x.Lvnh ?? 0,
+                        Fob = x.Fob ?? 0,
+                        Htcvc = x.Htcvc ?? 0,
+                        HttVb1370 = x.HttVb1370 ?? 0,
+                        Ckv2 = x.Ckv2 ?? 0,
+                        PhuongThuc = x.PhuongThuc ?? "-",
+                        Thtt = x.Thtt ?? "-",
+                        Order = x.Order,
+                        Adrress = x.Adrress ?? "-",
+                        CkDau = x.CkDau ?? 0,
+                        CkXang = x.CkXang ?? 0,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+                return new CalculateDiscountInputModel();
+            }
+        }
+        #endregion
+    }
 }
 

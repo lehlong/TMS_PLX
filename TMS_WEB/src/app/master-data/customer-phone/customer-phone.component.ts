@@ -75,7 +75,18 @@ isSubmit: boolean = false
     this._service.search(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
 
+  getAll() {
+    this.isSubmit = false
+    this._service.getall().subscribe({
+      next: (data) => {
+        this.paginationResult = data
       },
       error: (response) => {
         console.log(response)

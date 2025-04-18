@@ -38,6 +38,8 @@ export class CustomerDbComponent {
     order: [0],
     phuongThuc: [''],
     isActive: [true, [Validators.required]],
+    lamTronDacBiet: [false, [Validators.required]],
+
   })
 
   isSubmit: boolean = false
@@ -247,7 +249,9 @@ export class CustomerDbComponent {
       phuongThuc: data.phuongThuc,
       thtt: data.thtt,
       adrress: data.adrress,
-      local2 : data.local2
+      local2 : data.local2,
+      lamTronDacBiet: data.lamTronDacBiet,
+
     })
     setTimeout(() => {
       this.edit = true

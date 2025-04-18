@@ -71,6 +71,9 @@ namespace DMS.BUSINESS.Dtos.MD
 
         [Description("sắp xếp")]
         public int Order { get; set; }
+
+        [Description("Khách hàng áp dụng làm tròn đặc biệt")]
+        public bool? LamTronDacBiet { get; set; }
         public void Mapping(Profile profile)
         {
             profile.CreateMap<TblMdCustomerFob, CustomerFobDto>().ReverseMap();

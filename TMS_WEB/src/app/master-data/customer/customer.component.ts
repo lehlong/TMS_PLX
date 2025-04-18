@@ -55,6 +55,7 @@ export class CustomerComponent {
     marketCode: [''],
     fob:[0],
     isActive: [true, [Validators.required]],
+    lamTronDacBiet: [true, [Validators.required]],
   })
   listOfPhone: {
     type: string
@@ -261,7 +262,7 @@ export class CustomerComponent {
 
     this._customerContactService.getall().subscribe({
       next: (contacts) => {
-        this.contactList = contacts        
+        this.contactList = contacts
         if(this.edit){
           this.listOfPhone = contacts.filter(
             (item:any) => item.type === 'phone' && item.customer_Code === formData.code,
@@ -315,7 +316,7 @@ export class CustomerComponent {
       error: (err) => {
         console.error('Lỗi khi gọi API getall:', err)
       },
-    }) 
+    })
   }
 
   // getAllCustomer(){
@@ -534,6 +535,7 @@ export class CustomerComponent {
       marketCode: data.marketCode,
       fob: data.fob,
       isActive: data.isActive,
+      lamTronDacBiet: data.lamTronDacBiet,
     })
     this.listOfPhone = this.contactList.filter(
       (item) => item.type === 'phone' && item.customer_Code === data.code,
@@ -541,7 +543,7 @@ export class CustomerComponent {
     this.listOfEmail = this.contactList.filter(
       (item) => item.type === 'email' && item.customer_Code === data.code,
     )
-    
+
     setTimeout(() => {
       this.edit = true
       this.visible = true

@@ -30,6 +30,9 @@ export class CalculateDiscountService {
     getInput(id: any): Observable<any> {
         return this.commonService.get(`CalculateDiscount/GetInput?id=${id}`);
     }
+    copyInput(headerId:any, id: any): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/CopyInput?id=${id}&headerId=${headerId}`);
+  }
     updateInput(input: any): Observable<any> {
         return this.commonService.put(`CalculateDiscount/UpdateInput`, input);
     }
@@ -52,8 +55,8 @@ export class CalculateDiscountService {
     SendMail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/SendMail?headerId=${model}`)
     }
-    SendSMS(model: any): Observable<any> {
-      return this.commonService.get(`CalculateDiscount/SendSMS?headerId=${model}`)
+    SendSMS(headerId: any, smsName: any): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/SendSMS?headerId=${headerId}&smsName=${smsName}`)
     }
     Getmail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/Getmail?headerId=${model}`)

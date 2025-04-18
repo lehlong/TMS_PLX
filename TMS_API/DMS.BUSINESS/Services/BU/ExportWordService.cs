@@ -6,6 +6,7 @@ using DMS.CORE.Entities.MD;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using DocumentFormat.OpenXml.Packaging;
+using DMS.CORE.Entities.BU;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -27,8 +28,23 @@ namespace DMS.BUSINESS.Services.BU
                 var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath, fileName);
                 if (!File.Exists(fullPath))
                     File.Copy(templatePath, fullPath, true);
-
+                TblBuCalculateDiscount oldHeader = null;
                 var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
+                if (header.QuyetDinhSo != null)
+                {
+                    //var oldHeader = await _dbContext.TblBuCalculateDiscount.FindAsync(header.QuyetDinhSo);
+                    var oldHeaders = await _dbContext.TblBuCalculateDiscount
+                        .Where(x => x.QuyetDinhSo == header.QuyetDinhSo && x.Id != headerId)
+                        .ToListAsync();
+
+                    oldHeader = oldHeaders
+                        .OrderBy(x => x.Date)
+                        .FirstOrDefault();
+                }
+                else
+                {
+                    oldHeader = header;
+                }
                 var signer = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
                 var goodsList = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).ToListAsync();
                 var lastCode = lstCustomerChecked.LastOrDefault()?.code;
@@ -70,11 +86,12 @@ namespace DMS.BUSINESS.Services.BU
                         }
                     }
                 }
-
+                //ngày 24 tháng 10 năm 2024
                 var replacements = new Dictionary<string, string>
                 {
-                    ["##DATE@@"] = $"{header?.Date.Hour:D2}h00 ngày {header?.Date.Day} tháng {header?.Date.Month} năm {header?.Date.Year}",
-                    ["##DATE2@@"] = $"ngày {header?.Date.Day} tháng {header?.Date.Month} năm {header?.Date.Year}",
+                    ["##DATE@@"] = $"{header?.Date.Hour:D2}h00 ngày {header?.Date.Day:D2} tháng {header?.Date.Month:D2} năm {header?.Date.Year}",
+                    ["##DATE3@@"] = $"ngày {header?.Date.Day:D2} tháng {header?.Date.Month:D2} năm {header?.Date.Year}",
+                    ["##DATE2@@"] = $"ngày {oldHeader?.Date.Day:D2} tháng {oldHeader?.Date.Month:D2} năm {oldHeader?.Date.Year}",
                     ["##QUYET_DINH_SO@@"] = header?.QuyetDinhSo ?? "",
                     ["##DAI_DIEN@@"] = signer?.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "",
                     ["##NGUOI_DAI_DIEN@@"] = signer.Position,

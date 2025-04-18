@@ -86,8 +86,7 @@
       <div nz-col class="gutter-row" [nzSpan]="8">
         <div class="inner-box">
           <label>Tên đợt nhập</label>
-          <input nz-input class="align-left" [(ngModel)]="model.header.name"
-            (keyup)="checkName(model.header.name)" />
+          <input nz-input class="align-left" [(ngModel)]="model.header.name" (keyup)="checkName(model.header.name)" />
           <div *ngIf="isName" style="color: red">Tên đợt nhập là bắt buộc!</div>
         </div>
       </div>
@@ -98,7 +97,7 @@
           <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm" [(ngModel)]="model.header.fDate"
             [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
-    </div>
+      </div>
     </div>
 
     <nz-divider nzText="HỆ SỐ MẶT HÀNG" nzOrientation="left"></nz-divider>
@@ -152,11 +151,11 @@
           </thead>
           <tbody>
             @for (data of model.inMarketCompetitor; track data) {
-              <tr>
-                <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.competitorName"></td>
-                <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.marketName"></td>
-                <td><input nz-input nzAlign="center" type="number" [(ngModel)]="data.gap"></td>
-              </tr>
+            <tr>
+              <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.competitorName"></td>
+              <td><input nz-input nzAlign="center" type="text" [(ngModel)]="data.marketName"></td>
+              <td><input nz-input nzAlign="center" type="number" [(ngModel)]="data.gap"></td>
+            </tr>
             }
           </tbody>
         </nz-table>

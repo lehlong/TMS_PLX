@@ -87,6 +87,9 @@ namespace DMS.BUSINESS.Dtos.MD
 
         public string? Local2 { get; set; }
 
+        [Description("Khách hàng áp dụng làm tròn đặc biệt")]
+        public bool? LamTronDacBiet { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<TblMdCustomerBbdo, CustomerBbdoDto>().ReverseMap();

@@ -89,6 +89,23 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
+        [HttpGet("CopyInput")]
+        public async Task<IActionResult> CopyInput([FromQuery] string headerId, string id)
+        {
+            var transferObject = new TransferObject();
+            var data = await _service.CopyInput(headerId, id);
+            if (_service.Status)
+            {
+                transferObject.Data = data;
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+            }
+            return Ok(transferObject);
+        }
+
         [HttpPut("UpdateInput")]
         public async Task<IActionResult> UpdateInput([FromBody] CalculateDiscountInputModel input)
         {
@@ -226,10 +243,10 @@ namespace DMS.API.Controllers.BU
         }
         [HttpGet("SendSMS")]
         [Authorize]
-        public async Task<IActionResult> SendSMS([FromQuery] string headerId)
+        public async Task<IActionResult> SendSMS([FromQuery] string headerId, string smsName)
         {
             var transferObject = new TransferObject();
-            await _service.SendSMS(headerId);
+            await _service.SendSMS(headerId, smsName);
             if (_service.Status)
             {
                 //transferObject.Data = result;

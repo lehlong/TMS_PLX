@@ -46,6 +46,7 @@ export class CustomerBbdoComponent {
     order: [0],
     phuongThuc: [''],
     isActive: [true, [Validators.required]],
+    lamTronDacBiet: [false, [Validators.required]],
   })
 
   isSubmit: boolean = false
@@ -289,6 +290,7 @@ export class CustomerBbdoComponent {
       phuongThuc: data.phuongThuc,
       thtt: data.thtt,
       adrress: data.adrress,
+      lamTronDacBiet: data.lamTronDacBiet,
       local2 : data.local2
     })
     setTimeout(() => {

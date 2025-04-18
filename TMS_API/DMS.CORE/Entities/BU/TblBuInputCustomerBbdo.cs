@@ -77,5 +77,8 @@ namespace DMS.CORE.Entities.BU
 
         [Column("C_ORDER")]
         public int Order { get; set; }
+
+        [Column("LAM_TRON_DAC_BIET")]
+        public bool? LamTronDacBiet { get; set; }
     }
 }

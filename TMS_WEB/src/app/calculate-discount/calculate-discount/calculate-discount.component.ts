@@ -106,6 +106,19 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
+  getInputUpdate(headerId: any) {
+    this._service.copyInput(headerId, this.input.header.id).subscribe({
+      next: (data) => {
+        this.input = data
+        this.input2 = structuredClone(data)
+        this.formatVcfAndBvmtData()
+        // this.titleTab = data.header.name
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
 
   getAllSigner() {
     this._signerService.getall().subscribe({

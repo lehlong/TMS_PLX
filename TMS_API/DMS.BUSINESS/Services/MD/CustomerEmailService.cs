@@ -27,10 +27,10 @@ namespace DMS.BUSINESS.Services.MD
                     query = query.Where(x =>
                     x.Email.Contains(filter.KeyWord) || x.Code.ToString().Contains(filter.KeyWord));
                 }
-                if (filter.IsActive.HasValue)
-                {
-                    query = query.Where(x => x.IsActive == filter.IsActive);
-                }
+                //if (filter.IsActive.HasValue)
+                //{
+                //    query = query.Where(x => x.IsActive == filter.IsActive);
+                //}
                 return await Paging(query, filter);
             }
             catch (Exception ex)
@@ -46,10 +46,10 @@ namespace DMS.BUSINESS.Services.MD
             try
             {
                 var query = _dbContext.TblMdCustomerEmail.AsQueryable();
-                if (filter.IsActive.HasValue)
-                {
-                    query = query.Where(x => x.IsActive == filter.IsActive);
-                }
+                //if (filter.IsActive.HasValue)
+                //{
+                //    query = query.Where(x => x.IsActive == filter.IsActive);
+                //}
                 return await base.GetAllMd(query, filter);
 
             }

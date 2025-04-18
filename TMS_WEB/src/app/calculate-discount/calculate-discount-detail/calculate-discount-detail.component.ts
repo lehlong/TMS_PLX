@@ -18,6 +18,8 @@ import { GoodsService } from '../../services/master-data/goods.service'
 import { DocumentEditorModule } from '@onlyoffice/document-editor-angular';
 import { IConfig } from '@onlyoffice/document-editor-angular';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { iif } from 'rxjs'
+import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
 
 
 @Component({
@@ -80,6 +82,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   headerId: any = ''
   signerResult: any[] = []
   isVisibleLstTrinhKy: boolean = false
+  isSms: boolean = false
   isVisibleHistory: boolean = false
   isVisibleEmail: boolean = false
   isVisibleSms: boolean = false
@@ -89,6 +92,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstEmail: any[] = []
   lstHistoryFile: any[] = []
   lstHistory: any[] = []
+  lstSms: any[] = []
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -129,6 +133,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     TH: '',
   }
   currentTab = ''
+  smsName = ''
   lstgoods: any[] = []
   isBrowser: boolean = true;
   idramdom = new Date().getTime();
@@ -141,6 +146,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     private message: NzMessageService,
     private route: ActivatedRoute,
     private _signerService: SignerService,
+    private _configTemplateService: ConfigTemplateService,
     private _goodService: GoodsService,
     // @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -228,7 +234,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
   confirmSendSMS() {
-    this._service.SendSMS(this.headerId).subscribe({
+    this._service.SendSMS(this.headerId, this.smsName).subscribe({
       next: (data) => {
         this.message.create('success', 'Gửi mail thành công')
       },
@@ -281,6 +287,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isVisibleExport = false
     this.isVisibleCustomer = false
     this.isVisibleCustomerPDF = false
+    this.isSms = false
   }
   exportWordTrinhKy() {
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
@@ -300,9 +307,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onAllCheckedLstTrinhKy(value: boolean): void {
     this.lstTrinhKyChecked = []
     if (value) {
-      this.lstTrinhKy.forEach((i) => {
-        this.lstTrinhKyChecked.push(i.code)
-      })
+      if(this.input.header.status != '04'){
+        this.lstTrinhKy.forEach((i) => {
+          if(i.status){
+            this.lstTrinhKyChecked.push(i.code)
+          }
+        })
+
+      }else{
+        this.lstTrinhKy.forEach((i) => {
+            this.lstTrinhKyChecked.push(i.code)
+        })
+      }
     } else {
       this.lstTrinhKyChecked = []
     }
@@ -316,12 +332,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
         .ExportWordTrinhKy(this.lstTrinhKyChecked, this.headerId)
         .subscribe({
           next: (data) => {
-            this.lstTrinhKyChecked = []
-            var a = document.createElement('a')
-            a.href = environment.apiUrl + data
-            a.target = '_blank'
-            a.click()
-            a.remove()
+            for (let index = 0; index < data.length; index++) {
+              // const element = array[index];
+              this.openNewTab(environment.apiUrl + data[index])
+              // window.open(environment.apiUrl + , '_blank')
+            }
+
+            // this.lstTrinhKyChecked = []
+            // var a = document.createElement('a')
+            // a.href = environment.apiUrl
+            // a.target = '_blank'
+            // // a.click()
+            // a.remove()
           },
           error: (err) => {
             console.log(err)
@@ -468,17 +490,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   openInput() {
     this.getAllGood()
-    this._service.getInput(this.headerId).subscribe({
-      next: (data) => {
-        this.input = data
-        this.input2 = structuredClone(data)
+        this.input2 = structuredClone(this.input)
         this.formatVcfAndBvmtData()
         this.visibleInput = true
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
     this.getAllSigner()
   }
 
@@ -534,6 +548,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   openNewTab(url: string) {
+    console.log(url);
+
     window.open(url, '_blank')
   }
 
@@ -595,7 +611,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
     },
   };
-
+  onShowSMS(){
+    this._configTemplateService.getall().subscribe({
+      next: (data) => {
+          this.lstSms = data.filter((item: any) => item.type === "SMS")
+          console.log(this.lstSms);
+        },
+        error: (response) => {
+          console.log(response)
+        },
+      })
+    this.isSms = true
+  }
   cancelPreview() {
     this.isVisiblePreview = false;
     this.isVisiblePreviewExcel = false
@@ -697,6 +724,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     console.log(this.input2.inputPrice[index].fobV1);
 
   }
+
   formatNumber(value: any): string {
     if (value == null || value === '') return ''
 
@@ -709,6 +737,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       maximumFractionDigits: 4,
     })
   }
+
   formatVcfAndBvmtData() {
     if (this.input2.inputPrice && Array.isArray(this.input2.inputPrice)) {
       this.input2.inputPrice.forEach((item: any) => {
@@ -727,14 +756,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-
-  // onDocumentReady(event: any) {
-  //   console.log('Document is ready:', event);
-  // }
-
-  // onLoadComponentError(error: any) {
-  //   console.error('Error loading document editor:', error);
-  // }
 
   onDocumentReady = () => {
     if (this.isBrowser) {
@@ -757,8 +778,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       }
     }
   };
-  cancelSendSMS() { }
-  cancelSendEmail() { }
+
   exportWord() {
     this._service.GetCustomerBbdo(this.headerId).subscribe({
       next: (data) => {
@@ -860,4 +880,19 @@ export class CalculateDiscountDetailComponent implements OnInit {
       ? `(${formatted})`
       : formatted;
   }
+
+  formatNegativeNumber2(value: number | null | undefined): string {
+    if (value == null || isNaN(value)) return '';
+
+    const roundedValue = Math.round(value); // Làm tròn tới đơn vị
+    const formatted = Math.abs(roundedValue).toLocaleString('en-US'); // Định dạng dấu phẩy phần nghìn
+
+    return roundedValue < 0 ? `(${formatted})` : formatted;
+  }
+
+  test(){
+    console.log("12345")
+    console.log(this.input.customerBbdo.lamTronDacBiet)
+  }
+
 }

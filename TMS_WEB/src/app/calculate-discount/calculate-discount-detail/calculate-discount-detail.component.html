@@ -71,17 +71,23 @@
             </ul>
           </nz-dropdown-menu>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" nz-popconfirm class="!flex !items-center btn-email"
-            nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi Email thông báo cho các khách hàng?"
-            (nzOnConfirm)="confirmSendsMail()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'"
-            (nzOnCancel)="cancelSendEmail()" nzPopconfirmPlacement="bottom" nz-button>
+          <!-- nzPopconfirmTitle="Bạn có chắc chắn gửi Email thông báo cho các khách hàng?" -->
+          <!-- (nzOnConfirm)="confirmSendsMail()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'" -->
+          <!-- nz-popconfirm class="!flex !items-center btn-email" -->
+          <!-- (nzOnCancel)="cancelSendEmail()"  -->
+          <!-- nzPopconfirmPlacement="bottom" -->
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL"
+            nzType="primary"
+             nz-button>
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_SMS" nz-popconfirm class="!flex !items-center btn-sms"
-            nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi SMS thông báo cho các khách hàng?"
-            (nzOnConfirm)="confirmSendSMS()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'" (nzOnCancel)="cancelSendEmail()"
-            nzPopconfirmPlacement="bottom" nz-button>
+          <!-- nz-popconfirm class="!flex !items-center btn-sms"
+           nzType="primary" nzPopconfirmTitle="Bạn có chắc chắn gửi SMS thông báo cho các khách hàng?"
+           (nzOnConfirm)="confirmSendSMS()" [nzCancelText]="'Huỷ'" [nzOkText]="'Gửi'" (nzOnCancel)="cancelSendEmail()"
+           nzPopconfirmPlacement="bottom" -->
+          <button [appPermission]="IMPORT_BATCH.SEND_SMS"
+             nz-button (click)="onShowSMS()">
             <span nz-icon nzType="mail"></span> Gửi SMS
           </button>
 
@@ -1178,22 +1184,22 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.goodCode}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.dvt}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.tToan}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number:'1.0-0' }}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number:'1.0-0' }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col4 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col5 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col6 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col7 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col8 | number:'1.0-0' }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col9 | number}}</td>
-                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number}}</td>
+                    <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number:'1.0-0' }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col11 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col11)}}</td>
+                      [style.color]="data.col11 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber2(data.col11) }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col12 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col12)}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number}}</td>
+                      [style.color]="data.col12 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber2(data.col12) }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 |  number:'1.0-0' }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 |  number:'1.0-0' }}</td>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -1888,6 +1894,31 @@
   </ng-container>
 </nz-modal>
 
+<!-- danh sách sms -->
+<nz-modal [(nzVisible)]="isSms" nzTitle="CHỌN MẪU SMS" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="confirmSendSMS()" nzCancelText="Đóng">
+  <ng-container *nzModalContent>
+    <nz-table #smsTable [nzData]="lstSms" nzSize="small">
+      <thead>
+        <tr>
+          <th style="font-weight:bold"> Mẫu SMS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <nz-radio-group [(ngModel)]="smsName">
+          @for (data of smsTable.data; track data) {
+          <tr>
+            <td ><label nz-radio [nzValue]="data.name">{{ data.name }}</label>
+            </td>
+          </tr>
+          }
+        </nz-radio-group>
+      </tbody>
+    </nz-table>
+  </ng-container>
+</nz-modal>
+
+
 <!-- Customer -->
 <nz-modal [(nzVisible)]="isVisibleCustomer" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
   (nzOnOk)="confirmExportWord()" nzCancelText="Đóng">
@@ -1938,7 +1969,7 @@
 </nz-modal>
 
 <!-- #region Dữ liệu đầu vào -->
-<nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visibleInput" nzPlacement="right" [nzTitle]="'Tạo mới đợt tính'"
+<nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visibleInput" nzPlacement="right" [nzTitle]="'DỮ LIỆU ĐỢT TÍNH'"
   [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
@@ -2253,6 +2284,7 @@
                 <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
                 <th nzAlign="center">LÃI VAY NH</th>
                 <th nzAlign="center" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
+                <th nzAlign="center">LÀM TRÒN <br> ĐẶC BIỆT</th>
               </tr>
             </thead>
             <tbody>
@@ -2264,6 +2296,9 @@
                 <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
+                <td style="text-align: center;">
+                    <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>
+                </td>
               </tr>
             </tbody>
           </nz-table>

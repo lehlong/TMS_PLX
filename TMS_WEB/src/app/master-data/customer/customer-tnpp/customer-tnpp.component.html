@@ -177,7 +177,7 @@
       <app-input-clear nz-col nzSpan="24" placeholder="Nhập địa chỉ" [required]="true" label="Địa chỉ"
         [control]="$any(validateForm).controls['adrress']"></app-input-clear>
 
-      <nz-form-item nz-col nzSpan="24">
+      <nz-form-item nz-col nzSpan="12">
         <nz-form-label>Trạng thái</nz-form-label>
         <nz-form-control>
           <nz-radio-group formControlName="isActive">
@@ -187,6 +187,15 @@
         </nz-form-control>
       </nz-form-item>
       </div>
+      <nz-form-item nz-col nzSpan="12">
+        <nz-form-label>Khách hàng làm tròn đặc biệt</nz-form-label>
+        <nz-form-control>
+          <nz-radio-group formControlName="lamTronDacBiet">
+            <label nz-checkbox [nzValue]="true">Kích hoạt</label>
+            <!-- <label nz-radio [nzValue]="false">Khoá</label> -->
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
     </form>
   </ng-container>
 </nz-drawer>
