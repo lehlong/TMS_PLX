@@ -34,8 +34,8 @@ isSubmit: boolean = false
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'Danh sách người ký',
-        path: 'master-data/signer',
+        name: 'Danh sách Email',
+        path: 'master-data/customer-phone',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {

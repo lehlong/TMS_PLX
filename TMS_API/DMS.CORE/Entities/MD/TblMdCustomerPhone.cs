@@ -12,7 +12,10 @@ namespace DMS.CORE.Entities.MD
         public string Code { get; set; }
 
         [Column("CUSTOMER_CODE", TypeName = "VARCHAR(50)")]
-        public string CustomerCode { get; set; }
+        public string? CustomerCode { get; set; }
+
+        [Column("MARKET_CODE", TypeName = "VARCHAR(50)")]
+        public string? MarketCode { get; set; }
 
         [Column("PHONE", TypeName = "VARCHAR(20)")]
         public string Phone { get; set; }

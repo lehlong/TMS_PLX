@@ -7,6 +7,7 @@ import { DiscountInformationService } from '../../services/discount-information/
 import { DiscountInformationListService } from '../../services/discount-information/discount-information-list.service';
 import { environment } from '../../../environments/environment.prod';
 import { COMPETITOR_ANALYSIS } from '../../shared/constants';
+import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service';
 
 @Component({
   selector: 'app-discount-information',
@@ -19,6 +20,7 @@ export class DiscountInformationComponent {
   COMPETITOR_ANALYSIS = COMPETITOR_ANALYSIS
   constructor(
     private _service: DiscountInformationService,
+    private _serviceCD: CalculateDiscountService,
     private _discountInformationList: DiscountInformationListService,
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -39,6 +41,7 @@ export class DiscountInformationComponent {
   edit: boolean = true
   visible: boolean = false
   isName: boolean = false
+  isVisibleExport: boolean = false
   headerName: any = 'THÔNG TIN PHÂN TÍCH ĐỢT NHẬP - '
 
   code: any = ''
@@ -46,6 +49,7 @@ export class DiscountInformationComponent {
   name: any = ''
   headerId: any = ''
   fDate: any = ''
+  lstHistoryFile : any[] = []
   data: any = {
     lstDIL: [{}],
     lstGoods : [],
@@ -79,8 +83,9 @@ export class DiscountInformationComponent {
     this._service.getAll(this.code).subscribe({
       next: (data) => {
         this.data = data
-        this.name = this.data.lstDIL[0].name
-        this.fDate = new Date(this.data.lstDIL[0].fDate).toLocaleDateString()
+        this.name = this.data.lstDIL.name ?? ""
+        this.headerId = this.data.lstDIL.code
+        this.fDate = new Date(this.data.lstDIL.fDate).toLocaleDateString()
         this.changeTitle(this.fDate)
       },
       error: (response) => {
@@ -127,12 +132,33 @@ export class DiscountInformationComponent {
       },
     })
   }
+
   reCalculate(){
     this.getAll()
   }
-  showHistoryExport(){
 
+  showHistoryExport(){
+    this._serviceCD.GetHistoryFile(this.headerId).subscribe({
+      next: (data) => {
+        this.lstHistoryFile = data
+        this.isVisibleExport = true
+        this.lstHistoryFile.forEach((item) => {
+          item.pathDownload = environment.apiUrl + item.path
+          item.pathView = environment.apiUrl + item.path
+        })
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
   }
+
+  openNewTab(url: string) {
+    console.log(url);
+    window.open(url, '_blank')
+  }
+
+
   exportExcel(){
     this._service.ExportExcel(this.code).subscribe({
       next: (data) => {
@@ -164,6 +190,7 @@ export class DiscountInformationComponent {
   close() {
     this.headerName = 'THÔNG TIN PHÂN TÍCH ĐỢT NHẬP - '
     this.visible = false
+    this.isVisibleExport = false
   }
 
 

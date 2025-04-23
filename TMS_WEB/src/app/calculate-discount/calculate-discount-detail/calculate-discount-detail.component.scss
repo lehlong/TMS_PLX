@@ -97,6 +97,7 @@ button {
 }
 
 .btn-email {
+  color: white;
   background-color: #696969;
   border-color: #696969;
 }
@@ -116,7 +117,13 @@ button {
   z-index: 10;
   padding: 5px 20px;
 }
+.nz-card {
+  margin: 16px;
+}
 
+.nz-table th, .nz-table td {
+  padding: 12px;
+}
 .close {
   position: absolute;
   right: 36px;

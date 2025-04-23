@@ -333,17 +333,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
         .subscribe({
           next: (data) => {
             for (let index = 0; index < data.length; index++) {
-              // const element = array[index];
               this.openNewTab(environment.apiUrl + data[index])
-              // window.open(environment.apiUrl + , '_blank')
             }
-
-            // this.lstTrinhKyChecked = []
-            // var a = document.createElement('a')
-            // a.href = environment.apiUrl
-            // a.target = '_blank'
-            // // a.click()
-            // a.remove()
           },
           error: (err) => {
             console.log(err)
@@ -538,7 +529,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.GetHistoryAction(this.headerId).subscribe({
       next: (data) => {
         this.lstHistory = data
-        // console.log(data)
         this.isVisibleHistory = true
       },
       error: (err) => {

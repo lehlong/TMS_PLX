@@ -171,6 +171,58 @@
   </nz-drawer>
 
 
+
+<!-- History Export File-->
+<nz-modal nzWidth="60%" [(nzVisible)]="isVisibleExport" nzTitle="LỊCH SỬ XUẤT FILE" (nzOnCancel)="close()"
+nzCancelText="Đóng" nzFooter=" ">
+<ng-container *nzModalContent>
+  <nz-table #historyTableFile [nzData]="lstHistoryFile" nzSize="small">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="align-center">Tên file</th>
+        <th class="align-center">Người xuất</th>
+        <th class="align-center">Thời gian</th>
+        <th class="align-center" colspan="1">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of historyTableFile.data; track data) {
+      <tr>
+        <td *ngIf="data.type == 'xlsx'">
+          <img src="/assets/img/excel.png" style="width: 24px" />
+        </td>
+        <td *ngIf="data.type == 'docx'">
+          <img src="/assets/img/word.png" style="width: 24px" />
+        </td>
+        <td *ngIf="data.type == 'pdf'">
+          <img src="/assets/img/pdf.png" style="width: 24px" />
+        </td>
+        <td>{{ data.name }}</td>
+        <td class="align-center">{{ data.createBy }}</td>
+        <td class="align-center">
+          {{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}
+        </td>
+        <!-- <td class="align-center">
+          <button nzAlign="center" nz-button nzType="default" (click)="Preview(data)">
+            <span nz-icon nzType="eye"></span>Xem trực tiếp
+          </button>
+        </td> -->
+        <td class="align-center" nzAlign="center">
+          <button nzAlign="center" nz-button nzType="default" (click)="openNewTab(data.pathDownload)">
+            <span nz-icon nzType="download"></span>Tải xuống
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+</ng-container>
+</nz-modal>
+
+
+
+
   <ng-template #extra>
     <nz-space>
       <ng-container>

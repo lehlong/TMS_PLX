@@ -520,7 +520,9 @@ namespace DMS.BUSINESS.Services.BU
 
                 var folderPath = Path.Combine($"Uploads/Excel/{DateTime.Now.ToString("yyyy/MM/dd")}");
                 if (!Directory.Exists(folderPath))
+                {
                     Directory.CreateDirectory(folderPath);
+                }
                 var fileName = $"BCThuLaoTD_{DateTime.Now:ddMMyyyy_HHmmss}.xlsx";
                 var outputPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath, fileName);
 

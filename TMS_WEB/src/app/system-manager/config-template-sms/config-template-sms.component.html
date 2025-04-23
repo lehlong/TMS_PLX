@@ -27,7 +27,7 @@
             <u> Cấu hình SMS:</u>
           </strong>
 
-          <div style="margin-top: 10px">
+          <!-- <div style="margin-top: 10px">
             Các tham số được sử dụng trong nội dung SMS:
           </div>
           <div nz-row>
@@ -46,7 +46,7 @@
             <button class="btn-pram" (click)="addPram($event, '[goods]')" nz-button>
               <span >[goods]</span>
             </button>
-          </div>
+          </div> -->
 
           <div>
             <textarea nz-input placeholder="Nhập nội dung tin nhắn" [nzAutosize]="{ minRows: 4, maxRows: 10 }" formControlName="htmlSource" ></textarea>
@@ -70,14 +70,14 @@
   </nz-tabset>
 </div>
 
-<nz-modal [(nzVisible)]="isCancelModalVisible" (nzOnCancel)="handleCancelModal()" (nzOnOk)="handleCancelOk()"
+<nz-modal [(nzVisible)]="isCancelModalVisible" (nzOnCancel)="handleCancelModal()"
   [nzFooter]="null" class="custom-modal">
   <ng-container *nzModalContent>
     <div class="modal-header">
       <div nz-col class="gutter-row" [nzSpan]="18">
         <div class="inner-box">
           <label>Tên:</label>
-          <app-input-clear nz-input [control]="$any(validateForm).controls['name']" />
+          <input nz-input [(ngModel)]="model.name" placeholder="new" label="name"/>
         </div>
         <!-- // class="input-v align-left" -->
       </div>

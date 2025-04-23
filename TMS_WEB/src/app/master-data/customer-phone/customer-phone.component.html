@@ -1,6 +1,6 @@
 <div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.SHIPPING_COST_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header nzBackIcon nzTitle="Người ký" nzSubtitle="Danh sách Người Ký" class="site-page-header">
+    <nz-page-header nzBackIcon nzTitle="Số điện thoại" nzSubtitle="Danh sách Số điện thoại" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
@@ -31,6 +31,9 @@
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
             Tên khách hàng
           </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
+            Thị trường PT
+          </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('createDate', $event)">
             Số điện thoại
           </th>
@@ -49,6 +52,7 @@
             }}
           </td>
           <td>{{ getNameByCode(data.customerCode) }}</td>
+          <td>{{ getNameMarketByCode(data.marketCode) }}</td>
           <td>
             {{ data.phone }}
           </td>
@@ -81,6 +85,14 @@
       <nz-form-control [nzErrorTip]="'Vui lòng chọn khách hàng'">
         <nz-select nzShowSearch nzAllowClear formControlName="customerCode" placeholder="Chọn khách hàng">
           <nz-option *ngFor="let item of lstCustomer" [nzLabel]="item.name" [nzValue]="item.code">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-label style="margin-top: 10px;">Thị Trường PT</nz-form-label>
+      <nz-form-control [nzErrorTip]="'Vui lòng chọn Thị Trường'">
+        <nz-select nzShowSearch nzAllowClear formControlName="marketCode" placeholder="Chọn Thị Trường">
+          <nz-option *ngFor="let item of lstMarket" [nzLabel]="item.name" [nzValue]="item.code">
           </nz-option>
         </nz-select>
       </nz-form-control>

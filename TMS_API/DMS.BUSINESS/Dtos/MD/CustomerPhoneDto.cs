@@ -21,7 +21,10 @@ namespace DMS.BUSINESS.Dtos.MD
         public string Code { get; set; }
 
         [Description("Mã khách hàng")]
-        public string CustomerCode { get; set; }
+        public string? CustomerCode { get; set; }
+
+        [Description("Mã Thị trường")]
+        public string? MarketCode { get; set; }
 
         [Description("Số điện thoại")]
         public string? Phone { get; set; }

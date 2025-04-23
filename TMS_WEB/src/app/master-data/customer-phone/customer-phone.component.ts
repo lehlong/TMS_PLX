@@ -9,6 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon'
 import { SignerFilter } from '../../models/master-data/signer.model'
 import { CustomerPhoneService } from '../../services/master-data/customer-phone.service'
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service'
+import { MarketService } from '../../services/master-data/market.service'
 
 @Component({
   selector: 'app-customer-phone',
@@ -28,14 +29,15 @@ isSubmit: boolean = false
   lstPhone:any[] = []
   constructor(
     private _service: CustomerPhoneService,
+    private _marketService: MarketService,
     private _CalculateDiscountservice: CalculateDiscountService,
     private fb: NonNullableFormBuilder,
     private globalService: GlobalService,
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'Danh sách người ký',
-        path: 'master-data/signer',
+        name: 'Danh sách số điện thoại',
+        path: 'master-data/customer-phone',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -44,7 +46,8 @@ isSubmit: boolean = false
   }
   validateForm: FormGroup = this.fb.group({
     code:'',
-    customerCode: ['', [Validators.required]],
+    customerCode: [''],
+    marketCode: [''],
     phone: ['', [Validators.required]],
     isActive: [true, [Validators.required]],
   })
@@ -52,6 +55,8 @@ isSubmit: boolean = false
     return this.validateForm.get('customerCode');
   }
   lstCustomer:any[] =[]
+  lstMarket:any[] =[]
+
   ngOnDestroy() {
     this.globalService.setBreadcrumb([])
   }
@@ -59,6 +64,7 @@ isSubmit: boolean = false
   ngOnInit(): void {
     this.search()
     this.getAllInputCustomer()
+    this.getAllMarket()
   }
 
   onSortChange(name: string, value: any) {
@@ -128,6 +134,16 @@ isSubmit: boolean = false
     })
   }
 
+  getAllMarket():void{
+    this._marketService.getall().subscribe({
+      next: (data) => {
+        this.lstMarket = data
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
   updateCustomerPhone(): void {
     this.isSubmit = true
     if (this.validateForm.valid) {
@@ -174,6 +190,7 @@ isSubmit: boolean = false
     this.validateForm.setValue({
       code: data.code,
       customerCode: data.customerCode,
+      marketCode: data.marketCode,
       phone: data.phone,
       isActive: data.isActive,
     })
@@ -194,7 +211,11 @@ isSubmit: boolean = false
     this.search()
   }
   getNameByCode(code: string): string {
-    const customer = this.lstCustomer.find(x => x.code === code);
+    var customer = this.lstCustomer.find(x => x.code === code);
     return customer ? customer.name : ''; // Trả về tên nếu có, nếu không có thì trả về chuỗi rỗng.
+  }
+  getNameMarketByCode(code: string): string {
+    var item = this.lstMarket.find(x => x.code === code);
+    return item ? item.name : ''; // Trả về tên nếu có, nếu không có thì trả về chuỗi rỗng.
   }
 }

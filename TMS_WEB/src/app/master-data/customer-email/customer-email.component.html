@@ -1,6 +1,6 @@
 <div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.SHIPPING_COST_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header nzBackIcon nzTitle="Người ký" nzSubtitle="Danh sách Người Ký" class="site-page-header">
+    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Danh sách Email" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
@@ -32,7 +32,7 @@
             Tên khách hàng
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('createDate', $event)">
-            Số điện thoại
+            Email
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
             Trạng thái
