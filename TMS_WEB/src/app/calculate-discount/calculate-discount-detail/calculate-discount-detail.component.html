@@ -1897,7 +1897,7 @@
       </thead>
       <tbody>
         <nz-radio-group [(ngModel)]="smsName" style="width : 100%"  nzSize="large">
-          <ng-container *ngFor="let data of smsTable.data; trackBy: trackByFn">
+          <ng-container *ngFor="let data of smsTable.data">
             <!-- <tr style="width : 100%" > -->
               <!-- <td style="text-align: left; width: 100%;"> -->
                 <label nz-radio [nzValue]="data.name" style="width : 100%" >{{ data.name }}</label>

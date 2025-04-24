@@ -124,7 +124,7 @@ export class CalculateDiscountComponent implements OnInit {
     this._signerService.getall().subscribe({
       next: (data) => {
         this.signerResult = data
-        this.selectedValue = this.signerResult.find(item => item.code === "TongGiamDoc");
+        this.selectedValue = this.signerResult.find(item => item.code === "d72636e2-454f-4085-b491-76b2e0c6445d");
       },
       error: (response) => {
         console.log(response)
