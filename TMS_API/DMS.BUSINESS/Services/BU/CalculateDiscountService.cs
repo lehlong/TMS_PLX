@@ -1263,7 +1263,7 @@ namespace DMS.BUSINESS.Services.BU
                             Col7 = i.Thtt,
                             Col8 = Math.Round(value),
                             Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
-                            Col14 = currentHeader.Date.ToString("hh:mm"),
+                            Col14 = currentHeader.Date.ToString("HH:mm"),
                         });
                         o++;
                     }
@@ -1302,7 +1302,7 @@ namespace DMS.BUSINESS.Services.BU
                             Col7 = i.Thtt,
                             Col8 = Math.Round(value),
                             Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
-                            Col14 = currentHeader.Date.ToString("hh:mm"),
+                            Col14 = currentHeader.Date.ToString("HH:mm"),
                         });
                         o++;
                     }
@@ -1340,7 +1340,7 @@ namespace DMS.BUSINESS.Services.BU
                             Col7 = i.Thtt,
                             Col8 = Math.Round(value),
                             Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
-                            Col14 = currentHeader.Date.ToString("hh:mm"),
+                            Col14 = currentHeader.Date.ToString("HH:mm"),
                         });
                         o++;
                     }
@@ -1378,7 +1378,7 @@ namespace DMS.BUSINESS.Services.BU
                             Col7 = i.Thtt,
                             Col8 = Math.Round(value),
                             Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
-                            Col14 = currentHeader.Date.ToString("hh:mm"),
+                            Col14 = currentHeader.Date.ToString("HH:mm"),
                         });
                         o++;
                     }
@@ -1427,7 +1427,7 @@ namespace DMS.BUSINESS.Services.BU
                         Col7 = i.Thtt,
                         Col8 = Math.Round(data.Bbdo.Where(x => x.Id == i.Id).Sum(x => x.Col13)),
                         Col13 = currentHeader.Date.ToString("dd.MM.yyyy"),
-                        Col14 = currentHeader.Date.ToString("hh:mm"),
+                        Col14 = currentHeader.Date.ToString("HH:mm"),
                     });
                     bb++;
                 }
@@ -2227,30 +2227,30 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 7, i.Col6, number);
                     ExcelNPOIExtention.SetCellValue(row, 8, i.Col7, number);
                     ExcelNPOIExtention.SetCellValue(row, 9, i.Col8, number);
-                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col9, number);
-                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col11, number);
-                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col12, number);
-                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col13, number);
-                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col14, number);
-                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col15, number);
-                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col16, number);
-                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col17, number);
-                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col18, number);
-                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col19, number);
-                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col20, number);
-                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col21, number);
-                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col22, number);
-                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col23, number);
-                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col24, number);
-                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col25, number);
-                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col26, number);
-                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col27, number);
-                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col28, number);
-                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col29, number);
-                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col30, number);
-                    ExcelNPOIExtention.SetCellValue(row, 32, i.Col31, number);
-                    ExcelNPOIExtention.SetCellValue(row, 33, i.Col32, number);
+                    ExcelNPOIExtention.SetCellValue(row, 10, i.Col10, number);
+                    ExcelNPOIExtention.SetCellValue(row, 11, i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 12, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 13, i.Col13, number);
+                    ExcelNPOIExtention.SetCellValue(row, 14, i.Col14, number);
+                    ExcelNPOIExtention.SetCellValue(row, 15, i.Col15, number);
+                    ExcelNPOIExtention.SetCellValue(row, 16, i.Col16, number);
+                    ExcelNPOIExtention.SetCellValue(row, 17, i.Col17, number);
+                    ExcelNPOIExtention.SetCellValue(row, 18, i.Col18, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col19, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col20, number);
+                    ExcelNPOIExtention.SetCellValue(row, 21, i.Col21, number);
+                    ExcelNPOIExtention.SetCellValue(row, 22, i.Col22, number);
+                    ExcelNPOIExtention.SetCellValue(row, 23, i.Col23, number);
+                    ExcelNPOIExtention.SetCellValue(row, 24, i.Col24, number);
+                    ExcelNPOIExtention.SetCellValue(row, 25, i.Col25, number);
+                    ExcelNPOIExtention.SetCellValue(row, 26, i.Col26, number);
+                    ExcelNPOIExtention.SetCellValue(row, 27, i.Col27, number);
+                    ExcelNPOIExtention.SetCellValue(row, 28, i.Col28, number);
+                    ExcelNPOIExtention.SetCellValue(row, 29, i.Col29, number);
+                    ExcelNPOIExtention.SetCellValue(row, 30, i.Col30, number);
+                    ExcelNPOIExtention.SetCellValue(row, 31, i.Col31, number);
+                    ExcelNPOIExtention.SetCellValue(row, 32, i.Col32, number);
+                    //ExcelNPOIExtention.SetCellValue(row, 33, i.Col33, number);
 
                     rowIndexPt09++;
                 }
