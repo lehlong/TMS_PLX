@@ -288,7 +288,7 @@ export class CalculateDiscountComponent implements OnInit {
   handleAutoInput(row: any) {
     const index = this.input2.inputPrice.indexOf(row)
 
-    this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10) - 30
+    this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10)
     this.input.inputPrice[index].fobV1 = this.input2.inputPrice[index].fobV1
     this.input2.inputPrice[index].fobV1 = this.formatNumber(this.input2.inputPrice[index].fobV1)
     console.log(this.input2.inputPrice[index].fobV1);

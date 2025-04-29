@@ -1881,7 +1881,7 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
-                        ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "Không thay đổi" : "Thay đổi", text);
+                        ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "(Không thay đổi" : "(Thay đổi)", text);
                     }
                     rowIndexDl5++;
                 }
@@ -1973,7 +1973,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region SO SÁNH
 
-                #region thay đổi giá giao phương thức bán lẻ
+                #region thay đổi) giá giao phương thức bán lẻ
                 int rowIndexDl13 = 53;
                 var check = 159;
                 foreach (var i in data.Dlg.Dlg5)
@@ -1986,7 +1986,7 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
 
-                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "Không thay đổi" : "Thay đổi", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
                     check++;
                     rowIndexDl13++;
                 }
@@ -1995,7 +1995,7 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
                 ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 21, $"{header.Date.ToString("hh:mm")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
 
-                #region thay đổi lãi gộp
+                #region thay đổi) lãi gộp
                 int rowIndexDl9_1 = 81;
                 int rowIndexDl9_2 = 86;
                 ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(76) ?? sheetDlg.CreateRow(76), 20, $"Lãi gộp từ {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} và tính theo VCF {muaMien} từ tháng {tuThang} hàng năm", styles.TextCenter);
