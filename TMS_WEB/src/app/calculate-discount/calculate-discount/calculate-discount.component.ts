@@ -57,16 +57,28 @@ export class CalculateDiscountComponent implements OnInit {
   nguoiKyControl = new FormControl({ code: "", name: "", position: "" });
   signerResult: any[] = []
   selectedValue = {}
+  rightList: any = []
+  accountGroups: any = {}
   lstgoods: any[] = []
   ngOnInit(): void {
+    this.getRight();
     this.search();
     this.getAllSigner();
     this.getAllGood();
+    
   }
   search() {
     this._service.search(this.filter).subscribe({
       next: (data) => {
-        this.paginationResult = data
+        if(this.accountGroups=="G_NV_K"){
+       
+          data.data= data.data.filter((item: any) => item.status=="04")
+          this.paginationResult = data
+        
+        }else{
+          this.paginationResult = data
+        }
+       
       },
       error: (response) => {
         console.log(response)
@@ -85,6 +97,16 @@ export class CalculateDiscountComponent implements OnInit {
     })
   }
 
+  getRight() {
+    const rights = localStorage.getItem('userRights')
+    this.rightList = rights ? JSON.parse(rights) : []
+
+    const accountGroups = localStorage.getItem('UserInfo')
+    this.accountGroups = accountGroups
+      ? JSON.parse(accountGroups).accountGroups[0].name
+      : []
+
+  }
   genarateCreate() {
     this._service.genarateCreate().subscribe({
       next: (data) => {
@@ -124,6 +146,7 @@ export class CalculateDiscountComponent implements OnInit {
     this._signerService.getall().subscribe({
       next: (data) => {
         this.signerResult = data
+        console.log(this.signerResult)
         this.selectedValue = this.signerResult.find(item => item.code === "d72636e2-454f-4085-b491-76b2e0c6445d");
       },
       error: (response) => {

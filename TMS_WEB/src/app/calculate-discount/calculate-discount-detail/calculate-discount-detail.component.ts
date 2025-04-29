@@ -544,7 +544,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   exportExcel() {
-    this._service.exportExcel(this.headerId).subscribe({
+    this._service.exportExcel(this.headerId,this.accountGroups).subscribe({
       next: (data) => {
         var a = document.createElement('a')
         a.href = environment.apiUrl + data

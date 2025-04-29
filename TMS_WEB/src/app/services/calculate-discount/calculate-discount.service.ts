@@ -45,8 +45,9 @@ export class CalculateDiscountService {
     GetHistoryAction(id: any): Observable<any> {
         return this.commonService.get(`CalculateDiscount/GetHistoryAction?code=${id}`);
     }
-    exportExcel(id: any): Observable<any> {
-        return this.commonService.get(`CalculateDiscount/ExportExcel?headerId=${id}`);
+    exportExcel(id: any,accountGroup: any): Observable<any> {
+      console.log(accountGroup)
+        return this.commonService.get(`CalculateDiscount/ExportExcel?headerId=${id}&accGroup=${accountGroup}`);
     }
 
     ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {

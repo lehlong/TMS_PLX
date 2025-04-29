@@ -2,6 +2,7 @@
 using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
 using DMS.BUSINESS.Models;
+using DMS.BUSINESS.Services.AD;
 using DMS.BUSINESS.Services.BU;
 using DMS.CORE.Entities.BU;
 using DMS.CORE.Entities.MD;
@@ -15,6 +16,7 @@ namespace DMS.API.Controllers.BU
     public class CalculateDiscountController(ICalculateDiscountService service) : ControllerBase
     {
         public readonly ICalculateDiscountService _service = service;
+
 
         [HttpGet("Search")]
         public async Task<IActionResult> Search([FromQuery] BaseFilter filter)
@@ -164,10 +166,19 @@ namespace DMS.API.Controllers.BU
         }
 
         [HttpGet("ExportExcel")]
-        public async Task<IActionResult> ExportExcel([FromQuery] string headerId)
+        public async Task<IActionResult> ExportExcel([FromQuery] string headerId ,string accGroup)
         {
             var transferObject = new TransferObject();
-            var result = await _service.ExportExcel(headerId);
+            string result;
+            if (accGroup!="G_NV_K")
+            {
+                result= await _service.ExportExcel(headerId);
+            }
+            else
+            {
+                result = await _service.ExportExcelNVK(headerId);
+            }
+               
             if (_service.Status)
             {
                 transferObject.Data = result;
