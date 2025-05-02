@@ -13,6 +13,8 @@ namespace DMS.BUSINESS.Dtos.BU
         public string Id { get; set; }
         public string Name { get; set; }
         public DateTime Date { get; set; }
+        public DateTime? Hour { get; set; }
+        public string? CongDienSo { get; set; }
         public string? Status { get; set; }
         public string? SignerCode { get; set; }
         public string? QuyetDinhSo { get; set; }

@@ -47,6 +47,11 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 var data = new DiscountInformationModel();
+                var lstDIL = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == Code).FirstOrDefaultAsync();
+                if(lstDIL != null)
+                {
+
+                data.lstDIL = lstDIL;
                 var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountCompetitor = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == Code).ToListAsync();
                 var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.OrderBy(x => x.Code).ToListAsync();
@@ -54,8 +59,6 @@ namespace DMS.BUSINESS.Services.BU
                 //var vinhCuaLo =  await _dbContext.TblInVinhCuaLo.Where(x=> x.HeaderCode == Code).ToListAsync();
                 var lstCalculate =  await _dbContext.TblBuInputPrice.Where(x=> x.HeaderId == Code).ToListAsync();
 
-                var lstDIL = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == Code).FirstOrDefaultAsync();
-                data.lstDIL = lstDIL;
                 
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
                 var discountCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == Code).ToListAsync();
@@ -97,6 +100,7 @@ namespace DMS.BUSINESS.Services.BU
                             : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
                         dt.ckCl.Add(Math.Floor((ck1 / 10)) * 10);
                         dt.ckCl.Add(Math.Round(ck1 - discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0, 0));
+                        dt.code = c.Code;
 
                         ck.DT.Add(dt);
                     }
@@ -156,7 +160,7 @@ namespace DMS.BUSINESS.Services.BU
                             : discountCompetitor - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
                             dt.ckCl.Add(Math.Round((decimal)ck1, 0));
                             dt.ckCl.Add(Math.Round((decimal)((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0) - ck1);
-
+                            dt.code = c.Code;
                             ck.DT.Add(dt);
                         }
                         d.CK.Add(ck);
@@ -165,8 +169,10 @@ namespace DMS.BUSINESS.Services.BU
                     orderMarket++;
                 }
                 return data;
+                }
+                return data;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.Status = false;
                 this.Exception = ex;

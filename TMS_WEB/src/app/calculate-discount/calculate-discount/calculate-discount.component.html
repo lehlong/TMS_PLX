@@ -84,6 +84,13 @@
               [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
           </div>
       </div>
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Giờ hiệu lực</label>
+          <nz-time-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="HH:mm" [(ngModel)]="input.header.hour"
+            [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-time-picker>
+        </div>
+    </div>
       <div nz-col [nzSpan]="5">
         <label>Người ký</label>
         <nz-form-item>
@@ -98,10 +105,16 @@
           </nz-form-control>
         </nz-form-item>
       </div>
-      <div nz-col class="gutter-row" [nzSpan]="5">
+      <div nz-col class="gutter-row" [nzSpan]="4">
         <div class="inner-box">
           <label>Quyết định số</label>
           <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Công điện số</label>
+          <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
         </div>
       </div>
     </div>

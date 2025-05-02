@@ -2376,12 +2376,12 @@
 
 <!-- SMS -->
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleSms" nzTitle="LỊCH SỬ GỬI SMS" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng" nzFooter=" ">
+  nzCancelText="Đóng"  (nzOnOk)="onSendSms()" >
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstSMS" nzSize="small">
       <thead>
         <tr>
-          <!-- <th>Tiêu đề </th> -->
+          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendSms($event)"></th>
           <th style="width: 70%;">Nội dung</th>
           <th>Ngày</th>
           <th>Trạng Thái</th>
@@ -2390,10 +2390,12 @@
       <tbody>
         @for (data of historyTable.data; track data) {
         <tr>
-          <!-- <td>{{ data.subject }}</td> -->
+          <td [nzChecked]="isCheckedSendSms(data.code)" [nzDisabled]="data.isSend == 'Y'"
+              (nzCheckedChange)="onItemCheckedSendSms(data.id, $event)">
+            </td>
           <td [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center" >{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
-          <td nzAlign="center" >{{ data.isSend == "Y" ? "Đã gửi" : "Chưa gửi" }}</td>
+          <td nzAlign="center" >{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
         </tr>
         }
       </tbody>
@@ -2420,7 +2422,7 @@
           <td>{{ data.subject }}</td>
           <!-- <td >{{ data.contents }}</td> -->
           <td [innerText]="removeHtmlTags(data.contents)"></td>
-          <td>{{ data.isSend == "Y" ? "Đã gửi" : "Chưa gửi" }}</td>
+          <td>{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
         </tr>
         }
       </tbody>
@@ -2476,14 +2478,14 @@
   </ng-container>
 </nz-modal>
 
-<nz-modal nzWidth="90%" [(nzVisible)]="isVisiblePreview" nzTitle="Xem trước" (nzOnCancel)="cancelPreview()">
+<nz-modal nzWidth="90%" [(nzVisible)]="isVisiblePreview" nzTitle="Xem trước" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <ngx-doc-viewer [url]="UrlOffice" viewer="google" style="width:100%;height:93vh;">
     </ngx-doc-viewer>
   </ng-container>
 
 </nz-modal>
-<nz-modal nzWidth="90%" nzHeight="90%" [(nzVisible)]="isVisiblePreviewExcel" nzTitle="Xem trước excel" (nzOnCancel)="cancelPreview()">
+<nz-modal nzWidth="90%" nzHeight="90%" [(nzVisible)]="isVisiblePreviewExcel" nzTitle="Xem trước excel" (nzOnCancel)="handleCancel()">
 
   <ng-container *nzModalContent>
     <document-editor (id)="idramdom" documentServerUrl="http://sso.d2s.com.vn:1239" [config]="config"

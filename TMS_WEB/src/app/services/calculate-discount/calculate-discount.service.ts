@@ -56,9 +56,16 @@ export class CalculateDiscountService {
     SendMail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/SendMail?headerId=${model}`)
     }
-    SendSMS(headerId: any, smsName: any): Observable<any> {
-      return this.commonService.get(`CalculateDiscount/SendSMS?headerId=${headerId}&smsName=${smsName}`)
+
+
+    SaveSMS(headerId: any, smsName: any): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/SaveSMS?headerId=${headerId}&smsName=${smsName}`)
     }
+    SendSMS(lstSms: any): Observable<any> {
+      return this.commonService.post(`CalculateDiscount/SendSMS`, lstSms)
+    }
+
+
     Getmail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/Getmail?headerId=${model}`)
     }
@@ -67,8 +74,7 @@ export class CalculateDiscountService {
     }
     GetHistoryFile(code : any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/GetHistoryFile?code=${code}`)
-
-      }
+    }
 
     ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
         return this.commonService.post(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)

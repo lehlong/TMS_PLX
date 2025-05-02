@@ -30,6 +30,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                 ServiceId = "CtyXdauN.an"
             };
         }
+                //UrlSMS = "http://ams.tinnhanthuonghieu.vn:8009/bulkapi",
 
         public async Task SendSMSAsync()
         {

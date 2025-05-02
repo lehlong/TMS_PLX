@@ -11,7 +11,8 @@ namespace DMS.CORE.Entities.BU
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID")]
-        public string Id{ get; set; }
+        public string? Id{ get; set; }
+
         [Column("HEADER_ID")]
         public string HeaderId { get; set; }
 
@@ -19,7 +20,7 @@ namespace DMS.CORE.Entities.BU
         public int? Status { get; set; }
 
         [Column("SUBJECT")]
-        public string Subject { get; set; }
+        public string? Subject { get; set; }
 
         [Column("CONTENTS")]
         public string Contents { get; set; }
@@ -28,10 +29,10 @@ namespace DMS.CORE.Entities.BU
         public int? NumberRetry { get; set; }
 
         [Column("IS_SEND")]
-        public string IsSend { get; set; }
+        public string? IsSend { get; set; }
 
         [Column("PHONE_NUMBER")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
 
 

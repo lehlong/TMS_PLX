@@ -16,11 +16,17 @@ namespace DMS.CORE.Entities.BU
         [Column("DATE", TypeName = "DATETIME")]
         public DateTime Date { get; set; }
 
+        [Column("HOUR", TypeName = "DATETIME")]
+        public DateTime? Hour { get; set; }
+
         [Column("SIGNER_CODE", TypeName = "NVARCHAR(50)")]
         public string? SignerCode { get; set; }
 
         [Column("QUYET_DINH_SO", TypeName = "NVARCHAR(250)")]
         public string? QuyetDinhSo { get; set; }
+
+        [Column("CONG_DIEN_SO", TypeName = "NVARCHAR(250)")]
+        public string? CongDienSo { get; set; }
 
         [Column("STATUS", TypeName = "NVARCHAR(50)")]
         public string? Status { get; set; }

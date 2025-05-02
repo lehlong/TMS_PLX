@@ -53,7 +53,8 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
-        Task SendSMS(string headerId, string smsName);
+        Task SaveSMS(string headerId, string smsName);
+        Task SendSMS(List<string> lstSms);
         Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
         Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
@@ -62,7 +63,7 @@ namespace DMS.BUSINESS.Services.BU
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
-
+        private readonly IDiscountInformationService _discountService;  
         #region Tìm kiếm các đợt nhập
         public override async Task<PagedResponseDto> Search(BaseFilter filter)
         {
@@ -3750,6 +3751,9 @@ namespace DMS.BUSINESS.Services.BU
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
                                 break;
+                            case "##CONG_DIEN_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.CongDienSo ?? "");
+                                break;
                             case "##DAI_DIEN@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
                                 break;
@@ -3853,6 +3857,9 @@ namespace DMS.BUSINESS.Services.BU
                                 break;
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+                            case "##CONG_DIEN_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.CongDienSo ?? "");
                                 break;
                             case "##DAI_DIEN@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
@@ -4040,12 +4047,113 @@ namespace DMS.BUSINESS.Services.BU
 
             else if (nameTemp == "ToTrinh")
             {
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<TblMdGoods, GoodsDto>(); // Thêm các map cần thiết
+                });
+                var mapper = config.CreateMapper();
+
+                var DIService = new DiscountInformationService(_dbContext, mapper);
+                var lstDI = await DIService.getAll(headerId);
+                //var lstDI = await _discountService.getAll(headerId);
                 var dlg9 = data.Dlg.Dlg9;
                 var dlg10 = data.Dlg.Dlg10;
                 using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
                 {
                     MainDocumentPart mainPart = doc.MainDocumentPart;
                     DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+                    if (lstDI.discount.Count() == 0)
+                    {
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX95@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLXE5@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX05@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX01@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP95@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##APE5@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP05@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP01@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV95@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PVE5@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV05@@", "");
+                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV01@@", "");
+
+                    }
+                    else
+                    {
+
+                        foreach (var i in lstDI.discount[0]?.CK)
+                        {
+                            if (i.GoodsCode == "0201032")
+                            {
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX95@@", i.plxna.ToString());
+
+                                foreach (var a in i.DT)
+                                {
+                                    if(a.code == "APP")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP95@@", a.ckCl[0].ToString() ?? "0");
+                                    }
+                                    if (a.code == "PVOIL")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV95@@", a.ckCl[0].ToString() ?? "0");
+
+                                    }
+                                }
+                            }
+                            if (i.GoodsCode == "0201004")
+                            {
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLXE5@@", i.plxna.ToString());
+
+                                foreach (var a in i.DT)
+                                {
+                                    if (a.code == "APP")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##APE5@@", a.ckCl[0].ToString() ?? "0");
+                                    }
+                                    if (a.code == "PVOIL")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PVE5@@", a.ckCl[0].ToString() ?? "0");
+
+                                    }
+                                }
+                            }
+                            if (i.GoodsCode == "0601005")
+                            {
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX01@@", i.plxna.ToString());
+
+                                foreach (var a in i.DT)
+                                {
+                                    if (a.code == "APP")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP01@@", a.ckCl[0].ToString() ?? "0");
+                                    }
+                                    if (a.code == "PVOIL")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV01@@", a.ckCl[0].ToString() ?? "0");
+
+                                    }
+                                }
+                            }
+                            if (i.GoodsCode == "0601002")
+                            {
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PLX05@@", i.plxna.ToString());
+
+                                foreach (var a in i.DT)
+                                {
+                                    if (a.code == "APP")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##AP05@@", a.ckCl[0].ToString() ?? "0");
+                                    }
+                                    if (a.code == "PVOIL")
+                                    {
+                                        wordDocumentService.ReplaceStringInWordDocumennt(doc, "##PV05@@", a.ckCl[0].ToString() ?? "0");
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
 
                     foreach (var t in lstTextElement)
                     {
@@ -4619,8 +4727,7 @@ namespace DMS.BUSINESS.Services.BU
         #endregion
  
         #region mail ,sms
-        public async Task SendSMS(string headerId, string smsName)
-
+        public async Task SaveSMS(string headerId, string smsName)
         {
             var data = await this.CalculateDiscountOutput(headerId);
             var dataHeader = await this.GetInput(headerId);
@@ -4651,7 +4758,7 @@ namespace DMS.BUSINESS.Services.BU
                                     PhoneNumber = p.Phone,
                                     Subject = Template.Title ?? "",
                                     Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", i.MarketName).Replace("[goods]", goods),
-                                    IsSend = "N",
+                                    IsSend = "C",
                                     NumberRetry = 0,
                                     HeaderId = headerId
                                 };
@@ -4681,7 +4788,7 @@ namespace DMS.BUSINESS.Services.BU
                                     PhoneNumber = customer.Phone,
                                     Subject = Template.Title ?? "",
                                     Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
-                                    IsSend = "N",
+                                    IsSend = "C",
                                     NumberRetry = 0,
                                     HeaderId = headerId
                                 };
@@ -4709,7 +4816,7 @@ namespace DMS.BUSINESS.Services.BU
                                 PhoneNumber = customer.Phone,
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
-                                IsSend = "N",
+                                IsSend = "C",
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -4738,7 +4845,7 @@ namespace DMS.BUSINESS.Services.BU
                                 PhoneNumber = customer.Phone,
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
-                                IsSend = "N",
+                                IsSend = "C",
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -4777,7 +4884,7 @@ namespace DMS.BUSINESS.Services.BU
                                 PhoneNumber = c.Phone,
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
-                                IsSend = "N",
+                                IsSend = "C",
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -4797,7 +4904,7 @@ namespace DMS.BUSINESS.Services.BU
                                 PhoneNumber = c.Phone,
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
-                                IsSend = "N",
+                                IsSend = "C",
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -4822,7 +4929,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4841,7 +4948,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4868,7 +4975,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4887,7 +4994,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4914,7 +5021,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4934,7 +5041,7 @@ namespace DMS.BUSINESS.Services.BU
                                         PhoneNumber = c.Phone,
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
-                                        IsSend = "N",
+                                        IsSend = "C",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -4943,8 +5050,8 @@ namespace DMS.BUSINESS.Services.BU
                             }
                         }
                     }
-
                 }
+                
                 else
                 {
                     var lstCustomerPhone = _dbContext.TblMdCustomerPhone.Where(x => x.IsActive == true).ToList();
@@ -4956,7 +5063,7 @@ namespace DMS.BUSINESS.Services.BU
                             PhoneNumber = cusPhone.Phone,
                             Subject = Template.Title ?? "",
                             Contents = Template.HtmlSource,
-                            IsSend = "N",
+                            IsSend = "C",
                             NumberRetry = 0,
                             HeaderId = headerId
                         };
@@ -5040,6 +5147,25 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblNotifyEmail>();
             }
         }
+
+
+        public async Task SendSMS(List<string> lstSms)
+        {
+            try
+            {
+                foreach (var i in lstSms)
+                {
+                    var sms = _dbContext.TblCmNotifySms.Where(x => x.Id == i).FirstOrDefault();
+                    sms.IsSend = "N";
+                    _dbContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                //return null;
+            }
+        }
+
         #endregion
 
         #region xử lý quy trình xét duyệt

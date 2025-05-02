@@ -252,12 +252,12 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
-        [HttpGet("SendSMS")]
+        [HttpGet("SaveSMS")]
         [Authorize]
-        public async Task<IActionResult> SendSMS([FromQuery] string headerId, string smsName)
+        public async Task<IActionResult> SaveSMS([FromQuery] string headerId, string smsName)
         {
             var transferObject = new TransferObject();
-            await _service.SendSMS(headerId, smsName);
+            await _service.SaveSMS(headerId, smsName);
             if (_service.Status)
             {
                 //transferObject.Data = result;
@@ -272,6 +272,28 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+
+        [HttpPost("SendSMS")]
+        [Authorize]
+        public async Task<IActionResult> SendSMS([FromBody] List<string> lstSms)
+        {
+            var transferObject = new TransferObject();
+            await _service.SendSMS(lstSms);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
         [HttpGet("Getmail")]
         [Authorize]
         public async Task<IActionResult> Getmail([FromQuery] string headerId)

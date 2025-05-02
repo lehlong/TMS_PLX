@@ -112,6 +112,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleCustomer: boolean = false
   isVisibleCustomerPDF: boolean = false
   lstCustomerChecked: any[] = []
+  lstSendSmsChecked: any[] = []
   accountGroups: any = {}
   searchInput = ''
   searchTerm: { [key: string]: string } = {
@@ -135,6 +136,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   currentTab = ''
   smsName = ''
   lstgoods: any[] = []
+  lstSendSms: any[] = []
   isBrowser: boolean = true;
   idramdom = new Date().getTime();
   isVisiblePreviewExcel: boolean = false
@@ -234,7 +236,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
   confirmSendSMS() {
-    this._service.SendSMS(this.headerId, this.smsName).subscribe({
+    this._service.SaveSMS(this.headerId, this.smsName).subscribe({
       next: (data) => {
         this.message.create('success', 'Gửi mail thành công')
       },
@@ -288,6 +290,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isVisibleCustomer = false
     this.isVisibleCustomerPDF = false
     this.isSms = false
+    this.checkedSms = false
+    this.isVisiblePreviewExcel = false
+    this.isVisiblePreview = false
   }
   exportWordTrinhKy() {
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
@@ -307,16 +312,16 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onAllCheckedLstTrinhKy(value: boolean): void {
     this.lstTrinhKyChecked = []
     if (value) {
-      if(this.input.header.status != '04'){
+      if (this.input.header.status != '04') {
         this.lstTrinhKy.forEach((i) => {
-          if(i.status){
+          if (i.status) {
             this.lstTrinhKyChecked.push(i.code)
           }
         })
 
-      }else{
+      } else {
         this.lstTrinhKy.forEach((i) => {
-            this.lstTrinhKyChecked.push(i.code)
+          this.lstTrinhKyChecked.push(i.code)
         })
       }
     } else {
@@ -359,6 +364,46 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
+
+  checkedSms: boolean = false
+  onAllCheckedSendSms(value: boolean): void {
+    this.lstSendSmsChecked = []
+    if (value) {
+      this.lstSMS.forEach((i) => {
+        if(i.isSend != "Y"){
+          this.lstSendSmsChecked.push(i.id)
+        }
+      })
+    } else {
+      this.lstSendSmsChecked = []
+    }
+  }
+  updateCheckedSetSendSms(code: any, checked: boolean,): void {
+    if (checked) {
+      this.lstSendSmsChecked.push(code)
+    } else {
+      this.lstSendSmsChecked = this.lstSendSmsChecked.filter(
+        (x) => x.code !== code
+      )
+    }
+  }
+  onItemCheckedSendSms(code: String, checked: boolean,): void {
+    this.updateCheckedSetSendSms(code, checked)
+  }
+  isCheckedSendSms(code: string): boolean {
+    return this.lstSendSmsChecked.some((item) => item.code === code)
+  }
+  onSendSms(){
+    this._service.SendSMS(this.lstSendSmsChecked).subscribe({
+      next: (data) =>{
+        this.lstSendSmsChecked = []
+        this.handleCancel()
+      }
+    })
+  }
+
+
+
   confirmExportWord() {
     if (this.lstCustomerChecked.length == 0) {
       this.message.create(
@@ -388,11 +433,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.checked = false;
   }
 
-  updateCheckedSet(
-    code: any,
-    deliveryGroupCode: string,
-    checked: boolean,
-  ): void {
+  updateCheckedSet(code: any, deliveryGroupCode: string, checked: boolean,): void {
     if (checked) {
       this.lstCustomerChecked.push({
         code: code,
@@ -405,11 +446,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  onItemChecked(
-    code: String,
-    deliveryGroupCode: string,
-    checked: boolean,
-  ): void {
+  onItemChecked(code: String, deliveryGroupCode: string, checked: boolean,): void {
     this.updateCheckedSet(code, deliveryGroupCode, checked)
   }
 
@@ -481,9 +518,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   openInput() {
     this.getAllGood()
-        this.input2 = structuredClone(this.input)
-        this.formatVcfAndBvmtData()
-        this.visibleInput = true
+    this.input2 = structuredClone(this.input)
+    this.formatVcfAndBvmtData()
+    this.visibleInput = true
     this.getAllSigner()
   }
 
@@ -601,23 +638,24 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
     },
   };
-  onShowSMS(){
+
+
+  onShowSMS() {
     this._configTemplateService.getall().subscribe({
       next: (data) => {
-          this.lstSms = data.filter((item: any) => item.type === "SMS")
-          console.log(this.lstSms);
-        },
-        error: (response) => {
-          console.log(response)
-        },
-      })
+        this.lstSms = data.filter((item: any) => item.type === "SMS")
+        console.log(this.lstSms);
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
     this.isSms = true
   }
-  cancelPreview() {
-    this.isVisiblePreview = false;
-    this.isVisiblePreviewExcel = false
 
-  }
+  isAllCheckedSmsFirstChange: boolean = false
+  allChecked = false;
+
 
   onInputNumberFormat(data: any, field: string) {
     let value = data[field]
@@ -880,7 +918,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     return roundedValue < 0 ? `(${formatted})` : formatted;
   }
 
-  test(){
+  test() {
     console.log("12345")
     console.log(this.input.customerBbdo.lamTronDacBiet)
   }

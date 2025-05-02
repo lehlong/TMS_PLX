@@ -38,6 +38,7 @@ namespace DMS.BUSINESS.Models
     public class DT
     {
         public List<decimal?> ckCl { get; set; } = new List<decimal?>();
+        public string? code { set; get; }
     }
 
     //public class CkCl
