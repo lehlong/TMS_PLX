@@ -18,6 +18,7 @@ namespace DMS.BUSINESS.Dtos.BU
         public string? Status { get; set; }
         public string? SignerCode { get; set; }
         public string? QuyetDinhSo { get; set; }
+        public string? CongDienPtBanLe { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }

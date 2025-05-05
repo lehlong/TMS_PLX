@@ -628,10 +628,12 @@
                 <th colspan="2" *ngIf="accountGroups != 'G_NV_K'">CK điều tiết <br> (-/+)</th>
                 <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá tại kho khách hàng</th>
                 <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
+                </ng-container>
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th rowspan="2">Ron 95 III</th>
@@ -647,20 +649,22 @@
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
-
-                <th rowspan="2">Ron 95 III</th>
-                <th rowspan="2">E5 - Ron 92 II</th>
+              
+                <th rowspan="2" >Ron 95 III</th>
+                <th rowspan="2" >E5 - Ron 92 II</th>
                 <th rowspan="2">DO 0.001S</th>
                 <th rowspan="2">DO 0.05S</th>
-
-                <th rowspan="2">CHƯA VAT, BVMT</th>
+                
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
+                <th rowspan="2" >CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
-                <th rowspan="2">CÓ VAT, BVMT</th>
+                <th rowspan="2" >CÓ VAT, BVMT</th>
+              </ng-container>
 
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
@@ -714,6 +718,7 @@
                       [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col21)}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
                       [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col22)}}</td>
+                      <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
@@ -722,6 +727,7 @@
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
+                    </ng-container>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -751,10 +757,12 @@
                 <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá tại kho khách hàng</th>
                 <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
                 <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
+                </ng-container> 
               </tr>
               <tr>
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
@@ -777,6 +785,7 @@
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
@@ -785,6 +794,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
+                </ng-container> 
 
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
@@ -844,7 +854,7 @@
                       [style.color]="data.col25 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col25) }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
                       [style.color]="data.col26 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col26) }}</td>
-
+                      <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col29 | number}}</td>
@@ -853,6 +863,7 @@
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col33 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col34 | number}}</td>
+                    </ng-container>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -880,10 +891,12 @@
                 <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá</th>
                 <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
                 <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
+                </ng-container> 
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
                 <th rowspan="2">Ron 95 III</th>
@@ -905,7 +918,7 @@
                 <th rowspan="2">E5 - Ron 92 II</th>
                 <th rowspan="2">DO 0.001S</th>
                 <th rowspan="2">DO 0.05S</th>
-
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
@@ -914,6 +927,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
+                </ng-container> 
 
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
@@ -970,6 +984,8 @@
                       [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
                       [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+
+                      <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -978,6 +994,7 @@
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                    </ng-container>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -1004,10 +1021,13 @@
                 <th colspan="8" *ngIf="accountGroups != 'G_NV_K'">Đề xuất mức giảm giá</th>
                 <th rowspan="3" *ngIf="accountGroups != 'G_NV_K'">CK Vòng 2 <br> đạt được <br> chưa VAT</th>
                 <th colspan="4" *ngIf="accountGroups != 'G_NV_K'">Lợi nhuận chưa VAT</th>
+
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th colspan="2">Ron 95 III</th>
                 <th colspan="2">E5 - Ron 92 II</th>
                 <th colspan="2">DO 0.001S</th>
                 <th colspan="2">DO 0.05S</th>
+                </ng-container>
               </tr>
               <tr>
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">Ron 95 III</th>
@@ -1030,6 +1050,7 @@
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.001S</th>
                 <th rowspan="2" *ngIf="accountGroups != 'G_NV_K'">DO 0.05S</th>
 
+                <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
@@ -1038,6 +1059,7 @@
                 <th rowspan="2">CÓ VAT, BVMT</th>
                 <th rowspan="2">CHƯA VAT, BVMT</th>
                 <th rowspan="2">CÓ VAT, BVMT</th>
+                </ng-container>
 
               </tr>
               <tr *ngIf="accountGroups != 'G_NV_K'">
@@ -1092,6 +1114,8 @@
                       [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
                       [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+
+                    <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col26 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
@@ -1100,6 +1124,7 @@
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col30 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col31 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col32 | number}}</td>
+                    </ng-container>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -2009,6 +2034,12 @@
         <div class="inner-box">
           <label>Công điện giá bán nội bộ số</label>
           <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <div class="inner-box">
+          <label>Công điện giá bán nội bộ áp dụng pt bán lẻ</label>
+          <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
         </div>
       </div>
     </div>

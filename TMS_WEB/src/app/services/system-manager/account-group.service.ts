@@ -13,10 +13,6 @@ export class AccountGroupService {
     return this._commonService.get(`AccountGroup/Search`, params);
   }
 
-  // GetDetail(id: string | number) {
-  //   return this._commonService.get(`AccountGroup/GetDetail?code=${id}`);
-  // }
-
   GetDetail(id: string | number): Observable<any> {
     return this._commonService.get(`AccountGroup/GetDetail?code=${id}`);
   }

@@ -170,13 +170,19 @@ namespace DMS.API.Controllers.BU
         {
             var transferObject = new TransferObject();
             string result;
-            if (accGroup!="G_NV_K")
+            if (accGroup=="G_NV_K")
             {
-                result= await _service.ExportExcel(headerId);
+              
+                result = await _service.ExportExcelNVK(headerId);
+            }
+            else
+            if (accGroup =="G_TP_KD")
+            {
+                result = await _service.ExportExcelTPKD(headerId);
             }
             else
             {
-                result = await _service.ExportExcelNVK(headerId);
+                result = await _service.ExportExcel(headerId);
             }
                
             if (_service.Status)
