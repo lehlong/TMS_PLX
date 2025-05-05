@@ -107,6 +107,7 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         Id = headerId,
                         Date = DateTime.Now,
+                        Hour = DateTime.Now,
                         IsActive = true,
                         Status = "01"
                     },
@@ -308,6 +309,7 @@ namespace DMS.BUSINESS.Services.BU
         public async Task Create(CalculateDiscountInputModel input)
         {
             input.Header.Date = input.Header.Date.AddHours(7);
+            input.Header.Hour = (DateTime)(input.Header.Hour?.AddHours(7));
             try
             {
                 _dbContext.TblBuCalculateDiscount.Add(input.Header);
@@ -359,7 +361,9 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                input.Header.Date = input.Header.Date.AddHours(7);
+                //input.Header.Date = input.Header.Date.AddHours(7); 
+                //input.Header.Hour = (DateTime)(input.Header.Hour?.AddHours(7));
+
                 if (input.Header.Status == "01" || input.Header.Status == "03")
                 {
                     _dbContext.TblBuCalculateDiscount.Update(input.Header);
@@ -3488,6 +3492,7 @@ namespace DMS.BUSINESS.Services.BU
             var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
             var f_date = $"{header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
             var date = header.Date.ToString("dd/MM/yyyy");
+            var hour_now = $"{header.Hour?.Hour:D2} giờ {header.Hour?.Minute:D2} phút";
             var f_date_hour = $"kể từ {header.Date.Hour:D2} giờ 00 ngày {header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
 
             var calculateDiscountIdOld = await _dbContext.TblBuCalculateDiscount
@@ -3618,9 +3623,8 @@ namespace DMS.BUSINESS.Services.BU
                             case "##DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
                                 break;
-                            case "##HOUR@@":
-                                var hour = $"{header.Date.Hour:D2}";
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                            case "##HOUR_NOW@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
                                 break;
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo ?? "");
@@ -3738,9 +3742,8 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         switch (t)
                         {
-                            case "##HOUR@@":
-                                var hour = $"{header.Date.Hour:D2}";
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                            case "##HOUR_NOW@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
                                 break;
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
@@ -3845,9 +3848,8 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         switch (t)
                         {
-                            case "##HOUR@@":
-                                var hour = $"{header.Date.Hour:D2}";
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour);
+                            case "##HOUR_NOW@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
                                 break;
                             case "##F_DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
@@ -4315,8 +4317,8 @@ namespace DMS.BUSINESS.Services.BU
                             case "##DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
                                 break;
-                            case "##F_DATE_HOUR@@":
-                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date_hour);
+                            case "##HOUR_NOW@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
                                 break;
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);

@@ -56,7 +56,7 @@
   [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-      <div nz-col [nzSpan]="4">
+      <div nz-col [nzSpan]="5">
         <div class="inner-box">
           <label>Sao chép kỳ</label>
           <button nz-col [nzSpan]="24" nz-button nz-dropdown nzWidth="100%" style="width:100%" [nzDropdownMenu]="menu4">
@@ -84,11 +84,11 @@
               [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
           </div>
       </div>
-      <div nz-col class="gutter-row" [nzSpan]="5">
+      <div nz-col class="gutter-row" [nzSpan]="4">
         <div class="inner-box">
-          <label>Giờ hiệu lực</label>
+          <label>Giờ hiệu lực giá bán lẻ</label>
           <nz-time-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="HH:mm" [(ngModel)]="input.header.hour"
-            [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-time-picker>
+            [nzPlaceHolder]="'Chọn giờ'" style="width: 100%;"></nz-time-picker>
         </div>
     </div>
       <div nz-col [nzSpan]="5">
@@ -105,15 +105,15 @@
           </nz-form-control>
         </nz-form-item>
       </div>
-      <div nz-col class="gutter-row" [nzSpan]="4">
+      <div nz-col class="gutter-row" [nzSpan]="5">
         <div class="inner-box">
-          <label>Quyết định số</label>
+          <label>Quyết định giá bán lẻ số</label>
           <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
         </div>
       </div>
       <div nz-col class="gutter-row" [nzSpan]="5">
         <div class="inner-box">
-          <label>Công điện số</label>
+          <label>Công điện giá bán nội bộ số</label>
           <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
         </div>
       </div>

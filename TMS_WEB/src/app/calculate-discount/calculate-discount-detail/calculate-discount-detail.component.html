@@ -1979,6 +1979,13 @@
             [(ngModel)]="input.header.date" [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>
+      <div nz-col class="gutter-row" [nzSpan]="4">
+        <div class="inner-box">
+          <label>Giờ hiệu lực giá bán lẻ</label>
+          <nz-time-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="HH:mm" [(ngModel)]="input.header.hour"
+            [nzPlaceHolder]="'Chọn giờ'" style="width: 100%;"></nz-time-picker>
+        </div>
+    </div>
       <div nz-col [nzSpan]="6">
         <label>Người ký</label>
         <nz-form-item>
@@ -1994,8 +2001,14 @@
       </div>
       <div nz-col class="gutter-row" [nzSpan]="6">
         <div class="inner-box">
-          <label>Quyết định số</label>
+          <label>Quyết định giá bán lẻ số</label>
           <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <div class="inner-box">
+          <label>Công điện giá bán nội bộ số</label>
+          <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
         </div>
       </div>
     </div>
