@@ -3,6 +3,9 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using DMS.CORE;
 using System.Data;
+using System.Net.Mail;
+using System.Net;
+using DocumentFormat.OpenXml.Office.CustomUI;
 
 namespace DMS.BUSINESS.Services.BackgroundHangfire
 {
@@ -14,10 +17,18 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
         public string? CpCode { get; set; }
         public string? ServiceId { get; set; }
     }
+    public class EmmailInfo
+    {
+        public int? port { get; set; }
+        public string ? host { get; set; }
+        public string? pass { get; set; }
+        public string? Email { get; set; }
+    }
     public class BackgroundJobService
     {
         private readonly AppDbContext _dbContext;
         private SMSInfo _config;
+        private EmmailInfo _congifEmail;
         public BackgroundJobService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -28,7 +39,18 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                 Password = "xd@258369",
                 CpCode = "XANGDAUNA",
                 ServiceId = "CtyXdauN.an"
+
             };
+            _congifEmail = new EmmailInfo
+            {
+                port = 587,
+                pass = "ockc mtmp pquv mhlf",
+                Email= "Somot1pro@gmail.com",
+                host= "smtp.gmail.com"
+
+            };
+
+           
         }
                 //UrlSMS = "http://ams.tinnhanthuonghieu.vn:8009/bulkapi",
 
@@ -60,6 +82,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             }
         }
 
+
         public string ConvertPhoneNumber(string phoneNumber)
         {
             if (!string.IsNullOrEmpty(phoneNumber) && phoneNumber.StartsWith("0") && phoneNumber.Length > 1)
@@ -69,6 +92,68 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             return phoneNumber;
         }
 
+        public async Task<bool> SendMail(string toEmail, string subject, string body)
+        {
+            try
+            {
+
+                var smtpClient = new SmtpClient(_congifEmail.host)
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential(_congifEmail.Email, _congifEmail.pass),
+                    EnableSsl = true,
+                };
+
+
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_congifEmail.Email, "TMS"),
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true,
+                };
+
+                mailMessage.To.Add(toEmail);
+                await smtpClient.SendMailAsync(mailMessage);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send email. Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task SendMailAsync()
+        {
+            try
+            {
+                _dbContext.ChangeTracker.Clear();
+                var lstEmail = await _dbContext.TblCmNotifiEmail.Where(x => x.IsSend == "N").ToListAsync();
+                foreach (var s in lstEmail)
+                {
+                    var status =await SendMail(s.Email, s.Subject, s.Contents);
+                    if (status)
+                    {
+                        s.IsSend = "Y";
+                        _dbContext.TblCmNotifiEmail.Update(s);
+                        _dbContext.SaveChanges();
+                        Console.WriteLine("Gửi email thành công!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Lỗi không gửi được email");
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
         public async Task<bool> SendSMS(string phone, string content)
         {
             try

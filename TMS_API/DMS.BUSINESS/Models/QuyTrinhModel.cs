@@ -19,5 +19,6 @@ namespace DMS.BUSINESS.Models
     {
         public string Code { set; get; }
         public string Content { set; get; }
+        public string Link { set; get; }
     }
 }

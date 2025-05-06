@@ -146,6 +146,7 @@ export class AccountIndexComponent {
     this.dropdownService.getAllAccountGroup().subscribe({
       next: (data) => {
         this.listAccountGroup = data
+        console.log('AccountGroup', this.listAccountGroup)
       },
       error: (response) => {
         console.log(response)

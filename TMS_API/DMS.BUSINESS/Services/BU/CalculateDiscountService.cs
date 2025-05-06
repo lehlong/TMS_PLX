@@ -6192,6 +6192,10 @@ namespace DMS.BUSINESS.Services.BU
             {
                 data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
                 _dbContext.TblBuCalculateDiscount.Update(data.header);
+                var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
+                var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
+                var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
+                var Account = _dbContext.TblAdAccount.Select(x=> new {Email= x.Email, UserName=x.UserName});
 
                 var h = new TblBuHistoryAction()
                 {
@@ -6201,6 +6205,28 @@ namespace DMS.BUSINESS.Services.BU
                     Contents = data.Status.Content
                 };
                 _dbContext.TblBuHistoryAction.Add(h);
+
+                if (data.Status.Code == "04")
+                {
+                    var email = new TblNotifyEmail();
+                    foreach (var i in AccoundTPKD)
+                    {
+                        var m = Account.FirstOrDefault(x => x.UserName == i.UserName).Email;
+                        email = new TblNotifyEmail()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            HeaderId = data.header.Id,
+                            Email =m,
+                            NumberRetry = 0,
+                            Subject = templateEmail.Title,
+                            Contents = templateEmail.HtmlSource.Replace("[pram]", data.Status.Link),
+                            IsSend = "N",
+                        };
+                        _dbContext.TblCmNotifiEmail.Add(email);
+                    }
+
+                }
+
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)

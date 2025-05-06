@@ -155,6 +155,7 @@ var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 var backgroundJobService = new BackgroundJobService(dbContext);
 var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
 recurringJobManager.AddOrUpdate("SendSMS", () => backgroundJobService.SendSMSAsync(), "*/59 * * * * *");
+recurringJobManager.AddOrUpdate("Sendmail",() => backgroundJobService.SendMailAsync(),"*/59 * * * * *");
 
 app.UseMiddleware<ActionLoggingMiddleware>();
 app.MapHub<SystemTraceServiceHub>("/SystemTrace");

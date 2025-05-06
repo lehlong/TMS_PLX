@@ -20,7 +20,8 @@ import { IConfig } from '@onlyoffice/document-editor-angular';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { iif } from 'rxjs'
 import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
-
+import { Route } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-calculate-discount-detail',
@@ -151,6 +152,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     private _signerService: SignerService,
     private _configTemplateService: ConfigTemplateService,
     private _goodService: GoodsService,
+   
+    private location: Location
     // @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // this.isBrowser = isPlatformBrowser(this.platformId);
@@ -170,7 +173,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
         const id = params.get('id')
         this.headerId = id
         this.getOutput(this.headerId)
-        console.log(this.idramdom);
+     
+
 
       },
     })
@@ -485,6 +489,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
     this.dataQuyTrinh.status.code = status
     this.dataQuyTrinh.header = this.input.header
+    
+    this.dataQuyTrinh.status.Link =  window.location.href
     this.isVisibleStatus = true
     Swal.fire({
       title: this.statusModel.title,
