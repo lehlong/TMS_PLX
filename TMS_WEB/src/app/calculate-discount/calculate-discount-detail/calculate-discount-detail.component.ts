@@ -38,6 +38,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisiblePreview: boolean = false
   isZoom = false
   UrlOffice: string = ''
+  inputSearchCustomer: string = ''
   input: any = {
     header: {},
     inputPrice: [],
@@ -293,6 +294,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.checkedSms = false
     this.isVisiblePreviewExcel = false
     this.isVisiblePreview = false
+    this.inputSearchCustomer = ""
   }
   exportWordTrinhKy() {
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
@@ -811,6 +813,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.GetCustomerBbdo(this.headerId).subscribe({
       next: (data) => {
         this.lstCustomer = data
+        this.lstCus = data
         this.isVisibleCustomer = true
       },
     })
@@ -916,6 +919,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
     const formatted = Math.abs(roundedValue).toLocaleString('en-US'); // Định dạng dấu phẩy phần nghìn
 
     return roundedValue < 0 ? `(${formatted})` : formatted;
+  }
+
+  lstCus: any[] = []
+  searchCustomer(){
+    const keyword = this.inputSearchCustomer.trim().toLowerCase();
+    this.lstCus = this.lstCustomer.filter(c =>
+      c.name.toLowerCase().includes(keyword)
+    );
   }
 
   test() {

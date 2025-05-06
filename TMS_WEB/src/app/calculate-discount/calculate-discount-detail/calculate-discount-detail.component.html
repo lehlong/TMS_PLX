@@ -1940,11 +1940,13 @@
 <nz-modal [(nzVisible)]="isVisibleCustomer" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
   (nzOnOk)="confirmExportWord()" nzCancelText="Đóng">
   <ng-container *nzModalContent>
-    <nz-table #customerTable [nzData]="lstCustomer" nzSize="small">
+    <nz-table #customerTable [nzData]="lstCus" nzSize="small">
       <thead>
         <tr>
           <th [(nzChecked)]="checked" (nzCheckedChange)="onAllChecked($event)"></th>
-          <td style="font-weight:bold">Tên khách hàng</td>
+          <td style="font-weight:bold"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="Tên khách hàng"
+            (ngModelChange)="searchCustomer()" type="text" />
+          </td>
         </tr>
       </thead>
       <tbody>

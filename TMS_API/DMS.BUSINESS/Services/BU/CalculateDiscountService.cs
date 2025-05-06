@@ -414,6 +414,7 @@ namespace DMS.BUSINESS.Services.BU
                 var lstCustomerBbdo = await _dbContext.TblBuInputCustomerBbdo.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
 
                 var currentHeader = _dbContext.TblBuCalculateDiscount.Find(id);
+                data.Header = currentHeader;
 
                 var currentData = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
                 var previousHeader = await _dbContext.TblBuCalculateDiscount.Where(x => x.Date < currentHeader.Date && x.Status == "04").OrderByDescending(x => x.Date).FirstOrDefaultAsync();
@@ -423,7 +424,9 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     previousData = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == previousHeader.Id).ToListAsync();
                     data.Dlg.NameOld = previousHeader.Name;
+                    data.HeaderOld = previousHeader;
                 }
+                data.InputPriceOld = previousData;
                 #endregion
 
                 #region Dữ liệu gốc
@@ -2686,6 +2689,7 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         #endregion
+        
         #region xuất excel TPKD
         public async Task<string> ExportExcelTPKD(string headerId)
         {
@@ -4225,14 +4229,15 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-
                 var data = await CalculateDiscountOutput(headerId);
-                var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
+                //var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
                 var goods = await _dbContext.TblMdGoods.ToListAsync();
-                var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
-                var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Công ty Xăng dầu Nghệ An)";
-                var A24 = $" + Căn cứ Quyết định số {header.QuyetDinhSo} ngày {header.Date.Day:D2}/{header.Date.Month:D2}/{header.Date.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
-                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {header.Date.Hour:D2} giờ 00 ngày {header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
+                var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == data.Header.SignerCode);
+                var date = $"{data.Header.Date.Hour:D2}h{data.Header.Date.Minute:D2} ngày {data.Header.Date.ToString("dd/MM/yyyy")}"; 
+                var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {data.Header.Date.Day:D2}/{data.Header.Date.Month:D2}/{data.Header.Date.Year} của Công ty Xăng dầu Nghệ An)";
+                var A29 = $" + Căn cứ Quyết định số {data.Header.QuyetDinhSo} ngày {data.Header.Date.Day:D2}/{data.Header.Date.Month:D2}/{data.Header.Date.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
+                var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {data.Header.Date.Hour:D2} giờ 00 ngày {data.Header.Date.Day:D2} tháng {data.Header.Date.Month:D2} năm {data.Header.Date.Year}";
+                var E8 = $"Giá kê khai kì liền kề trước (theo VB số ......./PLXNA-KDXD ngày {data.HeaderOld.Date.ToString("dd/MM/yyyy")}";
                 // 1. Đường dẫn file gốc
                 var filePathTemplate = Path.Combine(Directory.GetCurrentDirectory(), "Template", "TempTrinhKy", "KeKhaiGiaChiTiet.xlsx");
 
@@ -4257,6 +4262,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     workbook = new XSSFWorkbook(fs);
                     ISheet sheet = workbook.GetSheetAt(0);
+
                     IRow rowA5 = sheet.GetRow(4);
                     ICell cellA5 = rowA5?.GetCell(0);
 
@@ -4265,34 +4271,24 @@ namespace DMS.BUSINESS.Services.BU
                         cellA5.SetCellValue(A5);
                     }
 
-                    IRow rowA24 = sheet.GetRow(23);
-                    ICell cellA24 = rowA24?.GetCell(0);
+                    IRow rowA29 = sheet.GetRow(28);
+                    ICell cellA29 = rowA29?.GetCell(0);
 
-                    if (cellA24 != null)
+                    if (cellA29 != null)
                     {
-                        cellA24.SetCellValue(A24);
+                        cellA29.SetCellValue(A29);
                     }
 
-                    IRow rowB25 = sheet.GetRow(24);
-                    ICell cellB25 = rowB25?.GetCell(1);
+                    IRow rowE8 = sheet.GetRow(7);
+                    ICell cellE8 = rowE8?.GetCell(4);
+                    cellE8.SetCellValue(E8);
 
-                    if (cellB25 != null)
-                    {
-                        cellB25.SetCellValue(B25);
-                    }
                     int rowIndex = 10; // Bắt đầu từ row 11 (index = 10)
                     foreach (var item in data.Dlg.Dlg3)
                     {
                         IRow row = sheet.GetRow(rowIndex); // Chỉ lấy row, không cần CreateRow
                         if (row != null && item.LocalCode == "V1" && item.IsBold == false)
                         {
-                            // B11 -> colA
-                            //ICell cellB = row.GetCell(1);
-                            //if (cellB != null)
-                            //{
-                            //    cellB.SetCellValue(item.GoodName);
-                            //}
-
                             // E11 -> col1
                             ICell cellE = row.GetCell(4);
                             if (cellE != null)
@@ -4307,24 +4303,31 @@ namespace DMS.BUSINESS.Services.BU
                                 cellF.SetCellValue((double)item.Col2);
                             }
 
-                            // G11 -> tangGiam1_2
+                            //G11 
                             ICell cellG = row.GetCell(6);
                             if (cellG != null)
                             {
-                                cellG.SetCellValue((double)item.Col3);
+                                cellG.SetCellValue(date);
                             }
 
+                            // H11 -> tangGiam1_2
                             ICell cellH = row.GetCell(7);
                             if (cellH != null)
+                            {
+                                cellH.SetCellValue((double)item.Col3);
+                            }
+
+                            ICell cellI = row.GetCell(8);
+                            if (cellI != null)
                             {
                                 if (item.Col1 != 0)
                                 {
                                     double rateOfIncreaseAndDecrease = (double)((item.Col2 - item.Col1) / item.Col1);
-                                    cellH.SetCellValue(rateOfIncreaseAndDecrease);
+                                    cellI.SetCellValue(rateOfIncreaseAndDecrease);
                                 }
                                 else
                                 {
-                                    cellH.SetCellValue(0);
+                                    cellI.SetCellValue(0);
                                 }
                             }
                             rowIndex++;
@@ -4358,20 +4361,27 @@ namespace DMS.BUSINESS.Services.BU
                                 cellF.SetCellValue((double)item.Col2);
                             }
 
-                            // G11 -> tangGiam1_2
+                            // G11
                             ICell cellG = row.GetCell(6);
                             if (cellG != null)
                             {
-                                cellG.SetCellValue((double)item.Col3);
+                                cellG.SetCellValue(date);
                             }
 
+                            // G12 -> tangGiam1_2
                             ICell cellH = row.GetCell(7);
                             if (cellH != null)
+                            {
+                                cellH.SetCellValue((double)item.Col3);
+                            }
+
+                            ICell cellI = row.GetCell(8);
+                            if (cellI != null)
                             {
                                 if (item.Col1 != 0)
                                 {
                                     double rateOfIncreaseAndDecrease = (double)((item.Col2 - item.Col1) / item.Col1);
-                                    cellH.SetCellValue(rateOfIncreaseAndDecrease);
+                                    cellI.SetCellValue(rateOfIncreaseAndDecrease);
                                 }
                                 else
                                 {
@@ -4382,6 +4392,61 @@ namespace DMS.BUSINESS.Services.BU
                         }
 
                     }
+                    
+                    int rowIndex3 = 20;
+                    foreach (var item in data.Dlg.Dlg3)
+                    {
+                        IRow row = sheet.GetRow(rowIndex3); // Chỉ lấy row, không cần CreateRow
+                        if (row != null && item.LocalCode == "V2" && item.IsBold == false)
+                        {
+                            var a = item.Col1 - data.InputPriceOld.Where(x => x.GoodCode == item.GoodCode).Sum(x => x.FobV2);
+                            var b = item.Col2 - data.Dlg.Dlg10.Where(x => x.GoodCode == item.GoodCode).Sum(x => x.Col2);
+                            // E11 -> col1
+                            ICell cellE = row.GetCell(4);
+                            if (cellE != null)
+                            {
+                                cellE.SetCellValue((double)(a));
+                            }
+
+                            // F11 -> col2
+                            ICell cellF = row.GetCell(5);
+                            if (cellF != null)
+                            {
+                                cellF.SetCellValue((double)(b));
+                            }
+
+                            // G11
+                            ICell cellG = row.GetCell(6);
+                            if (cellG != null)
+                            {
+                                cellG.SetCellValue(date);
+                            }
+
+                            // G12 -> tangGiam1_2
+                            ICell cellH = row.GetCell(7);
+                            if (cellH != null)
+                            {
+                                cellH.SetCellValue((double)(b - a));
+                            }
+
+                            ICell cellI = row.GetCell(8);
+                            if (cellI != null)
+                            {
+                                if (a != 0)
+                                {
+                                    double rateOfIncreaseAndDecrease = (double)((b - a) / a);
+                                    cellI.SetCellValue(rateOfIncreaseAndDecrease);
+                                }
+                                else
+                                {
+                                    cellH.SetCellValue(0);
+                                }
+                            }
+                            rowIndex3++;
+                        }
+
+                    }
+
 
                     ISheet sheetCheck = workbook.GetSheetAt(0);
                     IRow rowCheck = sheetCheck.GetRow(4);

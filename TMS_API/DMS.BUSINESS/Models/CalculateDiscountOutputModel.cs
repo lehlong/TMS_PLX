@@ -1,7 +1,12 @@
-﻿namespace DMS.BUSINESS.Models
+﻿using DMS.CORE.Entities.BU;
+
+namespace DMS.BUSINESS.Models
 {
     public class CalculateDiscountOutputModel
     {
+        public List<TblBuInputPrice?> InputPriceOld { get; set; } = new List<TblBuInputPrice?>();
+        public TblBuCalculateDiscount? HeaderOld { get; set; } = new TblBuCalculateDiscount();
+        public TblBuCalculateDiscount? Header { get; set; } = new TblBuCalculateDiscount();
         public Dlg Dlg { get; } = new Dlg();
         public List<DataModel> Pt { get; } = new List<DataModel>();
         public List<DataModel> Pts { get; } = new List<DataModel>();

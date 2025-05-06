@@ -55,7 +55,7 @@
 <nz-drawer nzWidth="80%" nzSize="default" [nzVisible]="visible" nzPlacement="right" [nzTitle]="'Tạo mới đợt tính'"
   [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" style="margin-bottom: 10px;">
       <div nz-col [nzSpan]="5">
         <div class="inner-box">
           <label>Sao chép kỳ</label>
@@ -91,20 +91,8 @@
             [nzPlaceHolder]="'Chọn giờ'" style="width: 100%;"></nz-time-picker>
         </div>
     </div>
-      <div nz-col [nzSpan]="5">
-        <label>Người ký</label>
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Không được để trống">
-            <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'" [formControl]="nguoiKyControl"
-              [(ngModel)]="selectedValue">
-
-              <nz-option *ngFor="let item of signerResult" [nzLabel]="item.position + ' - ' + item.name"
-                [nzValue]="item">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+  </div>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" style="margin-bottom: 10px;">
       <div nz-col class="gutter-row" [nzSpan]="5">
         <div class="inner-box">
           <label>Quyết định giá bán lẻ số</label>
@@ -114,6 +102,48 @@
       <div nz-col class="gutter-row" [nzSpan]="5">
         <div class="inner-box">
           <label>Công điện giá bán nội bộ số</label>
+          <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Công điện giá bán nội bộ áp dụng pt bán lẻ</label>
+          <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
+        </div>
+      </div>
+
+    </div>
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" style="margin-bottom: 10px;">
+        <div nz-col [nzSpan]="5">
+          <label>Người ký</label>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Không được để trống">
+              <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'" [formControl]="nguoiKyControl"
+                [(ngModel)]="selectedValue">
+
+                <nz-option *ngFor="let item of signerResult" [nzLabel]="item.position + ' - ' + item.name"
+                  [nzValue]="item">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Viết phương án</label>
+          <input nz-input [(ngModel)]="input.header.quyetDinhSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Phòng KDXD</label>
+          <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+
+      <div nz-col class="gutter-row" [nzSpan]="5">
+        <div class="inner-box">
+          <label>Phòng TCKT</label>
           <input nz-input [(ngModel)]="input.header.congDienSo" #nameInput="ngModel" required />
         </div>
       </div>

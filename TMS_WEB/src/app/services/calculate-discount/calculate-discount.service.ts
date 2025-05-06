@@ -32,13 +32,11 @@ export class CalculateDiscountService {
     }
     copyInput(headerId:any, id: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/CopyInput?id=${id}&headerId=${headerId}`);
-  }
+    }
     updateInput(input: any): Observable<any> {
         return this.commonService.put(`CalculateDiscount/UpdateInput`, input);
     }
-    // HandleQuyTrinh(input: any): Observable<any> {
-    //   return this.commonService.put(`CalculateDiscount/HandleQuyTrinh`, input);
-    // }
+
     HandleQuyTrinh(data : any) : Observable<any>{
       return this.commonService.put(`CalculateDiscount/HandleQuyTrinh`, data)
     }

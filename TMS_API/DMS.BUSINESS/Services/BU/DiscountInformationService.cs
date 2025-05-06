@@ -569,7 +569,7 @@ namespace DMS.BUSINESS.Services.BU
             using (MemoryStream memoryStream = new MemoryStream(data))
             {
                 IFormFile file = ConvertMemoryStreamToIFormFile(memoryStream, "example.txt");
-                var folderName = Path.Combine($"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}");
+                var folderName = Path.Combine($"Uploads/{DateTime.Now.Year}/{DateTime.Now.Month}/{DateTime.Now.Day}");
                 //var folderName = Path.Combine("D:\\dowloads\\xuatexcel");
                 if (!Directory.Exists(folderName))
                 {
@@ -584,7 +584,7 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         file.CopyTo(stream);
                     }
-                    path = $"Upload/{DateTime.Now.Year}/{DateTime.Now.Month}/{fileName}";
+                    path = $"Uploads/{DateTime.Now.Year}/{DateTime.Now.Month}/{DateTime.Now.Day}/{fileName}";
                     _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
                     {
                         Code = Guid.NewGuid().ToString(),
