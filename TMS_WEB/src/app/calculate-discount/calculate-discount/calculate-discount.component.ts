@@ -27,7 +27,7 @@ export class CalculateDiscountComponent implements OnInit {
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'Danh sách đợt tính mức giảm giá',
+        name: 'Danh sách đợt tính thù lao',
         path: 'calculate-discount/list',
       },
     ])
@@ -55,6 +55,9 @@ export class CalculateDiscountComponent implements OnInit {
   };
   input2: any = this.input;
   nguoiKyControl = new FormControl({ code: "", name: "", position: "" });
+  kdxdControl = new FormControl({ code: "", name: "", position: "" });
+  tcktControl = new FormControl({ code: "", name: "", position: "" });
+  vietPhuongAnControl = new FormControl({ code: "", name: "", position: "" });
   signerResult: any[] = []
   selectedValue = {}
   rightList: any = []
@@ -65,20 +68,20 @@ export class CalculateDiscountComponent implements OnInit {
     this.search();
     this.getAllSigner();
     this.getAllGood();
-    
+
   }
   search() {
     this._service.search(this.filter).subscribe({
       next: (data) => {
         if(this.accountGroups=="G_NV_K"){
-       
+
           data.data= data.data.filter((item: any) => item.status=="04")
           this.paginationResult = data
-        
+
         }else{
           this.paginationResult = data
         }
-       
+
       },
       error: (response) => {
         console.log(response)
@@ -147,7 +150,7 @@ export class CalculateDiscountComponent implements OnInit {
       next: (data) => {
         this.signerResult = data
         console.log(this.signerResult)
-        this.selectedValue = this.signerResult.find(item => item.code === "d72636e2-454f-4085-b491-76b2e0c6445d");
+        // this.selectedValue = this.signerResult.find(item => item.code === "d72636e2-454f-4085-b491-76b2e0c6445d");
       },
       error: (response) => {
         console.log(response)

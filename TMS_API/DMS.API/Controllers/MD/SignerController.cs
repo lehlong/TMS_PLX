@@ -3,6 +3,7 @@ using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
 using DMS.BUSINESS.Dtos.MD;
 using DMS.BUSINESS.Services.MD;
+using DMS.CORE.Entities.MD;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.API.Controllers.MD
@@ -49,11 +50,11 @@ namespace DMS.API.Controllers.MD
         }
 
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] SignerDto Signer)
+        public async Task<IActionResult> Insert([FromBody] TblMdSigner Signer)
         {
             var transferObject = new TransferObject();
             Signer.Code = Guid.NewGuid().ToString();
-            var result = await _service.Add(Signer);
+            var result = await _service.Insert(Signer);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -71,10 +72,10 @@ namespace DMS.API.Controllers.MD
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] SignerDto Signer)
+        public async Task<IActionResult> Update([FromBody] TblMdSigner Signer)
         {
             var transferObject = new TransferObject();
-            await _service.Update(Signer);
+            await _service.UpdateSigner(Signer);
             if (_service.Status)
             {
                 transferObject.Status = true;

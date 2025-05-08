@@ -16,7 +16,10 @@ namespace DMS.BUSINESS.Dtos.BU
         public DateTime? Hour { get; set; }
         public string? CongDienSo { get; set; }
         public string? Status { get; set; }
+        public string? VietphuonganCode { get; set; }
         public string? SignerCode { get; set; }
+        public string? KdxdCode { get; set; }
+        public string? TcktCode { get; set; }
         public string? QuyetDinhSo { get; set; }
         public string? CongDienPtBanLe { get; set; }
 

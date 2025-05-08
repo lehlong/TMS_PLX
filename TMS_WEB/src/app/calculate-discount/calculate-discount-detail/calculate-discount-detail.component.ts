@@ -117,6 +117,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstSendSmsChecked: any[] = []
   accountGroups: any = {}
   searchInput = ''
+  isConfirmLoading = false;
   searchTerm: { [key: string]: string } = {
     PT: '',
     DB: '',
@@ -152,7 +153,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     private _signerService: SignerService,
     private _configTemplateService: ConfigTemplateService,
     private _goodService: GoodsService,
-   
+
     private location: Location
     // @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -168,14 +169,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
   ngOnInit(): void {
+    console.log(window.location.href);
+
     this.route.paramMap.subscribe({
       next: (params) => {
         const id = params.get('id')
         this.headerId = id
         this.getOutput(this.headerId)
-     
-
-
       },
     })
     this._service.getInput(this.headerId).subscribe({
@@ -229,27 +229,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     return html.replace(/<\/?[^>]+(>|$)/g, '')
   }
 
-  showSMSAction() {
-    this._service.GetSms(this.headerId).subscribe({
-      next: (data) => {
-        this.lstSMS = data
-        this.isVisibleSms = true
-      },
-      error: (err) => {
-        console.log(err)
-      },
-    })
-  }
-  confirmSendSMS() {
-    this._service.SaveSMS(this.headerId, this.smsName).subscribe({
-      next: (data) => {
-        this.message.create('success', 'Gửi mail thành công')
-      },
-      error: (err) => {
-        console.log(err)
-      },
-    })
-  }
   confirmSendsMail() {
     this._service.SendMail(this.headerId).subscribe({
       next: (data) => {
@@ -372,10 +351,41 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
 
   checkedSms: boolean = false
+  lstSearchSms: any[] = []
+  showSMSAction() {
+    this._service.GetSms(this.headerId).subscribe({
+      next: (data) => {
+        this.lstSearchSms = data
+        this.lstSMS = data
+        this.isVisibleSms = true
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+  confirmSendSMS() {
+    if (this.smsName == "") {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn mẫu tin nhắn muốn gửi!',
+      )
+      return
+    } else {
+      this._service.SaveSMS(this.headerId, this.smsName).subscribe({
+        next: (data) => {
+          this.message.create('success', 'Gửi SMS thành công')
+        },
+        error: (err) => {
+          console.log(err)
+        },
+      })
+    }
+  }
   onAllCheckedSendSms(value: boolean): void {
     this.lstSendSmsChecked = []
     if (value) {
-      this.lstSMS.forEach((i) => {
+      this.lstSearchSms.forEach((i) => {
         if(i.isSend != "Y"){
           this.lstSendSmsChecked.push(i.id)
         }
@@ -387,9 +397,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
   updateCheckedSetSendSms(code: any, checked: boolean,): void {
     if (checked) {
       this.lstSendSmsChecked.push(code)
+
     } else {
       this.lstSendSmsChecked = this.lstSendSmsChecked.filter(
-        (x) => x.code !== code
+        (x) => x !== code
       )
     }
   }
@@ -397,17 +408,31 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.updateCheckedSetSendSms(code, checked)
   }
   isCheckedSendSms(code: string): boolean {
-    return this.lstSendSmsChecked.some((item) => item.code === code)
+    return this.lstSendSmsChecked.some((item) => item == code)
   }
   onSendSms(){
-    this._service.SendSMS(this.lstSendSmsChecked).subscribe({
-      next: (data) =>{
-        this.lstSendSmsChecked = []
-        this.handleCancel()
-      }
-    })
+    if (this.lstSendSmsChecked.length == 0) {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn tin nhắn muốn gửi',
+      )
+      return
+    } else {
+      this._service.SendSMS(this.lstSendSmsChecked).subscribe({
+        next: (data) =>{
+          this.lstSendSmsChecked = []
+          this.handleCancel()
+        }
+      })
+    }
   }
 
+  searchSMS(){
+    const keyword = this.inputSearchCustomer.trim().toLowerCase();
+    this.lstSearchSms = this.lstSMS.filter(c =>
+      c.contents.toLowerCase().includes(keyword)
+    );
+  }
 
 
   confirmExportWord() {
@@ -489,7 +514,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
     this.dataQuyTrinh.status.code = status
     this.dataQuyTrinh.header = this.input.header
-    
+
     this.dataQuyTrinh.status.Link =  window.location.href
     this.isVisibleStatus = true
     Swal.fire({

@@ -26,6 +26,12 @@ namespace DMS.BUSINESS.Dtos.MD
         [Description("Tên người ký")]
         public string Name { get; set; }
 
+        [Description("Mặc Định")]
+        public bool? IsSelect { get; set; }
+
+        [Description("kiểu")]
+        public string Type { get; set; }
+
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }
 

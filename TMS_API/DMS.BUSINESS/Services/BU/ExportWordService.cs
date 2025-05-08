@@ -32,7 +32,6 @@ namespace DMS.BUSINESS.Services.BU
                 var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
                 if (header.QuyetDinhSo != null)
                 {
-                    //var oldHeader = await _dbContext.TblBuCalculateDiscount.FindAsync(header.QuyetDinhSo);
                     var oldHeaders = await _dbContext.TblBuCalculateDiscount
                         .Where(x => x.QuyetDinhSo == header.QuyetDinhSo && x.Id != headerId)
                         .ToListAsync();
@@ -194,14 +193,14 @@ namespace DMS.BUSINESS.Services.BU
             if (paragraph == null) return;
 
             var table = isN1Flag
-                ? CreateN1Table(data)
+                ? CreateN1Table(data, customer.code)
                 : CreateNormalTable(customerData, goodsList);
 
             paragraph.Parent.InsertAfter(table, paragraph);
             paragraph.Remove();
         }
 
-        Table CreateN1Table(CalculateDiscountOutputModel data)
+        Table CreateN1Table(CalculateDiscountOutputModel data, string cusCode)
         {
             var table = InitTableWithBorders();
             var row1 = new TableRow();
@@ -221,15 +220,17 @@ namespace DMS.BUSINESS.Services.BU
             table.Append(row1, row2);
 
             int stt = 1;
-            foreach (var item in data.Dlg.Dlg6.Where(i => i.LocalCode == "V2"))
+            var lstCus = data.Bbdo.Where(x => x.CustomerCode == cusCode).ToList();
+            foreach (var cus in lstCus)
             {
+                var item = data.Dlg.Dlg6.Where(i => i.LocalCode == "V2" && i.GoodCode == cus.GoodCode).FirstOrDefault();
                 var row = new TableRow();
                 row.Append(CreateCell((stt++).ToString(), true, 26, 200));
                 row.Append(CreateCell(item?.GoodName, true, 26, 5500));
                 row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
-                row.Append(CreateCell(item?.Col6.ToString("N0"), true, 26, 3000));
-                row.Append(CreateCell(item?.Col14.ToString("N0"), true, 26, 1000));
-                row.Append(CreateCell((item.Col6 - item.Col14).ToString("N0"), true, 26, 1500));
+                row.Append(CreateCell(item.Col6.ToString("N0"), true, 26, 3000));
+                row.Append(CreateCell(cus.Col7.ToString("N0"), true, 26, 1000));
+                row.Append(CreateCell(cus.Col14.ToString("N0"), true, 26, 1500));
                 table.Append(row);
             }
             return table;

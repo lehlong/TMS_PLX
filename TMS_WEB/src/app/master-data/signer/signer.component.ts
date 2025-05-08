@@ -26,7 +26,9 @@ export class SignerComponent {
   validateForm: FormGroup = this.fb.group({
     code: [''],
     name: ['', [Validators.required]],
-    position: ['', [Validators.required]],
+    position: ['',],
+    isSelect: [false],
+    type: ['', [Validators.required]],
     isActive: [true, [Validators.required]],
   })
 
@@ -34,9 +36,12 @@ export class SignerComponent {
   visible: boolean = false
   edit: boolean = false
   filter = new SignerFilter()
-  paginationResult = new PaginationResult()
+  // paginationResult = new PaginationResult()
+  paginationResult: any[] = []
   loading: boolean = false
+  type : any = "NguoiKy"
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
+isSelect: any
 
   constructor(
     private _service: SignerService,
@@ -76,7 +81,9 @@ export class SignerComponent {
     this.isSubmit = false
     this._service.searchSigners(this.filter).subscribe({
       next: (data) => {
-        this.paginationResult = data
+        this.paginationResult = data.data.filter((item: { type: boolean }) => item.type == this.type);
+        console.log(this.paginationResult);
+
       },
       error: (response) => {
         console.log(response)
@@ -85,13 +92,15 @@ export class SignerComponent {
   }
 
   isCodeExist(code: string): boolean {
-    return this.paginationResult.data?.some(
+    return this.paginationResult?.some(
       (market: any) => market.code === code,
     )
   }
 
   submitForm(): void {
     this.isSubmit = true
+    console.log(this.validateForm.getRawValue());
+    this.validateForm.get('type')?.setValue(this.type)
     if (this.validateForm.valid) {
       const formData = this.validateForm.getRawValue()
       formData.code = ''
@@ -135,7 +144,12 @@ export class SignerComponent {
       })
     }
   }
+  loadPage(text : any){
+    this.type = text
+    console.log(text);
 
+    this.search()
+  }
   close() {
     this.visible = false
     this.resetForm()
@@ -161,6 +175,8 @@ export class SignerComponent {
     this.validateForm.setValue({
       code: data.code,
       name: data.name,
+      type: data.type,
+      isSelect: data.isSelect,
       position: data.position,
       isActive: data.isActive,
     })

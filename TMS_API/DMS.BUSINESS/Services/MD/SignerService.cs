@@ -17,6 +17,8 @@ namespace DMS.BUSINESS.Services.MD
     public interface ISignerService : IGenericService<TblMdSigner, SignerDto>
     {
         Task<IList<SignerDto>> GetAll(BaseMdFilter filter);
+        Task UpdateSigner(TblMdSigner data);
+        Task<TblMdSigner> Insert(TblMdSigner signer);
     }
     class SignerService(AppDbContext dbContext, IMapper mapper) : GenericService<TblMdSigner, SignerDto>(dbContext, mapper), ISignerService
     {
@@ -61,6 +63,53 @@ namespace DMS.BUSINESS.Services.MD
                 Status = false;
                 Exception = ex;
                 return null;
+            }
+        }
+
+        public async Task<TblMdSigner> Insert(TblMdSigner signer)
+        {
+            try
+            {
+                if (signer.IsSelect == true)
+                {
+                    var lstSigner = await _dbContext.TblMdSigner.Where(x => x.Type == signer.Type).ToListAsync();
+
+                    foreach (var item in lstSigner)
+                    {
+                        item.IsSelect = false;
+                    }
+                    _dbContext.TblMdSigner.Add(signer);
+                }
+                await _dbContext.SaveChangesAsync();
+
+                return signer;
+            }
+            catch (Exception ex)
+            {
+                return new TblMdSigner();
+            }
+        }
+
+        public async Task UpdateSigner(TblMdSigner data)
+        {
+            try
+            {
+                var lstSigner = await _dbContext.TblMdSigner.Where(x => x.Type == data.Type).ToListAsync();
+
+                foreach (var signer in lstSigner)
+                {
+                    signer.IsSelect = false;
+                }
+                _dbContext.TblMdSigner.Update(data);
+
+                await _dbContext.SaveChangesAsync();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                //return null;
             }
         }
     }

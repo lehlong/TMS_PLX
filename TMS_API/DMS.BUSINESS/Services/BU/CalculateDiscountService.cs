@@ -93,14 +93,15 @@ namespace DMS.BUSINESS.Services.BU
             try
             {
                 var headerId = Guid.NewGuid().ToString();
-                var lstGoods = await _dbContext.TblMdGoods.OrderBy(x => x.CreateDate).OrderBy(x => x.Order).ToListAsync();
-                var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
-                var lstCustomerDb = await _dbContext.TblMdCustomerDb.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerPt = await _dbContext.TblMdCustomerPt.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerFob = await _dbContext.TblMdCustomerFob.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerPts = await _dbContext.TblMdCustomerPts.OrderBy(x => x.Order).ToListAsync();
+                var lstSigner = await _dbContext.TblMdSigner.Where(x => x.IsActive == true).ToArrayAsync();
+                var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).OrderBy(x => x.Order).ToListAsync();
+                var lstMarket = await _dbContext.TblMdMarket.Where(x => x.IsActive == true).OrderBy(x => x.Code).ToListAsync();
+                var lstCustomerDb = await _dbContext.TblMdCustomerDb.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPt = await _dbContext.TblMdCustomerPt.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerFob = await _dbContext.TblMdCustomerFob.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPts = await _dbContext.TblMdCustomerPts.Where(x => x.IsActive == true).OrderBy(x => x.Order).ToListAsync();
 
                 return new CalculateDiscountInputModel
                 {
@@ -110,6 +111,10 @@ namespace DMS.BUSINESS.Services.BU
                         Date = DateTime.Now,
                         Hour = DateTime.Now,
                         IsActive = true,
+                        SignerCode = lstSigner.Where(x => x.Type == "NguoiKy").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
+                        KdxdCode = lstSigner.Where(x => x.Type == "kdxd").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
+                        TcktCode = lstSigner.Where(x => x.Type == "tckt").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
+                        VietphuonganCode = lstSigner.Where(x => x.Type == "vietPhuongAn").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
                         Status = "01"
                     },
                     InputPrice = lstGoods.Select(g => new TblBuInputPrice
@@ -170,7 +175,7 @@ namespace DMS.BUSINESS.Services.BU
                         CkDau = x.CkDau,
                         CkXang = x.CkXang,
                         IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet 
+                        LamTronDacBiet = x.LamTronDacBiet
                     }).ToList(),
                     CustomerPt = lstCustomerPt.Select(x => new TblBuInputCustomerPt
                     {
@@ -1721,6 +1726,9 @@ namespace DMS.BUSINESS.Services.BU
             {
                 var header = _dbContext.TblBuCalculateDiscount.Find(headerId);
                 var nguoiKy = _dbContext.TblMdSigner.Where(x => x.Code == header.SignerCode).FirstOrDefault();
+                var lapBieu = _dbContext.TblMdSigner.Where(x => x.Code == header.VietphuonganCode).FirstOrDefault();
+                var kdxd = _dbContext.TblMdSigner.Where(x => x.Code == header.KdxdCode).FirstOrDefault();
+                var tckt = _dbContext.TblMdSigner.Where(x => x.Code == header.TcktCode).FirstOrDefault();
                 var data = await this.CalculateDiscountOutput(headerId);
                 var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "CoSoTinhMucGiamGia.xlsx");
                 var muaMien = "";
@@ -1810,15 +1818,31 @@ namespace DMS.BUSINESS.Services.BU
 
                 #region BIỂU TỔNG HỢP CÁC CHỈ TIÊU DẦU SÁNG (PT bán lẻ - V2)
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(34) ?? sheetDlg.CreateRow(34), 0, $"Tính từ: {header.Hour?.ToString("HH:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số {header.CongDienPtBanLe.ToString()} ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(34) ?? sheetDlg.CreateRow(34), 0, $"Tính từ: {header.Hour?.ToString("HH:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số {header.CongDienPtBanLe?.ToString() ?? ""} ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
                 int rowIndexDl4 = 40;
 
                 #region xuất người ký
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+
                 if (header.SignerCode == "TongGiamDoc")
                 {
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(46) ?? sheetDlg.CreateRow(46), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(93), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(99), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(47), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy.Name}", styles.TextCenter);
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(92) ?? sheetDlg.CreateRow(92), 11, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(93) ?? sheetDlg.CreateRow(93), 11, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
@@ -1851,7 +1875,7 @@ namespace DMS.BUSINESS.Services.BU
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(164) ?? sheetDlg.CreateRow(164), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(165) ?? sheetDlg.CreateRow(165), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(167) ?? sheetDlg.CreateRow(167), 9, $"{nguoiKy.Position}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(166) ?? sheetDlg.CreateRow(166), 9, $"{nguoiKy.Position}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy.Name}", styles.TextCenter);
                 }
                 #endregion
@@ -2109,6 +2133,13 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+
+
                 #endregion
 
                 #region ĐB
@@ -2164,6 +2195,12 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 15, "DUYỆT", styles.TextCenterBold);
 
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+
+
                 #endregion
 
                 #region FOB
@@ -2217,6 +2254,11 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 15, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
 
                 #endregion
 
@@ -2272,6 +2314,11 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 15, "DUYỆT", styles.TextCenterBold);
 
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+
                 #endregion
 
                 #region BB DO
@@ -2313,6 +2360,11 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 15, "DUYỆT", styles.TextCenterBold);
 
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+
                 #endregion
 
                 #region BB FO
@@ -2339,9 +2391,14 @@ namespace DMS.BUSINESS.Services.BU
                     rowIndexPl1++;
                 }
                 ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 15, "DUYỆT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 2, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 7, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
 
                 #endregion
 
@@ -2366,9 +2423,14 @@ namespace DMS.BUSINESS.Services.BU
                     rowIndexPl2++;
                 }
                 ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 15, "DUYỆT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 2, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 7, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
 
                 #endregion
 
@@ -2393,9 +2455,14 @@ namespace DMS.BUSINESS.Services.BU
                     rowIndexPl3++;
                 }
                 ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 15, "DUYỆT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 2, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 7, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
 
                 #endregion
 
@@ -2420,9 +2487,14 @@ namespace DMS.BUSINESS.Services.BU
                     rowIndexPl4++;
                 }
                 ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 1, "LẬP BIỂU", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 5, "P. KINH DOANH XD", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 15, "DUYỆT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 2, "P. KINH DOANH XD", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 7, "DUYỆT", styles.TextCenterBold);
+
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
 
                 #endregion
 
@@ -4503,7 +4575,12 @@ namespace DMS.BUSINESS.Services.BU
             var data = await CalculateDiscountOutput(headerId);            
             var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
             var goods = await _dbContext.TblMdGoods.Where(x=> x.IsActive == true).ToListAsync();
-            var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == header.SignerCode);
+            var lstSigner = await _dbContext.TblMdSigner.Where(x => x.IsActive == true).ToListAsync();
+            var tckt = lstSigner.FirstOrDefault(x => x.Code == header.TcktCode)?.Name ?? "";
+            var kdxd = lstSigner.FirstOrDefault(x => x.Code == header.KdxdCode)?.Name ?? "";
+            var vietPhuongAn = lstSigner.FirstOrDefault(x => x.Code == header.VietphuonganCode)?.Name ?? "";
+
+            var NguoiKyTen = lstSigner.Where(x => x.Code == header.SignerCode).FirstOrDefault();
             var f_date = $"{header.Date.Day:D2} tháng {header.Date.Month:D2} năm {header.Date.Year}";
             var date = header.Date.ToString("dd/MM/yyyy");
             var hour_now = $"{header.Hour?.Hour:D2} giờ {header.Hour?.Minute:D2} phút";
@@ -5012,6 +5089,18 @@ namespace DMS.BUSINESS.Services.BU
                                 break;
                             case "##QUYET_DINH_SO@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.QuyetDinhSo);
+                                break;
+
+                            case "##KDXD@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, kdxd);
+                                break;
+
+                            case "##TCKT@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, tckt);
+                                break;
+
+                            case "##VIET_PHUONG_AN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, vietPhuongAn);
                                 break;
                             case "##DAI_DIEN@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
@@ -6206,7 +6295,7 @@ namespace DMS.BUSINESS.Services.BU
                 };
                 _dbContext.TblBuHistoryAction.Add(h);
 
-                if (data.Status.Code == "04")
+                if (data.Status.Code == "02")
                 {
                     var email = new TblNotifyEmail();
                     foreach (var i in AccoundTPKD)
