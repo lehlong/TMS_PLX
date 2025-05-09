@@ -4500,7 +4500,7 @@ namespace DMS.BUSINESS.Services.BU
                                             row.Append(CreateCell(":", false, 26, true, "1"));
                                             row.Append(CreateCell(HS2Item.Gny.ToString("N0"), true, 26, false, "2400"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
-                                            row.Append(CreateCell(HS2Item.Gny != HS2Item_Old.Gny ? "Thay đổi" : "Không thay đổi", false, 26, false, "2400"));
+                                            row.Append(CreateCell(HS2Item.Gny != HS2Item_Old.Gny ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2400"));
                                             table.Append(row);
                                             o++;
                                         }
@@ -4541,7 +4541,7 @@ namespace DMS.BUSINESS.Services.BU
                                             row.Append(CreateCell(":", false, 26, true, "1"));
                                             row.Append(CreateCell(i.Col2.ToString("N0"), true, 26, false, "2400"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
-                                            row.Append(CreateCell(i.Col2 != i_Old.Col2 ? "Thay đổi" : "Không thay đổi", false, 26, false, "2400"));
+                                            row.Append(CreateCell(i.Col2 != i_Old.Col2 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2400"));
                                             table.Append(row);
                                             o++;
                                         }

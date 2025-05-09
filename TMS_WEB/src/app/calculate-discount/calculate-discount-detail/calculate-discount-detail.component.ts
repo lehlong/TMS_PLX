@@ -40,6 +40,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isZoom = false
   UrlOffice: string = ''
   inputSearchCustomer: string = ''
+  inputnameBBDO: string = ''
+  listNameBBDO: any[] = [] 
+  
   input: any = {
     header: {},
     inputPrice: [],
@@ -81,6 +84,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     summary: [],
   }
   checked = false
+  visibleColSearch: boolean = false
   headerId: any = ''
   signerResult: any[] = []
   isVisibleLstTrinhKy: boolean = false
@@ -95,6 +99,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstHistoryFile: any[] = []
   lstHistory: any[] = []
   lstSms: any[] = []
+  searchValue = '';
+  visible = false;
+listOfData: any[] = []
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -117,6 +124,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstSendSmsChecked: any[] = []
   accountGroups: any = {}
   searchInput = ''
+  searchInputTab = ''
   isConfirmLoading = false;
   searchTerm: { [key: string]: string } = {
     PT: '',
@@ -136,7 +144,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
     VK11BB: '',
     TH: '',
   }
+  searchTermInput:  { [key: string]: string } = {
+    
+    inputPrice: '',
+    market: '',
+    customerDb: '',
+    customerPt: '',
+    customerFob: '',
+    customerTnpp:   '',
+    customerBbdo: '',
+  }
   currentTab = ''
+  currentTabInput = ''
   smsName = ''
   lstgoods: any[] = []
   lstSendSms: any[] = []
@@ -181,6 +200,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data
+        this.listNameBBDO= this.input.customerBbdo
+    
         this.titleTab = data.header.name
       },
       error: (response) => {
@@ -349,6 +370,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
+  // listOfDisplayData = [...this.listNameBBDO];
+
+
+
 
   checkedSms: boolean = false
   lstSearchSms: any[] = []
@@ -431,6 +456,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
     const keyword = this.inputSearchCustomer.trim().toLowerCase();
     this.lstSearchSms = this.lstSMS.filter(c =>
       c.contents.toLowerCase().includes(keyword)
+    );
+  }
+
+
+  searchTableBBDO(){
+    const keyword = this.inputnameBBDO.toLowerCase();
+    this.listNameBBDO = this.input.customerBbdo.filter((item:any) =>
+      item.name.toLowerCase().includes(keyword)
     );
   }
 
@@ -632,7 +665,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   Preview(data: any) {
     // this.UrlOffice = data.
     if (data.type == "xlsx") {
-      console.log("excel");
+     
 
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
@@ -892,6 +925,11 @@ export class CalculateDiscountDetailComponent implements OnInit {
   search(sheetName: string) {
     this.searchTerm[sheetName] = this.searchInput
   }
+  searchInPutDb(sheetName: string) {
+
+    this.searchTermInput[sheetName] = this.searchInputTab
+  
+  }
 
   reset(tabName: string) {
     const keys = Object.keys(this.searchTerm)
@@ -899,9 +937,19 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.searchInput = ''
     this.currentTab = tabName
   }
+  resetInput(tabName: string) {
+    const keys = Object.keys(this.searchTermInput)
+    keys.forEach((key) => (this.searchTermInput[key] = ''))
+    this.searchInputTab = ''
+    this.currentTabInput = tabName
+    
+  }
 
   getSearchTerm(key: string): string {
     return this.searchTerm[key] || ''
+  }
+  getSearchTermInput(key: string): string {
+    return this.searchTermInput[key] || ''
   }
 
   hasExportPermission(): boolean {
@@ -960,9 +1008,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     );
   }
 
-  test() {
-    console.log("12345")
-    console.log(this.input.customerBbdo.lamTronDacBiet)
-  }
+ 
 
 }
