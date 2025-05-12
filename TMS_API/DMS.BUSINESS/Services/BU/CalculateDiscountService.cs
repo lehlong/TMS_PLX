@@ -1036,6 +1036,7 @@ namespace DMS.BUSINESS.Services.BU
 
                         };
                         j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                        //Math.Round((j.Col7 - j.Col5 * 1.1M), MidpointRounding.AwayFromZero);
                         j.Col10 = j.Col9 / 1.1M;
                         j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                         j.Col11 = j.Col12 * 1.1M;
@@ -1044,6 +1045,13 @@ namespace DMS.BUSINESS.Services.BU
                         j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
                         j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                        if (j.Col15 == 1)
+                        {
+                            j.Col13 = Math.Round((j.Col13/ 10), MidpointRounding.AwayFromZero) * 10;
+                        
+                            j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                        }
+
 
                         data.Bbdo.Add(j);
                         obb++;
@@ -1082,6 +1090,7 @@ namespace DMS.BUSINESS.Services.BU
 
                     };
                     j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                        //Math.Round((j.Col7 - j.Col5 * 1.1M), MidpointRounding.AwayFromZero);
                     j.Col10 = j.Col9 / 1.1M;
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                     j.Col11 = j.Col12 * 1.1M;
@@ -1090,6 +1099,12 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    if (j.Col15 == 1)
+                    {
+                        j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
+
+                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                    }
                     data.Bbdo.Add(j);
 
                     obb++;
@@ -1134,6 +1149,12 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    if (j.Col15 == 1)
+                    {
+                        j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
+
+                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                    }
 
                     data.Bbdo.Add(j);
                     obb++;
@@ -1161,6 +1182,11 @@ namespace DMS.BUSINESS.Services.BU
                             Stt = _pl1.ToString(),
                             MarketCode = i.Code,
                             MarketName = i.FullName,
+
+                            //Col1 = Math.Round(data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => x.Col11)),
+                            //Col2 = Math.Round(data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => x.Col13)),
+                            //Col3 = Math.Round(data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => x.Col15)),
+                            //Col4 = Math.Round(data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => x.Col17)),
                             Col1 = data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => Math.Round(x.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10),
                             Col2 = data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => Math.Round(x.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10),
                             Col3 = data.Pt.Where(x => x.MarketCode == i.Code).Sum(x => Math.Round(x.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10),
@@ -1194,10 +1220,15 @@ namespace DMS.BUSINESS.Services.BU
                             CustomerName = i.Name,
                             MarketCode = i.MarketCode,
                             LocalCode = i.LocalCode,
+                            //Col1 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col14)),
+                            //Col2 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col16)),
+                            //Col3 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col18)),
+                            //Col4 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col20)),
                             Col1 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col14 / 10, 0, MidpointRounding.AwayFromZero) * 10),
                             Col2 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col16 / 10, 0, MidpointRounding.AwayFromZero) * 10),
                             Col3 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col18 / 10, 0, MidpointRounding.AwayFromZero) * 10),
                             Col4 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col20 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+
                         });
                         _pl2++;
                     }
@@ -1617,7 +1648,9 @@ namespace DMS.BUSINESS.Services.BU
                 i.Col33 = Math.Round(i.Col33);
             }
             #endregion
+            #region pl1
 
+            #endregion
             #region FOB
             foreach (var i in data.Fob)
             {
@@ -1822,61 +1855,61 @@ namespace DMS.BUSINESS.Services.BU
                 int rowIndexDl4 = 40;
 
                 #region xuất người ký
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 0, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 6, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 0, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 6, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 0, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 6, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 0, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 6, $"{tckt.Name ?? ""}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 0, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 6, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 if (header.SignerCode == "TongGiamDoc")
                 {
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(46) ?? sheetDlg.CreateRow(46), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(47), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(92) ?? sheetDlg.CreateRow(92), 11, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(93) ?? sheetDlg.CreateRow(93), 11, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(128) ?? sheetDlg.CreateRow(128), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(129) ?? sheetDlg.CreateRow(129), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(164) ?? sheetDlg.CreateRow(164), 9, $"Vinh, Ngày {header.Date.ToString("dd/MM/yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(165) ?? sheetDlg.CreateRow(165), 9, "GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
                 }
                 else
                 {
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(46) ?? sheetDlg.CreateRow(46), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(47) ?? sheetDlg.CreateRow(47), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(48) ?? sheetDlg.CreateRow(48), 9, $"{nguoiKy.Position}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(48) ?? sheetDlg.CreateRow(48), 9, $"{nguoiKy?.Position ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(53) ?? sheetDlg.CreateRow(53), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(92) ?? sheetDlg.CreateRow(92), 11, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(93) ?? sheetDlg.CreateRow(93), 11, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(94) ?? sheetDlg.CreateRow(94), 11, $"{nguoiKy.Position}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(94) ?? sheetDlg.CreateRow(94), 11, $"{nguoiKy?.Position ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(99) ?? sheetDlg.CreateRow(99), 11, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(128) ?? sheetDlg.CreateRow(128), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(129) ?? sheetDlg.CreateRow(129), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(130) ?? sheetDlg.CreateRow(130), 9, $"{nguoiKy.Position}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(130) ?? sheetDlg.CreateRow(130), 9, $"{nguoiKy?.Position ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(135) ?? sheetDlg.CreateRow(135), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(164) ?? sheetDlg.CreateRow(164), 9, $"Vinh, Ngày {header.Date.ToString("dd/ MM/ yyyy")}", styles.TextCenter);
                     ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(165) ?? sheetDlg.CreateRow(165), 9, "KT.GIÁM ĐỐC CÔNG TY", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(166) ?? sheetDlg.CreateRow(166), 9, $"{nguoiKy.Position}", styles.TextCenter);
-                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy.Name}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(166) ?? sheetDlg.CreateRow(166), 9, $"{nguoiKy?.Position ?? ""}", styles.TextCenter);
+                    ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(171) ?? sheetDlg.CreateRow(171), 9, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
                 }
                 #endregion
 
@@ -1987,7 +2020,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 ExcelNPOIExtention.SetCellValue(sheetDlg.GetRow(153) ?? sheetDlg.CreateRow(153), 0, $"Tính từ: {header.Date.ToString("hh:mm")} ngày {header.Date.ToString("dd/MM/yyyy")} theo CĐ số {header.CongDienSo.ToString()} ngày {header.Date.ToString("dd/MM/yyyy")}; QĐ giá bán lẻ số 682/PLX-TGĐ ngày {header.Date.ToString("dd/MM/yyyy")} và theo VCF {muaMien}", styles.TextCenter);
                 int rowIndexDl8 = 159;
-                if (header.SignerCode == "TongGiamDoc")
+                //if (header.SignerCode == "TongGiamDoc")
                 foreach (var i in data.Dlg.Dlg8)
                 {
                     var text = i.IsBold ? styles.TextBold : styles.Text;
@@ -2022,14 +2055,14 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
 
-                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
                     check++;
                     rowIndexDl13++;
                 }
                 #endregion
 
-                ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
-                ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 21, $"{header.Date.ToString("hh:mm")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+                ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
+                ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 21, $"{header.Date.ToString("hh:mm")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
 
                 #region thay đổi) lãi gộp
                 int rowIndexDl9_1 = 81;
@@ -2134,10 +2167,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 1) ?? sheetPt.CreateRow(rowIndexPt + 1), 15, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 5, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 10, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt.GetRow(rowIndexPt + 5) ?? sheetPt.CreateRow(rowIndexPt + 5), 15, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
 
                 #endregion
@@ -2195,10 +2228,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 1) ?? sheetDb.CreateRow(rowIndexDb + 1), 15, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 5, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 10, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetDb.GetRow(rowIndexDb + 5) ?? sheetDb.CreateRow(rowIndexDb + 5), 15, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
 
                 #endregion
@@ -2255,10 +2288,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 1) ?? sheetFob.CreateRow(rowIndexFob + 1), 15, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 5, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 10, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetFob.GetRow(rowIndexFob + 5) ?? sheetFob.CreateRow(rowIndexFob + 5), 15, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2314,10 +2347,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 1) ?? sheetPt09.CreateRow(rowIndexPt09 + 1), 15, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 5, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 10, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPt09.GetRow(rowIndexPt09 + 5) ?? sheetPt09.CreateRow(rowIndexPt09 + 5), 15, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2349,8 +2382,8 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValue(row, 16, i.Col8, number);
                     ExcelNPOIExtention.SetCellValue(row, 17, i.Col9, number);
                     ExcelNPOIExtention.SetCellValue(row, 18, i.Col10, number);
-                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col11, number);
-                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col12, number);
+                    ExcelNPOIExtention.SetCellValue(row, 19, i.Col11 < 0 ? $"({i.Col11 * -1})" : i.Col11, number);
+                    ExcelNPOIExtention.SetCellValue(row, 20, i.Col12 < 0 ? $"({i.Col12 * -1})" : i.Col12, number);
                     ExcelNPOIExtention.SetCellValue(row, 21, i.Col13, number);
                     ExcelNPOIExtention.SetCellValue(row, 22, i.Col14, number);
                     rowIndexBbDo++;
@@ -2360,10 +2393,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 10, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 1) ?? sheetBbDo.CreateRow(rowIndexBbDo + 1), 15, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 5, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 10, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 15, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 5, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 10, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetBbDo.GetRow(rowIndexBbDo + 5) ?? sheetBbDo.CreateRow(rowIndexBbDo + 5), 15, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2395,10 +2428,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 1) ?? sheetPl1.CreateRow(rowIndexPl1 + 1), 7, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 4, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl1 + 5) ?? sheetPl1.CreateRow(rowIndexPl1 + 5), 7, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2427,10 +2460,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPl2.GetRow(rowIndexPl2 + 1) ?? sheetPl2.CreateRow(rowIndexPl2 + 1), 7, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 4, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl1.GetRow(rowIndexPl2 + 5) ?? sheetPl1.CreateRow(rowIndexPl2 + 5), 7, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2459,10 +2492,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 1) ?? sheetPl3.CreateRow(rowIndexPl3 + 1), 7, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 4, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl3.GetRow(rowIndexPl3 + 5) ?? sheetPl3.CreateRow(rowIndexPl3 + 5), 7, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -2491,10 +2524,10 @@ namespace DMS.BUSINESS.Services.BU
                 ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 4, "PHÒNG TCKT", styles.TextCenterBold);
                 ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 1) ?? sheetPl4.CreateRow(rowIndexPl4 + 1), 7, "DUYỆT", styles.TextCenterBold);
 
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 1, $"{lapBieu.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 2, $"{kdxd.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 4, $"{tckt.Name ?? ""}", styles.TextCenter);
-                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 7, $"{nguoiKy.Name}", styles.TextCenter);
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 1, $"{lapBieu?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 2, $"{kdxd?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 4, $"{tckt?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
+                ExcelNPOIExtention.SetCellValue(sheetPl4.GetRow(rowIndexPl4 + 5) ?? sheetPl4.CreateRow(rowIndexPl4 + 5), 7, $"{nguoiKy?.Name ?? ""}", ExcelNPOIExtention.SetCellStyleText(workbook, true, HorizontalAlignment.Center, false));
 
                 #endregion
 
@@ -3047,14 +3080,14 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
 
-                        ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+                        ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
                         check++;
                         rowIndexDl13++;
                     }
                     #endregion
 
-                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
-                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 21, $"{header.Date.ToString("hh:mm")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 12));
+                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 20, $"{header.Date.ToString("dd.MM.yyyy")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
+                    ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(73) ?? sheetDlg.CreateRow(73), 21, $"{header.Date.ToString("hh:mm")}", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
 
                     #region thay đổi) lãi gộp
                     int rowIndexDl9_1 = 81;
@@ -5469,7 +5502,7 @@ namespace DMS.BUSINESS.Services.BU
                                             row.Append(CreateCell(":", false, 26, true, "1"));
                                             row.Append(CreateCell(item.Col1.ToString("N0"), true, 26, false, "2400"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
-                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col1 != item.Col1 ? "Thay đổi" : "(Không thay đổi)", false, 26, false, "2900"));
+                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col1 != item.Col1 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2900"));
                                             table.Append(row);
                                             o++;
                                         }

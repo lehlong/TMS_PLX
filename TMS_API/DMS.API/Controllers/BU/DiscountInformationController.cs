@@ -78,7 +78,7 @@ namespace DMS.API.Controllers.BU
         }
 
         [HttpGet("ExportExcel")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> ExportExcel([FromQuery] string headerId)
         {
             var transferObject = new TransferObject();

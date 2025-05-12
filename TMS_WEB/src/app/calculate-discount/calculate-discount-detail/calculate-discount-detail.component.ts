@@ -41,8 +41,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   UrlOffice: string = ''
   inputSearchCustomer: string = ''
   inputnameBBDO: string = ''
-  listNameBBDO: any[] = [] 
-  
+  listNameBBDO: any[] = []
+
   input: any = {
     header: {},
     inputPrice: [],
@@ -145,7 +145,7 @@ listOfData: any[] = []
     TH: '',
   }
   searchTermInput:  { [key: string]: string } = {
-    
+
     inputPrice: '',
     market: '',
     customerDb: '',
@@ -201,7 +201,7 @@ listOfData: any[] = []
       next: (data) => {
         this.input = data
         this.listNameBBDO= this.input.customerBbdo
-    
+
         this.titleTab = data.header.name
       },
       error: (response) => {
@@ -665,7 +665,7 @@ listOfData: any[] = []
   Preview(data: any) {
     // this.UrlOffice = data.
     if (data.type == "xlsx") {
-     
+
 
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
@@ -926,9 +926,9 @@ listOfData: any[] = []
     this.searchTerm[sheetName] = this.searchInput
   }
   searchInPutDb(sheetName: string) {
-
+    console.log(sheetName)
     this.searchTermInput[sheetName] = this.searchInputTab
-  
+
   }
 
   reset(tabName: string) {
@@ -942,7 +942,7 @@ listOfData: any[] = []
     keys.forEach((key) => (this.searchTermInput[key] = ''))
     this.searchInputTab = ''
     this.currentTabInput = tabName
-    
+
   }
 
   getSearchTerm(key: string): string {
@@ -1008,6 +1008,6 @@ listOfData: any[] = []
     );
   }
 
- 
+
 
 }

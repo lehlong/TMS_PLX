@@ -52,11 +52,10 @@ namespace DMS.BUSINESS.Services.BU
                 {
 
                 data.lstDIL = lstDIL;
-                var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
+                var lstMarket = await _dbContext.TblMdMarket.Where(x => x.IsActive == true).OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountCompetitor = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == Code).ToListAsync();
-                var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.OrderBy(x => x.Code).ToListAsync();
+                var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.Where(x => x.HeaderCode == Code).OrderBy(x => x.Code).ToListAsync();
                 
-                //var vinhCuaLo =  await _dbContext.TblInVinhCuaLo.Where(x=> x.HeaderCode == Code).ToListAsync();
                 var lstCalculate =  await _dbContext.TblBuInputPrice.Where(x=> x.HeaderId == Code).ToListAsync();
 
                 
@@ -99,7 +98,7 @@ namespace DMS.BUSINESS.Services.BU
                             ? (0.02m * item.GblV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) 
                             : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
                         dt.ckCl.Add(Math.Floor((ck1 / 10)) * 10);
-                        dt.ckCl.Add(Math.Round(ck1 - discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0, 0));
+                        dt.ckCl.Add(Math.Round((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0) - ck1, 0));
                         dt.code = c.Code;
 
                         ck.DT.Add(dt);
@@ -137,9 +136,10 @@ namespace DMS.BUSINESS.Services.BU
 
                     foreach (var c in lstCompetitor)
                     {
+                            //var a = lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).FirstOrDefault();
                         var gap = lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
                         var cuocVc = c.Code == "APP" ? lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap * (decimal)z11 / 1000 ?? 0) : m.CuocVCBQ + 200;
-                        d.gaps.Add(Math.Round(gap ?? 0)); 
+                        d.gaps.Add(Math.Round(gap ?? 0));   
                         d.cuocVCs.Add(cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
                     }
                     foreach (var g in lstGoods)
@@ -186,11 +186,11 @@ namespace DMS.BUSINESS.Services.BU
             {
                 var discoutCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == code).FirstOrDefaultAsync();
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
+                var lstInMarket = await _dbContext.TblBuInputMarket.OrderBy(x => x.Code).ToListAsync();
                 var lstCompetitor = await _dbContext.TblMdCompetitor.OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountInformation = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == code).ToListAsync();
                 var lstInMarketCompetitor = await _dbContext.TblInMarketCompetitor.Where(x => x.HeaderCode == code).ToListAsync();
 
-                var lstInMarket = await _dbContext.TblBuInputMarket.OrderBy(x => x.Code).ToListAsync();
                 List<GOODSs> goodss = new List<GOODSs>();
 
                 foreach (var g in lstGoods)

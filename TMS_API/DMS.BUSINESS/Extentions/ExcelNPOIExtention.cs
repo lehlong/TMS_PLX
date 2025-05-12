@@ -98,7 +98,7 @@ namespace DMS.BUSINESS.Extentions
             ICellStyle style = workbook.CreateCellStyle();
             IFont font = workbook.CreateFont();
             font.FontName = "Times New Roman";
-            font.FontHeightInPoints = 12;
+            font.FontHeightInPoints = 13;
             style.SetFont(font);
             font.IsBold = isBold;
             style.Alignment = align; 
@@ -118,7 +118,7 @@ namespace DMS.BUSINESS.Extentions
             ICellStyle style = workbook.CreateCellStyle();
             IFont font = workbook.CreateFont();
             font.FontName = "Times New Roman";
-            font.FontHeightInPoints = 12;
+            font.FontHeightInPoints = 13;
             font.IsBold = isBold;
             style.SetFont(font);
             style.Alignment = align;

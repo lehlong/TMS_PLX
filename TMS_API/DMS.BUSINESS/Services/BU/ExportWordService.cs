@@ -191,10 +191,10 @@ namespace DMS.BUSINESS.Services.BU
             isN1Flag = customer.deliveryGroupCode == "N1";
             var paragraph = body.Descendants<Paragraph>().FirstOrDefault(p => p.InnerText.Contains("##TABLE@@"));
             if (paragraph == null) return;
-
-            var table = isN1Flag
-                ? CreateN1Table(data, customer.code)
-                : CreateNormalTable(customerData, goodsList);
+            var table = CreateN1Table(data, customer.code);
+            //var table = isN1Flag
+            //    ? CreateN1Table(data, customer.code)
+            //    : CreateNormalTable(customerData, goodsList);
 
             paragraph.Parent.InsertAfter(table, paragraph);
             paragraph.Remove();
@@ -229,7 +229,7 @@ namespace DMS.BUSINESS.Services.BU
                 row.Append(CreateCell(item?.GoodName, true, 26, 5500));
                 row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
                 row.Append(CreateCell(item.Col6.ToString("N0"), true, 26, 3000));
-                row.Append(CreateCell(cus.Col7.ToString("N0"), true, 26, 1000));
+                row.Append(CreateCell((item.Col6 - cus.Col14).ToString("N0"), true, 26, 1000));
                 row.Append(CreateCell(cus.Col14.ToString("N0"), true, 26, 1500));
                 table.Append(row);
             }
