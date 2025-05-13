@@ -13,3 +13,22 @@ td > input[type=text]{
     overflow: auto !important;
     height: calc(100vh - 234px) !important;
 }
+.status-initial {
+  color: blue;
+}
+
+.status-pending {
+  color: orange;
+}
+
+.status-edit {
+  color: red;
+}
+
+.status-approved {
+  color: green;
+}
+
+.status-rejected {
+  color: gray;
+}

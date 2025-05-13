@@ -53,6 +53,18 @@ export class CalculateDiscountComponent implements OnInit {
     customerTnpp: [],
     customerBbdo: [],
   };
+    searchTermInput:  { [key: string]: string } = {
+
+    inputPrice: '',
+    market: '',
+    customerDb: '',
+    customerPt: '',
+    customerFob: '',
+    customerTnpp:   '',
+    customerBbdo: '',
+  }
+    searchInputTab = ''
+  currentTabInput = ''
   input2: any = this.input;
   nguoiKyControl = new FormControl({ code: "", name: "", position: "" });
   kdxdControl = new FormControl({ code: "", name: "", position: "" });
@@ -144,7 +156,13 @@ export class CalculateDiscountComponent implements OnInit {
       },
     })
   }
+  resetInput(tabName: string) {
+    const keys = Object.keys(this.searchTermInput)
+    keys.forEach((key) => (this.searchTermInput[key] = ''))
+    this.searchInputTab = ''
+    this.currentTabInput = tabName
 
+  }
   getAllSigner() {
     this._signerService.getall().subscribe({
       next: (data) => {
@@ -264,6 +282,19 @@ export class CalculateDiscountComponent implements OnInit {
     // Chặn các phím còn lại
     event.preventDefault();
   }
+  getStatusColor(status: string): string {
+  switch (status) {
+    case '01':
+      return 'blue';
+    case '02':
+      return 'orange';
+    case '03':
+      return 'red';
+    case '04':
+      return 'green';
+    default:
+      return 'gray';
+  }}
 
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
@@ -320,6 +351,15 @@ export class CalculateDiscountComponent implements OnInit {
     console.log(this.input2.inputPrice[index].fobV1);
 
   }
-
+   searchInPutDb(sheetName: string) {
+    if(sheetName==""){
+      sheetName = 'inputPrice'
+    }
+    this.searchTermInput[sheetName] = this.searchInputTab
+    
+  }
+ getSearchTermInput(key: string): string {
+    return this.searchTermInput[key] || ''
+  }
 
 }

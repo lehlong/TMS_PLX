@@ -27,19 +27,19 @@ namespace DMS.BUSINESS.Dtos.MD
         public string GoodsCode { get; set; }
 
         [Description("Giá nhập mua có Vat")]
-        public decimal GiaNhapMuaVat { get; set; }
+        public decimal? GiaNhapMuaVat { get; set; }
 
         [Description("Lương nhập xuất nội bộ")]
-        public decimal LuongNxNoiBo { get; set; }
+        public decimal? LuongNxNoiBo { get; set; }
 
         [Description("CHi phí hỗ trợ bán hàng")]
-        public decimal CpHoTro { get; set; }
+        public decimal? CpHoTro { get; set; }
 
         [Description("Giá đại lý có Vat")]
-        public decimal GiaDaiLyVat { get; set; }
+        public decimal? GiaDaiLyVat { get; set; }
 
         [Description("Tiền Lương bán hàng")]
-        public decimal LuongBanHang { get; set; }
+        public decimal? LuongBanHang { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }

@@ -49,7 +49,7 @@ export class CalculateDiscountService {
     }
 
     ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {
-        return this.commonService.post(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
+        return this.commonService.postNoneMess(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
     }
     SendMail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/SendMail?headerId=${model}`)
@@ -75,7 +75,7 @@ export class CalculateDiscountService {
     }
 
     ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
-        return this.commonService.post(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)
+        return this.commonService.postNoneMess(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)
     }
 
     GetCustomerBbdo(id : any): Observable<any> {
@@ -83,7 +83,7 @@ export class CalculateDiscountService {
     }
 
     ExportPDF(lstCustomerChecked: any, headerId: any): Observable<any> {
-      return this.commonService.post(`CalculateDiscount/ExportPDF?headerId=${headerId}`, lstCustomerChecked)
+      return this.commonService.postNoneMess(`CalculateDiscount/ExportPDF?headerId=${headerId}`, lstCustomerChecked)
     }
 
     GetAllInputCustomer(): Observable<any> {

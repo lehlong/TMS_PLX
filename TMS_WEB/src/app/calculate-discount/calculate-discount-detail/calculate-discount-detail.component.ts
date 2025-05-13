@@ -1,7 +1,7 @@
 import { CustomerBbdoService } from './../../services/master-data/customer-bbdo.service'
 import { Component, OnInit, output } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { NzMessageService } from 'ng-zorro-antd/message'
+
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service'
 import { GlobalService } from '../../services/global.service'
 import { ShareModule } from '../../shared/share-module'
@@ -18,6 +18,7 @@ import { GoodsService } from '../../services/master-data/goods.service'
 import { DocumentEditorModule } from '@onlyoffice/document-editor-angular';
 import { IConfig } from '@onlyoffice/document-editor-angular';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { NzMessageService } from 'ng-zorro-antd/message'
 import { iif } from 'rxjs'
 import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
 import { Route } from '@angular/router';
@@ -210,11 +211,26 @@ listOfData: any[] = []
     })
     this.getRight()
   }
+  Showmessage(message: string, type: string): void {
+    this.message.create(type, message)
+  }
 
   getOutput(id: any) {
     this._service.getOutput(id).subscribe({
       next: (data) => {
         this.output = data
+      
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+   getOutputCal(id: any) {
+    this._service.getOutput(id).subscribe({
+      next: (data) => {
+        this.output = data
+        this.Showmessage('Tính toán lại thành công','success')
       },
       error: (response) => {
         console.log(response)
@@ -346,6 +362,7 @@ listOfData: any[] = []
             for (let index = 0; index < data.length; index++) {
               this.openNewTab(environment.apiUrl + data[index])
             }
+            this.message.create('success', 'Xuất file thành công')
           },
           error: (err) => {
             console.log(err)
@@ -487,6 +504,7 @@ listOfData: any[] = []
             a.target = '_blank'
             a.click()
             a.remove()
+            this.message.create('success', 'Xuất file thành công')
           },
           error: (err) => {
             console.log(err)
@@ -591,12 +609,15 @@ listOfData: any[] = []
   }
 
   onUpdateInput() {
+    this.visibleInput=false
     this._service.updateInput(this.input).subscribe({
       next: (data) => { },
       error: (response) => {
         console.log(response)
       },
     })
+        this.getOutput(this.headerId)
+        
   }
 
   handleQuyTrinh() {
@@ -613,7 +634,7 @@ listOfData: any[] = []
   }
 
   reCalculate() {
-    this.getOutput(this.headerId)
+    this.getOutputCal(this.headerId)
   }
 
   fullScreen() {
@@ -654,6 +675,7 @@ listOfData: any[] = []
         a.target = '_blank'
         a.click()
         a.remove()
+        this.message.create('success', 'Xuất file thành công')
       },
       error: (response) => {
         console.log(response)
@@ -663,10 +685,8 @@ listOfData: any[] = []
 
 
   Preview(data: any) {
-    // this.UrlOffice = data.
+    
     if (data.type == "xlsx") {
-
-
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
       console.log(this.urlViewExcel);
@@ -683,9 +703,23 @@ listOfData: any[] = []
 
         },
       };
-    } else {
-      this.UrlOffice
-      this.isVisiblePreview = true
+    } else if (data.type == "docx") {
+       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
+      this.isVisiblePreviewExcel = true
+      console.log(this.urlViewExcel);
+      this.config = {
+        document: {
+          fileType: 'docx',
+          key: `keydoc${this.idramdom}`,
+          title: 'File.docx',
+          url: `${this.urlViewExcel}`,
+        },
+        documentType: 'word',
+        editorConfig: {
+          mode: 'view',
+
+        },
+      };
 
     }
 
@@ -879,6 +913,7 @@ listOfData: any[] = []
         this.lstCustomer = data
         this.lstCus = data
         this.isVisibleCustomer = true
+       
       },
     })
   }
@@ -926,7 +961,9 @@ listOfData: any[] = []
     this.searchTerm[sheetName] = this.searchInput
   }
   searchInPutDb(sheetName: string) {
-    console.log(sheetName)
+    if(sheetName==""){
+      sheetName = 'inputPrice'
+    }
     this.searchTermInput[sheetName] = this.searchInputTab
 
   }

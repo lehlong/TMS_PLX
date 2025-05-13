@@ -64,8 +64,16 @@ namespace DMS.BUSINESS.Services.BU
     }
     public class CalculateDiscountService(AppDbContext dbContext, IMapper mapper) : GenericService<TblBuCalculateDiscount, CalculateDiscountDto>(dbContext, mapper), ICalculateDiscountService
     {
-        private readonly IDiscountInformationService _discountService;  
+        private readonly IDiscountInformationService _discountService;
         #region Tìm kiếm các đợt nhập
+        private static readonly Dictionary<string, string> StatusMap = new()
+        {
+            ["01"] = "Khởi tạo",
+            ["02"] = "Chờ Phê duyệ",
+            ["03"] = "Yêu cầu chỉnh sửa",
+            ["04"] = "Phê duyệt"
+            ["05"]= "Từ chối"
+        };
         public override async Task<PagedResponseDto> Search(BaseFilter filter)
         {
             try
@@ -74,7 +82,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(filter.KeyWord));
+                    query = query.Where(x => x.Name.Contains(filter.KeyWord)||x.Status.Contains(filter.KeyWord)||x.Date.ToString().Contains(filter.KeyWord));
                 }
                 return await Paging(query.OrderByDescending(x => x.CreateDate), filter);
             }

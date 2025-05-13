@@ -34,17 +34,20 @@
           <td>{{(paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
           <td>{{ data.name }}</td>
           <td>{{ data.date| date: 'dd/MM/yyyy hh:mm' }}</td>
-          <td> {{
-            data.status == '01'
-            ? 'Khởi tạo'
-            : data.status == '02'
-            ? 'Chờ phê duyệt'
-            : data.status == '03'
-            ? 'Yêu cầu chỉnh sửa'
-            : data.status == '04'
-            ? 'Phê duyệt'
-            : 'Từ chối'
-            }}</td>
+        <td>
+         <nz-tag [nzColor]="getStatusColor(data.status)">
+  {{
+    data.status == '01'
+      ? 'Khởi tạo'
+      : data.status == '02'
+      ? 'Chờ phê duyệt'
+      : data.status == '03'
+      ? 'Yêu cầu chỉnh sửa'
+      : data.status == '04'
+      ? 'Phê duyệt'
+      : 'Từ chối'
+  }}</nz-tag>
+</td>
         </tr>
       </tbody>
     </nz-table>
@@ -111,6 +114,19 @@
           <label>Công điện giá bán nội bộ áp dụng cho PT khác</label>
           <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
         </div>
+      </div>
+       <div nz-col class="gutter-row" [nzSpan]="6">
+        <label>Tìm kiếm</label>
+        <!-- <ng-container> -->
+        <div style="width:100%; display: flex;">
+          <input nz-input placeholder="Tìm kiếm dữ liệu đầu vào" (keydown.enter)="searchInPutDb(currentTabInput)"
+            [(ngModel)]="searchInputTab" type="text">
+          <button (click)="searchInPutDb(currentTabInput)" class="flex !items-center !border-l-0 gray-btn"
+            nzType="default" nz-button nzType="default">
+            <span nz-icon nzType="search"></span>
+          </button>
+        </div>
+        <!-- </ng-container> -->
       </div>
 
     </div>
@@ -185,7 +201,7 @@
     </div>
 
     <nz-tabset>
-      <nz-tab nzTitle="THÔNG TIN GIÁ">
+      <nz-tab nzTitle="THÔNG TIN GIÁ" (nzClick)="resetInput('inputPrice')">
         <nz-table nzBordered nzSize="small" [nzData]="input2.inputPrice" [nzFrontPagination]="false"
           [nzShowPagination]="false">
           <thead>
@@ -208,6 +224,8 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of input2.inputPrice; let rowIndex = index">
+               <ng-container
+                *ngIf="!getSearchTermInput('inputPrice') || data?.goodName?.toLowerCase().includes(getSearchTermInput('inputPrice').trim().toLowerCase())">
               <td>{{ data.goodName }}</td>
               <td><input nz-input [(ngModel)]="data.thueBvmt" style="text-align: right;"
                   (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueBvmt')" type="text" />
@@ -239,11 +257,12 @@
               <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
                   (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
               </td>
+              </ng-container>
             </tr>
           </tbody>
         </nz-table>
       </nz-tab>
-      <nz-tab nzTitle="THỊ TRƯỜNG">
+      <nz-tab nzTitle="THỊ TRƯỜNG" (nzClick)="resetInput('market')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.market" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
@@ -262,19 +281,22 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.market">
+                <ng-container
+                  *ngIf="!getSearchTermInput('market') || data?.name?.toLowerCase().includes(getSearchTermInput('market').trim().toLowerCase())">
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.gap" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.cuocVCBQ" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.cpChungChuaCuocVC" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.ckDieuTietXang" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.ckDieuTietDau" type="number" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG PT">
+      <nz-tab nzTitle="KHÁCH HÀNG PT" (nzClick)="resetInput('customerPt')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerPt" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
@@ -298,7 +320,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerPt">
+              <tr *ngFor="let data of input.customerPt" >
+                <ng-container
+                  *ngIf="!getSearchTermInput('customerPt') || data?.name?.toLowerCase().includes(getSearchTermInput('customerPt').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
@@ -311,13 +335,14 @@
                 <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG ĐB">
+      <nz-tab nzTitle="KHÁCH HÀNG ĐB" (nzClick)="resetInput('customerDb')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerDb" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
@@ -341,7 +366,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerDb">
+              <tr *ngFor="let data of input.customerDb" >
+                <ng-container
+                  *ngIf="!getSearchTermInput('customerDb') || data?.name?.toLowerCase().includes(getSearchTermInput('customerDb').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
@@ -354,13 +381,14 @@
                 <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG FOB">
+      <nz-tab nzTitle="KHÁCH HÀNG FOB" (nzClick)="resetInput('customerFob')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerFob" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
@@ -385,6 +413,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.customerFob">
+                <ng-container
+                  *ngIf="!getSearchTermInput('customerFob') || data?.name?.toLowerCase().includes(getSearchTermInput('customerFob').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
@@ -397,18 +427,20 @@
                 <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG TNPP">
+      <nz-tab nzTitle="KHÁCH HÀNG TNPP" (nzClick)="resetInput('customerTnpp')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerTnpp" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
             <thead>
               <tr>
+                
                 <th nzAlign="center" rowspan="2">MÃ</th>
                 <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
                 <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
@@ -428,6 +460,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.customerTnpp">
+               <ng-container
+                  *ngIf="!getSearchTermInput('customerTnpp') || data?.name?.toLowerCase().includes(getSearchTermInput('customerTnpp').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
@@ -440,18 +474,20 @@
                 <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
                 <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG BBDO">
+      <nz-tab nzTitle="KHÁCH HÀNG BBDO" (nzClick)="resetInput('customerBbdo')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerBbdo" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
             <thead>
               <tr>
+
                 <th nzAlign="center">MÃ</th>
                 <th nzAlign="center">KHÁCH HÀNG</th>
                 <th nzAlign="center">CƯỚC <br> VC BQ</th>
@@ -463,7 +499,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerBbdo">
+              <tr *ngFor="let data of input.customerBbdo" >
+              <ng-container
+                  *ngIf="!getSearchTermInput('customerBbdo') || data?.name?.toLowerCase().includes(getSearchTermInput('customerBbdo').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
@@ -474,13 +512,14 @@
                 <td style="text-align: center;">
                   <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>
                 </td>
+               </ng-container>
               </tr>
             </tbody>
           </nz-table>
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="KHÁCH HÀNG PTS">
+      <nz-tab nzTitle="KHÁCH HÀNG PTS" (nzClick)="resetInput('customerPts')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerPts" [nzFrontPagination]="'false'"
             [nzShowPagination]="'false'">
@@ -495,11 +534,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.customerPts">
+               <ng-container
+                  *ngIf="!getSearchTermInput('customerPts') || data?.name?.toLowerCase().includes(getSearchTermInput('customerPts').trim().toLowerCase())">
                 <td>{{data.code }}</td>
                 <td>{{data.name }}</td>
                 <td nzAlign="center"><input nz-input [(ngModel)]="data.goodsCode" type="number" /></td>
                 <td nzAlign="center"><input nz-input [(ngModel)]="data.thtt" type="text" /></td>
                 <td><input nz-input [(ngModel)]="data.phuongThuc" type="text" /></td>
+               </ng-container>
               </tr>
             </tbody>
           </nz-table>
