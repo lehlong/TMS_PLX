@@ -19,6 +19,10 @@ import { CustomerPhoneComponent } from './customer-phone/customer-phone.componen
 import { CustomerEmailComponent } from './customer-email/customer-email.component'
 import { CompetitorComponent } from './competitor/competitor.component'
 import { MarketCompetitorComponent } from './market-competitor/market-competitor.component'
+import { JaGoodsComponent } from './ja-goods/ja-goods.component'
+import { JaDiscountComponent } from './ja-discount/ja-discount.component'
+import { JaPtPhanPhoiComponent } from './ja-pt-phan-phoi/ja-pt-phan-phoi.component'
+import { JanaPriceComponent } from './jana-price/jana-price.component'
 
 export const masterDataRoutes: Routes = [
   { path: 'unit', component: UnitComponent },
@@ -40,4 +44,12 @@ export const masterDataRoutes: Routes = [
   { path: 'signer', component: SignerComponent },
   { path: 'customer-phone', component: CustomerPhoneComponent },
   { path: 'customer-email', component: CustomerEmailComponent },
+
+  { path: 'ja-goods', component: JaGoodsComponent },
+  { path: 'ja-discount', component: JaDiscountComponent },
+  { path: 'jana-price', component: JanaPriceComponent },
+  { path: 'ja-pt-phan-phoi', component: JaPtPhanPhoiComponent },
+
+
+
 ]

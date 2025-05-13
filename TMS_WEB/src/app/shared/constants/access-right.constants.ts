@@ -1,3 +1,10 @@
+//JANA nước giặt
+
+export enum JANA_RIGHTS {
+  JANA = 'R600',
+}
+
+
 // Danh mục
 export enum CALCULATE_RESULT_RIGHT {
   LIST = 'R01.1',

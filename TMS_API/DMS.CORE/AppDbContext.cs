@@ -140,6 +140,14 @@ namespace DMS.CORE
 
 
         public DbSet<TblMdGiaGiaoTapDoanList> TblMdGiaGiaoTapDoanList { get; set; }
+        public DbSet<TblMdJaDiscount> TblMdJaDiscount { get; set; }
+        public DbSet<TblMdJaGoods> TblMdJaGoods { get; set; }
+        public DbSet<TblMdJanaPrice> TblMdJanaPrice { get; set; }
+        public DbSet<TblMdJaPtPhanPhoi> TblMdJaPtPhanPhoi { get; set; }
+        public DbSet<TblMdJaGoodsType> TblMdJaGoodsType { get; set; }
+
+
+
         public DbSet<TblMdTypeOfGoods> TblMdTypeOfGoods { get; set; }
         public DbSet<TblMdGoods> TblMdGoods { get; set; }
         public DbSet<TblMdWarehouse> TblMdWarehouse { get; set; }
