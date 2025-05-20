@@ -148,41 +148,24 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
-
-        //[HttpGet("GetByType")]
-        //public async Task<IActionResult> GetByType([FromQuery] AccountFilter filter)
-        //{
-        //    var transferObject = new TransferObject();
-        //    var result = await _service.GetByType(filter);
-        //    if (_service.Status)
-        //    {
-        //        transferObject.Data = result;
-        //    }
-        //    else
-        //    {
-        //        transferObject.Status = false;
-        //        transferObject.MessageObject.MessageType = MessageType.Error;
-        //        transferObject.GetMessage("2000", _service);
-        //    }
-        //    return Ok(transferObject);
-        //}
-
-        //[HttpGet("ExportASO")]
-        //public async Task<IActionResult> ExportASO([FromQuery] AccountFilter filter)
-        //{
-        //    var transferObject = new TransferObject();
-        //    var result = await _service.ExportASO(filter);
-        //    if (_service.Status)
-        //    {
-        //        return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSDVT" + DateTime.Now.ToString() + ".xlsx");
-        //    }
-        //    else
-        //    {
-        //        transferObject.Status = false;
-        //        transferObject.MessageObject.MessageType = MessageType.Error;
-        //        transferObject.GetMessage("2000", _service);
-        //        return Ok(transferObject);
-        //    }
-        //}
+        [HttpGet("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string username)
+        {
+            var transferObject = new TransferObject();
+            await _service.ResetPassword(username);
+            if (_service.Status)
+            {
+                transferObject.Status = true;
+                transferObject.MessageObject.MessageType = MessageType.Success;
+                transferObject.GetMessage("0103", _service);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("0104", _service);
+            }
+            return Ok(transferObject);
+        }
     }
 }

@@ -19,8 +19,9 @@ namespace DMS.BUSINESS.Services.AD
         Task UpdateInformation(AccountUpdateInformationDto dto);
         Task<IList<AccountDto>> GetAll(AccountFilterLite filter);
         Task<AccountTreeRightDto> GetByIdWithRightTree(object id);
+        Task ResetPassword(string username);
 //Task<PagedResponseDto> GetByType(AccountFilter filter);
-      //  Task<byte[]> ExportASO(AccountFilter filter);
+//  Task<byte[]> ExportASO(AccountFilter filter);
     }
 
     public class AccountService(AppDbContext dbContext, IMapper mapper, IHubContext<RefreshServiceHub> hubContext) : GenericService<TblAdAccount, AccountDto>(dbContext, mapper), IAccountService
@@ -353,7 +354,21 @@ namespace DMS.BUSINESS.Services.AD
                 Exception = ex;
             }
         }
-
+        public async Task ResetPassword(string username)
+        {
+            try
+            {
+                var user = _dbContext.TblAdAccount.Find(username);
+                user.Password = Utils.CryptographyMD5($"{username}@123");
+                _dbContext.TblAdAccount.Update(user);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
         //public async Task<PagedResponseDto> GetByType(AccountFilter filter)
         //{
         //    try

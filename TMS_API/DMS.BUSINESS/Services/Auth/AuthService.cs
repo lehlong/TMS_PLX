@@ -159,14 +159,14 @@ namespace DMS.BUSINESS.Services.Auth
             if (account == null)
             {
                 Status = false;
-                MessageObject.Code = "1002"; //Sai username hoặc mật khẩu
+                MessageObject.Code = "Sai username hoặc mật khẩu"; //Sai username hoặc mật khẩu
                 return null;
             }
 
             if (!(account?.IsActive ?? true))
             {
                 Status = false;
-                MessageObject.Code = "1003"; //Tài khoản bị khóa
+                MessageObject.Code = "Tài khoản bị khóa"; //Tài khoản bị khóa
                 return null;
             }
 

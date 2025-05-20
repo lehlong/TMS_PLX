@@ -71,7 +71,7 @@ namespace DMS.BUSINESS.Services.BU
             ["01"] = "Khởi tạo",
             ["02"] = "Chờ Phê duyệ",
             ["03"] = "Yêu cầu chỉnh sửa",
-            ["04"] = "Phê duyệt"
+            ["04"] = "Phê duyệt",
             ["05"]= "Từ chối"
         };
         public override async Task<PagedResponseDto> Search(BaseFilter filter)

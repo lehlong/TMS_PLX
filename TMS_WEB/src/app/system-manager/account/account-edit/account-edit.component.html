@@ -6,7 +6,8 @@
         <div nz-row [nzGutter]="12">
           <div nz-col [nzXs]="24" [nzMd]="12">
             <app-input-clear placeholder="Nhập tên tài khoản" [required]="true" label="Tên tài khoản"
-              [control]="$any(validateForm).controls['userName']"></app-input-clear>
+              [control]="$any(validateForm).controls['userName']"
+              [disabled]=true></app-input-clear>
           </div>
           <div nz-col [nzXs]="24" [nzMd]="12">
             <app-input-clear placeholder="Nhập tên đầy đủ" [required]="true" label="Tên đầy đủ"
@@ -46,27 +47,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <!-- <div nz-col [nzXs]="24" [nzMd]="12" *ngIf="isShowSelectPartner">
-            <nz-form-item>
-              <nz-form-label>Chọn đối tác</nz-form-label>
-              <nz-form-control nzErrorTip="Không được để trống">
-                <nz-select
-                  nzShowSearch
-                  nzAllowClear
-                  placeholder="Chọn kiểu người dùng"
-                  formControlName="partnerId"
-                >
-                  <nz-option
-                    cdkScrollable
-                    *ngFor="let item of listPartnerCustomer"
-                    [nzLabel]="item.name"
-                    [nzValue]="item.id"
-                  >
-                  </nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div> -->
+        
           <div nz-col [nzXs]="24">
             <nz-form-item>
               <nz-form-label>Trạng thái</nz-form-label>
@@ -120,6 +101,10 @@
     <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
       (click)="closeDrawer()">
       <span nz-icon nzType="close-circle" nzTheme="outline"></span>Huỷ
+    </button>
+    <button *nzSpaceItem nz-button nzType="default" nzType="primary" class="!flex !items-center" nzDanger
+      (click)="resetPasssword()">
+      <span nz-icon nzType="reload" nzTheme="outline"></span>Đăt lại mật khẩu
     </button>
   </nz-space>
 </ng-template>

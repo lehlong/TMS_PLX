@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router'
 import { AuthService } from '../../../services/auth.service'
 import { GlobalService } from '../../../services/global.service'
 import { AccountGroupService } from '../../../services/system-manager/account-group.service'
-
+import { NzMessageService } from 'ng-zorro-antd/message'
 @Component({
   selector: 'app-account-edit',
   standalone: true,
@@ -67,6 +67,7 @@ export class AccountEditComponent {
     private route: ActivatedRoute,
     private authService: AuthService,
     private globalService: GlobalService,
+      private message: NzMessageService,
   ) {
     this.widthDeault =
       window.innerWidth <= 767
@@ -424,5 +425,20 @@ export class AccountEditComponent {
     this.validateForm.reset()
     // const partnerIdControl = this.validateForm.get('partnerId')
     // partnerIdControl!.setValidators([])
+  }
+  resetPasssword() {
+    console.log(this.userName)
+    this._service
+      .resetPasssword(
+       this.userName,
+      )
+      .subscribe({
+        next: (data) => {
+           this.message.create('success', 'cập nhật mật khẩu thành công')
+        },
+        error: (response) => {
+          console.log(response)
+        },
+      })
   }
 }

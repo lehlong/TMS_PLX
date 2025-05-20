@@ -15,6 +15,9 @@ export class AccountService {
   getDetail(params: any): Observable<any> {
     return this.commonService.get('Account/GetDetail', params)
   }
+   resetPasssword(params: any): Observable<any> {
+    return this.commonService.get(`Account/ResetPassword?username=${params}`,)
+  }
 
   create(params: any): Observable<any> {
     return this.commonService.post('Account/Insert', params)
