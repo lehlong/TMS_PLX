@@ -66,23 +66,33 @@ namespace DMS.BUSINESS.Services.BU
     {
         private readonly IDiscountInformationService _discountService;
         #region Tìm kiếm các đợt nhập
-        private static readonly Dictionary<string, string> StatusMap = new()
-        {
-            ["01"] = "Khởi tạo",
-            ["02"] = "Chờ Phê duyệ",
-            ["03"] = "Yêu cầu chỉnh sửa",
-            ["04"] = "Phê duyệt",
-            ["05"]= "Từ chối"
-        };
+   
+
         public override async Task<PagedResponseDto> Search(BaseFilter filter)
         {
             try
             {
+                var statusMap = new Dictionary<string, string>
+                    {
+                        { "01", "khởi tạo" },
+                        { "02", "Trình duyệt Giá Bán lẻ" },
+                        { "03", "Yêu cầu chỉnh sửa Giá bán lẻ" },
+                        { "04", "phê duyệt giá bán lẻ" },
+                        { "05", "từ chối" },
+                        { "06", "Trình duyệt giá thù lao" },
+                        { "07", "Yêu cầu chỉnh sửa giá thù lao" },
+                        { "08", "phê duyệt" }
+                        };
+                var keyword = filter.KeyWord?.ToLower() ?? "";
+                var matchedStatus= statusMap
+                    .Where(x => x.Value.ToLower().Contains(keyword))
+                    .Select(x => x.Key)
+                    .ToList();
                 var query = _dbContext.TblBuCalculateDiscount.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(filter.KeyWord)||x.Status.Contains(filter.KeyWord)||x.Date.ToString().Contains(filter.KeyWord));
+                    query = query.Where(x => x.Name.Contains(filter.KeyWord) || matchedStatus.Contains(x.Status) || x.Date.ToString().Contains(filter.KeyWord));
                 }
                 return await Paging(query.OrderByDescending(x => x.CreateDate), filter);
             }
