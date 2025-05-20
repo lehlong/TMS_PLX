@@ -177,9 +177,7 @@ export class CalculateDiscountComponent implements OnInit {
   }
 
   onCreate() {
-    this.input.header.signerCode = this.nguoiKyControl.value?.code || ''
     // console.log(this.input);
-
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);
@@ -289,8 +287,14 @@ export class CalculateDiscountComponent implements OnInit {
     case '02':
       return 'orange';
     case '03':
-      return 'red';
+      return 'purple';
     case '04':
+      return 'lime';
+    case '06':
+      return 'cyan';
+    case '07':
+      return 'red';
+    case '08':
       return 'green';
     default:
       return 'gray';
@@ -356,7 +360,7 @@ export class CalculateDiscountComponent implements OnInit {
       sheetName = 'inputPrice'
     }
     this.searchTermInput[sheetName] = this.searchInputTab
-    
+
   }
  getSearchTermInput(key: string): string {
     return this.searchTermInput[key] || ''

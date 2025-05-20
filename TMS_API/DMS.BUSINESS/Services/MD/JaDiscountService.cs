@@ -28,7 +28,7 @@ namespace DMS.BUSINESS.Services.MD
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
                     query = query.Where(x =>
-                    x.Name.Contains(filter.KeyWord));
+                    x.Code.Contains(filter.KeyWord));
                 }
                 if (filter.IsActive.HasValue)
                 {
@@ -68,7 +68,7 @@ namespace DMS.BUSINESS.Services.MD
                 var query = _dbContext.TblMdJaDiscount.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(filter.KeyWord));
+                    query = query.Where(x => x.Code.Contains(filter.KeyWord));
                 }
                 if (filter.IsActive.HasValue)
                 {

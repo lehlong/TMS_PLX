@@ -8,6 +8,7 @@ import { DiscountInformationListService } from '../../services/discount-informat
 import { environment } from '../../../environments/environment.prod';
 import { COMPETITOR_ANALYSIS } from '../../shared/constants';
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-discount-information',
@@ -21,6 +22,7 @@ export class DiscountInformationComponent {
   constructor(
     private _service: DiscountInformationService,
     private _serviceCD: CalculateDiscountService,
+    private message : NzMessageService,
     private _discountInformationList: DiscountInformationListService,
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -110,7 +112,8 @@ export class DiscountInformationComponent {
     if (this.model.header.name != ''){
       this._service.UpdateDataInput(this.model).subscribe({
         next: (data) => {
-          window.location.reload()
+          this.close()
+          this.getAll()
         },
         error: (err) => {
           console.log(err)
@@ -135,6 +138,7 @@ export class DiscountInformationComponent {
 
   reCalculate(){
     this.getAll()
+    this.message.success("Tính toán lại")
   }
 
   showHistoryExport(){

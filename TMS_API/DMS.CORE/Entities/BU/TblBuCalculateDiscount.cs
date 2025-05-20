@@ -36,8 +36,12 @@ namespace DMS.CORE.Entities.BU
 
         [Column("CONG_DIEN_SO", TypeName = "NVARCHAR(250)")]
         public string? CongDienSo { get; set; }
+
         [Column("CONG_DIEN_PT_BAN_LE", TypeName = "NVARCHAR(250)")]
         public string? CongDienPtBanLe { get; set; }
+
+        [Column("VAN_BAN_SO", TypeName = "NVARCHAR(250)")]
+        public string? VanBanSo { get; set; }
 
         [Column("STATUS", TypeName = "NVARCHAR(50)")]
         public string? Status { get; set; }

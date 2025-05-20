@@ -16,7 +16,7 @@ export class DiscountInformationService {
     return this.commonService.get(`DiscountInformation/GetAll?code=${code}`);
   }
   UpdateDataInput(model : any): Observable<any> {
-    return this.commonService.post(`DiscountInformation/UpdateDataInput`, model)
+    return this.commonService.put(`DiscountInformation/UpdateDataInput`, model)
   }
   getDataInput(params : any): Observable<any> {
     return this.commonService.get(`DiscountInformation/GetDataInput?code=${params}`);

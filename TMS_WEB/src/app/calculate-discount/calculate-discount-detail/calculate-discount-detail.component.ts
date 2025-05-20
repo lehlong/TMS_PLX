@@ -117,6 +117,7 @@ listOfData: any[] = []
     { code: 'ToTrinh', name: 'Tờ Trình', status: false },
     { code: 'KeKhaiGia', name: 'Kê Khai Giá', status: true },
     { code: 'KeKhaiGiaChiTiet', name: 'Kê Khai Giá Chi Tiết', status: true },
+    { code: 'ThueBvmtPts', name: 'Thuế BVMT BTS', status: true },
   ]
   lstCustomer: any[] = []
   isVisibleCustomer: boolean = false
@@ -219,7 +220,7 @@ listOfData: any[] = []
     this._service.getOutput(id).subscribe({
       next: (data) => {
         this.output = data
-      
+
       },
       error: (response) => {
         console.log(response)
@@ -535,19 +536,30 @@ listOfData: any[] = []
   onClickTab(title: string, tab: number) {
     this.titleTab = title
   }
+
+
+  // 01 khởi tạo || trình duyệt giá bán lẻ (01)
+  // 02 chờ phê duyệt giá bán lẻ || hủy trình duyệt giá bán lẻ(02) , phê duyệt giá bán lẻ, yêu cầu chỉnh sửa
+  // 03 yêu cầu chỉnh sửa giá bán lẻ || trình duyệt giá bán lẻ
+  // 04 phê duyệt giá bán lẻ || hủy phê duyệt giá bán lẻ || trình duyệt giá thù lao
+  // 05 từ chối ||
+  // 06 chờ phê duyệt giá thù lao|| hủy trình duyệt giá thù lao, phê duyệt giá thù lao, yêu cầu chỉnh sửa
+  // 07 yêu cầu chỉnh sửa giá thù lao || trình duyệt giá thù lao
+  // 08 phê duyệt || phê duyệt giá thù lao
+
   changeStatus(value: string, status: string) {
     switch (value) {
       case '01':
-        this.statusModel.title = 'TRÌNH DUYỆT'
+        this.statusModel.title = 'TRÌNH DUYỆT GIÁ BÁN LẺ'
         this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-        this.input.header.status = '01'
+        // this.input.header.status = '01'/
         break
       case '02':
         this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
         this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
         break
       case '03':
-        this.statusModel.title = 'PHÊ DUYỆT'
+        this.statusModel.title = 'PHÊ DUYỆT GIÁ BÁN LẺ'
         this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
         break
       case '04':
@@ -555,10 +567,32 @@ listOfData: any[] = []
         this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
         break
       case '05':
-        this.statusModel.title = 'HỦY TRÌNH DUYỆT'
+        this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ BÁN LẺ'
         this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
         break
       case '06':
+        this.statusModel.title = 'HỦY PHÊ DUYỆT GIÁ BÁN LẺ'
+        this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
+        break
+
+      case '11':
+        this.statusModel.title = 'TRÌNH DUYỆT GIÁ THÙ LAO'
+        this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
+        // this.input.header.status = '01'
+        break
+      case '12':
+        this.statusModel.title = 'YÊU CẦU CHỈNH SỬA GIÁ THÙ LAO'
+        this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
+        break
+      case '13':
+        this.statusModel.title = 'PHÊ DUYỆT'
+        this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
+        break
+      case '15':
+        this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ THÙ LAO'
+        this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
+        break
+      case '16':
         this.statusModel.title = 'HỦY PHÊ DUYỆT'
         this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
         break
@@ -617,7 +651,7 @@ listOfData: any[] = []
       },
     })
         this.getOutput(this.headerId)
-        
+
   }
 
   handleQuyTrinh() {
@@ -685,7 +719,7 @@ listOfData: any[] = []
 
 
   Preview(data: any) {
-    
+
     if (data.type == "xlsx") {
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
@@ -913,7 +947,7 @@ listOfData: any[] = []
         this.lstCustomer = data
         this.lstCus = data
         this.isVisibleCustomer = true
-       
+
       },
     })
   }

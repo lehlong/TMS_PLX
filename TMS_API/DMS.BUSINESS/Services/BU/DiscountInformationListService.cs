@@ -78,7 +78,7 @@ namespace DMS.BUSINESS.Services.BU
                 var lstCompetitor = await _dbContext.TblMdCompetitor.Where(x => x.IsActive == true).OrderBy(x => x.Code).ToListAsync();
                 var lstDiscountInformation = await _dbContext.TblInDiscountCompetitor.Where(x => x.HeaderCode == code).ToArrayAsync();
                 var lstMarketCompetitor = await _dbContext.TblMdMarketCompetitor.Where(x => x.IsActive == true).OrderBy(x => x.Code).ToListAsync();
-                var lstInMarket = await _dbContext.TblBuInputMarket.Where(x => x.IsActive == true).OrderBy(x => x.Code).ToListAsync();
+                var lstInMarket = await _dbContext.TblBuInputMarket.Where(x => x.HeaderId == code).ToListAsync();
                 //var obj = new CompetitorModel
                 List<GOODSs> goodss = new List<GOODSs>();
 

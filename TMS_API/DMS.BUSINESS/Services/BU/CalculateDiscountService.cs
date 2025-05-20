@@ -119,10 +119,10 @@ namespace DMS.BUSINESS.Services.BU
                         Date = DateTime.Now,
                         Hour = DateTime.Now,
                         IsActive = true,
-                        SignerCode = lstSigner.Where(x => x.Type == "NguoiKy").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
-                        KdxdCode = lstSigner.Where(x => x.Type == "kdxd").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
-                        TcktCode = lstSigner.Where(x => x.Type == "tckt").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
-                        VietphuonganCode = lstSigner.Where(x => x.Type == "vietPhuongAn").Where(x => x.IsSelect == true).FirstOrDefault().Code ?? "",
+                        SignerCode = lstSigner.Where(x => x.Type == "NguoiKy"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        KdxdCode = lstSigner.Where(x => x.Type == "kdxd"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        TcktCode = lstSigner.Where(x => x.Type == "tckt"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        VietphuonganCode = lstSigner.Where(x => x.Type == "vietPhuongAn"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
                         Status = "01"
                     },
                     InputPrice = lstGoods.Select(g => new TblBuInputPrice
@@ -375,10 +375,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                //input.Header.Date = input.Header.Date.AddHours(7); 
-                //input.Header.Hour = (DateTime)(input.Header.Hour?.AddHours(7));
-
-                if (input.Header.Status == "01" || input.Header.Status == "03")
+                if (input.Header.Status == "01" || input.Header.Status == "03" || input.Header.Status == "04" || input.Header.Status == "08")
                 {
                     _dbContext.TblBuCalculateDiscount.Update(input.Header);
                     _dbContext.TblBuInputPrice.UpdateRange(input.InputPrice);
@@ -1228,14 +1225,14 @@ namespace DMS.BUSINESS.Services.BU
                             CustomerName = i.Name,
                             MarketCode = i.MarketCode,
                             LocalCode = i.LocalCode,
-                            //Col1 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col14)),
-                            //Col2 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col16)),
-                            //Col3 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col18)),
-                            //Col4 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col20)),
-                            Col1 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col14 / 10, 0, MidpointRounding.AwayFromZero) * 10),
-                            Col2 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col16 / 10, 0, MidpointRounding.AwayFromZero) * 10),
-                            Col3 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col18 / 10, 0, MidpointRounding.AwayFromZero) * 10),
-                            Col4 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col20 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            Col1 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col14)),
+                            Col2 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col16)),
+                            Col3 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col18)),
+                            Col4 = Math.Round(data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => x.Col20)),
+                            //Col1 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col14 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            //Col2 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col16 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            //Col3 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col18 / 10, 0, MidpointRounding.AwayFromZero) * 10),
+                            //Col4 = data.Db.Where(x => x.CustomerCode == i.Code).Sum(x => Math.Round(x.Col20 / 10, 0, MidpointRounding.AwayFromZero) * 10),
 
                         });
                         _pl2++;
@@ -5567,6 +5564,86 @@ namespace DMS.BUSINESS.Services.BU
                     }
                 }
             }
+            
+            else if (nameTemp == "ThueBvmtPts")
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(fullPath, true))
+                {
+                    MainDocumentPart mainPart = doc.MainDocumentPart;
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.Body;
+                    foreach( var i in data.Dlg.Dlg4)
+                    {
+                        if (i.GoodCode == "0201032")
+                        {
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##VCF95@@", (i.Col1).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##BV_95@@", (i.Col2).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##L15_95@@", (Math.Round(i.Col2 / i.Col1, 0)).ToString());
+                        }
+                        else if (i.GoodCode == "0201004")
+                        {
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##VCF92@@", (i.Col1).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##BV_92@@", (i.Col2).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##L15_92@@", (Math.Round(i.Col2 / i.Col1, 0)).ToString());
+                        }
+                        else if (i.GoodCode == "0601005")
+                        {
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##VCF01@@", (i.Col1).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##BV_01@@", (i.Col2).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##L15_01@@", (Math.Round(i.Col2 / i.Col1, 0)).ToString());
+                        }
+                        else if (i.GoodCode == "0601002")
+                        {
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##VCF05@@", (i.Col1).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##BV_05@@", (i.Col2).ToString());
+                            wordDocumentService.ReplaceStringInWordDocumennt(doc, "##L15_05@@", (Math.Round(i.Col2 / i.Col1, 0)).ToString());
+                        }
+                    }
+
+
+                    foreach (var t in lstTextElement)
+                    {
+                        switch (t)
+                        {
+                            case "##F_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, f_date);
+                                break;
+                            case "##DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
+                                break;
+                            case "##HOUR_NOW@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
+                                break;
+                            case "##CONG_DIEN_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.CongDienSo ?? "");
+                                break;
+                            case "##VAN_BAN_SO@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.VanBanSo ?? "");
+                                break;
+                            case "##DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "");
+                                break;
+                            case "##NGUOI_DAI_DIEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Position);
+                                break;
+                            case "##TEN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, NguoiKyTen.Name);
+                                break;
+                            case "##KDXD@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, kdxd);
+                                break;
+
+                            case "##TCKT@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, tckt);
+                                break;
+                            case "##VIET_PHUONG_AN@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, vietPhuongAn);
+                                break;
+
+                        }
+
+                    }
+                }
+            }
             #endregion
 
 
@@ -6022,23 +6099,23 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
+                data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code;
                 _dbContext.TblBuCalculateDiscount.Update(data.header);
                 var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
                 var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
                 var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
-                var Account = _dbContext.TblAdAccount.Select(x=> new {Email= x.Email, UserName=x.UserName});
+                var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
 
                 var h = new TblBuHistoryAction()
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = data.header.Id,
-                    Action = data.Status.Code == "02" ? "Trình duyệt" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa" : data.Status.Code == "04" ? "Phê duyệt" : data.Status.Code == "05" ? "Từ chối" : data.Status.Code == "06" ? "Hủy trình duyệt" : "Hủy phê duyệt",
+                    Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : "Hủy phê duyệt",
                     Contents = data.Status.Content
                 };
                 _dbContext.TblBuHistoryAction.Add(h);
 
-                if (data.Status.Code == "02")
+                if (data.Status.Code == "02" || data.Status.Code == "06")
                 {
                     var email = new TblNotifyEmail();
                     foreach (var i in AccoundTPKD)

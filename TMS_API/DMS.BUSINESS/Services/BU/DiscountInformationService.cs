@@ -98,7 +98,7 @@ namespace DMS.BUSINESS.Services.BU
                             ? (0.02m * item.GblV1) + lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0 ) 
                             : lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount ?? 0));
                         dt.ckCl.Add(Math.Floor((ck1 / 10)) * 10);
-                        dt.ckCl.Add(Math.Round((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0) - ck1, 0));
+                        dt.ckCl.Add(Math.Round((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount ?? 0) - Math.Floor((ck1 / 10)) * 10, 0));
                         dt.code = c.Code;
 
                         ck.DT.Add(dt);
@@ -155,11 +155,13 @@ namespace DMS.BUSINESS.Services.BU
                             var discountCompetitor = lstDiscountCompetitor.Where(x => x.CompetitorCode == c.Code && x.GoodsCode == g.Code).Sum(x => x.Discount) ?? 0m;
                             var gap = lstInMarketCompetitor.Where(x => x.CompetitorCode == c.Code && x.MarketCode == m.Code).Sum(x => x.Gap == 0 ? m.Gap + 120 : x.Gap);
                             var cuocVc = c.Code == "APP" ? gap * z11 / 1000 : m.CuocVCBQ + 200;
+
                             var ck1 = c.Code == "APP"
                             ? 0.02m * item.GblV1 + Math.Round(discountCompetitor , 0) - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0)
                             : discountCompetitor - (cuocVc != null ? Math.Round((decimal)cuocVc, 0) : 0);
+                            
                             dt.ckCl.Add(Math.Round((decimal)ck1, 0));
-                            dt.ckCl.Add(Math.Round((decimal)((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0) - ck1);
+                            dt.ckCl.Add(Math.Round((decimal)((discountCompany.FirstOrDefault(d => d.GoodsCode == g.Code).Discount - m.CuocVCBQ)), 0) - Math.Round((decimal)ck1, 0));
                             dt.code = c.Code;
                             ck.DT.Add(dt);
                         }
@@ -184,7 +186,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                var discoutCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == code).FirstOrDefaultAsync();
+                var discoutCompany = await _dbContext.TblInDiscountCompany.Where(x => x.HeaderCode == code).ToListAsync();
                 var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive == true).OrderBy(x => x.CreateDate).ToListAsync();
                 var lstInMarket = await _dbContext.TblBuInputMarket.OrderBy(x => x.Code).ToListAsync();
                 var lstCompetitor = await _dbContext.TblMdCompetitor.OrderBy(x => x.Code).ToListAsync();
@@ -211,10 +213,10 @@ namespace DMS.BUSINESS.Services.BU
                     }
                     goods.DiscountCompany.Add(new TblInDiscountCompany
                     {
-                        Code = discoutCompany.Code,
+                        Code = discoutCompany.FirstOrDefault(x => x.GoodsCode == g.Code).Code,
                         HeaderCode = code,
-                        Discount = discoutCompany.Discount,
-                        GoodsCode = g.Code,
+                        Discount = discoutCompany.FirstOrDefault(x => x.GoodsCode == g.Code).Discount,
+                        GoodsCode = discoutCompany.FirstOrDefault(x => x.GoodsCode == g.Code).GoodsCode,
                     });
 
                     goodss.Add(goods);
@@ -225,7 +227,7 @@ namespace DMS.BUSINESS.Services.BU
                     Header = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == code).FirstOrDefaultAsync(),
                     InMarketCompetitor = lstInMarketCompetitor.Select(x => new TblInMarketCompetitor
                     {
-                        Code = Guid.NewGuid().ToString(),
+                        Code = x.Code,
                         HeaderCode = code,
                         CompetitorCode = x.CompetitorCode,
                         CompetitorName = x.CompetitorName,

@@ -22,6 +22,8 @@ namespace DMS.BUSINESS.Dtos.BU
         public string? TcktCode { get; set; }
         public string? QuyetDinhSo { get; set; }
         public string? CongDienPtBanLe { get; set; }
+        public string? VanBanSo { get; set; }
+
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }

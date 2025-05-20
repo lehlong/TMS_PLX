@@ -17,11 +17,20 @@ namespace DMS.BUSINESS.Dtos.MD
         public int OrdinalNumber { get; set; }
 
         [Key]
-        [Description("Mã phương thưc")]
+        [Description("Mã ")]
         public string Code { get; set; }
 
-        [Description("Tên phương thức")]
-        public string Name { get; set; }
+        [Description("Sản lượng")]
+        public string SanLuongCode { get; set; }
+
+        [Description("Sản phẩm")]
+        public string GoodsCode { get; set; }
+
+        [Description("AREA_CODE")]
+        public string AreaCode { get; set; }
+
+        [Description("Mức chiết khấu")]
+        public decimal ChietKhau { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }

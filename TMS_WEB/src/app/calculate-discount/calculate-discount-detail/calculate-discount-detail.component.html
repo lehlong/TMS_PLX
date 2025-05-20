@@ -6,12 +6,17 @@
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('01', '02')"
             [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
             *ngIf="input.header.status == '01' || input.header.status == '03'">
-            <span nz-icon nzType="send"></span> Trình duyệt
+            <span nz-icon nzType="send"></span> Trình giá bán lẻ
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '06')"
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '09')"
             [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '02'">
-            <span nz-icon nzType="close"></span> Hủy trình duyệt
+            <span nz-icon nzType="close"></span> Hủy trình giá bán lẻ
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('03', '04')"
+            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="check"></span> Phê duyệt Giá bán Lẻ
           </button>
 
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('02', '03')"
@@ -19,18 +24,40 @@
             <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('03', '04')"
-            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '01')"
+            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
+            <span nz-icon nzType="close"></span> Hủy duyệt giá bán lẻ
+          </button>
+
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('11', '06')"
+            [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
+            *ngIf="input.header.status == '04'">
+            <span nz-icon nzType="send"></span> Trình giá thù lao
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('15', '10')"
+            [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '06'">
+            <span nz-icon nzType="close"></span> Hủy trình giá thù lao
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('12', '07')"
+            [appPermission]="IMPORT_BATCH.REQUEST_IMPORT_BATCH_EDIT" *ngIf="input.header.status == '06'">
+            <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('13', '08')"
+            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '06'">
             <span nz-icon nzType="check"></span> Phê duyệt
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '07')"
-            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
-            <span nz-icon nzType="close"></span> Hủy phê duyệt
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('16', '04')"
+            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '08'">
+            <span nz-icon nzType="close"></span> Hủy duyệt giá thù lao
           </button>
 
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('04', '05')"
-            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '06' || input.header.status == '02'">
             <span nz-icon nzType="close"></span> Từ chối
           </button>
 
@@ -67,8 +94,8 @@
             <ul nz-menu>
               <li nz-menu-item (click)="showHistoryAction()">Lịch sử hành động</li>
               <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
-              <li nz-menu-item (click)="showEmailAction()" *ngIf="input.header.status == '04'">Lịch sử gửi Mail</li>
-              <li nz-menu-item (click)="showSMSAction()" *ngIf="input.header.status == '04'">Lịch sử gửi SMS</li>
+              <li nz-menu-item (click)="showEmailAction()" *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi Mail</li>
+              <li nz-menu-item (click)="showSMSAction()" *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi SMS</li>
             </ul>
           </nz-dropdown-menu>
 
@@ -77,7 +104,7 @@
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" *ngIf="input.header.status == '04'"
+          <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" *ngIf="input.header.status == '04' || input.header.status == '08'"
             nz-button (click)="onShowSMS()">
             <span nz-icon style="color:white" nzType="message"></span>Gửi SMS
           </button>
@@ -691,7 +718,8 @@
                   <ng-container
                     *ngIf="!getSearchTerm('PT') || data?.marketName?.toLowerCase().includes(getSearchTerm('PT').toLowerCase())">
                     <td *ngIf="!data.isBold " nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold " nzAlign="left">{{ data.marketName }}</td>
+                    <td *ngIf="!data.isBold " nzAlign="left" title="{{data.marketName}}"><span></span>{{ data.marketName
+                      }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
@@ -821,7 +849,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('DB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
@@ -954,7 +982,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('FOB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
 
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
@@ -1086,7 +1114,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('PT09') || data?.customerName?.toLowerCase().includes(getSearchTerm('PT09').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.customerName }}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col3 | number}}</td>
@@ -1192,7 +1220,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('BBDO') || data?.customerName?.toLowerCase().includes(getSearchTerm('BBDO').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
@@ -1262,12 +1290,13 @@
               <ng-container *ngFor="let data of output.pl1;">
                 <tr>
                   <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5"
+                    title="{{data.marketName}}">
                     {{data.marketName}}</td>
                   <ng-container
                     *ngIf="!getSearchTerm('PL1') || data?.marketName?.toLowerCase().includes(getSearchTerm('PL1').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{data.marketName}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.marketName}}">{{data.marketName}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
@@ -1317,12 +1346,13 @@
               <ng-container *ngFor="let data of output.pl2;">
                 <tr>
                   <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5"
+                    title="{{data.customerName}}">
                     {{data.customerName}}</td>
                   <ng-container
                     *ngIf="!getSearchTerm('PL2') || data?.customerName?.toLowerCase().includes(getSearchTerm('PL2').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
@@ -1372,7 +1402,7 @@
                 <tr
                   *ngIf="!getSearchTerm('PL3') || data?.customerName?.toLowerCase().includes(getSearchTerm('PL3').toLowerCase())">
                   <td nzAlign="center">{{data.stt}}</td>
-                  <td nzAlign="left">{{data.customerName}}</td>
+                  <td nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                   <td nzAlign="center">{{ data.col1 | number}}</td>
                   <td nzAlign="center">{{ data.col2 | number}}</td>
                   <td nzAlign="center">{{ data.col3 | number}}</td>
@@ -1420,12 +1450,13 @@
               <ng-container *ngFor="let data of output.pl4;">
                 <tr>
                   <td *ngIf="data.isBold" nzAlign="center" style="font-weight: bold;">{{data.stt}}</td>
-                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5">
+                  <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="5"
+                    title="{{data.customerName}}">
                     {{data.marketName}}</td>
                   <ng-container
                     *ngIf="!getSearchTerm('PL4') || data?.marketName?.toLowerCase().includes(getSearchTerm('PL4').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
+                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.col3 | number}}</td>
@@ -1476,13 +1507,14 @@
                 <ng-container *ngFor="let data of output.vk11Pt;">
                   <tr>
                     <td *ngIf="data.isBold"></td>
-                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18"
+                      title="{{data.customerName}}">
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11PT') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11PT').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
@@ -1544,13 +1576,14 @@
                 <ng-container *ngFor="let data of output.vk11Db;">
                   <tr>
                     <td *ngIf="data.isBold"></td>
-                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18"
+                      title="{{data.customerName}}">
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11DB').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
@@ -1612,13 +1645,14 @@
                 <ng-container *ngFor="let data of output.vk11Fob;">
                   <tr>
                     <td *ngIf="data.isBold"></td>
-                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18"
+                      title="{{data.customerName}}">
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11FOB').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
@@ -1679,13 +1713,14 @@
                 <ng-container *ngFor="let data of output.vk11Tnpp;">
                   <tr>
                     <td *ngIf="data.isBold"></td>
-                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18"
+                      title="{{data.customerName}}">
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11TNPP') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11TNPP').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
@@ -1793,8 +1828,8 @@
                   <tr
                     *ngIf="!getSearchTerm('VK11BB') || data?.customerName.toLowerCase().includes(getSearchTerm('VK11BB').toLowerCase())">
                     <td nzAlign="center">{{data.stt}}</td>
-                    <td nzAlign="left">{{data.customerName}}</td>
-                    <td nzAlign="left">{{ data.address}}</td>
+                    <td nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                    <td nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                     <td nzAlign="left">{{ data.goodsName}}</td>
                     <td nzAlign="center">{{ data.col1 | number}}</td>
                     <td nzAlign="center">{{ data.col2 | number}}</td>
@@ -1855,13 +1890,14 @@
                 <ng-container *ngFor="let data of output.summary;">
                   <tr>
                     <td *ngIf="data.isBold"></td>
-                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18">
+                    <td *ngIf="data.isBold" style="font-weight: bold;" nzAlign="left" colspan="18"
+                      title="{{data.customerName}}">
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('TH') || data?.customerName?.toLowerCase().includes(getSearchTerm('TH').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{data.customerName}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left">{{ data.address}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col2 | number}}</td>
@@ -1905,7 +1941,7 @@
       </thead>
       <tbody>
         @for (data of lstTrinhKy; track data) {
-        <tr *ngIf="input.header.status != '04' ? data.status == true : true">
+        <tr *ngIf="input.header.status != '08' ? data.status == true : true">
           <td [nzChecked]="lstTrinhKyChecked.includes(data.code)"
             (nzCheckedChange)="onItemTrinhKyChecked(data.code, $event)"></td>
           <td>{{ data.name }}</td>
@@ -2053,6 +2089,13 @@
         <div class="inner-box">
           <label>Công điện giá bán nội bộ áp dụng pt bán lẻ</label>
           <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
+        </div>
+      </div>
+
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <div class="inner-box">
+          <label>Văn bản số</label>
+          <input nz-input [(ngModel)]="input.header.thueBvmtPts" #nameInput="ngModel" required />
         </div>
       </div>
     </div>

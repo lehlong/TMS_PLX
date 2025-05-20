@@ -40,10 +40,16 @@
     data.status == '01'
       ? 'Khởi tạo'
       : data.status == '02'
-      ? 'Chờ phê duyệt'
+      ? 'Trình duyệt Giá Bán lẻ'
       : data.status == '03'
-      ? 'Yêu cầu chỉnh sửa'
+      ? 'Yêu cầu chỉnh sửa Giá bán lẻ'
       : data.status == '04'
+      ? 'Phê duyệt giá bán lẻ'
+      : data.status == '06'
+      ? 'Trình duyệt giá thù lao'
+      : data.status == '07'
+      ? 'Yêu cầu chỉnh sửa giá thù lao'
+      : data.status == '08'
       ? 'Phê duyệt'
       : 'Từ chối'
   }}</nz-tag>
@@ -115,18 +121,11 @@
           <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
         </div>
       </div>
-       <div nz-col class="gutter-row" [nzSpan]="6">
-        <label>Tìm kiếm</label>
-        <!-- <ng-container> -->
-        <div style="width:100%; display: flex;">
-          <input nz-input placeholder="Tìm kiếm dữ liệu đầu vào" (keydown.enter)="searchInPutDb(currentTabInput)"
-            [(ngModel)]="searchInputTab" type="text">
-          <button (click)="searchInPutDb(currentTabInput)" class="flex !items-center !border-l-0 gray-btn"
-            nzType="default" nz-button nzType="default">
-            <span nz-icon nzType="search"></span>
-          </button>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <div class="inner-box">
+          <label>Văn bản số</label>
+          <input nz-input [(ngModel)]="input.header.thueBvmtPts" #nameInput="ngModel" required />
         </div>
-        <!-- </ng-container> -->
       </div>
 
     </div>
@@ -440,7 +439,7 @@
             [nzShowPagination]="'false'">
             <thead>
               <tr>
-                
+
                 <th nzAlign="center" rowspan="2">MÃ</th>
                 <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
                 <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
@@ -556,6 +555,18 @@
 <ng-template #extra>
   <nz-space>
     <ng-container>
+      <!-- <div nz-col class="gutter-row" [nzSpan]="6"> -->
+       <div style="width:100%; display: flex; margin-right: 10px;">
+         <input nz-input placeholder="Tìm kiếm dữ liệu đầu vào" (keydown.enter)="searchInPutDb(currentTabInput)"
+           [(ngModel)]="searchInputTab" type="text">
+         <button (click)="searchInPutDb(currentTabInput)" class="flex !items-center !border-l-0 gray-btn"
+           nzType="default" nz-button nzType="default">
+           <span nz-icon nzType="search"></span>
+         </button>
+       </div>
+       <!-- </ng-container> -->
+     <!-- </div> -->
+
       <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
         (click)="onCreate()">
         <span nz-icon nzType="save" nzTheme="outline"></span> Tạo mới

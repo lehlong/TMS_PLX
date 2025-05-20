@@ -55,7 +55,7 @@ namespace DMS.API.Controllers.BU
             return Ok(transferObject);
         }
 
-        [HttpPost("UpdateDataInput")]
+        [HttpPut("UpdateDataInput")]
         [Authorize]
         public async Task<IActionResult> UpdateDataInput([FromBody] CompetitorModel model)
         {

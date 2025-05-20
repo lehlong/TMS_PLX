@@ -78,8 +78,8 @@ namespace DMS.BUSINESS.Services.MD
                     {
                         item.IsSelect = false;
                     }
-                    _dbContext.TblMdSigner.Add(signer);
                 }
+                _dbContext.TblMdSigner.Add(signer);
                 await _dbContext.SaveChangesAsync();
 
                 return signer;
@@ -94,18 +94,19 @@ namespace DMS.BUSINESS.Services.MD
         {
             try
             {
-                var lstSigner = await _dbContext.TblMdSigner.Where(x => x.Type == data.Type).ToListAsync();
+                var currentSelectedSigner = await _dbContext.TblMdSigner
+                    .FirstOrDefaultAsync(x => x.Type == data.Type && x.IsSelect == true);
 
-                foreach (var signer in lstSigner)
+                if (currentSelectedSigner != null && currentSelectedSigner.Code != data.Code)
                 {
-                    signer.IsSelect = false;
+                    currentSelectedSigner.IsSelect = false;
                 }
+
+                data.IsSelect = true;
+
                 _dbContext.TblMdSigner.Update(data);
 
                 await _dbContext.SaveChangesAsync();
-
-
-
             }
             catch (Exception ex)
             {
