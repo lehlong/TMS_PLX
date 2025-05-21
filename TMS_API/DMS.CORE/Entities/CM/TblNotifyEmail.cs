@@ -16,7 +16,7 @@ namespace DMS.CORE.Entities.BU
         public string HeaderId { get; set; }
 
         [Column("STATUS")]
-        public int? Status { get; set; }
+        public String? Status { get; set; }
 
         [Column("SUBJECT")]
         public string Subject { get; set; }
@@ -29,7 +29,10 @@ namespace DMS.CORE.Entities.BU
         [Column("IS_SEND")]
         public string IsSend { get; set; }
         [Column("EMAIL")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
+        [Column("PATH")]
+        public string? Path { get; set; }
+
 
 
 

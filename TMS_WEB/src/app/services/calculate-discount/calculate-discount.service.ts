@@ -51,9 +51,7 @@ export class CalculateDiscountService {
     ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {
         return this.commonService.postNoneMess(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
     }
-    SendMail(model: any): Observable<any> {
-      return this.commonService.get(`CalculateDiscount/SendMail?headerId=${model}`)
-    }
+  
 
 
     SaveSMS(headerId: any, smsName: any): Observable<any> {
@@ -61,6 +59,9 @@ export class CalculateDiscountService {
     }
     SendSMS(lstSms: any): Observable<any> {
       return this.commonService.post(`CalculateDiscount/SendSMS`, lstSms)
+    }
+    SendlstEmail(lstMail: any): Observable<any> {
+      return this.commonService.post(`CalculateDiscount/SendlstMail`, lstMail)
     }
 
 

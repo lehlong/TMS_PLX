@@ -2618,32 +2618,42 @@
 </nz-modal>
 
 <!-- MAIL -->
+
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleEmail" nzTitle="LỊCH SỬ GỬI MAIL" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng" nzFooter=" ">
+  [nzFooter]="modalFooterEmail">
   <ng-container *nzModalContent>
-    <nz-table #historyTable [nzData]="lstEmail" nzSize="small">
+    <nz-table #historyTable [nzData]="lstSearchEmail" nzSize="small">
       <thead>
         <tr>
-          <th>Tiêu đề </th>
-          <th>Nội dung</th>
-          <th>Trạng Thái</th>
-
+          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
+          <th style="width: 70%;"><input nz-input [(ngModel)]="inputSearchMail" placeholder="NỘI DUNG"
+              (ngModelChange)="searchEmail()" type="text" /></th>
+          <th>NGÀY</th>
+          <th>TRẠNG THÁI</th>
         </tr>
       </thead>
       <tbody>
         @for (data of historyTable.data; track data) {
         <tr>
-          <td>{{ data.subject }}</td>
-          <!-- <td >{{ data.contents }}</td> -->
-          <td [innerText]="removeHtmlTags(data.contents)"></td>
-          <td>{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+          <td [nzChecked]="isCheckedSendEmail(data.id)" [nzDisabled]="data.isSend == 'Y'"
+            (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
+          </td>
+          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
+          <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
+          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
         </tr>
         }
       </tbody>
     </nz-table>
   </ng-container>
-</nz-modal>
 
+  <ng-template #modalFooterEmail>
+    <div style="display: flex; justify-content: flex-end;">
+      <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
+      <button nz-button nzType="primary" (click)="onSendEmail()" [nzLoading]="isConfirmLoading">Gửi Mail</button>
+    </div>
+  </ng-template>
+</nz-modal>
 <!-- History Export File-->
 <nz-modal nzWidth="60%" [(nzVisible)]="isVisibleExport" nzTitle="LỊCH SỬ XUẤT FILE" (nzOnCancel)="handleCancel()"
   nzCancelText="Đóng" nzFooter=" ">

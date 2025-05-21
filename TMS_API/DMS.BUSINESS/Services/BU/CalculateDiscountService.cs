@@ -33,6 +33,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using DMS.BUSINESS.Dtos.MD;
 using NPOI.SS.Formula.Functions;
 using DMS.CORE.Entities.MD;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -54,6 +55,7 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
+        Task SendlstMail(List<string> lstEmail);
         Task SaveSMS(string headerId, string smsName);
         Task SendSMS(List<string> lstSms);
         Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
@@ -6391,7 +6393,23 @@ namespace DMS.BUSINESS.Services.BU
             }
             catch (Exception ex)
             {
-                //return null;
+              
+            }
+        }
+        public async Task SendlstMail(List<string> lstEmail)
+        {
+            try
+            {
+                foreach (var i in lstEmail)
+                {
+                    var sms = _dbContext.TblCmNotifiEmail.Where(x => x.Id == i).FirstOrDefault();
+                    sms.IsSend = "N";
+                    _dbContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -6429,18 +6447,22 @@ namespace DMS.BUSINESS.Services.BU
                 if (data.Status.Code == "04")
                 {
                     await this.SaveSMS(data.header.Id, "SMS Thông báo giá bán lẻ niêm yết");
+                    await this.SaveMailPheDuyet(data.header.Id, "04");
                 }
                 else if (data.Status.Code == "08")
                 {
                     await this.SaveSMS(data.header.Id, "SMS thông báo thù lao");
+                    await this.SaveMailPheDuyet(data.header.Id, "08");
                 }
                 else if (data.Status.Code == "11")
                 {
                     await this.DeleSMS(data.header.Id, "TBGBL");
+                    await this.DelMailPheDuyet(data.header.Id, "11");
                 }
                 else if (data.Status.Code == "12")
                 {
                     await this.DeleSMS(data.header.Id, "TBTL");
+                    await this.DelMailPheDuyet(data.header.Id, "12");
                 }
                 var h = new TblBuHistoryAction()
                 {
@@ -6471,6 +6493,7 @@ namespace DMS.BUSINESS.Services.BU
                     }
 
                 }
+
                 await _dbContext.SaveChangesAsync();
 
             }
@@ -6730,6 +6753,96 @@ namespace DMS.BUSINESS.Services.BU
                 return new CalculateDiscountInputModel();
             }
         }
+        #endregion
+        #region gửi mail
+        public async Task SaveMailPheDuyet(string headerId,string status)
+        {
+            try
+            {
+                var s = new ExportWordService(_dbContext);
+                var data = await this.CalculateDiscountOutput(headerId);
+
+                
+                
+                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.ToList();
+                var dataHeader = await this.GetInput(headerId);
+                DateTime Date = dataHeader.Header.Date;
+                var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
+                var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email TBPD");
+                var lstmail = new List<TblNotifyEmail>();
+             
+                if (status == "04" || status=="08")
+                {
+                    foreach (var item in data.Bbdo)
+                    {
+                        if((!item.CustomerCode.IsNullOrEmpty())&& !item.CustomerCode.Contains("-")) {
+                        var lstCus = new List<CustomBBDOExportWord>();
+                        var customer = new CustomBBDOExportWord()
+                        {
+                            code = item.CustomerCode,
+                            deliveryGroupCode = ""
+                        };
+                        lstCus.Add(customer);
+
+                            var path = await s.GenarateWord(lstCus, headerId, data);
+                            var Email = new TblNotifyEmail()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
+                            Subject = template.Title ?? "",
+                            Contents = template.HtmlSource.Replace("[toDate]", Ngay),
+                            IsSend = "C",
+                            NumberRetry = 0,
+                            HeaderId = headerId,
+                            Status = status == "04" ? "TBTL" : "TBGBL",
+                            Path=path
+                        };
+                        lstmail.Add(Email);
+                        }
+                    }
+
+                }
+                _dbContext.TblCmNotifiEmail.AddRange(lstmail);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
+        public async Task DelMailPheDuyet(string headerId, string status)
+        {
+            try
+            {
+                if (status=="12")
+                {
+                    var lstmailTBTL = _dbContext.TblCmNotifiEmail.Where(x=>x.HeaderId==headerId&& x.Status== "TBTL");
+                    foreach (var item in lstmailTBTL)
+                    {
+                        item.IsSend = "K";
+                        _dbContext.SaveChanges();
+                    };
+                }
+
+                if (status == "11")
+                {
+                    var lstmailTBTL = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == headerId && x.Status == "TBGBL");
+                    foreach (var item in lstmailTBTL)
+                    {
+                        item.IsSend = "K";
+                        _dbContext.SaveChanges();
+                    }
+                    ;
+                }
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
+
         #endregion
     }
 }

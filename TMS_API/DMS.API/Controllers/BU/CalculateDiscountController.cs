@@ -299,6 +299,26 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+        [HttpPost("SendlstMail")]
+        [Authorize]
+        public async Task<IActionResult> SendlstMail([FromBody] List<string> lstEmail)
+        {
+            var transferObject = new TransferObject();
+            await _service.SendlstMail(lstEmail);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
 
         [HttpGet("Getmail")]
         [Authorize]

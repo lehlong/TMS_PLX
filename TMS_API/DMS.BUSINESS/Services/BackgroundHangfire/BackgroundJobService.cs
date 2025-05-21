@@ -43,11 +43,9 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             };
             _congifEmail = new EmmailInfo
             {
-                port = 587,
-                pass = "ockc mtmp pquv mhlf",
-                Email= "Somot1pro@gmail.com",
-                host= "smtp.gmail.com"
-
+                port = 20,
+                Email= "longlh@petrolimex.com.vn",
+                host= "mail.petrolimex.com.vn"
             };
 
            
@@ -93,7 +91,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             return phoneNumber;
         }
 
-        public async Task<bool> SendMail(string toEmail, string subject, string body)
+        public async Task<bool> SendMail(string toEmail, string subject, string body,string path)
         {
             try
             {
@@ -114,8 +112,14 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     Body = body,
                     IsBodyHtml = true,
                 };
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                {
+                  
+                    var attachment = new Attachment(path);
+                    mailMessage.Attachments.Add(attachment);
+                }
 
-                mailMessage.To.Add(toEmail);
+                mailMessage.To.Add("Somot1pro@gmail.com");
                 await smtpClient.SendMailAsync(mailMessage);
                 return true;
 
@@ -132,10 +136,10 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             try
             {
                 _dbContext.ChangeTracker.Clear();
-                var lstEmail = await _dbContext.TblCmNotifiEmail.Where(x => x.IsSend == "N").ToListAsync();
+                var lstEmail = await _dbContext.TblCmNotifiEmail.Where(x => x.IsSend == "N" && x.NumberRetry<3).ToListAsync();
                 foreach (var s in lstEmail)
                 {
-                    var status =await SendMail(s.Email, s.Subject, s.Contents);
+                    var status =await SendMail(s.Email, s.Subject, s.Contents,s.Path);
                     if (status)
                     {
                         s.IsSend = "Y";

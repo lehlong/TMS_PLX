@@ -231,12 +231,14 @@ export class AccountEditComponent {
   }
 
   getDetail(userName: string = '') {
+  
     this._service
       .getDetail({
         userName: userName,
       })
       .subscribe({
         next: (data) => {
+          console.log('data', data)
           this.getAllGroup(data?.account_AccountGroups)
           this.validateForm.setValue({
             userName: data.userName,
@@ -359,7 +361,8 @@ export class AccountEditComponent {
       [],
     )
     if (this.validateForm.valid) {
-      const formValue = this.validateForm.value
+     const formValue = this.validateForm.getRawValue();
+      
       // const { partnerId, ...rest } = formValue
       // let insertObj = {}
       // if (this.isShowSelectPartner) {

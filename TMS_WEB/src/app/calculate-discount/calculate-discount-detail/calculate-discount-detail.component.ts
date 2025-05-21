@@ -41,6 +41,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isZoom = false
   UrlOffice: string = ''
   inputSearchCustomer: string = ''
+    inputSearchMail: string = ''
   inputnameBBDO: string = ''
   listNameBBDO: any[] = []
 
@@ -124,6 +125,8 @@ listOfData: any[] = []
   isVisibleCustomerPDF: boolean = false
   lstCustomerChecked: any[] = []
   lstSendSmsChecked: any[] = []
+   lstSendEmailChecked: any[] = []
+   EmailName = ''
   accountGroups: any = {}
   searchInput = ''
   searchInputTab = ''
@@ -250,33 +253,23 @@ listOfData: any[] = []
     })
   }
 
-  showEmailAction() {
-    this._service.Getmail(this.headerId).subscribe({
-      next: (data) => {
-        this.lstEmail = data
-        this.isVisibleEmail = true
-      },
-      error: (err) => {
-        console.log(err)
-      },
-    })
-  }
+ 
 
   removeHtmlTags(html: string): string {
     if (!html) return ''
     return html.replace(/<\/?[^>]+(>|$)/g, '')
   }
 
-  confirmSendsMail() {
-    this._service.SendMail(this.headerId).subscribe({
-      next: (data) => {
-        this.message.create('success', 'Gửi mail thành công')
-      },
-      error: (err) => {
-        console.log(err)
-      },
-    })
-  }
+  // confirmSendsMail() {
+  //   this._service.SendMail(this.headerId).subscribe({
+  //     next: (data) => {
+  //       this.message.create('success', 'Gửi mail thành công')
+  //     },
+  //     error: (err) => {
+  //       console.log(err)
+  //     },
+  //   })
+  // }
   showHistoryExport() {
     this._service.GetHistoryFile(this.headerId).subscribe({
       next: (data) => {
@@ -477,6 +470,73 @@ listOfData: any[] = []
     );
   }
 
+  ////////////////////////////////////////////
+  checkedEmail: boolean = false
+  lstSearchEmail: any[] = []
+  showEmailAction() {
+    this._service.Getmail(this.headerId).subscribe({
+      next: (data) => {
+        this.lstSearchEmail = data
+        this.lstEmail = data
+        this.isVisibleEmail = true
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
+  }
+
+  onAllCheckedSendEmail(value: boolean): void {
+    this.lstSendEmailChecked = []
+    if (value) {
+      this.lstSearchEmail.forEach((i) => {
+        if(i.isSend != "Y"){
+          this.lstSendSmsChecked.push(i.id)
+        }
+      })
+    } else {
+      this.lstSendSmsChecked = []
+    }
+  }
+  updateCheckedSetSendEmail(code: any, checked: boolean,): void {
+    if (checked) {
+      this.lstSendEmailChecked.push(code)
+
+    } else {
+      this.lstSendEmailChecked = this.lstSendEmailChecked.filter(
+        (x) => x !== code
+      )
+    }
+  }
+  onItemCheckedSendEmail(code: String, checked: boolean,): void {
+    this.updateCheckedSetSendEmail(code, checked)
+  }
+  isCheckedSendEmail(code: string): boolean {
+    return this.lstSendEmailChecked.some((item) => item == code)
+  }
+  onSendEmail(){
+    if (this.lstSendEmailChecked.length == 0) {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn tin nhắn muốn gửi',
+      )
+      return
+    } else {
+      this._service.SendlstEmail(this.lstSendEmailChecked).subscribe({
+        next: () =>{
+          this.lstSendEmailChecked = []
+          this.handleCancel()
+        }
+      })
+    }
+  }
+
+  searchEmail(){
+    const keyword = this.inputSearchMail.trim().toLowerCase();
+    this.lstSearchEmail = this.lstEmail.filter(c =>
+      c.contents.toLowerCase().includes(keyword)
+    );
+  }
 
   searchTableBBDO(){
     const keyword = this.inputnameBBDO.toLowerCase();
