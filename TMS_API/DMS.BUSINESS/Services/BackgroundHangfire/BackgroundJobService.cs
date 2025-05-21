@@ -59,7 +59,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             try
             {
                 _dbContext.ChangeTracker.Clear();
-                var lstSMS = await _dbContext.TblCmNotifySms.Where(x => x.IsSend == "N" && x.NumberRetry < 3).ToListAsync();
+                var lstSMS = await _dbContext.TblCmNotifySms.Where(x => x.IsSend == "N" && x.NumberRetry < 3 && x.IsSend != "K").ToListAsync();
                 foreach (var s in lstSMS)
                 {
                     var status = await SendSMS(ConvertPhoneNumber(s.PhoneNumber), s.Contents);

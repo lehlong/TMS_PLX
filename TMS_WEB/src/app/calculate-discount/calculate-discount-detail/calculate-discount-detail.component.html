@@ -24,7 +24,7 @@
             <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '01')"
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '11')"
             [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
             <span nz-icon nzType="close"></span> Hủy duyệt giá bán lẻ
           </button>
@@ -51,7 +51,7 @@
             <span nz-icon nzType="check"></span> Phê duyệt
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('16', '04')"
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('16', '12')"
             [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '08'">
             <span nz-icon nzType="close"></span> Hủy duyệt giá thù lao
           </button>
@@ -99,13 +99,13 @@
             </ul>
           </nz-dropdown-menu>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" *ngIf="input.header.status == '04'" nzType="primary"
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" *ngIf="input.header.status == '04' || input.header.status == '08'" nzType="primary"
             nz-button>
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
 
           <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" *ngIf="input.header.status == '04' || input.header.status == '08'"
-            nz-button (click)="onShowSMS()">
+            nz-button (click)="showSMSAction()">
             <span nz-icon style="color:white" nzType="message"></span>Gửi SMS
           </button>
 
@@ -2540,7 +2540,7 @@
     <ng-container>
       <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
         (click)="onUpdateInput()" [appPermission]="IMPORT_BATCH.UPDATE_IMPORT_BATCH"
-        [disabled]="input.header.status != 01 && input.header.status != 03">
+        [disabled]="input.header.status != 01 && input.header.status != 03 && input.header.status != 04 && input.header.status != 07">
         <span nz-icon nzType="save" nzTheme="outline"></span> Cập nhật
       </button>
     </ng-container>
@@ -2600,7 +2600,7 @@
           <td [nzChecked]="isCheckedSendSms(data.id)" [nzDisabled]="data.isSend == 'Y'"
             (nzCheckedChange)="onItemCheckedSendSms(data.id, $event)">
           </td>
-          <td [innerText]="removeHtmlTags(data.contents)"></td>
+          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
           <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
         </tr>

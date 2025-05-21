@@ -17,7 +17,7 @@ namespace DMS.CORE.Entities.BU
         public string HeaderId { get; set; }
 
         [Column("STATUS")]
-        public int? Status { get; set; }
+        public string? Status { get; set; }
 
         [Column("SUBJECT")]
         public string? Subject { get; set; }

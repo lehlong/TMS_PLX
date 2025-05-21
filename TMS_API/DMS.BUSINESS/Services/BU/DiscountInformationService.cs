@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿    using AutoMapper;
 using DMS.BUSINESS.Common;
 using DMS.BUSINESS.Dtos.MD;
 using DMS.BUSINESS.Models;
@@ -28,6 +28,8 @@ using DMS.BUSINESS.Extentions;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using IndexedColors = DocumentFormat.OpenXml.Spreadsheet.IndexedColors;
+using NPOI.HSSF.Util;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -225,17 +227,7 @@ namespace DMS.BUSINESS.Services.BU
                 return new CompetitorModel
                 {
                     Header = await _dbContext.TblBuDiscountInformationList.Where(x => x.Code == code).FirstOrDefaultAsync(),
-                    InMarketCompetitor = lstInMarketCompetitor.Select(x => new TblInMarketCompetitor
-                    {
-                        Code = x.Code,
-                        HeaderCode = code,
-                        CompetitorCode = x.CompetitorCode,
-                        CompetitorName = x.CompetitorName,
-                        MarketCode = x.MarketCode,
-                        MarketName = x.MarketName,
-                        Gap = x.Gap,
-
-                    }).OrderBy(x => x.CompetitorName).ThenBy(x => x.MarketCode).ToList(),
+                    InMarketCompetitor = lstInMarketCompetitor,
                     Goodss = goodss,
                 };
             }
@@ -278,6 +270,7 @@ namespace DMS.BUSINESS.Services.BU
 
                 //Define Style
                 var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+                var styleCellNumberAm = GetCellStyleNumberAm(templateWorkbook);
 
                 var font = templateWorkbook.CreateFont();
                 font.FontHeightInPoints = 12;
@@ -379,12 +372,12 @@ namespace DMS.BUSINESS.Services.BU
                     if (i != 1)
                     {
                         rowBody.Cells[startCell].CellStyle = styleCellNumber;
-                            rowBody.Cells[startCell++].SetCellValue(Convert.ToDouble(dataD.col1));
+                            rowBody.Cells[startCell++].SetCellValue((dataD.col1).ToString());
 
                         for (var j = 0; j < dataD.gaps.Count(); j++)
                         {
                             rowBody.Cells[startCell].CellStyle = styleCellNumber;
-                            rowBody.Cells[startCell++].SetCellValue((dataD.gaps[j] == 0 || dataD.gaps[j] == null) ? 0 : Convert.ToDouble(dataD.gaps[j]));
+                            rowBody.Cells[startCell++].SetCellValue((double)((dataD.gaps[j]) ?? 0));
                         }
                         rowBody.Cells[startCell].CellStyle = styleCellNumber;
                         rowBody.Cells[startCell++].SetCellValue(dataD.col1 == 0 ? 0 : Convert.ToDouble(dataD.col4));
@@ -404,8 +397,16 @@ namespace DMS.BUSINESS.Services.BU
                             {
                                 for (var z = 0; z < dataCk.DT[k].ckCl.Count(); z++)
                                 {
-                                    rowBody.Cells[startCell].CellStyle = styleCellNumber;
-                                    rowBody.Cells[startCell++].SetCellValue(dataCk.DT[k].ckCl[z] == 0 ? 0 : Convert.ToDouble(dataCk.DT[k].ckCl[z]));
+                                    if(dataCk.DT[k].ckCl[z] < 0)
+                                    {
+                                        rowBody.Cells[startCell].CellStyle = styleCellNumberAm;
+                                        rowBody.Cells[startCell++].SetCellValue(dataCk.DT[k].ckCl[z] == 0 ? 0 : Convert.ToDouble(dataCk.DT[k].ckCl[z]));
+                                    }
+                                    else
+                                    {
+                                        rowBody.Cells[startCell].CellStyle = styleCellNumber;
+                                        rowBody.Cells[startCell++].SetCellValue(dataCk.DT[k].ckCl[z] == 0 ? 0 : Convert.ToDouble(dataCk.DT[k].ckCl[z]));
+                                    }
                                 }
                             }
                         }
@@ -556,14 +557,35 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
+            //ExcelNPOIExtention.SetCellFreeStyle(templateWorkbook, true, HorizontalAlignment.Center, false, 12));
 
         public ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
             styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+
+            styleCellNumber.BorderTop = BorderStyle.Thin;
+            styleCellNumber.BorderBottom = BorderStyle.Thin;
+            styleCellNumber.BorderLeft = BorderStyle.Thin;
+            styleCellNumber.BorderRight = BorderStyle.Thin;
             return styleCellNumber;
         }
+        public ICellStyle GetCellStyleNumberAm(IWorkbook templateWorkbook)
+        {
+            ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
+            styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
 
+            styleCellNumber.BorderTop = BorderStyle.Thin;
+            styleCellNumber.BorderBottom = BorderStyle.Thin;
+            styleCellNumber.BorderLeft = BorderStyle.Thin;
+            styleCellNumber.BorderRight = BorderStyle.Thin;
+
+            IFont font = templateWorkbook.CreateFont();
+            font.Color = HSSFColor.Red.Index;
+            styleCellNumber.SetFont(font);
+
+            return styleCellNumber;
+        }
         public async Task<string> SaveFileHistory(MemoryStream outFileStream, string headerId)
         {
             byte[] data = outFileStream.ToArray();

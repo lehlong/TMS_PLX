@@ -5987,6 +5987,7 @@ namespace DMS.BUSINESS.Services.BU
                                     Subject = Template.Title ?? "",
                                     Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", i.MarketName).Replace("[goods]", goods),
                                     IsSend = "C",
+                                    Status = "TBTL",
                                     NumberRetry = 0,
                                     HeaderId = headerId
                                 };
@@ -5995,18 +5996,313 @@ namespace DMS.BUSINESS.Services.BU
                         }
                     }
 
-                    // Repeat similar changes for other sections (pl2, pl3, pl4)  
+                    var pl2 = data.Pl2;
+
+                    foreach (var i in pl2)
+                    {
+                        if (i.CustomerCode != null)
+                        {
+                            var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                            if (customer != null)
+                            {
+                                var market = _dbContext.TblMdMarket.Where(x => x.Code == i.MarketCode).Select(x => x.Name).FirstOrDefault();
+
+                                var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                                var info = new TblNotifySms()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    PhoneNumber = customer.Phone,
+                                    Subject = Template.Title ?? "",
+                                    Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                    IsSend = "C",
+                                    Status = "TBTL",
+                                    NumberRetry = 0,
+                                    HeaderId = headerId
+                                };
+                                _dbContext.TblCmNotifySms.Add(info);
+                            }
+                        }
+                    }
+
+
+                    var pl3 = data.Pl3;
+
+                    foreach (var i in pl3)
+                    {
+                        var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                        if (customer != null)
+                        {
+                            var market = "kho N.Huong/Ben Thuy";
+
+                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = customer.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                IsSend = "C",
+                                Status = "TBTL",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+
+                        }
+                    }
+
+
+                    var pl4 = data.Pl4;
+
+                    foreach (var i in pl4)
+                    {
+                        var customer = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).FirstOrDefault();
+
+                        if (customer != null)
+                        {
+                            var market = "kho N.Huong/Ben Thuy";
+
+
+                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = customer.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
+                                IsSend = "C",
+                                Status = "TBTL",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+
+                        }
+                    }
                 }
                 else if (smsName == "SMS Thông báo giá bán lẻ niêm yết")
                 {
-                    // Update goods formatting for dlgV1, dlgV2, and other relevant sections  
                     var dlgV1 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V1").ToList();
-                    var goodsV1 = $"X 95-III: {dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3).ToString("N0")} d/l), " +
-                        $"X E5-II: {dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3).ToString("N0")} d/l), " +
-                        $"Do 0,001S: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
-                        $"Do 0,05S-II: {dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3).ToString("N0")} d/l)";
+                    var goodsV1 = $"X 95-III: {dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3)} d/l), " +
+                        $"X E5-II: {dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3)} d/l), " +
+                        $"Do 0,001S: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3)} d/l), " +
+                        $"Do 0,05S-II: {dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3)} d/l)";
 
-                    // Repeat similar changes for dlgV2 and other sections  
+                    var dlgV2 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V2").ToList();
+                    var goodsV2 = $"X 95-III: {dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3)} d/l), " +
+                        $"X E5-II: {dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3)} d/l), " +
+                        $"Do 0,001S: {dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3)} d/l), " +
+                        $"Do 0,05S-II: {dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3)} d/l)";
+
+                    var lstMarketV1 = _dbContext.TblMdMarket.Where(x => x.LocalCode == "V1").ToList();
+                    foreach (var i in lstMarketV1)
+                    {
+                        var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.MarketCode == i.Code).Where(x => x.IsActive == true).ToList();
+                        foreach (var c in lstCusPhone)
+                        {
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = c.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
+                                IsSend = "C",
+                                    Status = "TBGBL",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+                        }
+                    }
+                    var lstMarketV2 = _dbContext.TblMdMarket.Where(x => x.LocalCode == "V2").ToList();
+                    foreach (var i in lstMarketV2)
+                    {
+                        var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.MarketCode == i.Code).Where(x => x.IsActive == true).ToList();
+                        foreach (var c in lstCusPhone)
+                        {
+                            var info = new TblNotifySms()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                PhoneNumber = c.Phone,
+                                Subject = Template.Title ?? "",
+                                Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
+                                IsSend = "C",
+                                    Status = "TBGBL",
+                                NumberRetry = 0,
+                                HeaderId = headerId
+                            };
+                            _dbContext.TblCmNotifySms.Add(info);
+                        }
+                    }
+
+                    foreach (var i in data.Pl2)
+                    {
+                        if (i.CustomerCode != null)
+                        {
+                            if (i.LocalCode == "V1")
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                            else
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                        }
+
+                    }
+
+                    foreach (var i in data.Pl3)
+                    {
+                        if (i.CustomerCode != null)
+                        {
+                            if (i.LocalCode == "V1")
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                            else
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var i in data.Pl4)
+                    {
+                        if (i.CustomerCode != null)
+                        {
+                            if (i.LocalCode == "V1")
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                            else
+                            {
+                                var lstCusPhone = _dbContext.TblMdCustomerPhone.Where(x => x.CustomerCode == i.CustomerCode).Where(x => x.IsActive == true).ToList();
+
+                                foreach (var c in lstCusPhone)
+                                {
+
+                                    var info = new TblNotifySms()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        PhoneNumber = c.Phone,
+                                        Subject = Template.Title ?? "",
+                                        Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
+                                        IsSend = "C",
+                                    Status = "TBGBL",
+                                        NumberRetry = 0,
+                                        HeaderId = headerId
+                                    };
+                                    _dbContext.TblCmNotifySms.Add(info);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else
+                {
+                    var lstCustomerPhone = _dbContext.TblMdCustomerPhone.Where(x => x.IsActive == true).ToList();
+                    foreach (var cusPhone in lstCustomerPhone)
+                    {
+                        var info = new TblNotifySms()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            PhoneNumber = cusPhone.Phone,
+                            Subject = Template.Title ?? "",
+                            Contents = Template.HtmlSource,
+                            IsSend = "C",
+                            Status = "TB",
+                            NumberRetry = 0,
+                            HeaderId = headerId
+                        };
+                        _dbContext.TblCmNotifySms.Add(info);
+                    }
                 }
 
                 _dbContext.SaveChanges();
@@ -6020,7 +6316,6 @@ namespace DMS.BUSINESS.Services.BU
 
         public async Task SendEmail(string headerId)
         {
-                //var customer = _dbContext.TblMdCustomerContact.Where(x => x.Type == "phone" && x.IsActive == true);
             var lstCusEmail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true).ToList();
             var Template = _dbContext.TblAdConfigTemplate.Where(x => x.Name == "SMS thông báo giá bán lẻ").FirstOrDefault();
             try
@@ -6049,7 +6344,6 @@ namespace DMS.BUSINESS.Services.BU
             {
                 this.Status = false;
                 this.Exception = ex;
-
             }
         }
 
@@ -6057,7 +6351,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                var data = await _dbContext.TblCmNotifySms.Where(x => x.HeaderId == headerID).ToListAsync();
+                var data = await _dbContext.TblCmNotifySms.Where(x => x.HeaderId == headerID && x.IsSend != "K").ToListAsync();
                 return data;
             }
             catch (Exception ex)
@@ -6101,6 +6395,22 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
+        public async Task DeleSMS(string headerId, string status)
+        {
+            try
+            {
+                var lstSms = _dbContext.TblCmNotifySms.Where(x => x.HeaderId == headerId && x.Status == status).ToList();
+                foreach (var i in lstSms)
+                {
+                    i.IsSend = "K";
+                    _dbContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                //return null;
+            }
+        }
         #endregion
 
         #region xử lý quy trình xét duyệt
@@ -6109,18 +6419,34 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code;
+                data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "11" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code == "12" ? "04" : data.Status.Code;
                 _dbContext.TblBuCalculateDiscount.Update(data.header);
                 var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
                 var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
                 var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
                 var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
 
+                if (data.Status.Code == "04")
+                {
+                    await this.SaveSMS(data.header.Id, "SMS Thông báo giá bán lẻ niêm yết");
+                }
+                else if (data.Status.Code == "08")
+                {
+                    await this.SaveSMS(data.header.Id, "SMS thông báo thù lao");
+                }
+                else if (data.Status.Code == "11")
+                {
+                    await this.DeleSMS(data.header.Id, "TBGBL");
+                }
+                else if (data.Status.Code == "12")
+                {
+                    await this.DeleSMS(data.header.Id, "TBTL");
+                }
                 var h = new TblBuHistoryAction()
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = data.header.Id,
-                    Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : "Hủy phê duyệt",
+                    Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : data.Status.Code == "11" ? "Hủy phê duyệt giá bán lẻ" : data.Status.Code == "12" ? "Hủy phê duyệt giá thù lao" : "Hủy phê duyệt",
                     Contents = data.Status.Content
                 };
                 _dbContext.TblBuHistoryAction.Add(h);
@@ -6145,8 +6471,8 @@ namespace DMS.BUSINESS.Services.BU
                     }
 
                 }
-
                 await _dbContext.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
