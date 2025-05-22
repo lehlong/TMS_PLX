@@ -103,7 +103,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstSms: any[] = []
   searchValue = '';
   visible = false;
-listOfData: any[] = []
+  listOfData: any[] = []
   lstTrinhKy: any[] = [
     {
       code: 'CongDienKKGiaBanLe',
@@ -149,14 +149,14 @@ listOfData: any[] = []
     VK11BB: '',
     TH: '',
   }
-  searchTermInput:  { [key: string]: string } = {
+  searchTermInput: { [key: string]: string } = {
 
     inputPrice: '',
     market: '',
     customerDb: '',
     customerPt: '',
     customerFob: '',
-    customerTnpp:   '',
+    customerTnpp: '',
     customerBbdo: '',
   }
   currentTab = ''
@@ -205,7 +205,7 @@ listOfData: any[] = []
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data
-        this.listNameBBDO= this.input.customerBbdo
+        this.listNameBBDO = this.input.customerBbdo
 
         this.titleTab = data.header.name
       },
@@ -230,11 +230,11 @@ listOfData: any[] = []
       },
     })
   }
-   getOutputCal(id: any) {
+  getOutputCal(id: any) {
     this._service.getOutput(id).subscribe({
       next: (data) => {
         this.output = data
-        this.Showmessage('Tính toán lại thành công','success')
+        this.Showmessage('Tính toán lại thành công', 'success')
       },
       error: (response) => {
         console.log(response)
@@ -253,7 +253,7 @@ listOfData: any[] = []
     })
   }
 
- 
+
 
   removeHtmlTags(html: string): string {
     if (!html) return ''
@@ -381,7 +381,8 @@ listOfData: any[] = []
     }
   }
 
-  // listOfDisplayData = [...this.listNameBBDO];
+
+
 
 
 
@@ -400,29 +401,22 @@ listOfData: any[] = []
       },
     })
   }
-  confirmSendSMS() {
-    if (this.smsName == "") {
-      this.message.create(
-        'warning',
-        'Vui lòng chọn mẫu tin nhắn muốn gửi!',
-      )
-      return
-    } else {
-      this._service.SaveSMS(this.headerId, this.smsName).subscribe({
+  confirmSendSMS(smsname: any) {
+      this._service.SaveSMS(this.headerId, smsname).subscribe({
         next: (data) => {
-          this.message.create('success', 'Gửi SMS thành công')
+          this.message.create('success', 'Tạo hàng chờ SMS thành công')
+          this.showSMSAction()
         },
         error: (err) => {
           console.log(err)
         },
       })
-    }
   }
   onAllCheckedSendSms(value: boolean): void {
     this.lstSendSmsChecked = []
     if (value) {
       this.lstSearchSms.forEach((i) => {
-        if(i.isSend != "Y"){
+        if (i.isSend != "Y") {
           this.lstSendSmsChecked.push(i.id)
         }
       })
@@ -446,7 +440,7 @@ listOfData: any[] = []
   isCheckedSendSms(code: string): boolean {
     return this.lstSendSmsChecked.some((item) => item == code)
   }
-  onSendSms(){
+  onSendSms() {
     if (this.lstSendSmsChecked.length == 0) {
       this.message.create(
         'warning',
@@ -455,22 +449,52 @@ listOfData: any[] = []
       return
     } else {
       this._service.SendSMS(this.lstSendSmsChecked).subscribe({
-        next: (data) =>{
+        next: (data) => {
           this.lstSendSmsChecked = []
           this.handleCancel()
         }
       })
     }
   }
+  selectedMarket: any = null
+  selectedCustomer: any = null
+  selectedTrangThai: any = null
+  searchHistorySMS() {
+    console.log(this.selectedCustomer, this.selectedMarket, this.inputSearchCustomer);
 
-  searchSMS(){
-    const keyword = this.inputSearchCustomer.trim().toLowerCase();
-    this.lstSearchSms = this.lstSMS.filter(c =>
-      c.contents.toLowerCase().includes(keyword)
-    );
+    this.lstSearchSms = this.lstSMS
+    if (this.selectedMarket !== null || this.selectedCustomer !== null || this.inputSearchCustomer !== "" || this.selectedTrangThai !== null) {
+      if (this.selectedMarket !== null) {
+        this.lstSearchSms = this.lstSearchSms.filter(c =>
+          c.marketCode == this.selectedMarket);
+      }
+      if (this.selectedCustomer !== null) {
+        this.lstSearchSms = this.lstSearchSms.filter(c =>
+          c.customerCode == this.selectedCustomer);
+      }
+      if (this.selectedTrangThai !== null) {
+        this.lstSearchSms = this.lstSearchSms.filter(c =>
+          c.isSend == this.selectedTrangThai);
+      }
+      if (this.inputSearchCustomer !== "") {
+        const keyword = this.inputSearchCustomer.trim().toLowerCase();
+        this.lstSearchSms = this.lstSearchSms.filter(c =>
+          c.contents.toLowerCase().includes(keyword) || c.phoneNumber.toLowerCase().includes(keyword))
+      }
+    } else {
+      this.lstSearchSms = this.lstSMS
+    }
+
   }
 
-  ////////////////////////////////////////////
+  clearSearchSms() {
+    this.selectedMarket = null
+    this.selectedCustomer = null
+    this.selectedTrangThai = null
+    this.inputSearchCustomer = ""
+    this.searchHistorySMS()
+  }
+
   checkedEmail: boolean = false
   lstSearchEmail: any[] = []
   showEmailAction() {
@@ -538,9 +562,9 @@ listOfData: any[] = []
     );
   }
 
-  searchTableBBDO(){
+  searchTableBBDO() {
     const keyword = this.inputnameBBDO.toLowerCase();
-    this.listNameBBDO = this.input.customerBbdo.filter((item:any) =>
+    this.listNameBBDO = this.input.customerBbdo.filter((item: any) =>
       item.name.toLowerCase().includes(keyword)
     );
   }
@@ -610,7 +634,7 @@ listOfData: any[] = []
   changeStatus(value: string, status: string) {
     switch (value) {
       case '01':
-        this.statusModel.title = 'TRÌNH DUYỆT GIÁ BÁN LẺ'
+        this.statusModel.title = 'TRÌNH DUYỆT'
         this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
         // this.input.header.status = '01'/
         break
@@ -619,7 +643,7 @@ listOfData: any[] = []
         this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
         break
       case '03':
-        this.statusModel.title = 'PHÊ DUYỆT GIÁ BÁN LẺ'
+        this.statusModel.title = 'PHÊ DUYỆT'
         this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
         break
       case '04':
@@ -627,40 +651,45 @@ listOfData: any[] = []
         this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
         break
       case '05':
-        this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ BÁN LẺ'
+        this.statusModel.title = 'HỦY TRÌNH DUYỆT'
         this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
         break
       case '06':
-        this.statusModel.title = 'HỦY PHÊ DUYỆT GIÁ BÁN LẺ'
-        this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-        break
-
-      case '11':
-        this.statusModel.title = 'TRÌNH DUYỆT GIÁ THÙ LAO'
-        this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-        // this.input.header.status = '01'
-        break
-      case '12':
-        this.statusModel.title = 'YÊU CẦU CHỈNH SỬA GIÁ THÙ LAO'
-        this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
-        break
-      case '13':
-        this.statusModel.title = 'PHÊ DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
-        break
-      case '15':
-        this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ THÙ LAO'
-        this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
-        break
-      case '16':
         this.statusModel.title = 'HỦY PHÊ DUYỆT'
         this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
         break
+
+      // case '06':
+      //   this.statusModel.title = 'HỦY PHÊ DUYỆT GIÁ BÁN LẺ'
+      //   this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
+      //   break
+
+      // case '11':
+      //   this.statusModel.title = 'TRÌNH DUYỆT GIÁ THÙ LAO'
+      //   this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
+      //   // this.input.header.status = '01'
+      //   break
+      // case '12':
+      //   this.statusModel.title = 'YÊU CẦU CHỈNH SỬA GIÁ THÙ LAO'
+      //   this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
+      //   break
+      // case '13':
+      //   this.statusModel.title = 'PHÊ DUYỆT'
+      //   this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
+      //   break
+      // case '15':
+      //   this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ THÙ LAO'
+      //   this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
+      //   break
+      // case '16':
+      //   this.statusModel.title = 'HỦY PHÊ DUYỆT'
+      //   this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
+      //   break
     }
     this.dataQuyTrinh.status.code = status
     this.dataQuyTrinh.header = this.input.header
 
-    this.dataQuyTrinh.status.Link =  window.location.href
+    this.dataQuyTrinh.status.Link = window.location.href
     this.isVisibleStatus = true
     Swal.fire({
       title: this.statusModel.title,
@@ -703,14 +732,14 @@ listOfData: any[] = []
   }
 
   onUpdateInput() {
-    this.visibleInput=false
+    this.visibleInput = false
     this._service.updateInput(this.input).subscribe({
       next: (data) => { },
       error: (response) => {
         console.log(response)
       },
     })
-        this.getOutput(this.headerId)
+    this.getOutput(this.headerId)
 
   }
 
@@ -754,7 +783,18 @@ listOfData: any[] = []
       },
     })
   }
+  getCustomerName(code: string): string {
+    if (code != null) {
+      const customer = this.output.summary.find((c: any) => c.col4 === code);
+      return customer ? customer.customerName : '';
+    }
+    return ""
+  }
 
+  getMarketName(code: string): string {
+    const market = this.input.market.find((c: any) => c.code === code);
+    return market ? market.name : '';
+  }
   openNewTab(url: string) {
     console.log(url);
 
@@ -762,7 +802,7 @@ listOfData: any[] = []
   }
 
   exportExcel() {
-    this._service.exportExcel(this.headerId,this.accountGroups).subscribe({
+    this._service.exportExcel(this.headerId, this.accountGroups).subscribe({
       next: (data) => {
         var a = document.createElement('a')
         a.href = environment.apiUrl + data
@@ -798,7 +838,7 @@ listOfData: any[] = []
         },
       };
     } else if (data.type == "docx") {
-       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
+      this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
       console.log(this.urlViewExcel);
       this.config = {
@@ -1055,7 +1095,7 @@ listOfData: any[] = []
     this.searchTerm[sheetName] = this.searchInput
   }
   searchInPutDb(sheetName: string) {
-    if(sheetName==""){
+    if (sheetName == "") {
       sheetName = 'inputPrice'
     }
     this.searchTermInput[sheetName] = this.searchInputTab
@@ -1132,7 +1172,7 @@ listOfData: any[] = []
   }
 
   lstCus: any[] = []
-  searchCustomer(){
+  searchCustomer() {
     const keyword = this.inputSearchCustomer.trim().toLowerCase();
     this.lstCus = this.lstCustomer.filter(c =>
       c.name.toLowerCase().includes(keyword)

@@ -6,10 +6,36 @@
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('01', '02')"
             [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
             *ngIf="input.header.status == '01' || input.header.status == '03'">
-            <span nz-icon nzType="send"></span> Trình giá bán lẻ
+            <span nz-icon nzType="send"></span> Trình duyệt
+            <!-- <span nz-icon nzType="send"></span> Trình giá bán lẻ -->
           </button>
 
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '09')"
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '06')"
+            [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="close"></span> Hủy trình duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('02', '03')"
+            [appPermission]="IMPORT_BATCH.REQUEST_IMPORT_BATCH_EDIT" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('03', '04')"
+            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="check"></span> Phê duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '07')"
+            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
+            <span nz-icon nzType="close"></span> Hủy phê duyệt
+          </button>
+
+          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('04', '05')"
+            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '02'">
+            <span nz-icon nzType="close"></span> Từ chối
+          </button>
+
+          <!-- <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '09')"
             [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '02'">
             <span nz-icon nzType="close"></span> Hủy trình giá bán lẻ
           </button>
@@ -31,8 +57,7 @@
 
 
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('11', '06')"
-            [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
-            *ngIf="input.header.status == '04'">
+            [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH" *ngIf="input.header.status == '04'">
             <span nz-icon nzType="send"></span> Trình giá thù lao
           </button>
 
@@ -57,9 +82,12 @@
           </button>
 
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('04', '05')"
-            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH" *ngIf="input.header.status == '06' || input.header.status == '02'">
+            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH"
+            *ngIf="input.header.status == '06' || input.header.status == '02'">
             <span nz-icon nzType="close"></span> Từ chối
-          </button>
+          </button> -->
+
+
 
           <button [appPermission]="IMPORT_BATCH.INPUT_DATA" nzType="default" nz-button (click)="openInput()">
             <span nz-icon nzType="right-square"></span> Dữ liệu đầu vào
@@ -94,21 +122,33 @@
             <ul nz-menu>
               <li nz-menu-item (click)="showHistoryAction()">Lịch sử hành động</li>
               <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
-              <li nz-menu-item (click)="showEmailAction()" *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi Mail</li>
-              <li nz-menu-item (click)="showSMSAction()" *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi SMS</li>
+              <li nz-menu-item (click)="showEmailAction()" *ngIf="input.header.status == '04'">Lịch sử gửi Mail</li>
+              <li nz-menu-item (click)="showSMSAction()" *ngIf="input.header.status == '04'">Lịch sử gửi SMS</li>
+
+              <!-- <li nz-menu-item (click)="showEmailAction()"
+                *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi Mail</li>
+              <li nz-menu-item (click)="showSMSAction()"
+                *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi SMS</li> -->
             </ul>
           </nz-dropdown-menu>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" *ngIf="input.header.status == '04' || input.header.status == '08'" nzType="primary"
-            nz-button>
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL"
+            *ngIf="input.header.status == '04' || input.header.status == '08'" nzType="primary" nz-button>
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
-
-          <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" *ngIf="input.header.status == '04' || input.header.status == '08'"
-            nz-button (click)="showSMSAction()">
-            <span nz-icon style="color:white" nzType="message"></span>Gửi SMS
-          </button>
-
+          <div class="">
+            <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" [nzDropdownMenu]="menu" nz-dropdown
+              [nzPlacement]="'bottomRight'" *ngIf="input.header.status == '04' || input.header.status == '08'" nz-button
+              (click)="showSMSAction()">
+              <span nz-icon style="color:white" nzType="message"></span>Gửi SMS
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item style="border-bottom: 1px solid #d9d9d9;" (click)="confirmSendSMS('SMS Thông báo giá bán lẻ niêm yết')">Tạo tin nhắn TB Giá bán lẻ</li>
+                <li nz-menu-item (click)="confirmSendSMS('SMS thông báo thù lao')">Tạo tin nhắn TB thù lao</li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
           <ng-container *ngIf="currentTab !== '' && currentTab !== 'DLG'">
             <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search(currentTab)"
               [(value)]="searchInput"></app-input-clear>
@@ -2581,27 +2621,69 @@
 </nz-modal>
 
 <!-- SMS -->
-<nz-modal nzWidth="60%" [(nzVisible)]="isVisibleSms" nzTitle="LỊCH SỬ GỬI SMS" (nzOnCancel)="handleCancel()"
+<nz-modal nzWidth="75%" [(nzVisible)]="isVisibleSms" nzTitle="LỊCH SỬ GỬI SMS" (nzOnCancel)="handleCancel()"
   [nzFooter]="modalFooter">
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstSearchSms" nzSize="small">
       <thead>
         <tr>
           <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendSms($event)"></th>
-          <th style="width: 70%;"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="NỘI DUNG"
-              (ngModelChange)="searchSMS()" type="text" /></th>
+          <th>KHÁCH HÀNG</th>
+          <th>THỊ TRƯỜNG</th>
+          <th>SDT</th>
+          <th style="width: 70%;">NỘI DUNG </th>
           <th>NGÀY</th>
+          <th>SỐ LẦN GỬI</th>
           <th>TRẠNG THÁI</th>
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td (click)="clearSearchSms()"><span nz-icon nzType="history"></span></td>
+          <td>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="selectedCustomer"
+              style="border: none" (ngModelChange)="searchHistorySMS()" style="width: 100%; border: none">
+              <ng-container *ngFor="let data of output.summary">
+                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.col4}}"
+                  *ngIf="data.col5 == '0201032'"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+          <td>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm thị trường" [(ngModel)]="selectedMarket"
+              (ngModelChange)="searchHistorySMS()" style="width: 100%; border: none">
+              <ng-container *ngFor="let data of input.market">
+                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+          <!-- <td> <input type="text" nz-input [(ngModel)]="inputValue" placeholder="input with clear icon" /></td> -->
+          <td colspan="2"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="NỘI DUNG"
+              (ngModelChange)="searchHistorySMS()" type="text" style="border: 1px solid #d9d9d9;" /></td>
+          <td class="align-center">-</td>
+          <td class="align-center">-</td>
+          <td nzAlign="center">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm trạng thái" [(ngModel)]="selectedTrangThai"
+              style="border: none" (ngModelChange)="searchHistorySMS()" style="width: 100%;">
+              <nz-option nzLabel="Chưa gửi" nzValue="C"></nz-option>
+              <nz-option nzLabel="Đang gửi" nzValue="N"></nz-option>
+              <nz-option nzLabel="Đã gửi" nzValue="Y"></nz-option>
+            </nz-select>
+          </td>
+        </tr>
         @for (data of historyTable.data; track data) {
         <tr>
           <td [nzChecked]="isCheckedSendSms(data.id)" [nzDisabled]="data.isSend == 'Y'"
             (nzCheckedChange)="onItemCheckedSendSms(data.id, $event)">
           </td>
+          <td title="{{ getCustomerName(data.customerCode) }}"
+            [innerText]="removeHtmlTags(getCustomerName(data.customerCode) )">{{data.customerCode}}</td>
+          <td title="{{ getMarketName(data.marketCode) }}"
+            [innerText]="removeHtmlTags(getMarketName(data.marketCode) )"></td>
+          <td>{{data.phoneNumber}}</td>
           <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
+          <td class="align-center">{{ data.numberRetry}}</td>
           <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
         </tr>
         }
@@ -2625,11 +2707,18 @@
     <nz-table #historyTable [nzData]="lstSearchEmail" nzSize="small">
       <thead>
         <tr>
-          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
+          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendSms($event)"></th>
+          <th>KHÁCH HÀNG</th>
+          <th>THỊ TRƯỜNG</th>
+          <th style="width: 70%;">NỘI DUNG </th>
+          <th>NGÀY</th>
+          <th>SỐ LẦN GỬI</th>
+          <th>TRẠNG THÁI</th>
+          <!-- <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
           <th style="width: 70%;"><input nz-input [(ngModel)]="inputSearchMail" placeholder="NỘI DUNG"
               (ngModelChange)="searchEmail()" type="text" /></th>
           <th>NGÀY</th>
-          <th>TRẠNG THÁI</th>
+          <th>TRẠNG THÁI</th> -->
         </tr>
       </thead>
       <tbody>

@@ -21,6 +21,8 @@ namespace DMS.BUSINESS.Dtos.BU
         public string Is_send { get; set; }
         public int? NumberRerey { get; set; }
         public string HeaderId { get; set; }
+        public string CustomerCode { get; set; }
+        public string MarketCode { get; set; }
 
 
         public void Mapping(Profile profile)

@@ -18,8 +18,8 @@ namespace DMS.BUSINESS.Dtos.MD
         public int OrdinalNumber { get; set; }
 
         [Key]
-        [Description("Mã")]
-        public string Id { get; set; }
+        //[Description("Mã")]
+        //public string Id { get; set; }
 
         [Description("Mã")]
         public string Code { get; set; }

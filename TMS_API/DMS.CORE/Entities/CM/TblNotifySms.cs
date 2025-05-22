@@ -34,7 +34,11 @@ namespace DMS.CORE.Entities.BU
         [Column("PHONE_NUMBER")]
         public string? PhoneNumber { get; set; }
 
+        [Column("CUSTOMER_CODE")]
+        public string? CustomerCode { get; set; }
 
+        [Column("MARKET_CODE")]
+        public string? MarketCode { get; set; }
 
 
     }

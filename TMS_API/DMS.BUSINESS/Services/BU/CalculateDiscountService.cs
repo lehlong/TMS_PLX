@@ -5959,6 +5959,7 @@ namespace DMS.BUSINESS.Services.BU
                 //return ;
             }
         }
+        
         public async Task SaveSMS(string headerId, string smsName)
         {
             var data = await this.CalculateDiscountOutput(headerId);
@@ -5990,6 +5991,8 @@ namespace DMS.BUSINESS.Services.BU
                                     Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", i.MarketName).Replace("[goods]", goods),
                                     IsSend = "C",
                                     Status = "TBTL",
+                                    CustomerCode = "_",
+                                    MarketCode = i.MarketCode,
                                     NumberRetry = 0,
                                     HeaderId = headerId
                                 };
@@ -6020,6 +6023,8 @@ namespace DMS.BUSINESS.Services.BU
                                     Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
                                     IsSend = "C",
                                     Status = "TBTL",
+                                    CustomerCode = i.CustomerCode,
+                                    MarketCode = i.MarketCode,
                                     NumberRetry = 0,
                                     HeaderId = headerId
                                 };
@@ -6049,6 +6054,8 @@ namespace DMS.BUSINESS.Services.BU
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
                                 IsSend = "C",
                                 Status = "TBTL",
+                                CustomerCode = i.CustomerCode,
+                                MarketCode = i.MarketCode,
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -6079,6 +6086,8 @@ namespace DMS.BUSINESS.Services.BU
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[market]", market).Replace("[goods]", goods),
                                 IsSend = "C",
                                 Status = "TBTL",
+                                CustomerCode = i.CustomerCode,
+                                MarketCode = i.MarketCode,
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -6114,7 +6123,9 @@ namespace DMS.BUSINESS.Services.BU
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
                                 IsSend = "C",
-                                    Status = "TBGBL",
+                                Status = "TBGBL",
+                                CustomerCode = c.CustomerCode,
+                                MarketCode = i.Code,
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -6134,7 +6145,9 @@ namespace DMS.BUSINESS.Services.BU
                                 Subject = Template.Title ?? "",
                                 Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
                                 IsSend = "C",
-                                    Status = "TBGBL",
+                                CustomerCode = c.CustomerCode,
+                                MarketCode = i.Code,
+                                Status = "TBGBL",
                                 NumberRetry = 0,
                                 HeaderId = headerId
                             };
@@ -6159,7 +6172,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6179,7 +6194,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6207,7 +6224,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6227,7 +6246,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6255,7 +6276,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV1),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6276,7 +6299,9 @@ namespace DMS.BUSINESS.Services.BU
                                         Subject = Template.Title ?? "",
                                         Contents = Template.HtmlSource.Replace("[fromDate]", Ngay).Replace("[goods]", goodsV2),
                                         IsSend = "C",
-                                    Status = "TBGBL",
+                                        CustomerCode = i.CustomerCode,
+                                        MarketCode = i.MarketCode,
+                                        Status = "TBGBL",
                                         NumberRetry = 0,
                                         HeaderId = headerId
                                     };
@@ -6298,6 +6323,8 @@ namespace DMS.BUSINESS.Services.BU
                             PhoneNumber = cusPhone.Phone,
                             Subject = Template.Title ?? "",
                             Contents = Template.HtmlSource,
+                            CustomerCode = cusPhone.CustomerCode ?? "_",
+                            MarketCode = cusPhone.MarketCode ?? "_",
                             IsSend = "C",
                             Status = "TB",
                             NumberRetry = 0,
@@ -6437,44 +6464,48 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "11" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code == "12" ? "04" : data.Status.Code;
+                data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
+                //data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "11" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code == "12" ? "04" : data.Status.Code;
                 _dbContext.TblBuCalculateDiscount.Update(data.header);
                 var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
                 var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
                 var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
                 var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
 
-                if (data.Status.Code == "04")
-                {
-                    await this.SaveSMS(data.header.Id, "SMS Thông báo giá bán lẻ niêm yết");
-                    await this.SaveMailPheDuyet(data.header.Id, "04");
-                }
-                else if (data.Status.Code == "08")
-                {
-                    await this.SaveSMS(data.header.Id, "SMS thông báo thù lao");
-                    await this.SaveMailPheDuyet(data.header.Id, "08");
-                }
-                else if (data.Status.Code == "11")
-                {
-                    await this.DeleSMS(data.header.Id, "TBGBL");
-                    await this.DelMailPheDuyet(data.header.Id, "11");
-                }
-                else if (data.Status.Code == "12")
-                {
-                    await this.DeleSMS(data.header.Id, "TBTL");
-                    await this.DelMailPheDuyet(data.header.Id, "12");
-                }
+                //if (data.Status.Code == "04")
+                //{
+                //    await this.SaveSMS(data.header.Id, "SMS Thông báo giá bán lẻ niêm yết");
+                //    await this.SaveMailPheDuyet(data.header.Id, "04");
+                //}
+                //else if (data.Status.Code == "08")
+                //{
+                //    await this.SaveSMS(data.header.Id, "SMS thông báo thù lao");
+                //    await this.SaveMailPheDuyet(data.header.Id, "08");
+                //}
+                //else if (data.Status.Code == "11")
+                //{
+                //    await this.DeleSMS(data.header.Id, "TBGBL");
+                //    await this.DelMailPheDuyet(data.header.Id, "11");
+                //}
+                //else if (data.Status.Code == "12")
+                //{
+                //    await this.DeleSMS(data.header.Id, "TBTL");
+                //    await this.DelMailPheDuyet(data.header.Id, "12");
+                //}
                 var h = new TblBuHistoryAction()
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = data.header.Id,
-                    Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : data.Status.Code == "11" ? "Hủy phê duyệt giá bán lẻ" : data.Status.Code == "12" ? "Hủy phê duyệt giá thù lao" : "Hủy phê duyệt",
+
+                    Action = data.Status.Code == "02" ? "Trình duyệt" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa" : data.Status.Code == "04" ? "Phê duyệt" : data.Status.Code == "05" ? "Từ chối" : data.Status.Code == "06" ? "Hủy trình duyệt" : "Hủy phê duyệt",
+                    //Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : data.Status.Code == "11" ? "Hủy phê duyệt giá bán lẻ" : data.Status.Code == "12" ? "Hủy phê duyệt giá thù lao" : "Hủy phê duyệt",
                     Contents = data.Status.Content
                 };
                 _dbContext.TblBuHistoryAction.Add(h);
 
-                if (data.Status.Code == "02" || data.Status.Code == "06")
-                {
+                //if (data.Status.Code == "02" || data.Status.Code == "06")
+                if (data.Status.Code == "02")
+                    {
                     var email = new TblNotifyEmail();
                     foreach (var i in AccoundTPKD)
                     {

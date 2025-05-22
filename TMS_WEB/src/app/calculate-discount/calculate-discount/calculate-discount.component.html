@@ -34,26 +34,39 @@
           <td>{{(paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
           <td>{{ data.name }}</td>
           <td>{{ data.date| date: 'dd/MM/yyyy hh:mm' }}</td>
-        <td>
-         <nz-tag [nzColor]="getStatusColor(data.status)">
-  {{
-    data.status == '01'
-      ? 'Khởi tạo'
-      : data.status == '02'
-      ? 'Trình duyệt Giá Bán lẻ'
-      : data.status == '03'
-      ? 'Yêu cầu chỉnh sửa Giá bán lẻ'
-      : data.status == '04'
-      ? 'Phê duyệt giá bán lẻ'
-      : data.status == '06'
-      ? 'Trình duyệt giá thù lao'
-      : data.status == '07'
-      ? 'Yêu cầu chỉnh sửa giá thù lao'
-      : data.status == '08'
-      ? 'Phê duyệt'
-      : 'Từ chối'
-  }}</nz-tag>
-</td>
+          <td>
+            <nz-tag [nzColor]="getStatusColor(data.status)">
+              {{
+              data.status == '01'
+              ? 'Khởi tạo'
+              : data.status == '02'
+              ? 'Chờ phê duyệt'
+              : data.status == '03'
+              ? 'Yêu cầu chỉnh sửa'
+              : data.status == '04'
+              ? 'Phê duyệt'
+              : 'Từ chối'
+              }}</nz-tag>
+
+            <!-- <nz-tag [nzColor]="getStatusColor(data.status)">
+              {{
+              data.status == '01'
+              ? 'Khởi tạo'
+              : data.status == '02'
+              ? 'Trình duyệt Giá Bán lẻ'
+              : data.status == '03'
+              ? 'Yêu cầu chỉnh sửa Giá bán lẻ'
+              : data.status == '04'
+              ? 'Phê duyệt giá bán lẻ'
+              : data.status == '06'
+              ? 'Trình duyệt giá thù lao'
+              : data.status == '07'
+              ? 'Yêu cầu chỉnh sửa giá thù lao'
+              : data.status == '08'
+              ? 'Phê duyệt'
+              : 'Từ chối'
+              }}</nz-tag> -->
+          </td>
         </tr>
       </tbody>
     </nz-table>
@@ -137,9 +150,9 @@
             <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'"
               [(ngModel)]="input.header.signerCode">
               @for (item of signerResult; track item) {
-                @if (item.type === 'NguoiKy') {
-                  <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
-                }
+              @if (item.type === 'NguoiKy') {
+              <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
+              }
               }
             </nz-select>
           </nz-form-control>
@@ -153,9 +166,9 @@
               <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'"
                 [(ngModel)]="input.header.vietphuonganCode">
                 @for (item of signerResult; track item) {
-                  @if (item.type === 'vietPhuongAn') {
-                    <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
-                  }
+                @if (item.type === 'vietPhuongAn') {
+                <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
+                }
                 }
               </nz-select>
             </nz-form-control>
@@ -170,9 +183,9 @@
               <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'"
                 [(ngModel)]="input.header.kdxdCode">
                 @for (item of signerResult; track item) {
-                  @if (item.type === 'kdxd') {
-                    <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
-                  }
+                @if (item.type === 'kdxd') {
+                <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
+                }
                 }
               </nz-select>
             </nz-form-control>
@@ -188,9 +201,9 @@
               <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'Chọn người ký'"
                 [(ngModel)]="input.header.tcktCode">
                 @for (item of signerResult; track item) {
-                  @if (item.type === 'tckt') {
-                    <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
-                  }
+                @if (item.type === 'tckt') {
+                <nz-option [nzLabel]="item.position + ' - ' + item.name" [nzValue]="item.code"></nz-option>
+                }
                 }
               </nz-select>
             </nz-form-control>
@@ -223,39 +236,42 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of input2.inputPrice; let rowIndex = index">
-               <ng-container
+              <ng-container
                 *ngIf="!getSearchTermInput('inputPrice') || data?.goodName?.toLowerCase().includes(getSearchTermInput('inputPrice').trim().toLowerCase())">
-              <td>{{ data.goodName }}</td>
-              <td><input nz-input [(ngModel)]="data.thueBvmt" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueBvmt')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.vcf" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'vcf')" type="text" /></td>
-              <td><input nz-input [(ngModel)]="data.chenhLech" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'chenhLech')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.gblV1" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV1')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.gblV2" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV2')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.l15Blv2" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'l15Blv2')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.l15Nbl" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'l15Nbl')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.laiGop" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'laiGop')" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.fobV2" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV2')"
-                  (keyup)="handleAutoInput(data)" type="text" />
-              </td>
-              <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
-                  (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
-              </td>
+                <td>{{ data.goodName }}</td>
+                <td><input nz-input [(ngModel)]="data.thueBvmt" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueBvmt')"
+                    type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.vcf" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'vcf')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.chenhLech" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'chenhLech')"
+                    type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.gblV1" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV1')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.gblV2" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV2')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.l15Blv2" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'l15Blv2')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.l15Nbl" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'l15Nbl')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.laiGop" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'laiGop')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.fobV2" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV2')"
+                    (keyup)="handleAutoInput(data)" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
+                </td>
               </ng-container>
             </tr>
           </tbody>
@@ -282,12 +298,12 @@
               <tr *ngFor="let data of input.market">
                 <ng-container
                   *ngIf="!getSearchTermInput('market') || data?.name?.toLowerCase().includes(getSearchTermInput('market').trim().toLowerCase())">
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.gap" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cuocVCBQ" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpChungChuaCuocVC" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDieuTietXang" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDieuTietDau" type="number" /></td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.gap" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cuocVCBQ" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpChungChuaCuocVC" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDieuTietXang" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDieuTietDau" type="number" /></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -319,21 +335,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerPt" >
+              <tr *ngFor="let data of input.customerPt">
                 <ng-container
                   *ngIf="!getSearchTermInput('customerPt') || data?.name?.toLowerCase().includes(getSearchTermInput('customerPt').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -365,21 +381,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerDb" >
+              <tr *ngFor="let data of input.customerDb">
                 <ng-container
                   *ngIf="!getSearchTermInput('customerDb') || data?.name?.toLowerCase().includes(getSearchTermInput('customerDb').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -414,18 +430,18 @@
               <tr *ngFor="let data of input.customerFob">
                 <ng-container
                   *ngIf="!getSearchTermInput('customerFob') || data?.name?.toLowerCase().includes(getSearchTermInput('customerFob').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -459,20 +475,20 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.customerTnpp">
-               <ng-container
+                <ng-container
                   *ngIf="!getSearchTermInput('customerTnpp') || data?.name?.toLowerCase().includes(getSearchTermInput('customerTnpp').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.cuLyBq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckXang" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckDau" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.htcvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.httVb1370" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.ckv2" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.adrress" type="text" /></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -498,20 +514,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of input.customerBbdo" >
-              <ng-container
+              <tr *ngFor="let data of input.customerBbdo">
+                <ng-container
                   *ngIf="!getSearchTermInput('customerBbdo') || data?.name?.toLowerCase().includes(getSearchTermInput('customerBbdo').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
-                <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
-                <td style="text-align: center;">
-                  <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>
-                </td>
-               </ng-container>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
+                  <td style="text-align: center;">
+                    <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>
+                  </td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
@@ -533,14 +549,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of input.customerPts">
-               <ng-container
+                <ng-container
                   *ngIf="!getSearchTermInput('customerPts') || data?.name?.toLowerCase().includes(getSearchTermInput('customerPts').trim().toLowerCase())">
-                <td>{{data.code }}</td>
-                <td>{{data.name }}</td>
-                <td nzAlign="center"><input nz-input [(ngModel)]="data.goodsCode" type="number" /></td>
-                <td nzAlign="center"><input nz-input [(ngModel)]="data.thtt" type="text" /></td>
-                <td><input nz-input [(ngModel)]="data.phuongThuc" type="text" /></td>
-               </ng-container>
+                  <td>{{data.code }}</td>
+                  <td>{{data.name }}</td>
+                  <td nzAlign="center"><input nz-input [(ngModel)]="data.goodsCode" type="number" /></td>
+                  <td nzAlign="center"><input nz-input [(ngModel)]="data.thtt" type="text" /></td>
+                  <td><input nz-input [(ngModel)]="data.phuongThuc" type="text" /></td>
+                </ng-container>
               </tr>
             </tbody>
           </nz-table>
@@ -556,16 +572,16 @@
   <nz-space>
     <ng-container>
       <!-- <div nz-col class="gutter-row" [nzSpan]="6"> -->
-       <div style="width:100%; display: flex; margin-right: 10px;">
-         <input nz-input placeholder="Tìm kiếm dữ liệu đầu vào" (keydown.enter)="searchInPutDb(currentTabInput)"
-           [(ngModel)]="searchInputTab" type="text">
-         <button (click)="searchInPutDb(currentTabInput)" class="flex !items-center !border-l-0 gray-btn"
-           nzType="default" nz-button nzType="default">
-           <span nz-icon nzType="search"></span>
-         </button>
-       </div>
-       <!-- </ng-container> -->
-     <!-- </div> -->
+      <div style="width:100%; display: flex; margin-right: 10px;">
+        <input nz-input placeholder="Tìm kiếm dữ liệu đầu vào" (keydown.enter)="searchInPutDb(currentTabInput)"
+          [(ngModel)]="searchInputTab" type="text">
+        <button (click)="searchInPutDb(currentTabInput)" class="flex !items-center !border-l-0 gray-btn"
+          nzType="default" nz-button nzType="default">
+          <span nz-icon nzType="search"></span>
+        </button>
+      </div>
+      <!-- </ng-container> -->
+      <!-- </div> -->
 
       <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
         (click)="onCreate()">
