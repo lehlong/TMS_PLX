@@ -252,19 +252,20 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
-ResendEmail(data: any) {
-  console.log(data);
-  //   this._service.ResendEmail(data).subscribe({
-  //     next: (data) => {
-  //       this.message.create('success', 'Gửi mail thành công')
-  //     },
-  //     error: (err) => {
-  //       console.log(err)
-  //     },
-  //   })
-  // }
+ResendEmail() {
+    this._service.ResendEmail(this.headerId).subscribe({
+      next: (data) => {
+        this.isVisibleEmail = false
+        
+        this.message.create('success', 'Gửi lại mail thành công')
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
 
-}
+
 
 
   removeHtmlTags(html: string): string {
@@ -289,14 +290,14 @@ ResendEmail(data: any) {
   //   })
   // }
   showHistoryExport() {
-    this._service.GetHistoryFile(this.headerId).subscribe({
+     this._service.ResendEmail(this.headerId).subscribe({
       next: (data) => {
-        this.lstHistoryFile = data
-        this.isVisibleExport = true
-        this.lstHistoryFile.forEach((item) => {
-          item.pathDownload = environment.apiUrl + item.path
-          item.pathView = environment.apiUrl + item.path
-        })
+        
+        this.isVisibleEmail = false
+        console.log(data)
+        console.log('tc')
+        this.message.create('success', 'Gửi lại mail thành công')
+       
       },
       error: (err) => {
         console.log(err)

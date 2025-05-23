@@ -144,6 +144,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     if (status)
                     {
                         s.IsSend = "Y";
+                       
                         s.NumberRetry = s.NumberRetry + 1;
                         _dbContext.TblCmNotifiEmail.Update(s);
                        
@@ -151,6 +152,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     }
                     else
                     {
+                      
                         s.NumberRetry = s.NumberRetry + 1;
                         _dbContext.TblCmNotifiEmail.Update(s);
                         Console.WriteLine("Lỗi không gửi được email");

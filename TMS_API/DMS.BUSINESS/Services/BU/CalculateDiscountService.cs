@@ -34,6 +34,7 @@ using DMS.BUSINESS.Dtos.MD;
 using NPOI.SS.Formula.Functions;
 using DMS.CORE.Entities.MD;
 using Microsoft.IdentityModel.Tokens;
+using DocumentFormat.OpenXml.Office.CustomUI;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -55,6 +56,8 @@ namespace DMS.BUSINESS.Services.BU
         Task  GenarateFileMail (List<string> lstCustomerChecked, string type, string headerId, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
+        Task ResendEmail(string code);
+      
         Task SendEmail(string headerId);
         Task SendlstMail(List<string> lstEmail);
         Task SaveSMS(string headerId, string smsName);
@@ -6596,6 +6599,28 @@ namespace DMS.BUSINESS.Services.BU
             catch (Exception ex)
             {
                 return new List<TblBuHistoryDownload>();
+            }
+        }
+        public async Task ResendEmail(string code)
+        {
+            try
+            {
+                var data = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == code&&x.IsSend=="N" && x.NumberRetry==3).ToList();
+
+                foreach(var mail in data)
+                {
+                    mail.IsSend = "N";
+                    mail.Status = "";
+                    mail.NumberRetry = 0;
+                    
+                }
+                _dbContext.TblCmNotifiEmail.UpdateRange(data);
+                _dbContext.SaveChanges();
+               
+            }
+            catch (Exception ex)
+            {
+                this.Status = false;
             }
         }
         #endregion

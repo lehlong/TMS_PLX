@@ -398,6 +398,26 @@ namespace DMS.API.Controllers.BU
             }
             return Ok(transferObject);
         }
+        [HttpGet("ResendEmail")]
+        [Authorize]
+        public async Task<IActionResult> ResendEmail([FromQuery] string code)
+        {
+            var transferObject = new TransferObject();
+            await _service.ResendEmail(code);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                //transferObject.GetMessage("2000", _service);
+            }
+            return Ok(transferObject);
+        }
         [HttpPost("ExportWord")]
         [Authorize]
         public async Task<IActionResult> ExportWord([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)

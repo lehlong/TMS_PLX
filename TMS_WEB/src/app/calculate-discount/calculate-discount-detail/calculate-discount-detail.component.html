@@ -2725,13 +2725,9 @@
           <th>NGÀY</th>
           <th>SỐ LẦN GỬI</th>
           <th>TRẠNG THÁI</th>
-          <!-- <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
-          <th style="width: 70%;"><input nz-input [(ngModel)]="inputSearchMail" placeholder="NỘI DUNG"
-              (ngModelChange)="searchEmail()" type="text" /></th>
-          <th>NGÀY</th>
-          <th>TRẠNG THÁI</th> -->
+       
           <th>File đính kèm</th>
-          <th>HÀNH ĐỘNG</th>
+        
         </tr>
       </thead>
       <tbody>
@@ -2750,13 +2746,7 @@
           
           <td nzAlign="center">{{ data.numberRetry == 3 ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
           <td>{{data.checkFile}}</td>
-          <td>
-            <ng-container  *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'">
-            <button nzAlign="center" nz-button  (click)="ResendEmail(data)">
-              <span nz-icon nzType="reload"></span>Gửi lại
-            </button>
-            </ng-container>
-          </td>
+        
         </tr>
         }
       </tbody>
@@ -2767,6 +2757,7 @@
     <div style="display: flex; justify-content: flex-end;">
       <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
       <button nz-button nzType="primary" (click)="onSendEmail()" [nzLoading]="isConfirmLoading">Gửi Mail</button>
+      <button nz-button nzType="danger" (click)="ResendEmail()" [nzLoading]="isConfirmLoading">Gửi lại Email</button>
     </div>
   </ng-template>
 </nz-modal>

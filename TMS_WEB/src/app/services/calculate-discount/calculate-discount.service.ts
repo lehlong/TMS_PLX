@@ -74,6 +74,9 @@ export class CalculateDiscountService {
     GetHistoryFile(code : any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/GetHistoryFile?code=${code}`)
     }
+     ResendEmail(code : any): Observable<any> {
+      return this.commonService.get(`CalculateDiscount/ResendEmail?code=${code}`)
+    }
 
     ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
         return this.commonService.postNoneMess(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)
