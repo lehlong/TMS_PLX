@@ -35,58 +35,6 @@
             <span nz-icon nzType="close"></span> Từ chối
           </button>
 
-          <!-- <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '09')"
-            [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '02'">
-            <span nz-icon nzType="close"></span> Hủy trình giá bán lẻ
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('03', '04')"
-            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '02'">
-            <span nz-icon nzType="check"></span> Phê duyệt Giá bán Lẻ
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('02', '03')"
-            [appPermission]="IMPORT_BATCH.REQUEST_IMPORT_BATCH_EDIT" *ngIf="input.header.status == '02'">
-            <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('06', '11')"
-            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '04'">
-            <span nz-icon nzType="close"></span> Hủy duyệt giá bán lẻ
-          </button>
-
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('11', '06')"
-            [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH" *ngIf="input.header.status == '04'">
-            <span nz-icon nzType="send"></span> Trình giá thù lao
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('15', '10')"
-            [appPermission]="IMPORT_BATCH.CANCEL_BROWSE" *ngIf="input.header.status == '06'">
-            <span nz-icon nzType="close"></span> Hủy trình giá thù lao
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('12', '07')"
-            [appPermission]="IMPORT_BATCH.REQUEST_IMPORT_BATCH_EDIT" *ngIf="input.header.status == '06'">
-            <span nz-icon nzType="undo"></span> Yêu cầu chỉnh sửa
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('13', '08')"
-            [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" *ngIf="input.header.status == '06'">
-            <span nz-icon nzType="check"></span> Phê duyệt
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('16', '12')"
-            [appPermission]="IMPORT_BATCH.CANCEL_APPROVAL" *ngIf="input.header.status == '08'">
-            <span nz-icon nzType="close"></span> Hủy duyệt giá thù lao
-          </button>
-
-          <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('04', '05')"
-            [appPermission]="IMPORT_BATCH.REJECT_IMPORT_BATCH"
-            *ngIf="input.header.status == '06' || input.header.status == '02'">
-            <span nz-icon nzType="close"></span> Từ chối
-          </button> -->
-
 
 
           <button [appPermission]="IMPORT_BATCH.INPUT_DATA" nzType="default" nz-button (click)="openInput()">
@@ -2736,7 +2684,7 @@
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="selectedCustomerMail"
               style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%; border: none">
               <ng-container *ngFor="let data of output.bbdo">
-                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"*ngIf="data.id != NULL"></nz-option>
+                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"*ngIf="data.id != null"></nz-option>
               </ng-container>
             </nz-select>
           </td>

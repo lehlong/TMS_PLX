@@ -278,22 +278,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
   //     },
   //   })
   // }
-  // showHistoryExport() {
-  //    this._service.ResendEmail(this.headerId).subscribe({
-  //     next: (data) => {
-
-  //       this.isVisibleEmail = false
-  //       console.log(data)
-  //       console.log('tc')
-  //       this.message.create('success', 'Gửi lại mail thành công')
-
-  //     },
-  //     error: (err) => {
-  //       console.log(err)
-  //     },
-  //   })
-  // }
-
+  showHistoryExport() {
+    this._service.GetHistoryFile(this.headerId).subscribe({
+      next: (data) => {
+        this.lstHistoryFile = data
+        this.isVisibleExport = true
+        this.lstHistoryFile.forEach((item) => {
+          item.pathDownload = environment.apiUrl + item.path
+          item.pathView = environment.apiUrl + item.path
+        })
+      },
+    })
+  }
   getRight() {
     const rights = localStorage.getItem('userRights')
     this.rightList = rights ? JSON.parse(rights) : []
