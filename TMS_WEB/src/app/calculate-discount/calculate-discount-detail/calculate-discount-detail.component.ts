@@ -599,6 +599,31 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.lstCustomerChecked = [];
     this.checked = false;
   }
+   confirmExportWordMail() {
+    if (this.lstCustomerChecked.length == 0) {
+      this.message.create(
+        'warning',
+        'Vui lòng chọn file cần tạo',
+      )
+      return
+    } else {
+      this._service
+        .ExportWordMail(this.lstCustomerChecked, this.headerId)
+        .subscribe({
+          next: (data) => {
+            this.isVisibleCustomer = false
+            this.lstCustomerChecked = []
+           
+            this.message.create('success', 'Xuất file thành công')
+          },
+          error: (err) => {
+            console.log(err)
+          },
+        })
+    }
+    this.lstCustomerChecked = [];
+    this.checked = false;
+  }
 
   updateCheckedSet(code: any, deliveryGroupCode: string, checked: boolean,): void {
     if (checked) {

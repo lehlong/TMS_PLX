@@ -30,8 +30,8 @@ namespace DMS.CORE.Entities.BU
         public string IsSend { get; set; }
         [Column("EMAIL")]
         public string? Email { get; set; }
-        [Column("PATH")]
-        public string? Path { get; set; }
+        [Column("CUSTOMER_CODE")]
+        public string? CustomerCode { get; set; }
 
 
 

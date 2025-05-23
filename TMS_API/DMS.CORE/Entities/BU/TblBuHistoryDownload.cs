@@ -27,7 +27,7 @@ namespace DMS.CORE.Entities.BU
 
         [Column("PATH", TypeName = "NVARCHAR(MAX)")]
         public string? Path { get; set; }
-
-
+        [Column("CUSTOMER_CODE")]
+        public string? CustomerCode { get; set; }
     }
 }

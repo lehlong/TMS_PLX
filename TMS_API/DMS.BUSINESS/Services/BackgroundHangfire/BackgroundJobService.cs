@@ -6,6 +6,7 @@ using System.Data;
 using System.Net.Mail;
 using System.Net;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DMS.BUSINESS.Services.BackgroundHangfire
 {
@@ -137,9 +138,11 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             {
                 _dbContext.ChangeTracker.Clear();
                 var lstEmail = await _dbContext.TblCmNotifiEmail.Where(x => x.IsSend == "N" && x.NumberRetry<3).ToListAsync();
+                var lstFiledowload = await _dbContext.TblBuHistoryDownload.Where(x => !x.CustomerCode.IsNullOrEmpty()).ToListAsync();
                 foreach (var s in lstEmail)
                 {
-                    var status =await SendMail(s.Email, s.Subject, s.Contents,s.Path);
+                   var Path= lstFiledowload.Where(x => x.CustomerCode == s.CustomerCode&&x.HeaderCode==s.HeaderId).OrderBy(x=>x.CreateDate).Select(x => x.Path).FirstOrDefault();
+                    var status = await SendMail(s.Email, s.Subject, s.Contents, Path);
                     if (status)
                     {
                         s.IsSend = "Y";

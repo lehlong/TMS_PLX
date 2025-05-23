@@ -78,6 +78,10 @@ export class CalculateDiscountService {
     ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
         return this.commonService.postNoneMess(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)
     }
+     ExportWordMail(lstCustomerChecked: any[], headerId : any): Observable<any> {
+        return this.commonService.postNoneMess(`CalculateDiscount/ExportWordMail?headerId=${headerId}`, lstCustomerChecked)
+    }
+
 
     GetCustomerBbdo(id : any): Observable<any> {
         return this.commonService.get(`CalculateDiscount/GetCustomerBbdo?id=${id}`)

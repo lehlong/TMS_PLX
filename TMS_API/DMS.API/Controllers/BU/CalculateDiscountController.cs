@@ -398,6 +398,26 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+        [HttpPost("ExportWordMail")]
+        [Authorize]
+        public async Task<IActionResult> ExportWordMail([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)
+        {
+            var transferObject = new TransferObject();
+             await _service.GenarateFileMail([], "WORD", headerId, new CalculateDiscountInputModel(), lstCustomerChecked);
+            if (_service.Status)
+            {
+            
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
 
         [HttpPost("ExportPDF")]
         [Authorize]
