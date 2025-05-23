@@ -56,13 +56,13 @@ namespace DMS.BUSINESS.Services.BU
         Task  GenarateFileMail (List<string> lstCustomerChecked, string type, string headerId, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
-        Task ResendEmail(string code);
-      
         Task SendEmail(string headerId);
         Task SendlstMail(List<string> lstEmail);
-        Task SaveSMS(string headerId, string smsName);
+        Task<string> SaveSMS(string headerId, string smsName);
         Task SendSMS(List<string> lstSms);
         Task<List<NotifyEmailViewModel>> GetHistoryMail(string headerId);
+        Task ResetSendlstMail(List<string> lstEmail);
+        Task ResetSendSMS(List<string> lstSms);
         //Task ResendMail(string headerId);
         Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
@@ -82,13 +82,10 @@ namespace DMS.BUSINESS.Services.BU
                 var statusMap = new Dictionary<string, string>
                     {
                         { "01", "khởi tạo" },
-                        { "02", "Trình duyệt Giá Bán lẻ" },
-                        { "03", "Yêu cầu chỉnh sửa Giá bán lẻ" },
-                        { "04", "phê duyệt giá bán lẻ" },
+                        { "02", "Trình duyệt" },
+                        { "03", "Yêu cầu chỉnh sửa" },
+                        { "04", "phê duyệt" },
                         { "05", "từ chối" },
-                        { "06", "Trình duyệt giá thù lao" },
-                        { "07", "Yêu cầu chỉnh sửa giá thù lao" },
-                        { "08", "phê duyệt" }
                         };
                 var keyword = filter.KeyWord?.ToLower() ?? "";
                 var matchedStatus= statusMap
@@ -1095,6 +1092,7 @@ namespace DMS.BUSINESS.Services.BU
                         CustomerName = i.Name,
                         DeliveryPoint = i.DeliveryPoint,
                         GoodName = "Điêzen 0.001S-V",
+                        MarketCode = i.MarketCode,
                         PThuc = i.PhuongThuc,
                         CustomerCode = i.Code,
                         GoodCode = i.GoodsCode,
@@ -1117,8 +1115,28 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                     j.Col11 = j.Col12 * 1.1M;
 
+                    var dlg6 = j.MarketCode == "V1"
+                        ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V1").FirstOrDefault()
+                        : data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
+
+
+                    //j.Col14 = dlg6.Col6 - j.Col9;
+                    //j.Col14 = j.Col14 > dlg6.Col6
+                    //    ? dlg6.Col6
+                    //    : j.Col14;
+
+                    //j.Col13 = j.Col14 / 1.1M - dlg6.Col2;
+                    //if (j.Col15 == 1)
+                    //{
+                    //    j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
+
+                    //    j.Col14 = (j.Col13 + dlg6.Col2) * 1.1M;
+                    //}
+
                     j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
-                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6)
+                        ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6)
+                        : j.Col14;
 
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                     if (j.Col15 == 1)
@@ -5990,8 +6008,26 @@ namespace DMS.BUSINESS.Services.BU
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveSMS(string headerId, string smsName)
+        public async Task<string> SaveSMS(string headerId, string smsName)
         {
+
+            if (smsName == "SMS thông báo thù lao")
+            {
+                var lstSMS = _dbContext.TblCmNotifySms.FirstOrDefault(x => x.HeaderId == headerId && x.Status == "TBTL");
+
+                if (lstSMS != null)
+                {
+                    return "01";
+                }
+            }else if (smsName == "SMS Thông báo giá bán lẻ niêm yết")
+            {
+                var lstSMS = _dbContext.TblCmNotifySms.FirstOrDefault(x => x.HeaderId == headerId && x.Status == "TBGBL");
+
+                if (lstSMS != null)
+                {
+                    return "02";
+                }
+            }
             var data = await this.CalculateDiscountOutput(headerId);
             var dataHeader = await this.GetInput(headerId);
 
@@ -6365,11 +6401,13 @@ namespace DMS.BUSINESS.Services.BU
                 }
 
                 _dbContext.SaveChanges();
+                return "true";
             }
             catch (Exception ex)
             {
                 this.Status = false;
                 this.Exception = ex;
+                return null;
             }
         }
 
@@ -6475,6 +6513,33 @@ namespace DMS.BUSINESS.Services.BU
               
             }
         }
+
+        public async Task ResetSendSMS(List<string> lstSms)
+        {
+            try
+            {
+                foreach (var i in lstSms)
+                {
+                    var sms = _dbContext.TblCmNotifySms.Where(x => x.Id == i).FirstOrDefault();
+                    if ((sms.NumberRetry == 3 && sms.IsSend == "N") || sms.IsSend == "Y")
+                    {
+                        sms.IsSend = "N";
+                        sms.NumberRetry = 0;
+
+                        _dbContext.SaveChanges();
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
         public async Task SendlstMail(List<string> lstEmail)
         {
             try
@@ -6484,6 +6549,28 @@ namespace DMS.BUSINESS.Services.BU
                     var sms = _dbContext.TblCmNotifiEmail.Where(x => x.Id == i).FirstOrDefault();
                     sms.IsSend = "N";
                     _dbContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task ResetSendlstMail(List<string> lstEmail)
+        {
+            try
+            {
+                foreach (var i in lstEmail)
+                {
+                    var mail = _dbContext.TblCmNotifiEmail.Where(x => x.Id == i).FirstOrDefault();
+                    if (mail.IsSend == "Y" || (mail.IsSend == "N" && mail.NumberRetry == 3))
+                    {
+                        mail.IsSend = "C";
+                        mail.NumberRetry = 0;
+
+                        _dbContext.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
@@ -6571,6 +6658,8 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
 
+
+
         #endregion
 
         #region
@@ -6601,28 +6690,28 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblBuHistoryDownload>();
             }
         }
-        public async Task ResendEmail(string code)
-        {
-            try
-            {
-                var data = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == code&&x.IsSend=="N" && x.NumberRetry==3).ToList();
+        //public async Task ResendEmail(string code)
+        //{
+        //    try
+        //    {
+        //        var data = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == code&&x.IsSend=="N" && x.NumberRetry==3).ToList();
 
-                foreach(var mail in data)
-                {
-                    mail.IsSend = "N";
-                    mail.Status = "";
-                    mail.NumberRetry = 0;
+        //        foreach(var mail in data)
+        //        {
+        //            mail.IsSend = "N";
+        //            mail.Status = "";
+        //            mail.NumberRetry = 0;
                     
-                }
-                _dbContext.TblCmNotifiEmail.UpdateRange(data);
-                _dbContext.SaveChanges();
+        //        }
+        //        _dbContext.TblCmNotifiEmail.UpdateRange(data);
+        //        _dbContext.SaveChanges();
                
-            }
-            catch (Exception ex)
-            {
-                this.Status = false;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.Status = false;
+        //    }
+        //}
         #endregion
 
         #region copy kỳ

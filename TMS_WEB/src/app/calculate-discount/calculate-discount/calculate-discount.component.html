@@ -26,6 +26,7 @@
           <th>Tên đợt tính</th>
           <th>Ngày hiệu lực</th>
           <th>Trạng thái</th>
+          <th>Thao Tác</th>
         </tr>
       </thead>
       <tbody>
@@ -47,26 +48,9 @@
               ? 'Phê duyệt'
               : 'Từ chối'
               }}</nz-tag>
-
-            <!-- <nz-tag [nzColor]="getStatusColor(data.status)">
-              {{
-              data.status == '01'
-              ? 'Khởi tạo'
-              : data.status == '02'
-              ? 'Trình duyệt Giá Bán lẻ'
-              : data.status == '03'
-              ? 'Yêu cầu chỉnh sửa Giá bán lẻ'
-              : data.status == '04'
-              ? 'Phê duyệt giá bán lẻ'
-              : data.status == '06'
-              ? 'Trình duyệt giá thù lao'
-              : data.status == '07'
-              ? 'Yêu cầu chỉnh sửa giá thù lao'
-              : data.status == '08'
-              ? 'Phê duyệt'
-              : 'Từ chối'
-              }}</nz-tag> -->
           </td>
+          <td *ngIf="data.status == '02'" [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH"s><button nz-button>Phê duyệt</button></td>
+
         </tr>
       </tbody>
     </nz-table>

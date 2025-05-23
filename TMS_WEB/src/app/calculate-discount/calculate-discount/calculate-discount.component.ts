@@ -8,6 +8,10 @@ import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms'
 import { SignerService } from '../../services/master-data/signer.service';
 import { GoodsService } from '../../services/master-data/goods.service';
+import {
+  CALCULATE_RESULT_RIGHT,
+  IMPORT_BATCH,
+} from '../../shared/constants/access-right.constants'
 
 @Component({
   selector: 'app-calculate-discount',
@@ -36,6 +40,7 @@ export class CalculateDiscountComponent implements OnInit {
     })
   }
   isVisibleStatus: boolean = false
+  IMPORT_BATCH = IMPORT_BATCH
   noData: any[] = []
   loading: boolean = false
   visible = false;
@@ -289,12 +294,6 @@ export class CalculateDiscountComponent implements OnInit {
     case '03':
       return 'purple';
     case '04':
-      return 'lime';
-    case '06':
-      return 'cyan';
-    case '07':
-      return 'red';
-    case '08':
       return 'green';
     default:
       return 'gray';

@@ -41,7 +41,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isZoom = false
   UrlOffice: string = ''
   inputSearchCustomer: string = ''
-    inputSearchMail: string = ''
+  inputSearchMail: string = ''
   inputnameBBDO: string = ''
   listNameBBDO: any[] = []
 
@@ -125,8 +125,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   isVisibleCustomerPDF: boolean = false
   lstCustomerChecked: any[] = []
   lstSendSmsChecked: any[] = []
-   lstSendEmailChecked: any[] = []
-   EmailName = ''
+  lstSendEmailChecked: any[] = []
+  EmailName = ''
   accountGroups: any = {}
   searchInput = ''
   searchInputTab = ''
@@ -252,30 +252,19 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
-ResendEmail() {
-    this._service.ResendEmail(this.headerId).subscribe({
-      next: (data) => {
-        this.isVisibleEmail = false
-        
-        this.message.create('success', 'Gửi lại mail thành công')
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
+
 
 
 
 
   removeHtmlTags(html: string): string {
     if (!html) return ''
-      let result = html.replace(/<[^>]*>/g, '');
-     result = result.replace(/&nbsp;/g, ' ')  // Thay thế &nbsp; bằng khoảng trắng thường
-               .replace(/&amp;/g, '&')
-               .replace(/&quot;/g, '"')
-               .replace(/&lt;/g, '<')
-               .replace(/&gt;/g, '>');
+    let result = html.replace(/<[^>]*>/g, '');
+    result = result.replace(/&nbsp;/g, ' ')  // Thay thế &nbsp; bằng khoảng trắng thường
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
     return result
   }
 
@@ -289,21 +278,21 @@ ResendEmail() {
   //     },
   //   })
   // }
-  showHistoryExport() {
-     this._service.ResendEmail(this.headerId).subscribe({
-      next: (data) => {
-        
-        this.isVisibleEmail = false
-        console.log(data)
-        console.log('tc')
-        this.message.create('success', 'Gửi lại mail thành công')
-       
-      },
-      error: (err) => {
-        console.log(err)
-      },
-    })
-  }
+  // showHistoryExport() {
+  //    this._service.ResendEmail(this.headerId).subscribe({
+  //     next: (data) => {
+
+  //       this.isVisibleEmail = false
+  //       console.log(data)
+  //       console.log('tc')
+  //       this.message.create('success', 'Gửi lại mail thành công')
+
+  //     },
+  //     error: (err) => {
+  //       console.log(err)
+  //     },
+  //   })
+  // }
 
   getRight() {
     const rights = localStorage.getItem('userRights')
@@ -408,6 +397,7 @@ ResendEmail() {
 
   checkedSms: boolean = false
   lstSearchSms: any[] = []
+
   showSMSAction() {
     this._service.GetSms(this.headerId).subscribe({
       next: (data) => {
@@ -420,17 +410,42 @@ ResendEmail() {
       },
     })
   }
+
   confirmSendSMS(smsname: any) {
-      this._service.SaveSMS(this.headerId, smsname).subscribe({
-        next: (data) => {
-          this.message.create('success', 'Tạo hàng chờ SMS thành công')
-          this.showSMSAction()
-        },
-        error: (err) => {
-          console.log(err)
-        },
-      })
+    this._service.SaveSMS(this.headerId, smsname).subscribe({
+      next: (data) => {
+        console.log(data);
+
+        if (data == "02") {
+          this.message.create('warning', 'SMS thông báo giá bán lẻ đã đươc tạo!')
+          return
+        } else if (data == "01") {
+          this.message.create('warning', 'SMS thông báo thù lao đã được tạo!')
+          return
+        }
+
+        this.message.create('success', 'Tạo hàng chờ SMS thành công')
+        this.showSMSAction()
+      },
+      error: (err) => {
+        console.log(err)
+      },
+    })
   }
+
+  ResendSms() {
+    this._service.ResetSendSms(this.lstSendSmsChecked).subscribe({
+      next: (data) => {
+        this.isVisibleEmail = false
+
+        this.message.create('success', 'Gửi lại mail thành công')
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
   onAllCheckedSendSms(value: boolean): void {
     this.lstSendSmsChecked = []
     if (value) {
@@ -443,6 +458,7 @@ ResendEmail() {
       this.lstSendSmsChecked = []
     }
   }
+
   updateCheckedSetSendSms(code: any, checked: boolean,): void {
     if (checked) {
       this.lstSendSmsChecked.push(code)
@@ -453,12 +469,15 @@ ResendEmail() {
       )
     }
   }
+
   onItemCheckedSendSms(code: String, checked: boolean,): void {
     this.updateCheckedSetSendSms(code, checked)
   }
+
   isCheckedSendSms(code: string): boolean {
     return this.lstSendSmsChecked.some((item) => item == code)
   }
+
   onSendSms() {
     if (this.lstSendSmsChecked.length == 0) {
       this.message.create(
@@ -475,6 +494,7 @@ ResendEmail() {
       })
     }
   }
+
   selectedMarket: any = null
   selectedCustomer: any = null
   selectedTrangThai: any = null
@@ -514,6 +534,9 @@ ResendEmail() {
     this.searchHistorySMS()
   }
 
+
+
+
   checkedEmail: boolean = false
   lstSearchEmail: any[] = []
   showEmailAction() {
@@ -534,7 +557,7 @@ ResendEmail() {
     if (value) {
       console.log(this.lstSearchEmail);
       this.lstSearchEmail.forEach((i) => {
-        if(i.isSend != "Y"){
+        if (i.isSend != "Y") {
           this.lstSendEmailChecked.push(i.id)
         }
       })
@@ -542,6 +565,7 @@ ResendEmail() {
       this.lstSendEmailChecked = []
     }
   }
+
   updateCheckedSetSendEmail(code: any, checked: boolean,): void {
     if (checked) {
       this.lstSendEmailChecked.push(code)
@@ -552,13 +576,16 @@ ResendEmail() {
       )
     }
   }
+
   onItemCheckedSendEmail(code: String, checked: boolean,): void {
     this.updateCheckedSetSendEmail(code, checked)
   }
+
   isCheckedSendEmail(code: string): boolean {
     return this.lstSendEmailChecked.some((item) => item == code)
   }
-  onSendEmail(){
+
+  onSendEmail() {
     if (this.lstSendEmailChecked.length == 0) {
       this.message.create(
         'warning',
@@ -567,7 +594,7 @@ ResendEmail() {
       return
     } else {
       this._service.SendlstEmail(this.lstSendEmailChecked).subscribe({
-        next: () =>{
+        next: () => {
           this.lstSendEmailChecked = []
           this.handleCancel()
         }
@@ -575,12 +602,62 @@ ResendEmail() {
     }
   }
 
-  searchEmail(){
+  searchEmail() {
     const keyword = this.inputSearchMail.trim().toLowerCase();
     this.lstSearchEmail = this.lstEmail.filter(c =>
       c.contents.toLowerCase().includes(keyword)
     );
   }
+
+  ResendEmail() {
+    this._service.ResetSendlstMail(this.lstSendEmailChecked).subscribe({
+      next: (data) => {
+        this.isVisibleEmail = false
+
+        this.message.create('success', 'Gửi lại mail thành công')
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
+
+  // selectedMarket: any = null
+  selectedCustomerMail: any = null
+  selectedTrangThaiMail : any = null
+  searchHistoryMail() {
+
+    this.lstSearchEmail = this.lstEmail
+    if (this.selectedCustomerMail !== null || this.inputSearchCustomer !== "" || this.selectedTrangThaiMail !== null) {
+      if (this.selectedCustomerMail !== null) {
+        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
+          c.customerCode == this.selectedCustomerMail);
+      }
+      if (this.selectedTrangThaiMail !== null) {
+        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
+          c.isSend == this.selectedTrangThaiMail);
+      }
+      if (this.inputSearchCustomer !== "") {
+
+        const keyword = this.inputSearchCustomer.trim().toLowerCase();
+        console.log(keyword);
+        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
+          c.contents.toLowerCase().includes(keyword) || c.email.toLowerCase().includes(keyword))
+      }
+    } else {
+      this.lstSearchEmail = this.lstEmail
+    }
+
+  }
+
+  clearSearchMail() {
+    this.selectedCustomerMail = null
+    this.selectedTrangThai = null
+    this.inputSearchCustomer = ""
+    this.searchHistoryMail()
+  }
+
 
   searchTableBBDO() {
     const keyword = this.inputnameBBDO.toLowerCase();
@@ -619,7 +696,7 @@ ResendEmail() {
     this.lstCustomerChecked = [];
     this.checked = false;
   }
-   confirmExportWordMail() {
+  confirmExportWordMail() {
     if (this.lstCustomerChecked.length == 0) {
       this.message.create(
         'warning',
@@ -633,7 +710,7 @@ ResendEmail() {
           next: (data) => {
             this.isVisibleCustomer = false
             this.lstCustomerChecked = []
-           
+
             this.message.create('success', 'Xuất file thành công')
           },
           error: (err) => {

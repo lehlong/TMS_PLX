@@ -72,6 +72,10 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     }
                     else
                     {
+                        s.NumberRetry = s.NumberRetry + 1;
+                        s.IsSend = "N";
+                        _dbContext.TblCmNotifySms.Update(s);
+                        _dbContext.SaveChanges();
                         Console.WriteLine("Lỗi không gửi được tin nhắn");
                     }
                 }

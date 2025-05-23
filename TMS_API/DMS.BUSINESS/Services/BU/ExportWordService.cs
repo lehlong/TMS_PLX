@@ -33,12 +33,19 @@ namespace DMS.BUSINESS.Services.BU
                 if (header.QuyetDinhSo != null)
                 {
                     var oldHeaders = await _dbContext.TblBuCalculateDiscount
+                        //.Where(x => x.QuyetDinhSo == header.QuyetDinhSo)
                         .Where(x => x.QuyetDinhSo == header.QuyetDinhSo && x.Id != headerId)
                         .ToListAsync();
-
-                    oldHeader = oldHeaders
-                        .OrderBy(x => x.Date)
-                        .FirstOrDefault();
+                    if(oldHeader != null)
+                    {
+                        oldHeader = oldHeaders
+                            .OrderBy(x => x.Date)
+                            .FirstOrDefault();
+                    }
+                    else
+                    {
+                        oldHeader = header;
+                    }
                 }
                 else
                 {
@@ -61,7 +68,7 @@ namespace DMS.BUSINESS.Services.BU
                     var customer = lstCustomerChecked[i];
                     var tempBody = (Body)templateBody.CloneNode(true);
                     var customerData = data.Vk11Bb.Where(x => x.Col4 == customer.code).ToList();
-                    var customerInfo = await _dbContext.TblBuInputCustomerBbdo.FirstOrDefaultAsync(x => x.Code == customer.code);
+                    var customerInfo = await _dbContext.TblBuInputCustomerBbdo.FirstOrDefaultAsync(x => x.Code == customer.code && x.HeaderId == headerId);
 
                     ReplaceStringInWordBody(tempBody, "##COMPANY@@", customerInfo?.Name);
                     ReplaceStringInWordBody(tempBody, "##ADDRESS@@", customerInfo?.Adrress);

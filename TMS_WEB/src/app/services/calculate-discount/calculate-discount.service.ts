@@ -51,7 +51,7 @@ export class CalculateDiscountService {
     ExportWordTrinhKy(lstTrinhKyChecked: any, headerId : any): Observable<any> {
         return this.commonService.postNoneMess(`CalculateDiscount/ExportWordTrinhKy?headerId=${headerId}`, lstTrinhKyChecked)
     }
-  
+
 
 
     SaveSMS(headerId: any, smsName: any): Observable<any> {
@@ -64,6 +64,10 @@ export class CalculateDiscountService {
       return this.commonService.post(`CalculateDiscount/SendlstMail`, lstMail)
     }
 
+     ResetSendSms(lstSms : any): Observable<any> {
+      return this.commonService.post(`CalculateDiscount/ResetSendSms`, lstSms)
+    }
+
 
     Getmail(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/Getmail?headerId=${model}`)
@@ -71,12 +75,15 @@ export class CalculateDiscountService {
     GetSms(model: any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/GetSms?headerId=${model}`)
     }
+     ResetSendlstMail(lstMail : any): Observable<any> {
+      return this.commonService.post(`CalculateDiscount/ResetSendlstMail`, lstMail)
+    }
+
+
     GetHistoryFile(code : any): Observable<any> {
       return this.commonService.get(`CalculateDiscount/GetHistoryFile?code=${code}`)
     }
-     ResendEmail(code : any): Observable<any> {
-      return this.commonService.get(`CalculateDiscount/ResendEmail?code=${code}`)
-    }
+
 
     ExportWord(lstCustomerChecked: any[], headerId : any): Observable<any> {
         return this.commonService.postNoneMess(`CalculateDiscount/ExportWord?headerId=${headerId}`, lstCustomerChecked)

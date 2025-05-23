@@ -263,12 +263,11 @@ namespace DMS.API.Controllers.BU
         public async Task<IActionResult> SaveSMS([FromQuery] string headerId, string smsName)
         {
             var transferObject = new TransferObject();
-            await _service.SaveSMS(headerId, smsName);
+            var result = await _service.SaveSMS(headerId, smsName);
             if (_service.Status)
             {
-                //transferObject.Data = result;
+                transferObject.Data = result;
                 return Ok(transferObject);
-
             }
             else
             {
@@ -299,6 +298,49 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+
+        [HttpPost("ResetSendSMS")]
+        [Authorize]
+        public async Task<IActionResult> ResetSendSMS([FromBody] List<string> lstSms)
+        {
+            var transferObject = new TransferObject();
+            await _service.ResetSendSMS(lstSms);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
+        [HttpPost("ResetSendlstMail")]
+        [Authorize]
+        public async Task<IActionResult> ResetSendlstMail([FromBody] List<string> lstEmail)
+        {
+            var transferObject = new TransferObject();
+            await _service.ResetSendlstMail(lstEmail);
+            if (_service.Status)
+            {
+                //transferObject.Data = result;
+                return Ok(transferObject);
+
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("2000", _service);
+                return Ok(transferObject);
+            }
+        }
+
         [HttpPost("SendlstMail")]
         [Authorize]
         public async Task<IActionResult> SendlstMail([FromBody] List<string> lstEmail)
@@ -340,26 +382,7 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
-        //[HttpGet("ResendMail")]
-        //[Authorize]
-        //public async Task<IActionResult> ResendMail([FromQuery] string Id)
-        //{
-        //    var transferObject = new TransferObject();
-        //   await _service.ResendMail(Id);
-        //    if (_service.Status)
-        //    {
-            
-        //        return Ok(transferObject);
 
-        //    }
-        //    else
-        //    {
-        //        transferObject.Status = false;
-        //        transferObject.MessageObject.MessageType = MessageType.Error;
-        //        transferObject.GetMessage("2000", _service);
-        //        return Ok(transferObject);
-        //    }
-        //}
         [HttpGet("GetSms")]
         [Authorize]
         public async Task<IActionResult> GetSms([FromQuery] string headerId)
@@ -398,26 +421,7 @@ namespace DMS.API.Controllers.BU
             }
             return Ok(transferObject);
         }
-        [HttpGet("ResendEmail")]
-        [Authorize]
-        public async Task<IActionResult> ResendEmail([FromQuery] string code)
-        {
-            var transferObject = new TransferObject();
-            await _service.ResendEmail(code);
-            if (_service.Status)
-            {
-                //transferObject.Data = result;
-                return Ok(transferObject);
 
-            }
-            else
-            {
-                transferObject.Status = false;
-                transferObject.MessageObject.MessageType = MessageType.Error;
-                //transferObject.GetMessage("2000", _service);
-            }
-            return Ok(transferObject);
-        }
         [HttpPost("ExportWord")]
         [Authorize]
         public async Task<IActionResult> ExportWord([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)

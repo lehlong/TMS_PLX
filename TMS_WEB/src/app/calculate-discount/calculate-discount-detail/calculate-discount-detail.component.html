@@ -122,8 +122,8 @@
             <ul nz-menu>
               <li nz-menu-item (click)="showHistoryAction()">Lịch sử hành động</li>
               <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
-              <li nz-menu-item (click)="showEmailAction()" *ngIf="input.header.status == '04'">Lịch sử gửi Mail</li>
-              <li nz-menu-item (click)="showSMSAction()" *ngIf="input.header.status == '04'">Lịch sử gửi SMS</li>
+              <li nz-menu-item (click)="showEmailAction()">Lịch sử gửi Mail</li>
+              <li nz-menu-item (click)="showSMSAction()">Lịch sử gửi SMS</li>
 
               <!-- <li nz-menu-item (click)="showEmailAction()"
                 *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi Mail</li>
@@ -132,19 +132,18 @@
             </ul>
           </nz-dropdown-menu>
 
-          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL"
-            *ngIf="input.header.status == '04' || input.header.status == '08'" nzType="primary" nz-button>
+          <button [appPermission]="IMPORT_BATCH.SEND_EMAIL" (click)="showEmailAction()" nzType="primary" nz-button>
             <span nz-icon nzType="mail"></span> Gửi Email
           </button>
           <div class="">
             <button [appPermission]="IMPORT_BATCH.SEND_SMS" class="btn-email" [nzDropdownMenu]="menu" nz-dropdown
-              [nzPlacement]="'bottomRight'" *ngIf="input.header.status == '04' || input.header.status == '08'" nz-button
-              (click)="showSMSAction()">
+              [nzPlacement]="'bottomRight'" nz-button (click)="showSMSAction()">
               <span nz-icon style="color:white" nzType="message"></span>Gửi SMS
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item style="border-bottom: 1px solid #d9d9d9;" (click)="confirmSendSMS('SMS Thông báo giá bán lẻ niêm yết')">Tạo tin nhắn TB Giá bán lẻ</li>
+                <li nz-menu-item style="border-bottom: 1px solid #d9d9d9;"
+                  (click)="confirmSendSMS('SMS Thông báo giá bán lẻ niêm yết')">Tạo tin nhắn TB Giá bán lẻ</li>
                 <li nz-menu-item (click)="confirmSendSMS('SMS thông báo thù lao')">Tạo tin nhắn TB thù lao</li>
               </ul>
             </nz-dropdown-menu>
@@ -1993,8 +1992,7 @@
 </nz-modal>
 
 <!-- danh sách sms -->
-<nz-modal [(nzVisible)]="isSms" nzTitle="CHỌN MẪU SMS" (nzOnCancel)="handleCancel()"
-  nzCancelText="Đóng">
+<nz-modal [(nzVisible)]="isSms" nzTitle="CHỌN MẪU SMS" (nzOnCancel)="handleCancel()" nzCancelText="Đóng">
   <ng-container *nzModalContent>
     <nz-table #smsTable [nzData]="lstSms" nzSize="small">
       <thead>
@@ -2019,9 +2017,8 @@
 
 
 <!-- Customer -->
-<nz-modal [(nzVisible)]="isVisibleCustomer" nzTitle="CHỌN KHÁCH HÀNG"  (nzOnCancel)="handleCancel()"
-[nzFooter]="nzModalFooter"
-  >
+<nz-modal [(nzVisible)]="isVisibleCustomer" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
+  [nzFooter]="nzModalFooter">
   <ng-container *nzModalContent>
     <nz-table #customerTable [nzData]="lstCus" nzSize="small">
       <thead>
@@ -2043,18 +2040,20 @@
         }
       </tbody>
     </nz-table>
-    
+
   </ng-container>
 </nz-modal>
- <ng-template #nzModalFooter>
-     <div style="display: flex; justify-content: flex-end;">
-      <nz-space [nzSize]="5">
-    <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
-    <button nz-button nzType="primary" (click)="confirmExportWord()" [nzLoading]="isConfirmLoading">Tải file về</button>
-    <button nz-button nzType="primary" (click)="confirmExportWordMail()" [nzLoading]="isConfirmLoading">Tạo file đính kèm mail</button>
+<ng-template #nzModalFooter>
+  <div style="display: flex; justify-content: flex-end;">
+    <nz-space [nzSize]="5">
+      <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
+      <button nz-button nzType="primary" (click)="confirmExportWord()" [nzLoading]="isConfirmLoading">Tải file
+        về</button>
+      <button nz-button nzType="primary" (click)="confirmExportWordMail()" [nzLoading]="isConfirmLoading">Tạo file đính
+        kèm mail</button>
     </nz-space>
   </div>
-  </ng-template>
+</ng-template>
 
 <nz-modal [(nzVisible)]="isVisibleCustomerPDF" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
   (nzOnOk)="confirmExportPDF()" nzCancelText="Đóng">
@@ -2695,7 +2694,7 @@
           <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
-          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : data.isSend == "N" && data.numberRetry == 3 ? "Gửi thất bại" : "Đang gửi" }}</td>
         </tr>
         }
       </tbody>
@@ -2706,6 +2705,7 @@
     <div style="display: flex; justify-content: flex-end;">
       <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
       <button nz-button nzType="primary" (click)="onSendSms()" [nzLoading]="isConfirmLoading">Gửi SMS</button>
+      <button nz-button (click)="ResendSms()" [nzLoading]="isConfirmLoading">Gửi lại SMS</button>
     </div>
   </ng-template>
 </nz-modal>
@@ -2720,33 +2720,54 @@
         <tr>
           <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
           <th>KHÁCH HÀNG</th>
-          <th>THỊ TRƯỜNG</th>
+          <th>MAIL</th>
           <th style="width: 70%;">NỘI DUNG </th>
-          <th>NGÀY</th>
+          <!-- <th>NGÀY</th> -->
+          <th>File đính kèm</th>
           <th>SỐ LẦN GỬI</th>
           <th>TRẠNG THÁI</th>
-       
-          <th>File đính kèm</th>
-        
+
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td (click)="clearSearchMail()"><span nz-icon nzType="history"></span></td>
+          <td>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="selectedCustomerMail"
+              style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%; border: none">
+              <ng-container *ngFor="let data of output.bbdo">
+                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"*ngIf="data.id != NULL"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+          <td colspan="2"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="NỘI DUNG"
+              (ngModelChange)="searchHistoryMail()" type="text" style="border: 1px solid #d9d9d9;" /></td>
+          <td class="align-center">-</td>
+          <td class="align-center">-</td>
+          <td nzAlign="center">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm trạng thái" [(ngModel)]="selectedTrangThaiMail"
+              style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%;">
+              <nz-option nzLabel="Chưa gửi" nzValue="C"></nz-option>
+              <nz-option nzLabel="Đang gửi" nzValue="N"></nz-option>
+              <nz-option nzLabel="Đã gửi" nzValue="Y"></nz-option>
+              <nz-option nzLabel="Gửi thất bại" nzValue="TB"></nz-option>
+            </nz-select>
+          </td>
+        </tr>
         @for (data of historyTable.data; track data) {
         <tr>
           <td [nzChecked]="isCheckedSendEmail(data.id)" [nzDisabled]="data.isSend == 'Y'"
             (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
           </td>
-          
-             <td>{{data.customerName}}</td>
-             <td></td>
-             <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
-          <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
-          <td class="align-center">{{ data.numberRetry}}</td>
-        
-          
-          <td nzAlign="center">{{ data.numberRetry == 3 ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+
+          <td>{{data.customerName}}</td>
+          <td>{{data.email}}</td>
+          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td>{{data.checkFile}}</td>
-        
+          <td class="align-center">{{ data.numberRetry}}</td>
+          <td nzAlign="center">{{ data.numberRetry == 3 && data.isSend == "N" ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend
+            == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+
         </tr>
         }
       </tbody>
@@ -2757,7 +2778,7 @@
     <div style="display: flex; justify-content: flex-end;">
       <button nz-button nzType="default" (click)="handleCancel()">Đóng</button>
       <button nz-button nzType="primary" (click)="onSendEmail()" [nzLoading]="isConfirmLoading">Gửi Mail</button>
-      <button nz-button nzType="danger" (click)="ResendEmail()" [nzLoading]="isConfirmLoading">Gửi lại Email</button>
+      <button nz-button (click)="ResendEmail()" [nzLoading]="isConfirmLoading">Gửi lại Email</button>
     </div>
   </ng-template>
 </nz-modal>
