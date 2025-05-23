@@ -1993,7 +1993,7 @@
 </nz-modal>
 
 <!-- danh sách sms -->
-<nz-modal [(nzVisible)]="isSms" nzTitle="CHỌN MẪU SMS" (nzOnCancel)="handleCancel()" (nzOnOk)="confirmSendSMS()"
+<nz-modal [(nzVisible)]="isSms" nzTitle="CHỌN MẪU SMS" (nzOnCancel)="handleCancel()"
   nzCancelText="Đóng">
   <ng-container *nzModalContent>
     <nz-table #smsTable [nzData]="lstSms" nzSize="small">

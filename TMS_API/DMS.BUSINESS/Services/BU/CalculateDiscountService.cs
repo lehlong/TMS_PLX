@@ -52,7 +52,7 @@ namespace DMS.BUSINESS.Services.BU
         Task<string> GenarateWordTrinhKy(string headerId, string nameTeam);
         Task<string> GenarateWord(List<CustomBBDOExportWord> lstCustomerChecked, string headerId);
         Task<List<string>> GenarateFile(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
-        Task  GenarateFileMail (List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
+        Task  GenarateFileMail (List<string> lstCustomerChecked, string type, string headerId, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null);
         Task<string> ExportExcelTrinhKy(string headerId);
         Task<List<TblBuHistoryDownload>> GetHistoryFile(string code);
         Task SendEmail(string headerId);
@@ -5960,42 +5960,30 @@ namespace DMS.BUSINESS.Services.BU
                 //return ;
             }
         }
-        public async Task  GenarateFileMail(List<string> lstCustomerChecked, string type, string headerId, CalculateDiscountInputModel data, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null)
+        public async Task  GenarateFileMail(List<string> lstCustomerChecked, string type, string headerId, List<CustomBBDOExportWord>? lstCustomerCheckedWord = null)
         {
-           
+
+            var s = new ExportWordService(_dbContext);
+            var data = await CalculateDiscountOutput(headerId);
+
             foreach ( var item in lstCustomerCheckedWord)
             {
                 var listparam = new List<CustomBBDOExportWord>();
                 listparam.Add(item);
-                var w = await GenarateWord(listparam, headerId);
-                var pathWord = Directory.GetCurrentDirectory() + "/" + w;
-                Aspose.Words.Document doc = new Aspose.Words.Document(pathWord);
-                var folderName = Path.Combine($"Uploads/Pdf/{DateTime.Now.ToString("yyyy/MM/dd")}");
-                if (!Directory.Exists(folderName))
-                {
-                    Directory.CreateDirectory(folderName);
-                }
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var fileName = $"ThongBaoGia_{DateTime.Now:ddMMyyyy_HHmmss}.pdf";
-                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderName, fileName);
-              
+
+                var path = await s.GenarateWord(listparam, headerId, data);
 
                 _dbContext.TblBuHistoryDownload.Add(new TblBuHistoryDownload
                 {
                     Code = Guid.NewGuid().ToString(),
                     HeaderCode = headerId,
-                    Name = fileName,
-                    Type = "pdf",
-                    Path = $"{folderName}/{fileName}",
-                    CustomerCode=item.code
+                    Name = path.Replace($"Uploads/Word/{DateTime.Now.ToString("yyyy/MM/dd")}/", ""),
+                    Type = "docx",
+                    Path = path,
+                    CustomerCode = item.code
                 });
-                await _dbContext.SaveChangesAsync();
-
             }
-              
-              
-            
-            
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task SaveSMS(string headerId, string smsName)
@@ -6509,7 +6497,6 @@ namespace DMS.BUSINESS.Services.BU
                 var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
                 var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
                 var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
-
                 
                 var h = new TblBuHistoryAction()
                 {
@@ -6540,15 +6527,12 @@ namespace DMS.BUSINESS.Services.BU
                         };
                         _dbContext.TblCmNotifiEmail.Add(email);
                     }
-
                 }
                 if (data.Status.Code == "04")
                 {
-                    SaveMailPheDuyet(data.header.Id);
+                    await SaveMailPheDuyet(data.header.Id);
                 }
-
                 await _dbContext.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
@@ -6807,6 +6791,7 @@ namespace DMS.BUSINESS.Services.BU
             }
         }
         #endregion
+
         #region gửi mail
         public async Task SaveMailPheDuyet(string headerId)
         {
@@ -6814,36 +6799,38 @@ namespace DMS.BUSINESS.Services.BU
             {
                 var s = new ExportWordService(_dbContext);
                 var data = await this.CalculateDiscountOutput(headerId);
-                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.ToList();
+                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true).ToList();
                 var dataHeader = await this.GetInput(headerId);
                 DateTime Date = dataHeader.Header.Date;
                 var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
                 var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email TBPD");
+
                 var lstmail = new List<TblNotifyEmail>();
-                    foreach (var item in data.Bbdo)
+                foreach (var item in data.Bbdo)
+                {
+                    if((!item.CustomerCode.IsNullOrEmpty())&& !item.CustomerCode.Contains("-")) {
+                    var customer = new CustomBBDOExportWord()
                     {
-                        if((!item.CustomerCode.IsNullOrEmpty())&& !item.CustomerCode.Contains("-")) {
-                        var customer = new CustomBBDOExportWord()
-                        {
-                            code = item.CustomerCode,
-                            deliveryGroupCode = ""
+                        code = item.CustomerCode,
+                        deliveryGroupCode = ""
+                    };
+                        var Email = new TblNotifyEmail()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
+                        Subject = template.Title ?? "",
+                        Contents = template.HtmlSource.Replace("[toDate]", Ngay),
+                        IsSend = "C",
+                        NumberRetry = 0,
+                        HeaderId = headerId,
+                        CustomerCode= customer.code
                         };
-                            var Email = new TblNotifyEmail()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
-                            Subject = template.Title ?? "",
-                            Contents = template.HtmlSource.Replace("[toDate]", Ngay),
-                            IsSend = "C",
-                            NumberRetry = 0,
-                            HeaderId = headerId,
-                            CustomerCode= customer.code
-                         };
-                        lstmail.Add(Email);
-                        }
+                    lstmail.Add(Email);
+                    }
                 }
+
                 _dbContext.TblCmNotifiEmail.AddRange(lstmail);
-                _dbContext.SaveChanges();
+                //await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -6855,16 +6842,12 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-               
-                    var lstmail = _dbContext.TblCmNotifiEmail.Where(x=>x.HeaderId==headerId);
-                    foreach (var item in lstmail)
-                    {
-                        item.IsSend = "K";
-                        _dbContext.SaveChanges();
-                    };
-                
-
-               
+                var lstmail = _dbContext.TblCmNotifiEmail.Where(x=>x.HeaderId==headerId);
+                foreach (var item in lstmail)
+                {
+                    item.IsSend = "K";
+                    _dbContext.SaveChanges();
+                };
             }
             catch (Exception ex)
             {

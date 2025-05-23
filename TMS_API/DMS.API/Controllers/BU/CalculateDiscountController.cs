@@ -403,7 +403,7 @@ namespace DMS.API.Controllers.BU
         public async Task<IActionResult> ExportWordMail([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)
         {
             var transferObject = new TransferObject();
-             await _service.GenarateFileMail([], "WORD", headerId, new CalculateDiscountInputModel(), lstCustomerChecked);
+             await _service.GenarateFileMail([], "WORD", headerId, lstCustomerChecked);
             if (_service.Status)
             {
             
