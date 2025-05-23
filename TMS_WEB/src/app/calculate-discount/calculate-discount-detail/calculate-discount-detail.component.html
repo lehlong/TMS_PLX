@@ -2751,10 +2751,11 @@
           <td nzAlign="center">{{ data.numberRetry == 3 ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
           <td>{{data.checkFile}}</td>
           <td>
-
-            <button *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'" nzAlign="center" nz-button  (click)="ResendEmail(data)">
+            <ng-container  *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'">
+            <button nzAlign="center" nz-button  (click)="ResendEmail(data)">
               <span nz-icon nzType="reload"></span>Gửi lại
             </button>
+            </ng-container>
           </td>
         </tr>
         }
