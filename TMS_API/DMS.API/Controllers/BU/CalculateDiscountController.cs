@@ -340,6 +340,26 @@ namespace DMS.API.Controllers.BU
                 return Ok(transferObject);
             }
         }
+        //[HttpGet("ResendMail")]
+        //[Authorize]
+        //public async Task<IActionResult> ResendMail([FromQuery] string Id)
+        //{
+        //    var transferObject = new TransferObject();
+        //   await _service.ResendMail(Id);
+        //    if (_service.Status)
+        //    {
+            
+        //        return Ok(transferObject);
+
+        //    }
+        //    else
+        //    {
+        //        transferObject.Status = false;
+        //        transferObject.MessageObject.MessageType = MessageType.Error;
+        //        transferObject.GetMessage("2000", _service);
+        //        return Ok(transferObject);
+        //    }
+        //}
         [HttpGet("GetSms")]
         [Authorize]
         public async Task<IActionResult> GetSms([FromQuery] string headerId)

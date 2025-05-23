@@ -252,12 +252,30 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
   }
+ResendEmail(data: any) {
+  console.log(data);
+  //   this._service.ResendEmail(data).subscribe({
+  //     next: (data) => {
+  //       this.message.create('success', 'Gửi mail thành công')
+  //     },
+  //     error: (err) => {
+  //       console.log(err)
+  //     },
+  //   })
+  // }
 
+}
 
 
   removeHtmlTags(html: string): string {
     if (!html) return ''
-    return html.replace(/<\/?[^>]+(>|$)/g, '')
+      let result = html.replace(/<[^>]*>/g, '');
+     result = result.replace(/&nbsp;/g, ' ')  // Thay thế &nbsp; bằng khoảng trắng thường
+               .replace(/&amp;/g, '&')
+               .replace(/&quot;/g, '"')
+               .replace(/&lt;/g, '<')
+               .replace(/&gt;/g, '>');
+    return result
   }
 
   // confirmSendsMail() {
@@ -513,13 +531,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onAllCheckedSendEmail(value: boolean): void {
     this.lstSendEmailChecked = []
     if (value) {
+      console.log(this.lstSearchEmail);
       this.lstSearchEmail.forEach((i) => {
         if(i.isSend != "Y"){
-          this.lstSendSmsChecked.push(i.id)
+          this.lstSendEmailChecked.push(i.id)
         }
       })
     } else {
-      this.lstSendSmsChecked = []
+      this.lstSendEmailChecked = []
     }
   }
   updateCheckedSetSendEmail(code: any, checked: boolean,): void {

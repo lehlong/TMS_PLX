@@ -103,9 +103,6 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     Credentials = new NetworkCredential(_congifEmail.Email, _congifEmail.pass),
                     EnableSsl = true,
                 };
-
-
-
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress(_congifEmail.Email, "TMS"),
@@ -115,7 +112,6 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                 };
                 if (!string.IsNullOrEmpty(path) && File.Exists(path))
                 {
-                  
                     var attachment = new Attachment(path);
                     mailMessage.Attachments.Add(attachment);
                 }
@@ -146,15 +142,19 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     if (status)
                     {
                         s.IsSend = "Y";
+                        s.NumberRetry = s.NumberRetry + 1;
                         _dbContext.TblCmNotifiEmail.Update(s);
-                        _dbContext.SaveChanges();
+                       
                         Console.WriteLine("Gửi email thành công!");
                     }
                     else
                     {
+                        s.NumberRetry = s.NumberRetry + 1;
+                        _dbContext.TblCmNotifiEmail.Update(s);
                         Console.WriteLine("Lỗi không gửi được email");
                     }
-                    
+                    _dbContext.SaveChanges();
+
                 }
             }
             catch (Exception ex)

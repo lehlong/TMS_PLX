@@ -2718,7 +2718,7 @@
     <nz-table #historyTable [nzData]="lstSearchEmail" nzSize="small">
       <thead>
         <tr>
-          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendSms($event)"></th>
+          <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
           <th>KHÁCH HÀNG</th>
           <th>THỊ TRƯỜNG</th>
           <th style="width: 70%;">NỘI DUNG </th>
@@ -2730,6 +2730,7 @@
               (ngModelChange)="searchEmail()" type="text" /></th>
           <th>NGÀY</th>
           <th>TRẠNG THÁI</th> -->
+          <th>HÀNH ĐỘNG</th>
         </tr>
       </thead>
       <tbody>
@@ -2739,8 +2740,18 @@
             (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
           </td>
           <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
+          <td></td>
+             <td></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
-          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+          <td class="align-center">{{ data.numberRetry}}</td>
+        
+          <td nzAlign="center">{{ data.numberRetry == 3 ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+          <td>
+
+            <button *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'" nzAlign="center" nz-button nzType="warning" (click)="ResendEmail(data)">
+              <span nz-icon nzType="reload"></span>Gửi lại
+            </button>
+          </td>
         </tr>
         }
       </tbody>

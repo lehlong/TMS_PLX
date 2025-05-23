@@ -60,6 +60,7 @@ namespace DMS.BUSINESS.Services.BU
         Task SaveSMS(string headerId, string smsName);
         Task SendSMS(List<string> lstSms);
         Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
+        //Task ResendMail(string headerId);
         Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
         Task<List<CustomInput>> GetAllInputCustomer(); 
@@ -6421,7 +6422,7 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                var data = await _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == headerID).ToListAsync();
+                var data = await _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == headerID&& x.IsSend !="K").ToListAsync();
                 return data;
             }
             catch (Exception ex)
@@ -6431,7 +6432,7 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblNotifyEmail>();
             }
         }
-
+       
 
         public async Task SendSMS(List<string> lstSms)
         {
@@ -6531,6 +6532,10 @@ namespace DMS.BUSINESS.Services.BU
                 if (data.Status.Code == "04")
                 {
                     await SaveMailPheDuyet(data.header.Id);
+                }
+                if (data.Status.Code == "07")
+                {
+                   await this.DelMailPheDuyet(data.header.Id);
                 }
                 await _dbContext.SaveChangesAsync();
             }
@@ -6846,7 +6851,7 @@ namespace DMS.BUSINESS.Services.BU
                 foreach (var item in lstmail)
                 {
                     item.IsSend = "K";
-                    _dbContext.SaveChanges();
+                   
                 };
             }
             catch (Exception ex)
