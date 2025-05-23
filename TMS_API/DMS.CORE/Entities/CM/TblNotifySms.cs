@@ -42,4 +42,18 @@ namespace DMS.CORE.Entities.BU
 
 
     }
+    public class NotifyEmailViewModel
+    {
+        public string Id { get; set; }
+        public string HeaderID { get; set; }
+        public string Status { get; set; }
+        public string Subject { get; set; }
+        public string Contents { get; set; }
+        public int? NumberRetry { get; set; }
+        public string IsSend { get; set; }
+        public string Email { get; set; }
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public string CheckFile { get; set; }
+    }
 }

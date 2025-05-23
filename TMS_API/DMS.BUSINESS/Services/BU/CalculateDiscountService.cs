@@ -59,7 +59,7 @@ namespace DMS.BUSINESS.Services.BU
         Task SendlstMail(List<string> lstEmail);
         Task SaveSMS(string headerId, string smsName);
         Task SendSMS(List<string> lstSms);
-        Task<List<TblNotifyEmail>> GetHistoryMail(string headerId);
+        Task<List<NotifyEmailViewModel>> GetHistoryMail(string headerId);
         //Task ResendMail(string headerId);
         Task<List<TblNotifySms>> GetHistorySms(string headerId);
         Task<List<TblBuInputCustomerBbdo>> GetCustomerBbdo(string id);
@@ -6417,19 +6417,41 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblNotifySms>();
             }
         }
+   
 
-        public async Task<List<TblNotifyEmail>> GetHistoryMail(string headerID)
+        public async Task<List<NotifyEmailViewModel>> GetHistoryMail(string headerID)
         {
             try
             {
-                var data = await _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == headerID&& x.IsSend !="K").ToListAsync();
+                
+                var BbdoCus = _dbContext.TblMdCustomerBbdo.ToList();
+                var fileDowload = _dbContext.TblBuHistoryDownload.Where(x => x.HeaderCode == headerID).ToList();
+                var emailList = _dbContext.TblCmNotifiEmail
+                    .Where(x => x.HeaderId == headerID && x.IsSend != "K")
+                    .ToList();
+
+                var data = emailList.Select(x => new NotifyEmailViewModel
+                {
+                    Id = x.Id,
+                    HeaderID = x.HeaderId,
+                    Status = x.Status,
+                    Subject = x.Subject,
+                    Contents = x.Contents,
+                    NumberRetry = x.NumberRetry,
+                    IsSend = x.IsSend,
+                    Email = x.Email,
+                    CustomerCode = x.CustomerCode,
+                    CustomerName = BbdoCus.FirstOrDefault(y => y.Code == x.CustomerCode)?.Name,
+                    CheckFile = fileDowload.Any(y => y.CustomerCode == x.CustomerCode) ? "có File đính kèm" : "chưa có file đính kèm"
+                }).ToList();
+
                 return data;
             }
             catch (Exception ex)
             {
                 this.Status = false;
                 this.Exception = ex;
-                return new List<TblNotifyEmail>();
+                return new List<NotifyEmailViewModel>();
             }
         }
        

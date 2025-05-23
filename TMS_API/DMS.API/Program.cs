@@ -154,8 +154,8 @@ await scope.ServiceProvider.GetRequiredService<ISystemTraceService>().StartServi
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 var backgroundJobService = new BackgroundJobService(dbContext);
 var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
-recurringJobManager.AddOrUpdate("SendSMS", () => backgroundJobService.SendSMSAsync(), "*/59 * * * * *");
-recurringJobManager.AddOrUpdate("Sendmail",() => backgroundJobService.SendMailAsync(),"*/59 * * * * *");
+recurringJobManager.AddOrUpdate("SendSMS", () => backgroundJobService.SendSMSAsync(), "*/30 * * * * *");
+recurringJobManager.AddOrUpdate("Sendmail",() => backgroundJobService.SendMailAsync(),"*/30 * * * * *");
 
 app.UseMiddleware<ActionLoggingMiddleware>();
 app.MapHub<SystemTraceServiceHub>("/SystemTrace");

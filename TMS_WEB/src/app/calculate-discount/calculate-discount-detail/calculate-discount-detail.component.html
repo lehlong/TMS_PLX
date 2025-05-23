@@ -2712,7 +2712,7 @@
 
 <!-- MAIL -->
 
-<nz-modal nzWidth="60%" [(nzVisible)]="isVisibleEmail" nzTitle="LỊCH SỬ GỬI MAIL" (nzOnCancel)="handleCancel()"
+<nz-modal nzWidth="80%" [(nzVisible)]="isVisibleEmail" nzTitle="LỊCH SỬ GỬI MAIL" (nzOnCancel)="handleCancel()"
   [nzFooter]="modalFooterEmail">
   <ng-container *nzModalContent>
     <nz-table #historyTable [nzData]="lstSearchEmail" nzSize="small">
@@ -2730,6 +2730,7 @@
               (ngModelChange)="searchEmail()" type="text" /></th>
           <th>NGÀY</th>
           <th>TRẠNG THÁI</th> -->
+          <th>File đính kèm</th>
           <th>HÀNH ĐỘNG</th>
         </tr>
       </thead>
@@ -2739,16 +2740,19 @@
           <td [nzChecked]="isCheckedSendEmail(data.id)" [nzDisabled]="data.isSend == 'Y'"
             (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
           </td>
-          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
-          <td></td>
+          
+             <td>{{data.customerName}}</td>
              <td></td>
+             <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
         
+          
           <td nzAlign="center">{{ data.numberRetry == 3 ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
+          <td>{{data.checkFile}}</td>
           <td>
 
-            <button *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'" nzAlign="center" nz-button nzType="warning" (click)="ResendEmail(data)">
+            <button *ngIf="data.isSend == 'N'||data.numberRetry == 3||data.isSend == 'C'" nzAlign="center" nz-button  (click)="ResendEmail(data)">
               <span nz-icon nzType="reload"></span>Gửi lại
             </button>
           </td>

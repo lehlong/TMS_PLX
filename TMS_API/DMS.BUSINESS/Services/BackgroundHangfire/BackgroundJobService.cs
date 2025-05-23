@@ -134,7 +134,9 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             {
                 _dbContext.ChangeTracker.Clear();
                 var lstEmail = await _dbContext.TblCmNotifiEmail.Where(x => x.IsSend == "N" && x.NumberRetry<3).ToListAsync();
-                var lstFiledowload = await _dbContext.TblBuHistoryDownload.Where(x => !x.CustomerCode.IsNullOrEmpty()).ToListAsync();
+                var lstFiledowload = await _dbContext.TblBuHistoryDownload
+     .Where(x => x.CustomerCode != null && x.CustomerCode != "")
+     .ToListAsync();
                 foreach (var s in lstEmail)
                 {
                    var Path= lstFiledowload.Where(x => x.CustomerCode == s.CustomerCode&&x.HeaderCode==s.HeaderId).OrderBy(x=>x.CreateDate).Select(x => x.Path).FirstOrDefault();
