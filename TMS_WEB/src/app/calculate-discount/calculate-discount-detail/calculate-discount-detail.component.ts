@@ -23,6 +23,7 @@ import { iif } from 'rxjs'
 import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
 import { Route } from '@angular/router';
 import { Location } from '@angular/common';
+import { LocalService } from '../../services/master-data/local.service'
 
 @Component({
   selector: 'app-calculate-discount-detail',
@@ -164,6 +165,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   smsName = ''
   lstgoods: any[] = []
   lstSendSms: any[] = []
+  localResult: any[] = []
   isBrowser: boolean = true;
   idramdom = new Date().getTime();
   isVisiblePreviewExcel: boolean = false
@@ -171,6 +173,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   constructor(
     private _service: CalculateDiscountService,
+    private _localService : LocalService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private route: ActivatedRoute,
@@ -193,8 +196,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
   ngOnInit(): void {
-    console.log(window.location.href);
-
     this.route.paramMap.subscribe({
       next: (params) => {
         const id = params.get('id')
@@ -214,6 +215,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
       },
     })
     this.getRight()
+    this.getAllLocal()
   }
   Showmessage(message: string, type: string): void {
     this.message.create(type, message)
@@ -224,6 +226,17 @@ export class CalculateDiscountDetailComponent implements OnInit {
       next: (data) => {
         this.output = data
 
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
+  getAllLocal() {
+    this._localService.getall().subscribe({
+      next: (data) => {
+        this.localResult = data
       },
       error: (response) => {
         console.log(response)
@@ -508,8 +521,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
           c.customerCode == this.selectedCustomer);
       }
       if (this.selectedTrangThai !== null) {
-        this.lstSearchSms = this.lstSearchSms.filter(c =>
-          c.isSend == this.selectedTrangThai);
+        this.lstSearchSms = this.lstSearchSms.filter(c =>{
+          if (this.selectedTrangThai === "TB") {
+              return c.isSend === "N" && c.numberRetry === 3;
+            } else {
+              return c.isSend === this.selectedTrangThai;
+            }
+          })
       }
       if (this.inputSearchCustomer !== "") {
         const keyword = this.inputSearchCustomer.trim().toLowerCase();
@@ -551,7 +569,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onAllCheckedSendEmail(value: boolean): void {
     this.lstSendEmailChecked = []
     if (value) {
-      console.log(this.lstSearchEmail);
       this.lstSearchEmail.forEach((i) => {
         if (i.isSend != "Y") {
           this.lstSendEmailChecked.push(i.id)
@@ -623,7 +640,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
   selectedCustomerMail: any = null
   selectedTrangThaiMail : any = null
   searchHistoryMail() {
-
     this.lstSearchEmail = this.lstEmail
     if (this.selectedCustomerMail !== null || this.inputSearchCustomer !== "" || this.selectedTrangThaiMail !== null) {
       if (this.selectedCustomerMail !== null) {
@@ -631,13 +647,17 @@ export class CalculateDiscountDetailComponent implements OnInit {
           c.customerCode == this.selectedCustomerMail);
       }
       if (this.selectedTrangThaiMail !== null) {
-        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
-          c.isSend == this.selectedTrangThaiMail);
+        this.lstSearchEmail = this.lstSearchEmail.filter(c =>{
+          if (this.selectedTrangThaiMail === "TB") {
+              return c.isSend === "N" && c.numberRetry === 3;
+            } else {
+              return c.isSend === this.selectedTrangThaiMail;
+            }
+          }
+        );
       }
       if (this.inputSearchCustomer !== "") {
-
         const keyword = this.inputSearchCustomer.trim().toLowerCase();
-        console.log(keyword);
         this.lstSearchEmail = this.lstSearchEmail.filter(c =>
           c.contents.toLowerCase().includes(keyword) || c.email.toLowerCase().includes(keyword))
       }
@@ -914,8 +934,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     return market ? market.name : '';
   }
   openNewTab(url: string) {
-    console.log(url);
-
     window.open(url, '_blank')
   }
 
@@ -941,7 +959,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     if (data.type == "xlsx") {
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
-      console.log(this.urlViewExcel);
       this.config = {
         document: {
           fileType: 'xlsx',
@@ -958,7 +975,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     } else if (data.type == "docx") {
       this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
       this.isVisiblePreviewExcel = true
-      console.log(this.urlViewExcel);
       this.config = {
         document: {
           fileType: 'docx',
@@ -996,7 +1012,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._configTemplateService.getall().subscribe({
       next: (data) => {
         this.lstSms = data.filter((item: any) => item.type === "SMS")
-        console.log(this.lstSms);
       },
       error: (response) => {
         console.log(response)
@@ -1101,7 +1116,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10)
     this.input.inputPrice[index].fobV1 = this.input2.inputPrice[index].fobV1
     this.input2.inputPrice[index].fobV1 = this.formatNumber(this.input2.inputPrice[index].fobV1)
-    console.log(this.input2.inputPrice[index].fobV1);
 
   }
 

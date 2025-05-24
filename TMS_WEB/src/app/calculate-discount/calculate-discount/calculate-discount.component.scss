@@ -32,3 +32,9 @@ td > input[type=text]{
 .status-rejected {
   color: gray;
 }
+
+
+::ng-deep .no-border-select .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}

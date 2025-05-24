@@ -12,6 +12,7 @@ import {
   CALCULATE_RESULT_RIGHT,
   IMPORT_BATCH,
 } from '../../shared/constants/access-right.constants'
+import { LocalService } from '../../services/master-data/local.service';
 
 @Component({
   selector: 'app-calculate-discount',
@@ -23,6 +24,7 @@ import {
 export class CalculateDiscountComponent implements OnInit {
   constructor(
     private _service: CalculateDiscountService,
+    private _localService : LocalService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private router: Router,
@@ -42,6 +44,7 @@ export class CalculateDiscountComponent implements OnInit {
   isVisibleStatus: boolean = false
   IMPORT_BATCH = IMPORT_BATCH
   noData: any[] = []
+  localResult : any[] = []
   loading: boolean = false
   visible = false;
   filter = new BaseFilter()
@@ -104,6 +107,7 @@ export class CalculateDiscountComponent implements OnInit {
         console.log(response)
       },
     })
+    this.getAllLocal()
   }
 
   getAllGood() {
@@ -117,6 +121,16 @@ export class CalculateDiscountComponent implements OnInit {
     })
   }
 
+  getAllLocal() {
+    this._localService.getall().subscribe({
+      next: (data) => {
+        this.localResult = data
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
   getRight() {
     const rights = localStorage.getItem('userRights')
     this.rightList = rights ? JSON.parse(rights) : []

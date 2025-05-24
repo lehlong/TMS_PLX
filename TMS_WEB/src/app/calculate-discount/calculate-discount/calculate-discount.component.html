@@ -489,6 +489,7 @@
 
                 <th nzAlign="center">MÃ</th>
                 <th nzAlign="center">KHÁCH HÀNG</th>
+                <th nzAlign="center">Vùng giá</th>
                 <th nzAlign="center">CƯỚC <br> VC BQ</th>
                 <th nzAlign="center">CP CHUNG <br> CHƯA CƯỚC VC</th>
                 <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
@@ -503,6 +504,14 @@
                   *ngIf="!getSearchTermInput('customerBbdo') || data?.name?.toLowerCase().includes(getSearchTermInput('customerBbdo').trim().toLowerCase())">
                   <td>{{data.code }}</td>
                   <td>{{data.name }}</td>
+                  <td nzAlign="center">
+                    <nz-form-control>
+                      <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá" [(ngModel)]="data.localCode">
+                        <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name" [nzValue]="item.code">
+                        </nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </td>
                   <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>

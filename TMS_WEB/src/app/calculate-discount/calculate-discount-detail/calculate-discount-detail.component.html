@@ -1928,7 +1928,7 @@
       </thead>
       <tbody>
         @for (data of lstTrinhKy; track data) {
-        <tr *ngIf="input.header.status != '08' ? data.status == true : true">
+        <tr *ngIf="input.header.status != '04' ? data.status == true : true">
           <td [nzChecked]="lstTrinhKyChecked.includes(data.code)"
             (nzCheckedChange)="onItemTrinhKyChecked(data.code, $event)"></td>
           <td>{{ data.name }}</td>
@@ -2459,13 +2459,9 @@
             [nzShowPagination]="'false'">
             <thead>
               <tr>
-                <th nzAlign="center">MÃ
-                </th>
-                <th nzAlign="center">
-                  <span>KHÁCH HÀNG</span>
-
-
-                </th>
+                <th nzAlign="center">MÃ</th>
+                <th nzAlign="center">KHÁCH HÀNG</th>
+                <th nzAlign="center">Vùng</th>
                 <th nzAlign="center">CƯỚC <br> VC BQ</th>
                 <th nzAlign="center">CP CHUNG <br> CHƯA CƯỚC VC</th>
                 <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
@@ -2481,6 +2477,14 @@
                   *ngIf="!getSearchTermInput('listNameBBDO') || data?.name?.toLowerCase().includes(getSearchTermInput('listNameBBDO').trim().toLowerCase())">
                   <td>{{data.code }}</td>
                   <td>{{data.name }}</td>
+                  <td>
+                    <nz-form-control>
+                      <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá" [(ngModel)]="data.localCode">
+                        <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name" [nzValue]="item.code">
+                        </nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </td>
                   <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
@@ -2626,6 +2630,7 @@
               <nz-option nzLabel="Chưa gửi" nzValue="C"></nz-option>
               <nz-option nzLabel="Đang gửi" nzValue="N"></nz-option>
               <nz-option nzLabel="Đã gửi" nzValue="Y"></nz-option>
+              <nz-option nzLabel="Gửi thất bại" nzValue="TB"></nz-option>
             </nz-select>
           </td>
         </tr>

@@ -44,7 +44,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             };
             _congifEmail = new EmmailInfo
             {
-                port = 20,
+                port = 25,
                 Email= "longlh@petrolimex.com.vn",
                 host= "mail.petrolimex.com.vn"
             };

@@ -161,3 +161,7 @@ button {
 // #header-logo {
 //   display: none !important;
 // }
+::ng-deep .no-border-select .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}

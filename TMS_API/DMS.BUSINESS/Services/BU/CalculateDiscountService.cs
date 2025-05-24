@@ -1040,6 +1040,7 @@ namespace DMS.BUSINESS.Services.BU
                             GoodName = "Điêzen 0,05S-II",
                             PThuc = i.PhuongThuc,
                             CustomerCode = i.Code,
+                            LocalCode = i.LocalCode,
                             GoodCode = i.GoodsCode,
                             Dvt = "L",
                             TToan = i.Thtt,
@@ -1060,8 +1061,18 @@ namespace DMS.BUSINESS.Services.BU
                         j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                         j.Col11 = j.Col12 * 1.1M;
 
-                        j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
-                        j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+                        var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
+                        if (j.LocalCode == "V1")
+                        {
+                            dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V1").FirstOrDefault();
+                        }
+
+                        j.Col14 = dlg6.Col6 - j.Col9;
+                        j.Col14 = j.Col14 > dlg6.Col6
+                            ? dlg6.Col6
+                            : j.Col14;
+                        //j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
+                        //j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
                         j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                         if (j.Col15 == 1)
@@ -1093,6 +1104,7 @@ namespace DMS.BUSINESS.Services.BU
                         DeliveryPoint = i.DeliveryPoint,
                         GoodName = "Điêzen 0.001S-V",
                         MarketCode = i.MarketCode,
+                        LocalCode = i.LocalCode,
                         PThuc = i.PhuongThuc,
                         CustomerCode = i.Code,
                         GoodCode = i.GoodsCode,
@@ -1115,30 +1127,20 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                     j.Col11 = j.Col12 * 1.1M;
 
-                    var dlg6 = j.MarketCode == "V1"
-                        ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V1").FirstOrDefault()
-                        : data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
+                    var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
+                    if (j.LocalCode == "V1")
+                    {
+                        dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V1").FirstOrDefault();
+                    }
 
-
-                    //j.Col14 = dlg6.Col6 - j.Col9;
-                    //j.Col14 = j.Col14 > dlg6.Col6
-                    //    ? dlg6.Col6
-                    //    : j.Col14;
-
-                    //j.Col13 = j.Col14 / 1.1M - dlg6.Col2;
-                    //if (j.Col15 == 1)
-                    //{
-                    //    j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
-
-                    //    j.Col14 = (j.Col13 + dlg6.Col2) * 1.1M;
-                    //}
-
-                    j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
-                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6)
-                        ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6)
+                    j.Col14 = dlg6.Col6 - j.Col9;
+                    j.Col14 = j.Col14 > dlg6.Col6
+                        ? dlg6.Col6
                         : j.Col14;
 
+
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    
                     if (j.Col15 == 1)
                     {
                         j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
@@ -1167,6 +1169,7 @@ namespace DMS.BUSINESS.Services.BU
                         GoodName = lstGoods.FirstOrDefault(x => x.Code == i.GoodsCode)?.Name,
                         PThuc = i.PhuongThuc,
                         CustomerCode = i.Code,
+                        LocalCode = i.LocalCode,
                         GoodCode = i.GoodsCode,
                         Dvt = "L",
                         TToan = i.Thtt,
@@ -1185,8 +1188,22 @@ namespace DMS.BUSINESS.Services.BU
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
                     j.Col11 = j.Col12 * 1.1M;
 
-                    j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
-                    j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
+
+                    var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
+                    if ( j.LocalCode == "V1")
+                    {
+                        dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V1").FirstOrDefault();
+                    }
+
+                    j.Col14 = dlg6.Col6 - j.Col9;
+                    j.Col14 = j.Col14 > dlg6.Col6
+                        ? dlg6.Col6
+                        : j.Col14;
+
+                    //j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
+                    //j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) 
+                    //    ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) 
+                    //    : j.Col14;
 
                     j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                     if (j.Col15 == 1)
@@ -4833,7 +4850,7 @@ namespace DMS.BUSINESS.Services.BU
                                             TableRow row = new TableRow();
                                             row.Append(CreateCell("+ " + i.Name, true, 26, false, "3500"));
                                             row.Append(CreateCell(":", false, 26, true, "1"));
-                                            row.Append(CreateCell(item.Col1.ToString("N0"), true, 26, false, "2000"));
+                                            row.Append(CreateCell(item.Col1.ToString("N0"), true, 30, false, "2000"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
                                             row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col1 != item.Col1 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2800"));
                                             table.Append(row);
@@ -4870,9 +4887,9 @@ namespace DMS.BUSINESS.Services.BU
                                             TableRow row = new TableRow();
                                             row.Append(CreateCell("+ " + i.GoodName, true, 26, false, "3500"));
                                             row.Append(CreateCell(":", false, 26, true, "1"));
-                                            row.Append(CreateCell(i.Col2.ToString("N0"), true, 26, false, "2400"));
+                                            row.Append(CreateCell(i.Col2.ToString("N0"), true, 30, false, "2000"));
                                             row.Append(CreateCell("đ/lít thực tế", false, 26, false, "2400"));
-                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col2 != i.Col2 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2400"));
+                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col2 != i.Col2 ? "(Thay đổi)" : "(Không thay đổi)", false, 26, false, "2800"));
                                             table.Append(row);
                                             o++;
                                     }
@@ -4981,9 +4998,9 @@ namespace DMS.BUSINESS.Services.BU
                                             TableRow row = new TableRow();
                                             row.Append(CreateCell(i.Stt, true, 26, true, "1"));
                                             row.Append(CreateCell(i.GoodName, true, 26, true));
-                                            row.Append(CreateCell(i.Col5.ToString("N0"), true, 26));
+                                            row.Append(CreateCell(i.Col5.ToString("N0"), true, 30));
                                             row.Append(CreateCell("đ/ lít thực tế", true, 26));
-                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col5 != i.Col5 ? "(Thay đổi)" : "(Không thay đổi)", true, 26));
+                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col5 != i.Col5 ? "Thay đổi" : "Không thay đổi", true, 26));
                                             table.Append(row);
                                             o++;
                                     }
@@ -5085,9 +5102,9 @@ namespace DMS.BUSINESS.Services.BU
                                             TableRow row = new TableRow();
                                             row.Append(CreateCell(i.Stt, true, 26, true, "1"));
                                             row.Append(CreateCell(i.GoodName, true, 26, true, "3000"));
-                                            row.Append(CreateCell(i.Col6.ToString("N0"), true, 26, true, "3000"));
+                                            row.Append(CreateCell(i.Col6.ToString("N0"), true, 30, true, "3000"));
                                             row.Append(CreateCell("đ/ lít thực tế", true, 26, true, "3000"));
-                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col6 != i.Col6 ? "(Thay đổi)" : "(Không thay đổi)", true, 26));
+                                            row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col6 != i.Col6 ? "Thay đổi" : "Không thay đổi", true, 26));
                                             table.Append(row);
                                     }
                                     #endregion
