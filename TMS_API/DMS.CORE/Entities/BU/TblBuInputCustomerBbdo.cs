@@ -15,8 +15,10 @@ namespace DMS.CORE.Entities.BU
         [Key]
         [Column("ID", TypeName = "NVARCHAR(50)")]
         public string Id { get; set; }
+
         [Column("HEADER_ID", TypeName = "NVARCHAR(50)")]
         public string HeaderId { get; set; }
+
         [Column("CODE", TypeName = "NVARCHAR(50)")]
         public string Code { get; set; }
 

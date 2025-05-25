@@ -797,32 +797,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
         break
 
-      // case '06':
-      //   this.statusModel.title = 'HỦY PHÊ DUYỆT GIÁ BÁN LẺ'
-      //   this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-      //   break
-
-      // case '11':
-      //   this.statusModel.title = 'TRÌNH DUYỆT GIÁ THÙ LAO'
-      //   this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-      //   // this.input.header.status = '01'
-      //   break
-      // case '12':
-      //   this.statusModel.title = 'YÊU CẦU CHỈNH SỬA GIÁ THÙ LAO'
-      //   this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
-      //   break
-      // case '13':
-      //   this.statusModel.title = 'PHÊ DUYỆT'
-      //   this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
-      //   break
-      // case '15':
-      //   this.statusModel.title = 'HỦY TRÌNH DUYỆT GIÁ THÙ LAO'
-      //   this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
-      //   break
-      // case '16':
-      //   this.statusModel.title = 'HỦY PHÊ DUYỆT'
-      //   this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-      //   break
     }
     this.dataQuyTrinh.status.code = status
     this.dataQuyTrinh.header = this.input.header

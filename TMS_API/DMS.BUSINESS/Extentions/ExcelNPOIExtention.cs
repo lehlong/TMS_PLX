@@ -36,7 +36,7 @@ namespace DMS.BUSINESS.Extentions
             {
                 if (number == 0)
                 {
-                    cell.SetCellValue("");
+                    cell.SetCellValue("0");
                 }
                 else
                 {

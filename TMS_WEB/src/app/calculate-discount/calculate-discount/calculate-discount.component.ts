@@ -3,6 +3,7 @@ import { ShareModule } from '../../shared/share-module';
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service';
 import { GlobalService } from '../../services/global.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import Swal from 'sweetalert2'
 import { BaseFilter, PaginationResult } from '../../models/base.model';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms'
@@ -49,7 +50,16 @@ export class CalculateDiscountComponent implements OnInit {
   visible = false;
   filter = new BaseFilter()
   paginationResult = new PaginationResult()
+  statusModel = {
+    title: '',
+    des: '',
+    value: '',
+  }
 
+  dataQuyTrinh: any = {
+    header: {},
+    status: {},
+  }
 
   input: any = {
     header: {},
@@ -358,6 +368,60 @@ export class CalculateDiscountComponent implements OnInit {
     this.formatVcfAndBvmtData();
   }
 
+
+    changeStatus(value: string, status: string, dataHeader: any) {
+      switch (value) {
+        case '01':
+          this.statusModel.title = 'TRÌNH DUYỆT'
+          this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
+          // this.input.header.status = '01'/
+          break
+        case '02':
+          this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
+          this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
+          break
+        case '03':
+          this.statusModel.title = 'PHÊ DUYỆT'
+          this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
+          break
+        case '04':
+          this.statusModel.title = 'TỪ CHỐI'
+          this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
+          break
+        case '05':
+          this.statusModel.title = 'HỦY TRÌNH DUYỆT'
+          this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
+          break
+        case '06':
+          this.statusModel.title = 'HỦY PHÊ DUYỆT'
+          this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
+          break
+      }
+      this.dataQuyTrinh.status.code = status
+      this.dataQuyTrinh.header = dataHeader
+
+      this.dataQuyTrinh.status.Link = window.location.href
+      this.isVisibleStatus = true
+      Swal.fire({
+        title: this.statusModel.title,
+        text: this.statusModel.des,
+        input: 'text',
+        inputPlaceholder: 'Ý kiến',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Đồng ý',
+        cancelButtonText: 'Hủy',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.dataQuyTrinh.status.content = result.value
+          this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe({
+            next: (data) => {
+              window.location.reload()
+            },
+          })
+        }
+      })
+    }
 
   handleAutoInput(row: any) {
     const index = this.input2.inputPrice.indexOf(row)

@@ -217,12 +217,7 @@ export class CustomerBbdoComponent {
         },
       })
     } else {
-      if (this.isCodeExist(formData.code)) {
-        this.message.error(
-          `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
-        )
-        return
-      }
+
       this._service.createCustomerBbdo(formData).subscribe({
         next: (data) => {
           this.search()

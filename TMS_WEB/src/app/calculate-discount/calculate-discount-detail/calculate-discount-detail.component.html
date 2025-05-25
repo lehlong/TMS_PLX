@@ -144,7 +144,13 @@
                       <td nzAlign="left">{{data.goodName}}</td>
                       <td nzAlign="right">{{ data.col1 | number}}</td>
                       <td nzAlign="right">{{ data.col2 | number }}</td>
-                      <td nzAlign="right">{{ data.col3 | number}}</td>
+                      <td nzAlign="right" *ngIf="data.col3 < 0">(-) {{ data.col3 * -1 }}</td>
+                      <td nzAlign="right" *ngIf="data.col3 > 0">
+                        <ng-container *ngIf="data.col3 > 0">
+                          (+) {{ data.col3 }}
+                        </ng-container>
+                      </td>
+                      <td nzAlign="right" *ngIf="data.col3 == 0">{{ data.col3 }}</td>
                     </tr>
                   </tbody>
                 </nz-table>
@@ -171,7 +177,17 @@
                       <td nzAlign="left">{{data.goodName}}</td>
                       <td nzAlign="right">{{ data.col1 | number}}</td>
                       <td nzAlign="right">{{ data.col2 | number }}</td>
-                      <td nzAlign="right">{{ data.col3 | number}}</td>
+                      <td nzAlign="right">
+                        <ng-container *ngIf="data.col3 > 0">
+                          (+) {{ data.col3 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 < 0">
+                          (-) {{ data.col3 * -1 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 === 0">
+                          0
+                        </ng-container>
+                      </td>
                     </tr>
                     <tr>
                       <td colspan="4" style="padding: 12px 24px;">
@@ -208,7 +224,17 @@
                       <td nzAlign="left" *ngIf="!data.isBold">{{data.goodName}}</td>
                       <td nzAlign="right" *ngIf="!data.isBold">{{ data.col1 | number}}</td>
                       <td nzAlign="right" *ngIf="!data.isBold">{{ data.col2 | number }}</td>
-                      <td nzAlign="right" *ngIf="!data.isBold">{{ data.col3 | number}}</td>
+                      <td nzAlign="right" *ngIf="!data.isBold">
+                        <ng-container *ngIf="data.col3 > 0">
+                          (+) {{ data.col3 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 < 0">
+                          (-) {{ data.col3 * -1 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 === 0">
+                          0
+                        </ng-container>
+                      </td>
                     </tr>
                   </tbody>
                 </nz-table>
@@ -296,7 +322,17 @@
                       <td nzAlign="left">{{data.goodName}}</td>
                       <td nzAlign="right">{{ data.col1 | number}}</td>
                       <td nzAlign="right">{{ data.col2 | number }}</td>
-                      <td nzAlign="right">{{ data.col3 | number}}</td>
+                      <td nzAlign="right">
+                        <ng-container *ngIf="data.col3 > 0">
+                          (+) {{ data.col3 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 < 0">
+                          (-) {{ data.col3 * -1 }}
+                        </ng-container>
+                        <ng-container *ngIf="data.col3 === 0">
+                          0
+                        </ng-container>
+                      </td>
                     </tr>
                   </tbody>
                 </nz-table>
@@ -562,7 +598,15 @@
                         {{ d.col2 | number: '1.0-0' }}
                       </td>
                       <td class="align-right">
-                        {{ d.col3 | number: '1.0-0' }}
+                        <ng-container *ngIf="d.col3 > 0">
+                          (+) {{ d.col3| number: '1.0-0' }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 < 0">
+                          (-) {{ (d.col3 * -1) | number: '1.0-0' }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 === 0">
+                          0
+                        </ng-container>
                       </td>
                     </tr>
                     }
@@ -579,7 +623,15 @@
                         {{ d.col2 | number: '1.0-0' }}
                       </td>
                       <td class="align-right">
-                        {{ d.col3 | number: '1.0-0' }}
+                        <ng-container *ngIf="d.col3 > 0">
+                          (+) {{ d.col3| number: '1.0-0' }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 < 0">
+                          (-) {{ (d.col3 * -1)| number: '1.0-0' }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 === 0">
+                          0
+                        </ng-container>
                       </td>
                     </tr>
                     }
@@ -612,7 +664,15 @@
                       <td class="align-right">{{ d.col1 | number }}</td>
                       <td class="align-right">{{ d.col2 | number }}</td>
                       <td class="align-right">
-                        {{ d.col3 | number }}
+                        <ng-container *ngIf="d.col3 > 0">
+                          (+) {{ d.col3 }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 < 0">
+                          (-) {{ d.col3 * -1 }}
+                        </ng-container>
+                        <ng-container *ngIf="d.col3 === 0">
+                          0
+                        </ng-container>
                       </td>
                     </tr>
                     }
@@ -2479,8 +2539,10 @@
                   <td>{{data.name }}</td>
                   <td>
                     <nz-form-control>
-                      <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá" [(ngModel)]="data.localCode">
-                        <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name" [nzValue]="item.code">
+                      <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá"
+                        [(ngModel)]="data.localCode">
+                        <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name"
+                          [nzValue]="item.code">
                         </nz-option>
                       </nz-select>
                     </nz-form-control>
@@ -2647,7 +2709,8 @@
           <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
-          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : data.isSend == "N" && data.numberRetry == 3 ? "Gửi thất bại" : "Đang gửi" }}</td>
+          <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : data.isSend == "N"
+            && data.numberRetry == 3 ? "Gửi thất bại" : "Đang gửi" }}</td>
         </tr>
         }
       </tbody>
@@ -2689,7 +2752,8 @@
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="selectedCustomerMail"
               style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%; border: none">
               <ng-container *ngFor="let data of output.bbdo">
-                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"*ngIf="data.id != null"></nz-option>
+                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"
+                  *ngIf="data.id != null"></nz-option>
               </ng-container>
             </nz-select>
           </td>
@@ -2718,7 +2782,8 @@
           <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
           <td>{{data.checkFile}}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
-          <td nzAlign="center">{{ data.numberRetry == 3 && data.isSend == "N" ? "Gửi thất bại" : data.isSend == "Y" ? "Đã gửi" : data.isSend
+          <td nzAlign="center">{{ data.numberRetry == 3 && data.isSend == "N" ? "Gửi thất bại" : data.isSend == "Y" ?
+            "Đã gửi" : data.isSend
             == "C" ? "Chưa gửi" : "Đang gửi" }}</td>
 
         </tr>

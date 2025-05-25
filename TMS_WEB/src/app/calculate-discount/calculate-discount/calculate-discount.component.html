@@ -25,8 +25,8 @@
           <th nzWidth="60px">STT</th>
           <th>Tên đợt tính</th>
           <th>Ngày hiệu lực</th>
-          <th>Trạng thái</th>
-          <th>Thao Tác</th>
+          <th nzAlign="center">Trạng thái</th>
+          <th [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" >Thao Tác</th>
         </tr>
       </thead>
       <tbody>
@@ -34,8 +34,8 @@
           style="cursor: pointer;">
           <td>{{(paginationResult.currentPage - 1) * paginationResult.pageSize + i + 1 }}</td>
           <td>{{ data.name }}</td>
-          <td>{{ data.date| date: 'dd/MM/yyyy hh:mm' }}</td>
-          <td>
+          <td>{{ data.date| date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td nzAlign="center">
             <nz-tag [nzColor]="getStatusColor(data.status)">
               {{
               data.status == '01'
@@ -49,7 +49,7 @@
               : 'Từ chối'
               }}</nz-tag>
           </td>
-          <td *ngIf="data.status == '02'" [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH"s><button nz-button>Phê duyệt</button></td>
+          <td [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH" ><button  *ngIf="data.status == '02'" [appPermission]="IMPORT_BATCH.APPROVE_IMPORT_BATCH"  (click)="changeStatus('03', '04', data); $event.stopPropagation()" nz-button>Phê duyệt</button></td>
 
         </tr>
       </tbody>

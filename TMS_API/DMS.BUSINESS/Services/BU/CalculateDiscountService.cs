@@ -463,8 +463,11 @@ namespace DMS.BUSINESS.Services.BU
                         GoodName = i.GoodName,
                         Col1 = i.GblV1,
                         Col2 = i.GblV2,
-                        Col3 = i.GblV2 - i.GblV1,
+                        Col3 = i.GblV2 - i.GblV1
                     });
+                        //i.GblV2 - i.GblV1 >= 0
+                        //    ? "(+)" + Math.Abs(i.GblV2 - i.GblV1)
+                        //    : "(-)" + Math.Abs(i.GblV2 - i.GblV1)
                     data.Dlg.Dlg2.Add(new DlgModel
                     {
                         GoodCode = i.GoodCode,
@@ -1871,7 +1874,7 @@ namespace DMS.BUSINESS.Services.BU
                     var row = sheetDlg.GetRow(rowIndexDl1) ?? sheetDlg.CreateRow(rowIndexDl1);
                     ExcelNPOIExtention.SetCellValueNumber(row, 1, i.Col1, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 4, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
                     rowIndexDl1++;
                 }
                 int rowIndexDl2 = 5;
@@ -1900,7 +1903,9 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 20, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
+                        //ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col3, number);
                     }
                     rowIndexDl3++;
                 }
@@ -2006,7 +2011,9 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
                         ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", text);
                     }
                     rowIndexDl5++;
@@ -2110,7 +2117,8 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                     ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                    //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);   
+                    ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
 
                     ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
                     check++;
@@ -2136,6 +2144,7 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                    //ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
                         ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
 
                         rowIndexDl9_1++;
@@ -2148,7 +2157,8 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
-                     
+                        //ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
                         rowIndexDl9_2++;
                     }
 
@@ -2165,7 +2175,10 @@ namespace DMS.BUSINESS.Services.BU
                     ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                     ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                     ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                    ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                    ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
+                    //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number); ExcelNPOIExtention.SetCellValueText(row, 4, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
 
                     rowIndexDl10++;
                 }
@@ -2912,8 +2925,10 @@ namespace DMS.BUSINESS.Services.BU
                         var row = sheetDlg.GetRow(rowIndexDl1) ?? sheetDlg.CreateRow(rowIndexDl1);
                         ExcelNPOIExtention.SetCellValueNumber(row, 1, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 2, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
-                        rowIndexDl1++;
+                        //ExcelNPOIExtention.SetCellValueNumber(row, 4, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 4, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
+                    rowIndexDl1++;
                     }
                     int rowIndexDl2 = 5;
                     foreach (var i in data.Dlg.Dlg2)
@@ -2941,9 +2956,11 @@ namespace DMS.BUSINESS.Services.BU
                             ExcelNPOIExtention.SetCellValueText(row, 18, i.GoodName, text);
                             ExcelNPOIExtention.SetCellValueNumber(row, 20, i.Col1, number);
                             ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                            ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col3, number);
-                        }
-                        rowIndexDl3++;
+                            //ExcelNPOIExtention.SetCellValueNumber(row, 24, i.Col3, number);
+                            ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+
+                    }
+                    rowIndexDl3++;
                     }
                     #endregion
 
@@ -3031,7 +3048,8 @@ namespace DMS.BUSINESS.Services.BU
                             ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                             ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                             ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                            ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                            ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+                            //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
                             ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", text);
                         }
                         rowIndexDl5++;
@@ -3135,7 +3153,8 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
 
                         ExcelNPOIExtention.SetCellValueText(sheetDlg.GetRow(check) ?? sheetDlg.CreateRow(check), 12, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Center, true, 13));
                         check++;
@@ -3190,9 +3209,10 @@ namespace DMS.BUSINESS.Services.BU
                         ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
                         ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
                         ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                        ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+                        //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
 
-                        rowIndexDl10++;
+                    rowIndexDl10++;
                     }
                     #endregion
 
@@ -5103,7 +5123,7 @@ namespace DMS.BUSINESS.Services.BU
                                             row.Append(CreateCell(i.Stt, true, 26, true, "1"));
                                             row.Append(CreateCell(i.GoodName, true, 26, true, "3000"));
                                             row.Append(CreateCell(i.Col6.ToString("N0"), true, 30, true, "3000"));
-                                            row.Append(CreateCell("đ/ lít thực tế", true, 26, true, "3000"));
+                                            row.Append(CreateCell("đ/ lít 15", true, 26, true, "3000"));
                                             row.Append(CreateCell(calculateDiscountIdOld == null || itemOld?.Col6 != i.Col6 ? "Thay đổi" : "Không thay đổi", true, 26));
                                             table.Append(row);
                                     }
