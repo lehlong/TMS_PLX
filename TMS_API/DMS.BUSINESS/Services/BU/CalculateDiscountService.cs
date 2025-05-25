@@ -6684,7 +6684,13 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 if (data.Status.Code == "07")
                 {
-                   await this.DelMailPheDuyet(data.header.Id);
+                    var lstmail = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == data.header.Id);
+                    foreach (var item in lstmail)
+                    {
+                        item.IsSend = "K";
+
+                    }
+                    _dbContext.TblCmNotifiEmail.UpdateRange(lstmail);
                 }
                 await _dbContext.SaveChangesAsync();
             }
@@ -7024,8 +7030,10 @@ namespace DMS.BUSINESS.Services.BU
                 foreach (var item in lstmail)
                 {
                     item.IsSend = "K";
-                   
-                };
+
+                }
+                ;
+                
             }
             catch (Exception ex)
             {
