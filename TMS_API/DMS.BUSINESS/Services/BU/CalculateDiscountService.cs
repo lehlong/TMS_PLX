@@ -6116,7 +6116,7 @@ namespace DMS.BUSINESS.Services.BU
                             {
                                 var market = _dbContext.TblMdMarket.Where(x => x.Code == i.MarketCode).Select(x => x.Name).FirstOrDefault();
 
-                                var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+                                var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                                 var info = new TblNotifySms()
                                 {
@@ -6147,7 +6147,7 @@ namespace DMS.BUSINESS.Services.BU
                         {
                             var market = "kho N.Huong/Ben Thuy";
 
-                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                             var info = new TblNotifySms()
                             {
@@ -6179,7 +6179,7 @@ namespace DMS.BUSINESS.Services.BU
                             var market = "kho N.Huong/Ben Thuy";
 
 
-                            var goods = $"X 95-III: {i.Col1} d/l, X E5-II {i.Col2} d/l, Do 0,001S: {i.Col3} d/l, Do 0,05S-II: {i.Col4} d/l";
+                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                             var info = new TblNotifySms()
                             {
@@ -6202,16 +6202,16 @@ namespace DMS.BUSINESS.Services.BU
                 else if (smsName == "SMS Thông báo giá bán lẻ niêm yết")
                 {
                     var dlgV1 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V1").ToList();
-                    var goodsV1 = $"X 95-III: {dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3)} d/l), " +
-                        $"X E5-II: {dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3)} d/l), " +
-                        $"Do 0,001S: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3)} d/l), " +
-                        $"Do 0,05S-II: {dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2)} d/l ({dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3)} d/l)";
+                    var goodsV1 = $"X 95-III: {dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"X E5-II: {dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,001S: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,05S-II: {dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3).ToString("N0")} d/l)";
 
                     var dlgV2 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V2").ToList();
-                    var goodsV2 = $"X 95-III: {dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3)} d/l), " +
-                        $"X E5-II: {dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3)} d/l), " +
-                        $"Do 0,001S: {dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3)} d/l), " +
-                        $"Do 0,05S-II: {dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2)} d/l ({dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3)} d/l)";
+                    var goodsV2 = $"X 95-III: {dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"X E5-II: {dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,001S: {dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,05S-II: {dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3).ToString("N0")} d/l)";
 
                     var lstMarketV1 = _dbContext.TblMdMarket.Where(x => x.LocalCode == "V1").ToList();
                     foreach (var i in lstMarketV1)

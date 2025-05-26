@@ -23,5 +23,6 @@ namespace DMS.CORE.Entities.AD
 
         [Column("EMAIL", TypeName = "NVARCHAR(255)")]
         public string Email { get; set; }
+
     }
 }
