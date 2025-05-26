@@ -7,7 +7,6 @@
             [appPermission]="IMPORT_BATCH.BROWSE_IMPORT_BATCH"
             *ngIf="input.header.status == '01' || input.header.status == '03'">
             <span nz-icon nzType="send"></span> Trình duyệt
-            <!-- <span nz-icon nzType="send"></span> Trình giá bán lẻ -->
           </button>
 
           <button class="!flex !items-center" nzType="default" nz-button (click)="changeStatus('05', '06')"
@@ -55,7 +54,6 @@
               <li [appPermission]="IMPORT_BATCH.EXPORT_TO_EXCEL" nz-menu-item (click)="exportExcel()">Xuất Excel</li>
               <li [appPermission]="IMPORT_BATCH.EXPORT_TO_WORD" nz-menu-item (click)="exportWord()">Xuất Thông Báo Giá
               </li>
-              <!-- <li [appPermission]="IMPORT_BATCH.EXPORT_TO_PDF" nz-menu-item (click)="exportPDF()">Xuất PDF</li> -->
               <li [appPermission]="IMPORT_BATCH.EXPORT_TO_EXCEL" nz-menu-item><button (click)="exportWordTrinhKy()">Xuất
                   Trình ký</button></li>
             </ul>
@@ -786,13 +784,17 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col17 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col18 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col19 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col19)}}</td>
+                      [style.color]="data.col19 < 0 ? 'red' : 'inherit'">{{_global.formatNegativeNumber(data.col19)}}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col20 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col20)}}</td>
+                      [style.color]="data.col20 < 0 ? 'red' : 'inherit'">{{_global.formatNegativeNumber(data.col20)}}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col21)}}</td>
+                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{_global.formatNegativeNumber(data.col21)}}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{formatNegativeNumber(data.col22)}}</td>
+                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{_global.formatNegativeNumber(data.col22)}}
+                    </td>
                     <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col23 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col24 | number}}</td>
@@ -922,13 +924,17 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col22 | number}}</td>
 
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col23) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col24) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col25 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col25) }}</td>
+                      [style.color]="data.col25 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col25) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col26 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col26) }}</td>
+                      [style.color]="data.col26 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col26) }}
+                    </td>
                     <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col27 | number}}</td>
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col28 | number}}</td>
@@ -1052,13 +1058,17 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col21) }}</td>
+                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col21) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col22) }}</td>
+                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col22) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col23) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col24) }}
+                    </td>
 
                     <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
@@ -1182,13 +1192,17 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col19 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col20 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col21) }}</td>
+                      [style.color]="data.col21 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col21) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col22) }}</td>
+                      [style.color]="data.col22 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col22) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col23) }}</td>
+                      [style.color]="data.col23 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col23) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber(data.col24) }}</td>
+                      [style.color]="data.col24 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber(data.col24) }}
+                    </td>
 
                     <ng-container *ngIf="accountGroups != 'G_TP_KD'">
                       <td *ngIf="!data.isBold" nzAlign="right">{{ data.col25 | number}}</td>
@@ -1290,9 +1304,11 @@
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col10 | number:'1.0-0'
                       }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col11 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber2(data.col11) }}</td>
+                      [style.color]="data.col11 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber2(data.col11) }}
+                    </td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right"
-                      [style.color]="data.col12 < 0 ? 'red' : 'inherit'">{{ formatNegativeNumber2(data.col12) }}</td>
+                      [style.color]="data.col12 < 0 ? 'red' : 'inherit'">{{ _global.formatNegativeNumber2(data.col12) }}
+                    </td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col13 | number:'1.0-0' }}</td>
                     <td *ngIf="!data.isBold" nzAlign="right">{{ data.col14 | number:'1.0-0' }}</td>
                   </ng-container>
@@ -2096,7 +2112,6 @@
         <div class="inner-box">
           <label>Tên đợt tính</label>
           <input nz-input placeholder="Nhập tên đợt tính" [(ngModel)]="input.header.name" type="text" />
-
         </div>
       </div>
       <div nz-col class="gutter-row" [nzSpan]="6">
@@ -2145,7 +2160,7 @@
       </div>
       <div nz-col class="gutter-row" [nzSpan]="6">
         <div class="inner-box">
-          <label>Công điện giá bán nội bộ áp dụng pt bán lẻ</label>
+          <label>Công điện GBNB áp dụng PTBL</label>
           <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
         </div>
       </div>
@@ -2228,10 +2243,10 @@
       </div>
     </div>
 
-    <nz-tabset>
+    <nz-tabset [(nzSelectedIndex)]="selectedIndexInput" (nzSelectedIndexChange)="onTabChangeInput($event)">
       <nz-tab nzTitle="THÔNG TIN GIÁ" (nzClick)="resetInput('inputPrice')">
         <nz-table nzBordered nzSize="small" [nzData]="input2.inputPrice" [nzFrontPagination]="false"
-          [nzShowPagination]="false">
+          [nzShowPagination]="false" *ngIf="selectedIndexInput == 0">
           <thead>
             <tr>
               <th nzAlign="center" rowspan="2">LOẠI HÀNG</th>
@@ -2297,7 +2312,7 @@
       <nz-tab nzTitle="THỊ TRƯỜNG" (nzClick)="resetInput('market')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.market" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 1">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">THỊ TRƯỜNG</th>
@@ -2331,7 +2346,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG PT" (nzClick)="resetInput('customerPt')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerPt" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 2">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">MÃ</th>
@@ -2377,7 +2392,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG ĐB" (nzClick)="resetInput('customerDb')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerDb" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 3">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">MÃ</th>
@@ -2423,7 +2438,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG FOB" (nzClick)="resetInput('customerFob')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerFob" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 4">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">MÃ</th>
@@ -2469,7 +2484,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG TNPP" (nzClick)="resetInput('customerTnpp')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerTnpp" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'"  *ngIf="selectedIndexInput == 5">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">MÃ</th>
@@ -2516,7 +2531,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG BBDO" (nzClick)="resetInput('listNameBBDO')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="listNameBBDO" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'"  *ngIf="selectedIndexInput == 6">
             <thead>
               <tr>
                 <th nzAlign="center">MÃ</th>
@@ -2538,14 +2553,14 @@
                   <td>{{data.code }}</td>
                   <td>{{data.name }}</td>
                   <td>
-                    <nz-form-control>
+                    <!-- <nz-form-control>
                       <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá"
                         [(ngModel)]="data.localCode">
                         <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name"
                           [nzValue]="item.code">
                         </nz-option>
                       </nz-select>
-                    </nz-form-control>
+                    </nz-form-control> -->
                   </td>
                   <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
@@ -2559,7 +2574,6 @@
               </tr>
             </tbody>
           </nz-table>
-
         </div>
       </nz-tab>
 
@@ -2567,7 +2581,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG PTS" (nzClick)="resetInput('customerPts')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerPts" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 7">
             <thead>
               <tr>
                 <th nzAlign="center">MÃ</th>
@@ -2593,7 +2607,6 @@
           </nz-table>
         </div>
       </nz-tab>
-
     </nz-tabset>
   </ng-container>
 </nz-drawer>
@@ -2702,11 +2715,11 @@
             (nzCheckedChange)="onItemCheckedSendSms(data.id, $event)">
           </td>
           <td title="{{ getCustomerName(data.customerCode) }}"
-            [innerText]="removeHtmlTags(getCustomerName(data.customerCode) )">{{data.customerCode}}</td>
+            [innerText]="_global.removeHtmlTags(getCustomerName(data.customerCode) )">{{data.customerCode}}</td>
           <td title="{{ getMarketName(data.marketCode) }}"
-            [innerText]="removeHtmlTags(getMarketName(data.marketCode) )"></td>
+            [innerText]="_global.removeHtmlTags(getMarketName(data.marketCode) )"></td>
           <td>{{data.phoneNumber}}</td>
-          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
+          <td title="{{data.contents}}" [innerText]="_global.removeHtmlTags(data.contents)"></td>
           <td class="align-center">{{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
           <td nzAlign="center">{{ data.isSend == "Y" ? "Đã gửi" : data.isSend == "C" ? "Chưa gửi" : data.isSend == "N"
@@ -2727,7 +2740,6 @@
 </nz-modal>
 
 <!-- MAIL -->
-
 <nz-modal nzWidth="80%" [(nzVisible)]="isVisibleEmail" nzTitle="LỊCH SỬ GỬI MAIL" (nzOnCancel)="handleCancel()"
   [nzFooter]="modalFooterEmail">
   <ng-container *nzModalContent>
@@ -2779,7 +2791,7 @@
 
           <td>{{data.customerName}}</td>
           <td>{{data.email}}</td>
-          <td title="{{data.contents}}" [innerText]="removeHtmlTags(data.contents)"></td>
+          <td title="{{data.contents}}" [innerText]="_global.removeHtmlTags(data.contents)"></td>
           <td>{{data.checkFile}}</td>
           <td class="align-center">{{ data.numberRetry}}</td>
           <td nzAlign="center">{{ data.numberRetry == 3 && data.isSend == "N" ? "Gửi thất bại" : data.isSend == "Y" ?
@@ -2860,7 +2872,7 @@
 
   <ng-container *nzModalContent>
     <document-editor (id)="idramdom" documentServerUrl="http://sso.d2s.com.vn:1239" [config]="config"
-      [events_onDocumentReady]="onDocumentReady" [onLoadComponentError]="onLoadComponentError" [height]="'900'">
+      [events_onDocumentReady]="onDocumentReady" [height]="'900'">
     </document-editor>
   </ng-container>
 

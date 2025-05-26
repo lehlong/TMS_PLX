@@ -1,29 +1,22 @@
-import { CustomerBbdoService } from './../../services/master-data/customer-bbdo.service'
-import { Component, OnInit, output } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-
+import { Component, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service'
 import { GlobalService } from '../../services/global.service'
 import { ShareModule } from '../../shared/share-module'
 import { environment } from '../../../environments/environment.prod'
-import { isVisible } from 'ckeditor5'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
-import {
-  CALCULATE_RESULT_RIGHT,
-  IMPORT_BATCH,
-} from '../../shared/constants/access-right.constants'
+import { IMPORT_BATCH } from '../../shared/constants/access-right.constants'
 import { SignerService } from '../../services/master-data/signer.service'
 import Swal from 'sweetalert2'
 import { GoodsService } from '../../services/master-data/goods.service'
-import { DocumentEditorModule } from '@onlyoffice/document-editor-angular';
-import { IConfig } from '@onlyoffice/document-editor-angular';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { DocumentEditorModule } from '@onlyoffice/document-editor-angular'
+import { IConfig } from '@onlyoffice/document-editor-angular'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { iif } from 'rxjs'
 import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
-import { Route } from '@angular/router';
-import { Location } from '@angular/common';
 import { LocalService } from '../../services/master-data/local.service'
+import { lstTrinhKy } from '../../shared/constants/select.model'
+import { OutputModel } from '../../models/calculate-discount/output.model'
+import { InputModel } from '../../models/calculate-discount/input.model'
 
 @Component({
   selector: 'app-calculate-discount-detail',
@@ -46,46 +39,37 @@ export class CalculateDiscountDetailComponent implements OnInit {
   inputnameBBDO: string = ''
   listNameBBDO: any[] = []
 
-  input: any = {
-    header: {},
-    inputPrice: [],
-    market: [],
-    customerDb: [],
-    customerPt: [],
-    customerFob: [],
-    customerTnpp: [],
-    customerBbdo: [],
-  }
   dataQuyTrinh: any = {
     header: {},
     status: {},
   }
-  input2: any = this.input
+  input2: any = new InputModel()
   rightList: any = []
-  statusModel = {
+  statusModel: any = {
     title: '',
     des: '',
     value: '',
   }
 
-  output: any = {
-    dlg: {},
-    pt: [],
-    db: [],
-    fob: [],
-    pt09: [],
-    bbdo: [],
-    pl1: [],
-    pl2: [],
-    pl3: [],
-    pl4: [],
-    vk11Pt: [],
-    vk11Db: [],
-    vk11Fob: [],
-    vk11Tnpp: [],
-    vk11Bb: [],
-    summary: [],
+  selectedIndexInput : any = 0
+  onTabChangeInput(e: any) {
+    this.selectedIndexInput = e
   }
+
+  getFilteredList(): any[] {
+    const term = this.getSearchTermInput('listNameBBDO');
+    if (!term) return this.listNameBBDO;
+    return this.listNameBBDO.filter(item =>
+      item?.name?.toLowerCase().includes(term)
+    );
+  }
+
+  trackByCode(index: number, item: any): string {
+    return item.code;
+  }
+
+  input: any = new InputModel()
+  output: any = new OutputModel()
   checked = false
   visibleColSearch: boolean = false
   headerId: any = ''
@@ -102,25 +86,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstHistoryFile: any[] = []
   lstHistory: any[] = []
   lstSms: any[] = []
-  searchValue = '';
-  visible = false;
+  searchValue = ''
+  visible = false
   listOfData: any[] = []
-  lstTrinhKy: any[] = [
-    {
-      code: 'CongDienKKGiaBanLe',
-      name: 'Công Điện Kiểm Kê Giá Bán Lẻ',
-      status: true,
-    },
-    { code: 'MucGiamGiaNQTM', name: 'Mức Giảm Giá NQTM', status: false },
-    { code: 'QDGBanBuon', name: 'Quyết Định Giá bán Buôn', status: false },
-    { code: 'QDGBanLe', name: 'Quyết Định Giá Bán lẻ', status: true },
-    { code: 'QDGCtyPTS', name: 'Quyết Định Công Ty PTS', status: false },
-    { code: 'QDGNoiDung', name: 'Quyết Giá Nội Dụng', status: false },
-    { code: 'ToTrinh', name: 'Tờ Trình', status: false },
-    { code: 'KeKhaiGia', name: 'Kê Khai Giá', status: true },
-    { code: 'KeKhaiGiaChiTiet', name: 'Kê Khai Giá Chi Tiết', status: true },
-    { code: 'ThueBvmtPts', name: 'Thuế BVMT BTS', status: true },
-  ]
+  lstTrinhKy = lstTrinhKy
   lstCustomer: any[] = []
   isVisibleCustomer: boolean = false
   isVisibleCustomerPDF: boolean = false
@@ -131,7 +100,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   accountGroups: any = {}
   searchInput = ''
   searchInputTab = ''
-  isConfirmLoading = false;
+  isConfirmLoading = false
   searchTerm: { [key: string]: string } = {
     PT: '',
     DB: '',
@@ -151,7 +120,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     TH: '',
   }
   searchTermInput: { [key: string]: string } = {
-
     inputPrice: '',
     market: '',
     customerDb: '',
@@ -166,32 +134,28 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstgoods: any[] = []
   lstSendSms: any[] = []
   localResult: any[] = []
-  isBrowser: boolean = true;
-  idramdom = new Date().getTime();
+  isBrowser: boolean = true
+  idramdom = new Date().getTime()
   isVisiblePreviewExcel: boolean = false
   urlViewExcel = ''
 
   constructor(
     private _service: CalculateDiscountService,
-    private _localService : LocalService,
-    private globalService: GlobalService,
+    private _localService: LocalService,
+    public _global: GlobalService,
     private message: NzMessageService,
     private route: ActivatedRoute,
     private _signerService: SignerService,
     private _configTemplateService: ConfigTemplateService,
     private _goodService: GoodsService,
-
-    private location: Location
-    // @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    // this.isBrowser = isPlatformBrowser(this.platformId);
-    this.globalService.setBreadcrumb([
+    this._global.setBreadcrumb([
       {
         name: 'Kết quả tính toán',
         path: 'calculate-discount/detail',
       },
     ])
-    this.globalService.getLoading().subscribe((value) => {
+    this._global.getLoading().subscribe((value) => {
       this.loading = value
     })
   }
@@ -207,25 +171,35 @@ export class CalculateDiscountDetailComponent implements OnInit {
       next: (data) => {
         this.input = data
         this.listNameBBDO = this.input.customerBbdo
-
         this.titleTab = data.header.name
       },
       error: (response) => {
         console.log(response)
       },
     })
-    this.getRight()
-    this.getAllLocal()
+
+    this.getMasterData()
   }
-  Showmessage(message: string, type: string): void {
-    this.message.create(type, message)
+
+  getMasterData() {
+    const rights = localStorage.getItem('userRights')
+    this.rightList = rights ? JSON.parse(rights) : []
+
+    const accountGroups = localStorage.getItem('UserInfo')
+    this.accountGroups = accountGroups
+      ? JSON.parse(accountGroups).accountGroups[0].name
+      : []
+    this.accountGroups == 'G_NV_K' ? (this.currentTab = 'PT') : ''
+
+    this._localService.getall().subscribe((data) => (this.localResult = data))
+    this._goodService.getall().subscribe((data) => (this.lstgoods = data))
+    this._signerService.getall().subscribe((data) => (this.signerResult = data))
   }
 
   getOutput(id: any) {
     this._service.getOutput(id).subscribe({
       next: (data) => {
         this.output = data
-
       },
       error: (response) => {
         console.log(response)
@@ -233,64 +207,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
-  getAllLocal() {
-    this._localService.getall().subscribe({
-      next: (data) => {
-        this.localResult = data
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-  getOutputCal(id: any) {
-    this._service.getOutput(id).subscribe({
-      next: (data) => {
-        this.output = data
-        this.Showmessage('Tính toán lại thành công', 'success')
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-
-  getAllGood() {
-    this._goodService.getall().subscribe({
-      next: (data) => {
-        this.lstgoods = data
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-
-
-
-
-
-  removeHtmlTags(html: string): string {
-    if (!html) return ''
-    let result = html.replace(/<[^>]*>/g, '');
-    result = result.replace(/&nbsp;/g, ' ')  // Thay thế &nbsp; bằng khoảng trắng thường
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '"')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>');
-    return result
-  }
-
-  // confirmSendsMail() {
-  //   this._service.SendMail(this.headerId).subscribe({
-  //     next: (data) => {
-  //       this.message.create('success', 'Gửi mail thành công')
-  //     },
-  //     error: (err) => {
-  //       console.log(err)
-  //     },
-  //   })
-  // }
   showHistoryExport() {
     this._service.GetHistoryFile(this.headerId).subscribe({
       next: (data) => {
@@ -302,16 +218,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
         })
       },
     })
-  }
-  getRight() {
-    const rights = localStorage.getItem('userRights')
-    this.rightList = rights ? JSON.parse(rights) : []
-
-    const accountGroups = localStorage.getItem('UserInfo')
-    this.accountGroups = accountGroups
-      ? JSON.parse(accountGroups).accountGroups[0].name
-      : []
-    this.accountGroups == 'G_NV_K' ? (this.currentTab = 'PT') : ''
   }
 
   handleCancel() {
@@ -325,7 +231,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.checkedSms = false
     this.isVisiblePreviewExcel = false
     this.isVisiblePreview = false
-    this.inputSearchCustomer = ""
+    this.inputSearchCustomer = ''
   }
   exportWordTrinhKy() {
     this.isVisibleLstTrinhKy = !this.isVisibleLstTrinhKy
@@ -351,7 +257,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
             this.lstTrinhKyChecked.push(i.code)
           }
         })
-
       } else {
         this.lstTrinhKy.forEach((i) => {
           this.lstTrinhKyChecked.push(i.code)
@@ -380,7 +285,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
       this.lstTrinhKyChecked = []
-      this.checked = false;
+      this.checked = false
     }
   }
 
@@ -397,12 +302,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
       this.lstCustomerChecked = []
     }
   }
-
-
-
-
-
-
 
   checkedSms: boolean = false
   lstSearchSms: any[] = []
@@ -423,12 +322,15 @@ export class CalculateDiscountDetailComponent implements OnInit {
   confirmSendSMS(smsname: any) {
     this._service.SaveSMS(this.headerId, smsname).subscribe({
       next: (data) => {
-        console.log(data);
+        console.log(data)
 
-        if (data == "02") {
-          this.message.create('warning', 'SMS thông báo giá bán lẻ đã đươc tạo!')
+        if (data == '02') {
+          this.message.create(
+            'warning',
+            'SMS thông báo giá bán lẻ đã đươc tạo!',
+          )
           return
-        } else if (data == "01") {
+        } else if (data == '01') {
           this.message.create('warning', 'SMS thông báo thù lao đã được tạo!')
           return
         }
@@ -459,7 +361,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.lstSendSmsChecked = []
     if (value) {
       this.lstSearchSms.forEach((i) => {
-        if (i.isSend != "Y") {
+        if (i.isSend != 'Y') {
           this.lstSendSmsChecked.push(i.id)
         }
       })
@@ -468,18 +370,15 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  updateCheckedSetSendSms(code: any, checked: boolean,): void {
+  updateCheckedSetSendSms(code: any, checked: boolean): void {
     if (checked) {
       this.lstSendSmsChecked.push(code)
-
     } else {
-      this.lstSendSmsChecked = this.lstSendSmsChecked.filter(
-        (x) => x !== code
-      )
+      this.lstSendSmsChecked = this.lstSendSmsChecked.filter((x) => x !== code)
     }
   }
 
-  onItemCheckedSendSms(code: String, checked: boolean,): void {
+  onItemCheckedSendSms(code: String, checked: boolean): void {
     this.updateCheckedSetSendSms(code, checked)
   }
 
@@ -489,17 +388,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   onSendSms() {
     if (this.lstSendSmsChecked.length == 0) {
-      this.message.create(
-        'warning',
-        'Vui lòng chọn tin nhắn muốn gửi',
-      )
+      this.message.create('warning', 'Vui lòng chọn tin nhắn muốn gửi')
       return
     } else {
       this._service.SendSMS(this.lstSendSmsChecked).subscribe({
         next: (data) => {
           this.lstSendSmsChecked = []
           this.handleCancel()
-        }
+        },
       })
     }
   }
@@ -507,49 +403,38 @@ export class CalculateDiscountDetailComponent implements OnInit {
   selectedMarket: any = null
   selectedCustomer: any = null
   selectedTrangThai: any = null
+
   searchHistorySMS() {
-    console.log(this.selectedCustomer, this.selectedMarket, this.inputSearchCustomer);
-
+    const keyword = this.inputSearchCustomer.trim().toLowerCase()
     this.lstSearchSms = this.lstSMS
-    if (this.selectedMarket !== null || this.selectedCustomer !== null || this.inputSearchCustomer !== "" || this.selectedTrangThai !== null) {
-      if (this.selectedMarket !== null) {
-        this.lstSearchSms = this.lstSearchSms.filter(c =>
-          c.marketCode == this.selectedMarket);
-      }
-      if (this.selectedCustomer !== null) {
-        this.lstSearchSms = this.lstSearchSms.filter(c =>
-          c.customerCode == this.selectedCustomer);
-      }
-      if (this.selectedTrangThai !== null) {
-        this.lstSearchSms = this.lstSearchSms.filter(c =>{
-          if (this.selectedTrangThai === "TB") {
-              return c.isSend === "N" && c.numberRetry === 3;
-            } else {
-              return c.isSend === this.selectedTrangThai;
-            }
-          })
-      }
-      if (this.inputSearchCustomer !== "") {
-        const keyword = this.inputSearchCustomer.trim().toLowerCase();
-        this.lstSearchSms = this.lstSearchSms.filter(c =>
-          c.contents.toLowerCase().includes(keyword) || c.phoneNumber.toLowerCase().includes(keyword))
-      }
-    } else {
-      this.lstSearchSms = this.lstSMS
-    }
-
+      .filter(
+        (c) => !this.selectedMarket || c.marketCode === this.selectedMarket,
+      )
+      .filter(
+        (c) =>
+          !this.selectedCustomer || c.customerCode === this.selectedCustomer,
+      )
+      .filter((c) => {
+        if (!this.selectedTrangThai) return true
+        return this.selectedTrangThai === 'TB'
+          ? c.isSend === 'N' && c.numberRetry === 3
+          : c.isSend === this.selectedTrangThai
+      })
+      .filter(
+        (c) =>
+          !keyword ||
+          c.contents.toLowerCase().includes(keyword) ||
+          c.phoneNumber.toLowerCase().includes(keyword),
+      )
   }
 
   clearSearchSms() {
     this.selectedMarket = null
     this.selectedCustomer = null
     this.selectedTrangThai = null
-    this.inputSearchCustomer = ""
+    this.inputSearchCustomer = ''
     this.searchHistorySMS()
   }
-
-
-
 
   checkedEmail: boolean = false
   lstSearchEmail: any[] = []
@@ -570,7 +455,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.lstSendEmailChecked = []
     if (value) {
       this.lstSearchEmail.forEach((i) => {
-        if (i.isSend != "Y") {
+        if (i.isSend != 'Y') {
           this.lstSendEmailChecked.push(i.id)
         }
       })
@@ -579,18 +464,17 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  updateCheckedSetSendEmail(code: any, checked: boolean,): void {
+  updateCheckedSetSendEmail(code: any, checked: boolean): void {
     if (checked) {
       this.lstSendEmailChecked.push(code)
-
     } else {
       this.lstSendEmailChecked = this.lstSendEmailChecked.filter(
-        (x) => x !== code
+        (x) => x !== code,
       )
     }
   }
 
-  onItemCheckedSendEmail(code: String, checked: boolean,): void {
+  onItemCheckedSendEmail(code: String, checked: boolean): void {
     this.updateCheckedSetSendEmail(code, checked)
   }
 
@@ -600,26 +484,23 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   onSendEmail() {
     if (this.lstSendEmailChecked.length == 0) {
-      this.message.create(
-        'warning',
-        'Vui lòng chọn tin nhắn muốn gửi',
-      )
+      this.message.create('warning', 'Vui lòng chọn tin nhắn muốn gửi')
       return
     } else {
       this._service.SendlstEmail(this.lstSendEmailChecked).subscribe({
         next: () => {
           this.lstSendEmailChecked = []
           this.handleCancel()
-        }
+        },
       })
     }
   }
 
   searchEmail() {
-    const keyword = this.inputSearchMail.trim().toLowerCase();
-    this.lstSearchEmail = this.lstEmail.filter(c =>
-      c.contents.toLowerCase().includes(keyword)
-    );
+    const keyword = this.inputSearchMail.trim().toLowerCase()
+    this.lstSearchEmail = this.lstEmail.filter((c) =>
+      c.contents.toLowerCase().includes(keyword),
+    )
   }
 
   ResendEmail() {
@@ -635,53 +516,44 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
-
-  // selectedMarket: any = null
   selectedCustomerMail: any = null
-  selectedTrangThaiMail : any = null
+  selectedTrangThaiMail: any = null
   searchHistoryMail() {
-    this.lstSearchEmail = this.lstEmail
-    if (this.selectedCustomerMail !== null || this.inputSearchCustomer !== "" || this.selectedTrangThaiMail !== null) {
-      if (this.selectedCustomerMail !== null) {
-        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
-          c.customerCode == this.selectedCustomerMail);
-      }
-      if (this.selectedTrangThaiMail !== null) {
-        this.lstSearchEmail = this.lstSearchEmail.filter(c =>{
-          if (this.selectedTrangThaiMail === "TB") {
-              return c.isSend === "N" && c.numberRetry === 3;
-            } else {
-              return c.isSend === this.selectedTrangThaiMail;
-            }
-          }
-        );
-      }
-      if (this.inputSearchCustomer !== "") {
-        const keyword = this.inputSearchCustomer.trim().toLowerCase();
-        this.lstSearchEmail = this.lstSearchEmail.filter(c =>
-          c.contents.toLowerCase().includes(keyword) || c.email.toLowerCase().includes(keyword))
-      }
-    } else {
-      this.lstSearchEmail = this.lstEmail
-    }
+    const keyword = this.inputSearchCustomer.trim().toLowerCase()
 
+    this.lstSearchEmail = this.lstEmail
+      .filter(
+        (c) =>
+          !this.selectedCustomerMail ||
+          c.customerCode === this.selectedCustomerMail,
+      )
+      .filter((c) => {
+        if (!this.selectedTrangThaiMail) return true
+        return this.selectedTrangThaiMail === 'TB'
+          ? c.isSend === 'N' && c.numberRetry === 3
+          : c.isSend === this.selectedTrangThaiMail
+      })
+      .filter(
+        (c) =>
+          !keyword ||
+          c.contents.toLowerCase().includes(keyword) ||
+          c.email.toLowerCase().includes(keyword),
+      )
   }
 
   clearSearchMail() {
     this.selectedCustomerMail = null
     this.selectedTrangThai = null
-    this.inputSearchCustomer = ""
+    this.inputSearchCustomer = ''
     this.searchHistoryMail()
   }
 
-
   searchTableBBDO() {
-    const keyword = this.inputnameBBDO.toLowerCase();
+    const keyword = this.inputnameBBDO.toLowerCase()
     this.listNameBBDO = this.input.customerBbdo.filter((item: any) =>
-      item.name.toLowerCase().includes(keyword)
-    );
+      item.name.toLowerCase().includes(keyword),
+    )
   }
-
 
   confirmExportWord() {
     if (this.lstCustomerChecked.length == 0) {
@@ -709,15 +581,12 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
     }
-    this.lstCustomerChecked = [];
-    this.checked = false;
+    this.lstCustomerChecked = []
+    this.checked = false
   }
   confirmExportWordMail() {
     if (this.lstCustomerChecked.length == 0) {
-      this.message.create(
-        'warning',
-        'Vui lòng chọn file cần tạo',
-      )
+      this.message.create('warning', 'Vui lòng chọn file cần tạo')
       return
     } else {
       this._service
@@ -734,11 +603,15 @@ export class CalculateDiscountDetailComponent implements OnInit {
           },
         })
     }
-    this.lstCustomerChecked = [];
-    this.checked = false;
+    this.lstCustomerChecked = []
+    this.checked = false
   }
 
-  updateCheckedSet(code: any, deliveryGroupCode: string, checked: boolean,): void {
+  updateCheckedSet(
+    code: any,
+    deliveryGroupCode: string,
+    checked: boolean,
+  ): void {
     if (checked) {
       this.lstCustomerChecked.push({
         code: code,
@@ -751,7 +624,11 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  onItemChecked(code: String, deliveryGroupCode: string, checked: boolean,): void {
+  onItemChecked(
+    code: String,
+    deliveryGroupCode: string,
+    checked: boolean,
+  ): void {
     this.updateCheckedSet(code, deliveryGroupCode, checked)
   }
 
@@ -759,53 +636,44 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.titleTab = title
   }
 
-
-  // 01 khởi tạo || trình duyệt giá bán lẻ (01)
-  // 02 chờ phê duyệt giá bán lẻ || hủy trình duyệt giá bán lẻ(02) , phê duyệt giá bán lẻ, yêu cầu chỉnh sửa
-  // 03 yêu cầu chỉnh sửa giá bán lẻ || trình duyệt giá bán lẻ
-  // 04 phê duyệt giá bán lẻ || hủy phê duyệt giá bán lẻ || trình duyệt giá thù lao
-  // 05 từ chối ||
-  // 06 chờ phê duyệt giá thù lao|| hủy trình duyệt giá thù lao, phê duyệt giá thù lao, yêu cầu chỉnh sửa
-  // 07 yêu cầu chỉnh sửa giá thù lao || trình duyệt giá thù lao
-  // 08 phê duyệt || phê duyệt giá thù lao
-
   changeStatus(value: string, status: string) {
-    switch (value) {
-      case '01':
-        this.statusModel.title = 'TRÌNH DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-        // this.input.header.status = '01'/
-        break
-      case '02':
-        this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
-        this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
-        break
-      case '03':
-        this.statusModel.title = 'PHÊ DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
-        break
-      case '04':
-        this.statusModel.title = 'TỪ CHỐI'
-        this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
-        break
-      case '05':
-        this.statusModel.title = 'HỦY TRÌNH DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
-        break
-      case '06':
-        this.statusModel.title = 'HỦY PHÊ DUYỆT'
-        this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-        break
-
+    const statusMap: Record<string, { title: string; des: string }> = {
+      '01': {
+        title: 'TRÌNH DUYỆT',
+        des: 'Bạn có muốn Trình duyệt dữ liệu này?',
+      },
+      '02': {
+        title: 'YÊU CẦU CHỈNH SỬA',
+        des: 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?',
+      },
+      '03': { title: 'PHÊ DUYỆT', des: 'Bạn có muốn Phê duyệt dữ liệu này?' },
+      '04': { title: 'TỪ CHỐI', des: 'Bạn có muốn Từ chối dữ liệu này?' },
+      '05': {
+        title: 'HỦY TRÌNH DUYỆT',
+        des: 'Bạn có muốn Hủy trình duyệt dữ liệu này?',
+      },
+      '06': {
+        title: 'HỦY PHÊ DUYỆT',
+        des: 'Bạn có muốn Hủy phê duyệt dữ liệu này?',
+      },
     }
-    this.dataQuyTrinh.status.code = status
+
+    const selectedStatus = statusMap[value]
+    if (!selectedStatus) return
+
+    this.statusModel = { ...selectedStatus }
+
+    this.dataQuyTrinh.status = {
+      code: status,
+      Link: window.location.href,
+    }
     this.dataQuyTrinh.header = this.input.header
 
-    this.dataQuyTrinh.status.Link = window.location.href
     this.isVisibleStatus = true
+
     Swal.fire({
-      title: this.statusModel.title,
-      text: this.statusModel.des,
+      title: selectedStatus.title,
+      text: selectedStatus.des,
       input: 'text',
       inputPlaceholder: 'Ý kiến',
       icon: 'question',
@@ -815,49 +683,33 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.dataQuyTrinh.status.content = result.value
-        this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe({
-          next: (data) => {
-            window.location.reload()
-          },
+        this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe(() => {
+          window.location.reload()
         })
       }
     })
   }
 
-  getAllSigner() {
-    this._signerService.getall().subscribe({
-      next: (data) => {
-        this.signerResult = data
-      },
-      error: (response) => {
-        console.log(response)
-      },
-    })
-  }
-
   openInput() {
-    this.getAllGood()
     this.input2 = structuredClone(this.input)
     this.formatVcfAndBvmtData()
     this.visibleInput = true
-    this.getAllSigner()
   }
 
   onUpdateInput() {
     this.visibleInput = false
     this._service.updateInput(this.input).subscribe({
-      next: (data) => { },
+      next: (data) => {},
       error: (response) => {
         console.log(response)
       },
     })
     this.getOutput(this.headerId)
-
   }
 
   handleQuyTrinh() {
     this._service.HandleQuyTrinh(this.input).subscribe({
-      next: (data) => { },
+      next: (data) => {},
       error: (response) => {
         console.log(response)
       },
@@ -869,7 +721,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   reCalculate() {
-    this.getOutputCal(this.headerId)
+    this.ngOnInit()
   }
 
   fullScreen() {
@@ -881,8 +733,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isZoom = false
     document
       .exitFullscreen()
-      .then(() => { })
-      .catch(() => { })
+      .then(() => {})
+      .catch(() => {})
   }
   showHistoryAction() {
     this._service.GetHistoryAction(this.headerId).subscribe({
@@ -897,15 +749,15 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
   getCustomerName(code: string): string {
     if (code != null) {
-      const customer = this.output.summary.find((c: any) => c.col4 === code);
-      return customer ? customer.customerName : '';
+      const customer = this.output.summary.find((c: any) => c.col4 === code)
+      return customer ? customer.customerName : ''
     }
-    return ""
+    return ''
   }
 
   getMarketName(code: string): string {
-    const market = this.input.market.find((c: any) => c.code === code);
-    return market ? market.name : '';
+    const market = this.input.market.find((c: any) => c.code === code)
+    return market ? market.name : ''
   }
   openNewTab(url: string) {
     window.open(url, '_blank')
@@ -927,44 +779,27 @@ export class CalculateDiscountDetailComponent implements OnInit {
     })
   }
 
-
   Preview(data: any) {
-
-    if (data.type == "xlsx") {
-      this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
-      this.isVisiblePreviewExcel = true
-      this.config = {
-        document: {
-          fileType: 'xlsx',
-          key: `ket${this.idramdom}`,
-          title: 'Example Document Title.xlsx',
-          url: `${this.urlViewExcel}`,
-        },
-        documentType: 'cell',
-        editorConfig: {
-          mode: 'view',
-
-        },
-      };
-    } else if (data.type == "docx") {
-      this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${new Date().getTime()}`
-      this.isVisiblePreviewExcel = true
-      this.config = {
-        document: {
-          fileType: 'docx',
-          key: `keydoc${this.idramdom}`,
-          title: 'File.docx',
-          url: `${this.urlViewExcel}`,
-        },
-        documentType: 'word',
-        editorConfig: {
-          mode: 'view',
-
-        },
-      };
-
+    if (!['xlsx', 'docx'].includes(data.type)) return
+    const fileType = data.type
+    const title =
+      fileType === 'xlsx' ? 'Example Document Title.xlsx' : 'File.docx'
+    const key = (fileType === 'xlsx' ? 'ket' : 'keydoc') + this.idramdom
+    const documentType = fileType === 'xlsx' ? 'cell' : 'word'
+    this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${Date.now()}`
+    this.isVisiblePreviewExcel = true
+    this.config = {
+      document: {
+        fileType,
+        key,
+        title,
+        url: this.urlViewExcel,
+      },
+      documentType,
+      editorConfig: {
+        mode: 'view',
+      },
     }
-
   }
 
   config: IConfig = {
@@ -977,15 +812,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
     documentType: 'cell',
     editorConfig: {
       mode: 'view',
-
     },
-  };
-
+  }
 
   onShowSMS() {
     this._configTemplateService.getall().subscribe({
       next: (data) => {
-        this.lstSms = data.filter((item: any) => item.type === "SMS")
+        this.lstSms = data.filter((item: any) => item.type === 'SMS')
       },
       error: (response) => {
         console.log(response)
@@ -995,65 +828,36 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   isAllCheckedSmsFirstChange: boolean = false
-  allChecked = false;
-
+  allChecked = false
 
   onInputNumberFormat(data: any, field: string) {
-    let value = data[field]
-    // 1. Bỏ ký tự không hợp lệ (chỉ giữ số, '-', '.')
-    value = value.replace(/[^0-9\-.]/g, '')
+    let value = data[field]?.toString().replace(/[^0-9.-]/g, '') || ''
 
-    // 2. Đảm bảo chỉ có 1 dấu '-' và nó đứng đầu
-    const minusMatches = value.match(/-/g)
-    if (minusMatches && minusMatches.length > 1) {
-      value = value.replace(/-/g, '') // Xoá hết
-      value = '-' + value // Thêm 1 dấu '-' đầu tiên
-    } else if (minusMatches && !value.startsWith('-')) {
-      value = value.replace(/-/g, '')
-      value = '-' + value
-    }
+    value = value.replace(/-/g, '')
+    if (data[field].startsWith('-')) value = '-' + value
 
-    // 3. Xử lý dấu '.': chỉ cho sau '0' hoặc '-0' và duy nhất
-    const dotIndex = value.indexOf('.')
-    if (dotIndex !== -1) {
-      const beforeDot = value.substring(0, dotIndex)
-      const afterDot = value.substring(dotIndex + 1).replace(/\./g, '')
+    const [intPartRaw, ...decParts] = value.split('.')
+    const intPart = intPartRaw.replace(/[^0-9-]/g, '')
+    const decPart = decParts.join('').replace(/\./g, '')
 
-      if (beforeDot === '0' || beforeDot === '-0') {
-        value = beforeDot + '.' + afterDot
-      } else {
-        // Loại bỏ dấu '.' nếu không đúng điều kiện
-        value = beforeDot + afterDot
-      }
-    }
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    const formattedValue = decPart ? `${formattedInt}.${decPart}` : formattedInt
 
-    // 4. Format phần nguyên với dấu ','
-    const parts = value.split('.')
-    let integerPart = parts[0].replace(/[^0-9\-]/g, '') // giữ dấu '-'
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-    // 5. Ghép lại
-    let formattedValue = integerPart
-    if (parts[1]) {
-      formattedValue += '.' + parts[1]
-    }
-
-    // 6. Cập nhật lại giá trị hiển thị
     data[field] = formattedValue
-    // 7. Parse về số
-    const rawNumber = formattedValue.replace(/,/g, '')
-    const numberValue = parseFloat(rawNumber)
-    const finalNumber = isNaN(numberValue) ? 0 : numberValue
-    // 8. Update vào model chuẩn
+
+    const numberValue = parseFloat(formattedValue.replace(/,/g, '')) || 0
+
     const index = this.input2.inputPrice.findIndex(
       (x: any) => x.goodCode === data.goodCode,
     )
     if (index !== -1) {
-      this.input.inputPrice[index][field] = finalNumber
+      this.input.inputPrice[index][field] = numberValue
     }
   }
 
   onKeyDownNumberOnly(event: KeyboardEvent) {
+    const { key, ctrlKey, metaKey } = event
+    const isModifierKey = ctrlKey || metaKey
     const allowedKeys = [
       'Backspace',
       'ArrowLeft',
@@ -1063,89 +867,63 @@ export class CalculateDiscountDetailComponent implements OnInit {
       '-',
       '.',
     ]
-
-    // Cho phép dùng Ctrl/Cmd kết hợp với: A, C, V, X
-    if (
-      (event.ctrlKey || event.metaKey) &&
-      ['a', 'c', 'v', 'x', 'z'].includes(event.key.toLowerCase())
-    ) {
-      return
-    }
-
-    // Cho phép nhập số hoặc phím được phép
-    if (
-      (event.key >= '0' && event.key <= '9') ||
-      allowedKeys.includes(event.key)
-    ) {
-      return
-    }
-
-    // Chặn các phím còn lại
+    const isCtrlCombo =
+      isModifierKey && ['a', 'c', 'v', 'x', 'z'].includes(key.toLowerCase())
+    const isDigit = key >= '0' && key <= '9'
+    if (isDigit || allowedKeys.includes(key) || isCtrlCombo) return
     event.preventDefault()
   }
 
   handleAutoInput(row: any) {
     const index = this.input2.inputPrice.indexOf(row)
-
-    this.input2.inputPrice[index].fobV1 = parseInt(this.input2.inputPrice[index].fobV2.replace(/,/g, ''), 10)
+    this.input2.inputPrice[index].fobV1 = parseInt(
+      this.input2.inputPrice[index].fobV2.replace(/,/g, ''),
+      10,
+    )
     this.input.inputPrice[index].fobV1 = this.input2.inputPrice[index].fobV1
-    this.input2.inputPrice[index].fobV1 = this.formatNumber(this.input2.inputPrice[index].fobV1)
-
-  }
-
-  formatNumber(value: any): string {
-    if (value == null || value === '') return ''
-
-    const num = parseFloat(value.toString().replace(/,/g, ''))
-    if (isNaN(num)) return ''
-
-    // Format giữ 4 chữ số sau dấu phẩy (mày có thể chỉnh lại tuỳ)
-    return num.toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 4,
-    })
+    this.input2.inputPrice[index].fobV1 = this._global.formatNumber(
+      this.input2.inputPrice[index].fobV1,
+    )
   }
 
   formatVcfAndBvmtData() {
     if (this.input2.inputPrice && Array.isArray(this.input2.inputPrice)) {
       this.input2.inputPrice.forEach((item: any) => {
-        // Format các trường số cần format
-        item.vcf = this.formatNumber(item.vcf)
-        item.thueBvmt = this.formatNumber(item.thueBvmt)
-        item.chenhLech = this.formatNumber(item.chenhLech)
-        item.gblV1 = this.formatNumber(item.gblV1)
-        item.gblV2 = this.formatNumber(item.gblV2)
-        item.l15Blv2 = this.formatNumber(item.l15Blv2)
-        item.l15Nbl = this.formatNumber(item.l15Nbl)
-        item.laiGop = this.formatNumber(item.laiGop)
-        item.fobV1 = this.formatNumber(item.fobV1)
-        item.fobV2 = this.formatNumber(item.fobV2)
+        item.vcf = this._global.formatNumber(item.vcf)
+        item.thueBvmt = this._global.formatNumber(item.thueBvmt)
+        item.chenhLech = this._global.formatNumber(item.chenhLech)
+        item.gblV1 = this._global.formatNumber(item.gblV1)
+        item.gblV2 = this._global.formatNumber(item.gblV2)
+        item.l15Blv2 = this._global.formatNumber(item.l15Blv2)
+        item.l15Nbl = this._global.formatNumber(item.l15Nbl)
+        item.laiGop = this._global.formatNumber(item.laiGop)
+        item.fobV1 = this._global.formatNumber(item.fobV1)
+        item.fobV2 = this._global.formatNumber(item.fobV2)
       })
     }
   }
 
-
   onDocumentReady = () => {
     if (this.isBrowser) {
-      console.log('Document is loaded');
+      console.log('Document is loaded')
     }
-  };
+  }
 
   onLoadComponentError = (errorCode: number, errorDescription: string) => {
     if (this.isBrowser) {
       switch (errorCode) {
-        case -1: // Unknown error loading component
-          console.log(errorDescription);
-          break;
-        case -2: // Error loading DocsAPI
-          console.log(errorDescription);
-          break;
-        case -3: // DocsAPI is not defined
-          console.log(errorDescription);
-          break;
+        case -1:
+          console.log(errorDescription)
+          break
+        case -2:
+          console.log(errorDescription)
+          break
+        case -3:
+          console.log(errorDescription)
+          break
       }
     }
-  };
+  }
 
   exportWord() {
     this._service.GetCustomerBbdo(this.headerId).subscribe({
@@ -1153,7 +931,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
         this.lstCustomer = data
         this.lstCus = data
         this.isVisibleCustomer = true
-
       },
     })
   }
@@ -1162,33 +939,28 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   confirmExportPDF() {
-    if (this.lstCustomerChecked.length == 0) {
+    if (!this.lstCustomerChecked.length) {
       this.message.create(
         'warning',
         'Vui lòng chọn khách hàng cần xuất ra file',
       )
       return
-    } else {
-      this._service
-        .ExportPDF(this.lstCustomerChecked, this.headerId)
-        .subscribe({
-          next: (data) => {
-            this.isVisibleCustomer = false
-            this.lstCustomerChecked = []
-            var a = document.createElement('a')
-            a.href = environment.apiUrl + data
-            a.target = '_blank'
-            a.click()
-            a.remove()
-          },
-          error: (err) => {
-            console.log(err)
-          },
-        })
     }
-    this.lstCustomerChecked = []
-    this.checked = false;
+    this._service.ExportPDF(this.lstCustomerChecked, this.headerId).subscribe({
+      next: (data) => {
+        this.isVisibleCustomer = false
+        this.lstCustomerChecked = []
+        this.checked = false
+        const link = document.createElement('a')
+        link.href = `${environment.apiUrl}${data}`
+        link.target = '_blank'
+        link.click()
+        link.remove()
+      },
+      error: (err) => console.error(err),
+    })
   }
+
   exportPDF() {
     this._service.GetCustomerBbdo(this.headerId).subscribe({
       next: (data) => {
@@ -1201,11 +973,10 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.searchTerm[sheetName] = this.searchInput
   }
   searchInPutDb(sheetName: string) {
-    if (sheetName == "") {
+    if (sheetName == '') {
       sheetName = 'inputPrice'
     }
     this.searchTermInput[sheetName] = this.searchInputTab
-
   }
 
   reset(tabName: string) {
@@ -1214,12 +985,12 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.searchInput = ''
     this.currentTab = tabName
   }
+
   resetInput(tabName: string) {
     const keys = Object.keys(this.searchTermInput)
     keys.forEach((key) => (this.searchTermInput[key] = ''))
     this.searchInputTab = ''
     this.currentTabInput = tabName
-
   }
 
   getSearchTerm(key: string): string {
@@ -1236,55 +1007,26 @@ export class CalculateDiscountDetailComponent implements OnInit {
       this.rightList.includes(IMPORT_BATCH.EXPORT_TO_WORD)
     )
   }
+
   onDateChange(date: Date) {
-    const month = new Date(date).getMonth() + 1
-    // Tạo array mới để Angular detect thay đổi
-    const temp = this.input.inputPrice.map((item1: any) => {
-      const matched = this.lstgoods.find(
-        (item2) => item2.code === item1.goodCode,
-      )
-      const vcfValue = matched
-        ? month >= 5 && month <= 10
-          ? matched.vfcHt
-          : matched.vfcDx
-        : item1.vcf
-
-      return { ...item1, vcf: vcfValue } // tạo object mới luôn
+    const isHtSeason = date.getMonth() + 1 >= 5 && date.getMonth() + 1 <= 10
+    const updatedPrices = this.input.inputPrice.map((item: any) => {
+      const matched = this.lstgoods.find((g) => g.code === item.goodCode)
+      return {
+        ...item,
+        vcf: matched ? (isHtSeason ? matched.vfcHt : matched.vfcDx) : item.vcf,
+      }
     })
-
-    this.input.inputPrice = temp
-    this.input2.inputPrice = structuredClone(temp)
-
+    this.input.inputPrice = updatedPrices
+    this.input2.inputPrice = structuredClone(updatedPrices)
     this.formatVcfAndBvmtData()
-  }
-
-  formatNegativeNumber(value: number | null | undefined): string {
-    if (value == null || isNaN(value)) return '';
-
-    const formatted = Math.abs(value).toLocaleString('en-US'); // format dấu phẩy phần nghìn
-
-    return value < 0
-      ? `(${formatted})`
-      : formatted;
-  }
-
-  formatNegativeNumber2(value: number | null | undefined): string {
-    if (value == null || isNaN(value)) return '';
-
-    const roundedValue = Math.round(value); // Làm tròn tới đơn vị
-    const formatted = Math.abs(roundedValue).toLocaleString('en-US'); // Định dạng dấu phẩy phần nghìn
-
-    return roundedValue < 0 ? `(${formatted})` : formatted;
   }
 
   lstCus: any[] = []
   searchCustomer() {
-    const keyword = this.inputSearchCustomer.trim().toLowerCase();
-    this.lstCus = this.lstCustomer.filter(c =>
-      c.name.toLowerCase().includes(keyword)
-    );
+    const keyword = this.inputSearchCustomer.trim().toLowerCase()
+    this.lstCus = this.lstCustomer.filter((c) =>
+      c.name.toLowerCase().includes(keyword),
+    )
   }
-
-
-
 }
