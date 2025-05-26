@@ -2698,7 +2698,7 @@
         </tr>
         @for (data of historyTable.data; track data) {
         <tr>
-          <td [nzChecked]="isCheckedSendSms(data.id)" [nzDisabled]="data.isSend == 'Y'"
+          <td [nzChecked]="isCheckedSendSms(data.id)" [nzDisabled]="data.isSend == 'N'&& data.numberRetry < 3"
             (nzCheckedChange)="onItemCheckedSendSms(data.id, $event)">
           </td>
           <td title="{{ getCustomerName(data.customerCode) }}"
@@ -2773,7 +2773,7 @@
         </tr>
         @for (data of historyTable.data; track data) {
         <tr>
-          <td [nzChecked]="isCheckedSendEmail(data.id)" [nzDisabled]="data.isSend == 'Y'"
+          <td [nzChecked]="isCheckedSendEmail(data.id)" [nzDisabled]="data.isSend == 'N'&& data.numberRetry < 3"
             (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
           </td>
 

@@ -44,7 +44,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
             _congifEmail = new EmmailInfo
             {
                 port = 25,
-                Email= "longlh@petrolimex.com.vn",
+                Email= "plx.na@petrolimex.com.vn",
                 host= "10.0.3.47"
             };
 
@@ -106,12 +106,12 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                 var smtpClient = new SmtpClient(emailConfig.Host)
                 {
                     Port = emailConfig.Port,
-                  
+                    Credentials = new NetworkCredential(_congifEmail.Email, "123321"),
                     EnableSsl = false,
                 };
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(emailConfig.Email, "TMS"),
+                    From = new MailAddress(_congifEmail.Email, "TMS"),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,

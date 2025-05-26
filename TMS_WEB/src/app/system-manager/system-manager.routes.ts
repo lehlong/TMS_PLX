@@ -10,6 +10,8 @@ import { SystemParameterComponent } from './system-parameter/system-parameter.co
 import { OrganizeComponent } from './organize/organize.component'
 import { ConfixTemplateEmailComponent } from './config-template-email/config-template-email.component'
 import { ConfixTemplateSmsComponent } from './config-template-sms/config-template-sms.component'
+import { ConfigMailComponent } from './config-mail/config-mail.component'
+import { ConfigSmsComponent } from './config-sms/config-sms.component'
 export const systemManagerRoutes: Routes = [
   { path: 'account', component: AccountIndexComponent },
   { path: 'account-group', component: AccountGroupIndexComponent },
@@ -22,4 +24,6 @@ export const systemManagerRoutes: Routes = [
   { path: 'organization', component: OrganizeComponent },
   { path: 'config-template-email', component: ConfixTemplateEmailComponent },
   { path: 'config-template-sms', component: ConfixTemplateSmsComponent },
+  {path: 'config-mail', component: ConfigMailComponent },
+    {path: 'config-sms', component: ConfigMailComponent },
 ]
