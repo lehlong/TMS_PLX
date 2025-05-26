@@ -113,6 +113,9 @@ namespace DMS.CORE
         public DbSet<TblAdConfigTemplate> TblAdConfigTemplate { get; set; }
 
         public DbSet<TblAdAccount> TblAdAccount { get; set; }
+        public DbSet<TblSmsConfig> TblSmsConfigs { get; set; }
+        public DbSet<TblEmailConfig> TblEmailConfig { get; set; }
+
         public DbSet<TblAdAccountGroup> TblAdAccountGroup { get; set; }
         public DbSet<TblAdMenu> TblAdMenu { get; set; }
         public DbSet<TblAdRight> TblAdRight { get; set; }

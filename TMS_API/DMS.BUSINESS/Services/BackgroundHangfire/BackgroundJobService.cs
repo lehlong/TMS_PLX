@@ -40,13 +40,12 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                 Password = "xd@258369",
                 CpCode = "XANGDAUNA",
                 ServiceId = "CtyXdauN.an"
-
             };
             _congifEmail = new EmmailInfo
             {
                 port = 25,
                 Email= "longlh@petrolimex.com.vn",
-                host= "mail.petrolimex.com.vn"
+                host= "10.0.3.47"
             };
 
            
@@ -57,6 +56,8 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
         {
             try
             {
+             
+
                 _dbContext.ChangeTracker.Clear();
                 var lstSMS = await _dbContext.TblCmNotifySms.Where(x => x.IsSend == "N" && x.NumberRetry < 3 && x.IsSend != "K").ToListAsync();
                 foreach (var s in lstSMS)
@@ -100,16 +101,17 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
         {
             try
             {
+                var emailConfig = await _dbContext.TblEmailConfig.FirstOrDefaultAsync();
 
-                var smtpClient = new SmtpClient(_congifEmail.host)
+                var smtpClient = new SmtpClient(emailConfig.Host)
                 {
-                    Port = 587,
-                    Credentials = new NetworkCredential(_congifEmail.Email, _congifEmail.pass),
-                    EnableSsl = true,
+                    Port = emailConfig.Port,
+                  
+                    EnableSsl = false,
                 };
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(_congifEmail.Email, "TMS"),
+                    From = new MailAddress(emailConfig.Email, "TMS"),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,
@@ -120,7 +122,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     mailMessage.Attachments.Add(attachment);
                 }
 
-                mailMessage.To.Add("Somot1pro@gmail.com");
+                mailMessage.To.Add(toEmail);
                 await smtpClient.SendMailAsync(mailMessage);
                 return true;
 
@@ -174,18 +176,19 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
         {
             try
             {
+                var smsConfig = await _dbContext.TblSmsConfigs.FirstOrDefaultAsync();
                 string soapRequest = $@"
                     <soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/' xmlns:impl='http://impl.bulkSms.ws/'>
                        <soapenv:Header/>
                        <soapenv:Body>
                           <impl:wsCpMt>
-                             <User>{_config.Username}</User>
-                             <Password>{_config.Password}</Password>
-                             <CPCode>{_config.CpCode}</CPCode>
+                             <User>{smsConfig.Username}</User>
+                             <Password>{smsConfig.Password}</Password>
+                             <CPCode>{smsConfig.CpCode}</CPCode>
                              <RequestID>1</RequestID>
                              <UserID>{phone}</UserID>
                              <ReceiverID>{phone}</ReceiverID>
-                             <ServiceID>{_config.ServiceId}</ServiceID>
+                             <ServiceID>{smsConfig.ServiceId}</ServiceID>
                              <CommandCode>bulksms</CommandCode>
                              <Content>{content}</Content>
                              <ContentType>1</ContentType>
@@ -197,7 +200,7 @@ namespace DMS.BUSINESS.Services.BackgroundHangfire
                     client.DefaultRequestHeaders.Add("SOAPAction", "wsCpMt");
                     HttpContent contentData = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
 
-                    HttpResponseMessage response = await client.PostAsync(_config.UrlSMS, contentData);
+                    HttpResponseMessage response = await client.PostAsync(smsConfig.UrlSms, contentData);
                     var res = await response.Content.ReadAsStringAsync();
                     if (!string.IsNullOrEmpty(res))
                     {
