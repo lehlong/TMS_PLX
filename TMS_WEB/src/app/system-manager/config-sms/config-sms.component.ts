@@ -10,7 +10,7 @@ import { LOCAL_RIGHTS, MASTER_DATA_MANAGEMENT } from '../../shared/constants'
 import { NzMessageService } from 'ng-zorro-antd/message'
 
 @Component({
-  selector: 'app-config-mail',
+  selector: 'app-config-sms',
   standalone: true,
   imports: [ShareModule],
   templateUrl: './config-sms.component.html',
@@ -19,10 +19,11 @@ import { NzMessageService } from 'ng-zorro-antd/message'
 export class ConfigSmsComponent {
   validateForm: FormGroup = this.fb.group({
     Id: ['', [Validators.required]],
-  Port: ['', [Validators.required]],
-  Host: ['', [Validators.required]],
-  Pass: ['', [Validators.required]],
-  Email: ['', [Validators.required]],
+  urlSms: ['', [Validators.required]],
+  username: ['', [Validators.required]],
+  serviceId: ['', [Validators.required]],
+  cpCode: ['', [Validators.required]],
+  password: ['', [Validators.required]],
   
   isActive: [true, [Validators.required]],
   })
@@ -45,8 +46,8 @@ export class ConfigSmsComponent {
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'sms',
-        path: 'master-data/config-sms',
+        name: 'Mail',
+        path: 'master-data/config-mail',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -164,10 +165,11 @@ export class ConfigSmsComponent {
    
     this.validateForm.patchValue({
       Id: data.id,
-      Port: data.port,
-      Host: data.host,
-      Pass: data.pass,
-      Email: data.email,
+      urlSms: data.urlSms,
+      username: data.username,
+      serviceId: data.serviceId,
+      cpCode: data.cpCode,
+      password: data.password,
       isActive: data.isActive,
     })
     setTimeout(() => {

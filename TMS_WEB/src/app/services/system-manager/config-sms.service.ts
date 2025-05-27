@@ -5,30 +5,30 @@ import {CommonService} from '../common.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ConfigMailService {
+export class ConfigSmsService {
   constructor(private commonService: CommonService) {}
 
-  searchConfigMail(params: any): Observable<any> {
-    return this.commonService.get('ConfigMail/Search', params);
+  searchConfigSms(params: any): Observable<any> {
+    return this.commonService.get('ConfigSms/Search', params);
   }
 
   getall(): Observable<any> {
-    return this.commonService.get('ConfigMail/GetAll');
+    return this.commonService.get('ConfigSms/GetAll');
   }
 
-  createConfigMail(params: any): Observable<any> {
-    return this.commonService.post('ConfigMail/Insert', params);
+  createConfigSms(params: any): Observable<any> {
+    return this.commonService.post('ConfigSms/Insert', params);
   }
 
-  updateConfigMail(params: any): Observable<any> {
-    return this.commonService.put('ConfigMail/Update', params);
+  updateConfigSms(params: any): Observable<any> {
+    return this.commonService.put('ConfigSms/Update', params);
   }
 
-  exportExcelConfigMail(params: any): Observable<any> {
-    return this.commonService.downloadFile('ConfigMail/Export', params);
+  exportExcelConfigSms(params: any): Observable<any> {
+    return this.commonService.downloadFile('ConfigSms/Export', params);
   }
 
-  deleteConfigMail(id: string | number): Observable<any> {
-    return this.commonService.delete(`ConfigMail/Delete/${id}`);
+  deleteConfigSms(id: string | number): Observable<any> {
+    return this.commonService.delete(`ConfigSms/Delete/${id}`);
   }
 }

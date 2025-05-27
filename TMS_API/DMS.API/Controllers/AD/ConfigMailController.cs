@@ -1,6 +1,7 @@
 ﻿using Common;
 using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
+using DMS.BUSINESS.Dtos.AD;
 using DMS.BUSINESS.Dtos.MD;
 using DMS.BUSINESS.Services.AD;
 using DMS.BUSINESS.Services.MD;
@@ -69,7 +70,7 @@ namespace DMS.API.Controllers.AD
             return Ok(transferObject);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] JaGoodsDto JaGoods)
+        public async Task<IActionResult> Update([FromBody] EmailConfigDto JaGoods)
         {
             var transferObject = new TransferObject();
             await _service.Update(JaGoods);

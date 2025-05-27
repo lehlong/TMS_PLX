@@ -9,6 +9,7 @@ namespace DMS.BUSINESS.Dtos.AD
 {
     public class SmsConfigDto : IDto, IMapFrom
     {
+        [Key]
         [Description("ID")]
         public int Id { get; set; }
 
@@ -32,6 +33,7 @@ namespace DMS.BUSINESS.Dtos.AD
         [Description("Mã dịch vụ")]
         public string ServiceId { get; set; }
 
+        public bool isActive { get; set; }
         public void Mapping(Profile profile)
         {
             profile.CreateMap<TblSmsConfig, SmsConfigDto>().ReverseMap();

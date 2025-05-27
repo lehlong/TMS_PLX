@@ -1,23 +1,9 @@
 <div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.REGION_LIST_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Thiết laapjk mail" class="site-page-header">
+    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Thiết lập mail" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
-          <nz-space>
-            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
-              [(value)]="filter.keyWord"></app-input-clear>
-            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
-              nzType="default">
-              <span nz-icon nzType="search"></span>
-            </button>
-            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
-              nzType="default">
-              <span nz-icon nzType="redo"></span>
-            </button>
-          </nz-space>
-          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
-            <span nz-icon nzType="plus-circle"></span> Thêm mới
-          </button>
+        
         
         </nz-space>
       </nz-page-header-extra>

@@ -1,23 +1,9 @@
 <div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.REGION_LIST_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Thiết laapjk mail" class="site-page-header">
+    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Thiết lập mail" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
-          <nz-space>
-            <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
-              [(value)]="filter.keyWord"></app-input-clear>
-            <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
-              nzType="default">
-              <span nz-icon nzType="search"></span>
-            </button>
-            <button (click)="reset()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
-              nzType="default">
-              <span nz-icon nzType="redo"></span>
-            </button>
-          </nz-space>
-          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
-            <span nz-icon nzType="plus-circle"></span> Thêm mới
-          </button>
+        
         
         </nz-space>
       </nz-page-header-extra>
@@ -28,17 +14,23 @@
       [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
       <thead>
         <tr>
-          <th nzWidth="30px">STT</th>
+        
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Id', $event)" nzWidth="150px">
             Mã
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Port', $event)">
-            Cổng Sever
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('urlSms', $event)">
+            Đường dẫn
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Email', $event)">
-            Email
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Cpcode', $event)">
+            Cpcode
           </th>
-           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Pass', $event)">
+           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('username', $event)">
+           User Name
+          </th>
+           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('serviceId', $event)">
+           Service ID
+          </th>
+           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('password', $event)">
            Mật khẩu
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
@@ -49,19 +41,15 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of headerTable.data; let i = index" (dblclick)="openEdit(data)">
-          <td>
-            {{
-            (paginationResult.currentPage - 1) * paginationResult.pageSize +
-            i +
-            1
-            }}
-          </td>
+         
           <td>
             <a (click)="openEdit(data)">{{ data.id }}</a>
           </td>
-          <td>{{ data.port }}</td>
-           <td>{{ data.host }}</td>
-            <td>{{ data.pass }}</td>
+          <td>{{ data.urlSms }}</td>
+          <td>{{ data.cpCode }}</td>
+           <td>{{ data.username }}</td>
+            <td>{{ data.serviceId }}</td>
+            <td>{{ data.password }}</td>
 
          
           <td nzAlign="center">
@@ -88,14 +76,16 @@
       <app-input-clear placeholder="Nhập mã" [required]="true" label="Mã"
         [control]="$any(validateForm).controls['Id']" [required]="true"
         [disabled]="edit ? true : false"></app-input-clear>
-      <app-input-clear placeholder="Nhập Cổng Email" [required]="true" label="Cổng Email"
-        [control]="$any(validateForm).controls['Port']"></app-input-clear>
-        <app-input-clear placeholder="Nhập Địa chỉ" [required]="true" label="Địa chỉ"
-        [control]="$any(validateForm).controls['Host']"></app-input-clear>
- <app-input-clear placeholder="Nhập Email" [required]="true" label="Email"
-        [control]="$any(validateForm).controls['Email']"></app-input-clear>
+      <app-input-clear placeholder="Nhập urlSms" [required]="true" label="Cổng Email"
+        [control]="$any(validateForm).controls['urlSms']"></app-input-clear>
+        <app-input-clear placeholder="Nhập Code " [required]="true" label="Địa chỉ"
+        [control]="$any(validateForm).controls['cpCode']"></app-input-clear>
+ <app-input-clear placeholder="Nhập Username" [required]="true" label="Email"
+        [control]="$any(validateForm).controls['username']"></app-input-clear>
+         <app-input-clear placeholder="Nhập ServiceID" [required]="true" label="Mật khẩu"
+        [control]="$any(validateForm).controls['serviceId']"></app-input-clear>
          <app-input-clear placeholder="Nhập mật khẩu" [required]="true" label="Mật khẩu"
-        [control]="$any(validateForm).controls['Pass']"></app-input-clear>
+        [control]="$any(validateForm).controls['password']"></app-input-clear>
       
 
       <nz-form-item>

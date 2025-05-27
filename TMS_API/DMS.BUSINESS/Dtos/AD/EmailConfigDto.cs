@@ -8,7 +8,9 @@ using System.ComponentModel.DataAnnotations;
 namespace DMS.BUSINESS.Dtos.AD
 {
     public class EmailConfigDto : IDto, IMapFrom
+
     {
+        [Key]
         [Description("ID")]
         public int Id { get; set; }
 
@@ -27,6 +29,7 @@ namespace DMS.BUSINESS.Dtos.AD
         [Description("Địa chỉ email")]
         [EmailAddress]
         public string Email { get; set; }
+        public bool isActive { get; set; }
 
         public void Mapping(Profile profile)
         {

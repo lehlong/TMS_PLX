@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfigSmsComponent } from './config-sms.component';
 
-describe('ConfigMailComponent', () => {
+describe('ConfigSmsComponent', () => {
   let component: ConfigSmsComponent;
   let fixture: ComponentFixture<ConfigSmsComponent>;
 
