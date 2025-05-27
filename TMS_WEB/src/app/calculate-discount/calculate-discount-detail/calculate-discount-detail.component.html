@@ -2553,14 +2553,18 @@
                   <td>{{data.code }}</td>
                   <td>{{data.name }}</td>
                   <td>
+                    <!-- <input nz-input [(ngModel)]="data.localCode" type="text" /> -->
                     <!-- <nz-form-control>
-                      <nz-select class="no-border-select" nzShowSearch nzAllowClear placeholder="Chọn Vùng Giá"
-                        [(ngModel)]="data.localCode">
-                        <nz-option cdkScrollable *ngFor="let item of localResult" [nzLabel]="item.name"
-                          [nzValue]="item.code">
-                        </nz-option>
+                      <nz-select class="no-border-select" [(ngModel)]="data.localCode">
+                        <nz-option  [nzLabel]="'Vùng 1'" [nzValue]="'V1'"> </nz-option>
+                        <nz-option  [nzLabel]="'Vùng 2'" [nzValue]="'V2'"></nz-option>
                       </nz-select>
                     </nz-form-control> -->
+
+                    <nz-radio-group [(ngModel)]="data.localCode">
+                      <label nz-radio nzValue="V1">V1</label>
+                      <label nz-radio nzValue="V2">V2</label>
+                    </nz-radio-group>
                   </td>
                   <td><input nz-input [(ngModel)]="data.cvcbq" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>

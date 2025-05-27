@@ -25,7 +25,7 @@ import { LocalService } from '../../services/master-data/local.service';
 export class CalculateDiscountComponent implements OnInit {
   constructor(
     private _service: CalculateDiscountService,
-    private _localService : LocalService,
+    private _localService: LocalService,
     private globalService: GlobalService,
     private message: NzMessageService,
     private router: Router,
@@ -45,7 +45,7 @@ export class CalculateDiscountComponent implements OnInit {
   isVisibleStatus: boolean = false
   IMPORT_BATCH = IMPORT_BATCH
   noData: any[] = []
-  localResult : any[] = []
+  localResult: any[] = []
   loading: boolean = false
   visible = false;
   filter = new BaseFilter()
@@ -71,17 +71,17 @@ export class CalculateDiscountComponent implements OnInit {
     customerTnpp: [],
     customerBbdo: [],
   };
-    searchTermInput:  { [key: string]: string } = {
+  searchTermInput: { [key: string]: string } = {
 
     inputPrice: '',
     market: '',
     customerDb: '',
     customerPt: '',
     customerFob: '',
-    customerTnpp:   '',
+    customerTnpp: '',
     customerBbdo: '',
   }
-    searchInputTab = ''
+  searchInputTab = ''
   currentTabInput = ''
   input2: any = this.input;
   nguoiKyControl = new FormControl({ code: "", name: "", position: "" });
@@ -103,12 +103,12 @@ export class CalculateDiscountComponent implements OnInit {
   search() {
     this._service.search(this.filter).subscribe({
       next: (data) => {
-        if(this.accountGroups=="G_NV_K"){
+        if (this.accountGroups == "G_NV_K") {
 
-          data.data= data.data.filter((item: any) => item.status=="04")
+          data.data = data.data.filter((item: any) => item.status == "04")
           this.paginationResult = data
 
-        }else{
+        } else {
           this.paginationResult = data
         }
 
@@ -196,8 +196,6 @@ export class CalculateDiscountComponent implements OnInit {
     this._signerService.getall().subscribe({
       next: (data) => {
         this.signerResult = data
-        console.log(this.signerResult)
-        // this.selectedValue = this.signerResult.find(item => item.code === "d72636e2-454f-4085-b491-76b2e0c6445d");
       },
       error: (response) => {
         console.log(response)
@@ -310,18 +308,19 @@ export class CalculateDiscountComponent implements OnInit {
     event.preventDefault();
   }
   getStatusColor(status: string): string {
-  switch (status) {
-    case '01':
-      return 'blue';
-    case '02':
-      return 'orange';
-    case '03':
-      return 'purple';
-    case '04':
-      return 'green';
-    default:
-      return 'gray';
-  }}
+    switch (status) {
+      case '01':
+        return 'blue';
+      case '02':
+        return 'orange';
+      case '03':
+        return 'purple';
+      case '04':
+        return 'green';
+      default:
+        return 'gray';
+    }
+  }
 
   formatNumber(value: any): string {
     if (value == null || value === '') return '';
@@ -369,59 +368,59 @@ export class CalculateDiscountComponent implements OnInit {
   }
 
 
-    changeStatus(value: string, status: string, dataHeader: any) {
-      switch (value) {
-        case '01':
-          this.statusModel.title = 'TRÌNH DUYỆT'
-          this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
-          // this.input.header.status = '01'/
-          break
-        case '02':
-          this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
-          this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
-          break
-        case '03':
-          this.statusModel.title = 'PHÊ DUYỆT'
-          this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
-          break
-        case '04':
-          this.statusModel.title = 'TỪ CHỐI'
-          this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
-          break
-        case '05':
-          this.statusModel.title = 'HỦY TRÌNH DUYỆT'
-          this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
-          break
-        case '06':
-          this.statusModel.title = 'HỦY PHÊ DUYỆT'
-          this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
-          break
-      }
-      this.dataQuyTrinh.status.code = status
-      this.dataQuyTrinh.header = dataHeader
-
-      this.dataQuyTrinh.status.Link = window.location.href
-      this.isVisibleStatus = true
-      Swal.fire({
-        title: this.statusModel.title,
-        text: this.statusModel.des,
-        input: 'text',
-        inputPlaceholder: 'Ý kiến',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Đồng ý',
-        cancelButtonText: 'Hủy',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.dataQuyTrinh.status.content = result.value
-          this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe({
-            next: (data) => {
-              window.location.reload()
-            },
-          })
-        }
-      })
+  changeStatus(value: string, status: string, dataHeader: any) {
+    switch (value) {
+      case '01':
+        this.statusModel.title = 'TRÌNH DUYỆT'
+        this.statusModel.des = 'Bạn có muốn Trình duyệt dữ liệu này?'
+        // this.input.header.status = '01'/
+        break
+      case '02':
+        this.statusModel.title = 'YÊU CẦU CHỈNH SỬA'
+        this.statusModel.des = 'Bạn có muốn Yêu cầu chỉnh sửa lại dữ liệu này?'
+        break
+      case '03':
+        this.statusModel.title = 'PHÊ DUYỆT'
+        this.statusModel.des = 'Bạn có muốn Phê duyệt dữ liệu này?'
+        break
+      case '04':
+        this.statusModel.title = 'TỪ CHỐI'
+        this.statusModel.des = 'Bạn có muốn Từ chối dữ liệu này?'
+        break
+      case '05':
+        this.statusModel.title = 'HỦY TRÌNH DUYỆT'
+        this.statusModel.des = 'Bạn có muốn Hủy trình duyệt dữ liệu này?'
+        break
+      case '06':
+        this.statusModel.title = 'HỦY PHÊ DUYỆT'
+        this.statusModel.des = 'Bạn có muốn Hủy phê duyệt dữ liệu này?'
+        break
     }
+    this.dataQuyTrinh.status.code = status
+    this.dataQuyTrinh.header = dataHeader
+
+    this.dataQuyTrinh.status.Link = window.location.href
+    this.isVisibleStatus = true
+    Swal.fire({
+      title: this.statusModel.title,
+      text: this.statusModel.des,
+      input: 'text',
+      inputPlaceholder: 'Ý kiến',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataQuyTrinh.status.content = result.value
+        this._service.HandleQuyTrinh(this.dataQuyTrinh).subscribe({
+          next: (data) => {
+            window.location.reload()
+          },
+        })
+      }
+    })
+  }
 
   handleAutoInput(row: any) {
     const index = this.input2.inputPrice.indexOf(row)
@@ -432,15 +431,28 @@ export class CalculateDiscountComponent implements OnInit {
     console.log(this.input2.inputPrice[index].fobV1);
 
   }
-   searchInPutDb(sheetName: string) {
-    if(sheetName==""){
+  searchInPutDb(sheetName: string) {
+    if (sheetName == "") {
       sheetName = 'inputPrice'
     }
     this.searchTermInput[sheetName] = this.searchInputTab
 
   }
- getSearchTermInput(key: string): string {
-    return this.searchTermInput[key] || ''
-  }
 
+  getSearchTermInput(key: string): string {
+    return this.searchTermInput[key] || ''
+
+  }
+  toggleLocalCode(data: any, value: string) {
+    console.log(data)
+    if (data.localCode === value) {
+    console.log(data.localCode)
+
+      data.localCode = null; // Hủy nếu click lần 2
+    console.log(data.localCode)
+
+    } else {
+      data.localCode = value; // Gán nếu khác
+    }
+  }
 }

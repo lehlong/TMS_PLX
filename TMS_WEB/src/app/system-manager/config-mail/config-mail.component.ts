@@ -3,11 +3,12 @@ import { ShareModule } from '../../shared/share-module'
 import { LocalFilter } from '../../models/master-data/local.model'
 import { GlobalService } from '../../services/global.service'
 
-import { ConfigMailService } from '../../services/system-manager/config-mail.service'
+// import { ConfigMailService } from '../../services/system-manager/config-mail.service'
 import { PaginationResult } from '../../models/base.model'
 import { FormGroup, Validators, NonNullableFormBuilder } from '@angular/forms'
 import { LOCAL_RIGHTS, MASTER_DATA_MANAGEMENT } from '../../shared/constants'
 import { NzMessageService } from 'ng-zorro-antd/message'
+import { ConfigMailService } from '../../services/system-manager/config-mail.service'
 
 @Component({
   selector: 'app-config-mail',
@@ -23,7 +24,7 @@ export class ConfigMailComponent {
   Host: ['', [Validators.required]],
   Pass: ['', [Validators.required]],
   Email: ['', [Validators.required]],
-  
+
   isActive: [true, [Validators.required]],
   })
 
@@ -60,7 +61,7 @@ export class ConfigMailComponent {
 
   ngOnInit(): void {
     this.search()
-  
+
   }
 
   onSortChange(name: string, value: any) {
@@ -84,9 +85,9 @@ export class ConfigMailComponent {
     })
   }
 
- 
 
- 
+
+
   isCodeExist(code: string): boolean {
     return this.paginationResult.data?.some((ConfigMail: any) => ConfigMail.code === code)
   }
@@ -161,7 +162,7 @@ export class ConfigMailComponent {
   }
 
   openEdit(data: any) {
-   
+
     this.validateForm.patchValue({
       Id: data.id,
       Port: data.port,
