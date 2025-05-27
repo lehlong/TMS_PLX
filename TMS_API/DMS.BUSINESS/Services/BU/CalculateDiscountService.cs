@@ -4685,6 +4685,10 @@ namespace DMS.BUSINESS.Services.BU
             var data = await CalculateDiscountOutput(headerId);            
             var header = await _dbContext.TblBuCalculateDiscount.FindAsync(headerId);
             var goods = await _dbContext.TblMdGoods.Where(x=> x.IsActive == true).ToListAsync();
+
+            var goodsList = goods.Where(x => x.IsActive == true)
+                                     .OrderBy(x => x.CreateDate)
+                                 .ToList();
             var lstSigner = await _dbContext.TblMdSigner.Where(x => x.IsActive == true).ToListAsync();
             var tckt = lstSigner.FirstOrDefault(x => x.Code == header.TcktCode)?.Name ?? "";
             var kdxd = lstSigner.FirstOrDefault(x => x.Code == header.KdxdCode)?.Name ?? "";
@@ -4712,7 +4716,7 @@ namespace DMS.BUSINESS.Services.BU
             var data_Dlg7_Old = new List<DlgModel>();
             var data_Dlg8_Old = new List<DlgModel>();
 
-            foreach (var g in goods)
+            foreach (var g in goodsList)
             {
                 foreach (var i in inputPriceOld)
                 {
@@ -4858,9 +4862,6 @@ namespace DMS.BUSINESS.Services.BU
 
                                     #region Gendata table
                                     var o = 1;
-                                    var goodsList = goods.Where(x => x.IsActive == true)
-                                                             .OrderBy(x => x.CreateDate)
-                                                         .ToList();
                                     foreach (var i in goodsList)
                                     {
                                         var item = data.Dlg.Dlg2.FirstOrDefault(x => x.GoodCode == i.Code);
@@ -5564,9 +5565,6 @@ namespace DMS.BUSINESS.Services.BU
 
                                     #region Gendata table
                                     var o = 1;
-                                    var goodsList = goods.Where(x => x.IsActive == true)
-                                                         .OrderByDescending(x => x.ThueBvmt)
-                                                         .ToList();
                                     foreach (var i in goodsList)
                                     {
 
@@ -5608,9 +5606,6 @@ namespace DMS.BUSINESS.Services.BU
 
                                     #region Gendata table
                                     var o = 1;
-                                    var goodsList = goods.Where(x => x.IsActive == true)
-                                                         .OrderByDescending(x => x.ThueBvmt)
-                                                         .ToList();
                                     foreach (var i in goodsList)
                                     {
                                         var item = data.Dlg.Dlg2.FirstOrDefault(x => x.GoodCode == i.Code);
