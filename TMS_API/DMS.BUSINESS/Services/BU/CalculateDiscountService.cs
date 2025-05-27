@@ -4859,7 +4859,7 @@ namespace DMS.BUSINESS.Services.BU
                                     #region Gendata table
                                     var o = 1;
                                     var goodsList = goods.Where(x => x.IsActive == true)
-                                                         .OrderByDescending(x => x.ThueBvmt)
+                                                             .OrderBy(x => x.CreateDate)
                                                          .ToList();
                                     foreach (var i in goodsList)
                                     {

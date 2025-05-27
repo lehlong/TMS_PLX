@@ -1233,7 +1233,7 @@
             <thead>
               <tr>
                 <th class="align-center" rowspan="2">TT</th>
-                <th class="align-center" rowspan="2">TÊN KHÁCH HÀNG</th>
+                <th class="align-center"  [nzWidth]="'50%'" rowspan="2">TÊN KHÁCH HÀNG</th>
                 <th class="align-center" rowspan="2">ĐỊA ĐIỂM GIAO HÀNG</th>
                 <th class="align-center" rowspan="2">MẶT HÀNG</th>
                 <th class="align-center" *ngIf="accountGroups != 'G_NV_K'" rowspan="2">PHƯƠNG <br> THỨC</th>
@@ -1281,8 +1281,8 @@
                   <ng-container
                     *ngIf="!getSearchTerm('BBDO') || data?.customerName?.toLowerCase().includes(getSearchTerm('BBDO').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"  *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;" *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.customerCode}}</td>
@@ -1576,7 +1576,7 @@
                     <ng-container
                       *ngIf="!getSearchTerm('VK11PT') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11PT').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1645,7 +1645,7 @@
                     <ng-container
                       *ngIf="!getSearchTerm('VK11DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11DB').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 350px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1713,8 +1713,8 @@
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11FOB').toLowerCase())">
-                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td  *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1891,7 +1891,7 @@
                   <tr
                     *ngIf="!getSearchTerm('VK11BB') || data?.customerName.toLowerCase().includes(getSearchTerm('VK11BB').toLowerCase())">
                     <td nzAlign="center">{{data.stt}}</td>
-                    <td nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                     <td nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                     <td nzAlign="left">{{ data.goodsName}}</td>
                     <td nzAlign="center">{{ data.col1 | number}}</td>
@@ -1959,7 +1959,7 @@
                     <ng-container
                       *ngIf="!getSearchTerm('TH') || data?.customerName?.toLowerCase().includes(getSearchTerm('TH').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
