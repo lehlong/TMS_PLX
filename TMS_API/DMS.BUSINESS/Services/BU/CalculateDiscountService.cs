@@ -5987,7 +5987,6 @@ namespace DMS.BUSINESS.Services.BU
             }
             else
             {
-
                 var w = await GenarateWord(lstCustomerCheckedWord, headerId);
                 var pathWord = Directory.GetCurrentDirectory() + "/" + w;
                 Aspose.Words.Document doc = new Aspose.Words.Document(pathWord);
@@ -6675,7 +6674,7 @@ namespace DMS.BUSINESS.Services.BU
                 }
                 if (data.Status.Code == "04")
                 {
-                    await SaveMailPheDuyet(data.header.Id);
+                    await SaveMailTBGia(data.header.Id);
                 }
                 if (data.Status.Code == "07")
                 {
@@ -6971,8 +6970,8 @@ namespace DMS.BUSINESS.Services.BU
         }
         #endregion
 
-        #region gửi mail
-        public async Task SaveMailPheDuyet(string headerId)
+        #region gửi mail thông báo giá xăng dầu
+        public async Task SaveMailTBGia(string headerId)
         {
             try
             {
@@ -6982,34 +6981,34 @@ namespace DMS.BUSINESS.Services.BU
                 var dataHeader = await this.GetInput(headerId);
                 DateTime Date = dataHeader.Header.Date;
                 var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
-                var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email TBPD");
+                var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email thông báo giá bán");
 
                 var lstmail = new List<TblNotifyEmail>();
                 foreach (var item in data.Bbdo)
                 {
                     if((!item.CustomerCode.IsNullOrEmpty())&& !item.CustomerCode.Contains("-")) {
-                    var customer = new CustomBBDOExportWord()
-                    {
-                        code = item.CustomerCode,
-                        deliveryGroupCode = ""
-                    };
-                        var Email = new TblNotifyEmail()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
-                        Subject = template.Title ?? "",
-                        Contents = template.HtmlSource.Replace("[toDate]", Ngay),
-                        IsSend = "C",
-                        NumberRetry = 0,
-                        HeaderId = headerId,
-                        CustomerCode= customer.code
+                        var customer = new CustomBBDOExportWord()
+                        {
+                            code = item.CustomerCode,
+                            deliveryGroupCode = ""
                         };
-                    lstmail.Add(Email);
+                        var Email = new TblNotifyEmail()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
+                            Subject = template.Title.Replace("[fromDate]", Ngay) ?? "",
+                            Contents = template.HtmlSource.Replace("[fromDate]", Ngay),
+                            IsSend = "C",
+                            NumberRetry = 0,
+                            HeaderId = headerId,
+                            CustomerCode= customer.code
+                        };
+                        lstmail.Add(Email);
                     }
                 }
-
                 _dbContext.TblCmNotifiEmail.AddRange(lstmail);
-                //await _dbContext.SaveChangesAsync();
+
+                await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

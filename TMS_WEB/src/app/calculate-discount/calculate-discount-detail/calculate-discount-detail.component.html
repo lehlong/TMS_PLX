@@ -898,7 +898,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('DB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
@@ -1035,7 +1035,7 @@
                   <ng-container
                     *ngIf="!getSearchTerm('FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('FOB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
 
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>

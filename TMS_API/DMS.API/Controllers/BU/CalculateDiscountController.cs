@@ -464,7 +464,7 @@ namespace DMS.API.Controllers.BU
         }
 
         [HttpPost("ExportPDF")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> ExportPDF([FromBody] List<CustomBBDOExportWord> lstCustomerChecked, [FromQuery] string headerId)
         {
             var transferObject = new TransferObject();
