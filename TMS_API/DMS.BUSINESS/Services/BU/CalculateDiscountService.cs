@@ -35,6 +35,7 @@ using NPOI.SS.Formula.Functions;
 using DMS.CORE.Entities.MD;
 using Microsoft.IdentityModel.Tokens;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Office2010.CustomUI;
 
 namespace DMS.BUSINESS.Services.BU
 {
@@ -6665,18 +6666,16 @@ namespace DMS.BUSINESS.Services.BU
                             HeaderId = data.header.Id,
                             Email =m,
                             NumberRetry = 0,
-                            Subject = templateEmail.Title,
-                            Contents = templateEmail.HtmlSource.Replace("[pram]", data.Status.Link),
+                            Subject = templateEmail.Title.Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
+                            Contents = templateEmail.HtmlSource.Replace("[pram]", data.Status.Link).Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
                             IsSend = "N",
                         };
                         _dbContext.TblCmNotifiEmail.Add(email);
                     }
-                }
-                if (data.Status.Code == "04")
+                }else if (data.Status.Code == "04")
                 {
                     await SaveMailTBGia(data.header.Id);
-                }
-                if (data.Status.Code == "07")
+                }else if (data.Status.Code == "07")
                 {
                     var lstmail = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == data.header.Id);
                     foreach (var item in lstmail)
@@ -6975,38 +6974,40 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                var s = new ExportWordService(_dbContext);
-                var data = await this.CalculateDiscountOutput(headerId);
-                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true).ToList();
+                //var s = new ExportWordService(_dbContext);
+                //var data = await this.CalculateDiscountOutput(headerId);
+                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true && x.Email != "").ToList();
+                var lstCustomerBbdo = _dbContext.TblMdCustomerBbdo.Where(x => x.IsActive == true).ToList();
                 var dataHeader = await this.GetInput(headerId);
                 DateTime Date = dataHeader.Header.Date;
-                var Ngay = $"{Date.Hour:D2}h ngày {Date:dd/MM/yyyy}";
+                var Ngay = $"{Date.Hour:D2}h00 ngày {Date:dd/MM/yyyy}";
                 var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email thông báo giá bán");
 
                 var lstmail = new List<TblNotifyEmail>();
-                foreach (var item in data.Bbdo)
+
+                foreach (var item in litCustomerBBdoMail)
                 {
-                    if((!item.CustomerCode.IsNullOrEmpty())&& !item.CustomerCode.Contains("-")) {
-                        var customer = new CustomBBDOExportWord()
-                        {
-                            code = item.CustomerCode,
-                            deliveryGroupCode = ""
-                        };
-                        var Email = new TblNotifyEmail()
+                    if (lstCustomerBbdo.FirstOrDefault(x => x.Code == item.CustomerCode) != null)
+                    {
+                        lstmail.Add(new TblNotifyEmail()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Email = litCustomerBBdoMail.FirstOrDefault(x => x.CustomerCode == item.CustomerCode)?.Email ?? "",
+                            Email = item.Email,
                             Subject = template.Title.Replace("[fromDate]", Ngay) ?? "",
                             Contents = template.HtmlSource.Replace("[fromDate]", Ngay),
                             IsSend = "C",
                             NumberRetry = 0,
                             HeaderId = headerId,
-                            CustomerCode= customer.code
-                        };
-                        lstmail.Add(Email);
+                            CustomerCode = item.CustomerCode ?? ""
+                        });
                     }
                 }
+
                 _dbContext.TblCmNotifiEmail.AddRange(lstmail);
+
+
+
+
 
                 await _dbContext.SaveChangesAsync();
             }

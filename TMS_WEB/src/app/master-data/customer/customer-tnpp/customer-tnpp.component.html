@@ -38,7 +38,7 @@
       <thead>
         <tr>
           <th nzAlign="center" rowspan="2">MÃ</th>
-          <th nzAlign="center" rowspan="2">KHÁCH HÀNG</th>
+          <th nzAlign="center" rowspan="2" nzWidth="300px">KHÁCH HÀNG</th>
           <th nzAlign="center" rowspan="2">VÙNG</th>
           <th nzAlign="center" rowspan="2">THỊ TRƯỜNG</th>
           <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
@@ -58,7 +58,7 @@
       <tbody>
         <tr *ngFor="let data of paginationResult.data">
           <td nzAlign="center"> <a (click)="openEdit(data)"> {{data.code }}</a></td>
-          <td >{{data.name }}</td>
+          <td  title="{{data.name}}" style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left">{{data.name }}</td>
           <td >
             <span *ngFor="let item of localResult">
               <span *ngIf=" data.localCode === item.code ">{{ item.name }}</span>

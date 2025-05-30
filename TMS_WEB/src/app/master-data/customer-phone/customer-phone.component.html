@@ -51,7 +51,7 @@
             1
             }}
           </td>
-          <td>{{ getNameByCode(data.customerCode) }}</td>
+          <td><a (click)="openEdit(data)">{{ getNameByCode(data.customerCode) }}</a></td>
           <td>{{ getNameMarketByCode(data.marketCode) }}</td>
           <td>
             {{ data.phone }}

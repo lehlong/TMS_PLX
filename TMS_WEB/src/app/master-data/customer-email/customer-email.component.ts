@@ -9,6 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon'
 import { SignerFilter } from '../../models/master-data/signer.model'
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service'
 import { CustomerEmailService } from '../../services/master-data/customer-email.service'
+import { CustomerBbdoService } from '../../services/master-data/customer-bbdo.service'
 
 @Component({
   selector: 'app-customer-email',
@@ -28,6 +29,7 @@ isSubmit: boolean = false
   lstEmail:any[] = []
   constructor(
     private _service: CustomerEmailService,
+    private _customerBbdoService: CustomerBbdoService,
     private _CalculateDiscountservice: CalculateDiscountService,
     private fb: NonNullableFormBuilder,
     private globalService: GlobalService,
@@ -106,9 +108,12 @@ isSubmit: boolean = false
   }
 
   getAllInputCustomer():void{
-    this._CalculateDiscountservice.GetAllInputCustomer().subscribe({
+    this._customerBbdoService.getall().subscribe({
       next: (data) => {
-        this.lstCustomer = data
+        this.lstCustomer = data.filter(
+          (customer: any, index: any, self: any) =>
+            index === self.findIndex((c:any) => c.code === customer.code)
+        );
       },
       error: (response) => {
         console.log(response)

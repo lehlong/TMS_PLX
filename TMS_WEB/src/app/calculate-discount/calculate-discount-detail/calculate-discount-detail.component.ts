@@ -51,7 +51,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     value: '',
   }
 
-  selectedIndexInput : any = 0
+  selectedIndexInput: any = 0
   onTabChangeInput(e: any) {
     this.selectedIndexInput = e
   }
@@ -407,24 +407,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
   searchHistorySMS() {
     const keyword = this.inputSearchCustomer.trim().toLowerCase()
     this.lstSearchSms = this.lstSMS
-      .filter(
-        (c) => !this.selectedMarket || c.marketCode === this.selectedMarket,
-      )
-      .filter(
-        (c) =>
-          !this.selectedCustomer || c.customerCode === this.selectedCustomer,
-      )
+      .filter((c) => !this.selectedMarket || c.marketCode === this.selectedMarket,)
+      .filter((c) => !this.selectedCustomer || c.customerCode === this.selectedCustomer,)
       .filter((c) => {
         if (!this.selectedTrangThai) return true
         return this.selectedTrangThai === 'TB'
-          ? c.isSend === 'N' && c.numberRetry === 3
+          ? c.isSend === 'N' && c.numberRetry === 3/*  */
           : c.isSend === this.selectedTrangThai
       })
-      .filter(
-        (c) =>
-          !keyword ||
-          c.contents.toLowerCase().includes(keyword) ||
-          c.phoneNumber.toLowerCase().includes(keyword),
+      .filter((c) =>
+        !keyword ||
+        c.contents.toLowerCase().includes(keyword) ||
+        c.phoneNumber.toLowerCase().includes(keyword),
       )
   }
 
@@ -522,10 +516,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     const keyword = this.inputSearchCustomer.trim().toLowerCase()
 
     this.lstSearchEmail = this.lstEmail
-      .filter(
-        (c) =>
-          !this.selectedCustomerMail ||
-          c.customerCode === this.selectedCustomerMail,
+      .filter((c) =>
+        !this.selectedCustomerMail ||
+        c.customerCode === this.selectedCustomerMail,
       )
       .filter((c) => {
         if (!this.selectedTrangThaiMail) return true
@@ -547,6 +540,18 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.inputSearchCustomer = ''
     this.searchHistoryMail()
   }
+
+
+  lstCus: any[] = []
+  searchDelivery: any = ''
+  searchCustomer() {
+    const keyword = this.inputSearchCustomer.trim().toLowerCase()
+    this.lstCus = this.lstCustomer
+    .filter((c) => !keyword || c.name.toLowerCase().includes(keyword))
+    .filter((c) => !this.searchDelivery || c.deliveryGroupCode == this.searchDelivery)
+    console.log(keyword, this.lstCus)
+  }
+
 
   searchTableBBDO() {
     const keyword = this.inputnameBBDO.toLowerCase()
@@ -699,7 +704,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onUpdateInput() {
     this.visibleInput = false
     this._service.updateInput(this.input).subscribe({
-      next: (data) => {},
+      next: (data) => { },
       error: (response) => {
         console.log(response)
       },
@@ -709,7 +714,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   handleQuyTrinh() {
     this._service.HandleQuyTrinh(this.input).subscribe({
-      next: (data) => {},
+      next: (data) => { },
       error: (response) => {
         console.log(response)
       },
@@ -733,8 +738,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.isZoom = false
     document
       .exitFullscreen()
-      .then(() => {})
-      .catch(() => {})
+      .then(() => { })
+      .catch(() => { })
   }
   showHistoryAction() {
     this._service.GetHistoryAction(this.headerId).subscribe({
@@ -1022,11 +1027,4 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.formatVcfAndBvmtData()
   }
 
-  lstCus: any[] = []
-  searchCustomer() {
-    const keyword = this.inputSearchCustomer.trim().toLowerCase()
-    this.lstCus = this.lstCustomer.filter((c) =>
-      c.name.toLowerCase().includes(keyword),
-    )
-  }
 }

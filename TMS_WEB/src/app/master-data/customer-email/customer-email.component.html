@@ -28,10 +28,14 @@
       <thead>
         <tr>
           <th nzWidth="30px">STT</th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
+
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('customerCode', $event)" nzWidth="160px">
+            Mã khách hàng
+          </th>
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('customerCode', $event)">
             Tên khách hàng
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('createDate', $event)">
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('email', $event)">
             Email
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
@@ -48,6 +52,7 @@
             1
             }}
           </td>
+          <td nzAlign="center"><a  (click)="openEdit(data)">{{ data.customerCode }}</a></td>
           <td>{{ getNameByCode(data.customerCode) }}</td>
           <td>
             {{ data.email }}
@@ -69,7 +74,7 @@
 </div>
 
 <!--Create Update-->
-<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
+<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right" nzWidth="40%"
   [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">

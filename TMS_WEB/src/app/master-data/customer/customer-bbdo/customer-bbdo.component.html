@@ -59,7 +59,7 @@
       <tbody>
         <tr *ngFor="let data of paginationResult.data">
           <td> <a (click)="openEdit(data)"> {{data.code }}</a></td>
-          <td>{{data.name }}</td>
+          <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.name}}">{{data.name }}</td>
           <td>
             <span *ngFor="let item of localResult">
               <span *ngIf=" data.localCode === item.code ">{{ item.name }}</span>
@@ -70,7 +70,7 @@
               <span *ngIf="item.code === data.marketCode">{{ item.name }}</span>
             </span>
           </td>
-          <td nzAlign="center">{{ data.cuLyBq }}</td>
+          <td nzAlign="center" >{{ data.cuLyBq }}</td>
           <td nzAlign="center">{{ data.cvcbq }}</td>
           <td nzAlign="center">{{ data.cpccvc }}</td>
           <td nzAlign="center">{{ data.fob }}</td>

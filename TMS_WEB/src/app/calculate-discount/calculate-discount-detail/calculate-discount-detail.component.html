@@ -898,7 +898,8 @@
                   <ng-container
                     *ngIf="!getSearchTerm('DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('DB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"
+                      *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName }}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
@@ -1035,7 +1036,8 @@
                   <ng-container
                     *ngIf="!getSearchTerm('FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('FOB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
-                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"
+                      *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{ data.customerName }}</td>
 
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col1 | number}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="right">{{ data.col2 | number}}</td>
@@ -1233,7 +1235,7 @@
             <thead>
               <tr>
                 <th class="align-center" rowspan="2">TT</th>
-                <th class="align-center"  [nzWidth]="'50%'" rowspan="2">TÊN KHÁCH HÀNG</th>
+                <th class="align-center" [nzWidth]="'50%'" rowspan="2">TÊN KHÁCH HÀNG</th>
                 <th class="align-center" rowspan="2">ĐỊA ĐIỂM GIAO HÀNG</th>
                 <th class="align-center" rowspan="2">MẶT HÀNG</th>
                 <th class="align-center" *ngIf="accountGroups != 'G_NV_K'" rowspan="2">PHƯƠNG <br> THỨC</th>
@@ -1281,8 +1283,10 @@
                   <ng-container
                     *ngIf="!getSearchTerm('BBDO') || data?.customerName?.toLowerCase().includes(getSearchTerm('BBDO').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"  *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
-                    <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;" *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"
+                      *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;"
+                      *ngIf="!data.isBold" nzAlign="left">{{ data.deliveryPoint}}</td>
                     <td *ngIf="!data.isBold" nzAlign="left">{{ data.goodName}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.pThuc}}</td>
                     <td *ngIf="!data.isBold && accountGroups != 'G_NV_K'" nzAlign="left">{{ data.customerCode}}</td>
@@ -1576,7 +1580,8 @@
                     <ng-container
                       *ngIf="!getSearchTerm('VK11PT') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11PT').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 300px !important;"
+                        *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1645,7 +1650,8 @@
                     <ng-container
                       *ngIf="!getSearchTerm('VK11DB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11DB').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td style="white-space: nowrap !important; width: auto; max-width: 350px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 350px !important;"
+                        *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1713,8 +1719,9 @@
                       {{data.customerName}}</td>
                     <ng-container
                       *ngIf="!getSearchTerm('VK11FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('VK11FOB').toLowerCase())">
-                      <td  *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"
+                        *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -1891,7 +1898,8 @@
                   <tr
                     *ngIf="!getSearchTerm('VK11BB') || data?.customerName.toLowerCase().includes(getSearchTerm('VK11BB').toLowerCase())">
                     <td nzAlign="center">{{data.stt}}</td>
-                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                    <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" nzAlign="left"
+                      title="{{data.customerName}}">{{data.customerName}}</td>
                     <td nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                     <td nzAlign="left">{{ data.goodsName}}</td>
                     <td nzAlign="center">{{ data.col1 | number}}</td>
@@ -1959,7 +1967,8 @@
                     <ng-container
                       *ngIf="!getSearchTerm('TH') || data?.customerName?.toLowerCase().includes(getSearchTerm('TH').toLowerCase())">
                       <td *ngIf="!data.isBold" nzAlign="center">{{data.stt}}</td>
-                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
+                      <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;"
+                        *ngIf="!data.isBold" nzAlign="left" title="{{data.customerName}}">{{data.customerName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left" title="{{data.address}}">{{ data.address}}</td>
                       <td *ngIf="!data.isBold" nzAlign="left">{{ data.marketName}}</td>
                       <td *ngIf="!data.isBold" nzAlign="center">{{ data.col1 | number}}</td>
@@ -2042,14 +2051,29 @@
 
 <!-- Customer -->
 <nz-modal [(nzVisible)]="isVisibleCustomer" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
-  [nzFooter]="nzModalFooter">
+  [nzFooter]="nzModalFooter" nzWidth="40%">
+
   <ng-container *nzModalContent>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" style="margin-bottom: 10px;">
+        <nz-form-control  [nzSpan]="8">
+          <!-- <nz-form-label>Nhóm giao hàng</nz-form-label> -->
+          <nz-select nzShowSearch nzAllowClear [(ngModel)]="searchDelivery" (ngModelChange)="searchCustomer()" nzPlaceHolder="Nhóm giao hàng">
+            <nz-option  [nzLabel]="'N1: Khách hàng giao tại kho bên bán'" [nzValue]="'N1'"></nz-option>
+            <nz-option  [nzLabel]="'N2: Khách hàng giao tại kho bên mua'" [nzValue]="'N2'"></nz-option>
+          </nz-select>
+        </nz-form-control>
+
+        <nz-form-control [nzSpan]="16">
+          <!-- <nz-form-label>Khách hàng</nz-form-label> -->
+        <input nz-input placeHolder="Khách hàng" [(ngModel)]="inputSearchCustomer"
+              (ngModelChange)="searchCustomer()" type="text" />
+        </nz-form-control>
+    </div>
     <nz-table #customerTable [nzData]="lstCus" nzSize="small">
       <thead>
         <tr>
           <th [(nzChecked)]="checked" (nzCheckedChange)="onAllChecked($event)"></th>
-          <td style="font-weight:bold"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="Tên khách hàng"
-              (ngModelChange)="searchCustomer()" type="text" />
+          <td style="font-weight:bold">TÊN KHÁCH HÀNG
           </td>
         </tr>
       </thead>
@@ -2067,6 +2091,7 @@
 
   </ng-container>
 </nz-modal>
+
 <ng-template #nzModalFooter>
   <div style="display: flex; justify-content: flex-end;">
     <nz-space [nzSize]="5">
@@ -2081,6 +2106,7 @@
 
 <nz-modal [(nzVisible)]="isVisibleCustomerPDF" nzTitle="CHỌN KHÁCH HÀNG" (nzOnCancel)="handleCancel()"
   (nzOnOk)="confirmExportPDF()" nzCancelText="Đóng">
+
   <ng-container *nzModalContent>
     <nz-table #customerTable [nzData]="lstCustomer" nzSize="small">
       <thead>
@@ -2484,7 +2510,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG TNPP" (nzClick)="resetInput('customerTnpp')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="input.customerTnpp" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'"  *ngIf="selectedIndexInput == 5">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 5">
             <thead>
               <tr>
                 <th nzAlign="center" rowspan="2">MÃ</th>
@@ -2531,7 +2557,7 @@
       <nz-tab nzTitle="KHÁCH HÀNG BBDO" (nzClick)="resetInput('listNameBBDO')">
         <div class="overflow-input">
           <nz-table nzBordered nzSize="small" [nzData]="listNameBBDO" [nzFrontPagination]="'false'"
-            [nzShowPagination]="'false'"  *ngIf="selectedIndexInput == 6">
+            [nzShowPagination]="'false'" *ngIf="selectedIndexInput == 6">
             <thead>
               <tr>
                 <th nzAlign="center">MÃ</th>
