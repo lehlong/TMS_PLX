@@ -18,6 +18,7 @@ import { lstTrinhKy } from '../../shared/constants/select.model'
 import { OutputModel } from '../../models/calculate-discount/output.model'
 import { InputModel } from '../../models/calculate-discount/input.model'
 
+
 @Component({
   selector: 'app-calculate-discount-detail',
   standalone: true,
@@ -785,40 +786,44 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   Preview(data: any) {
-    if (!['xlsx', 'docx'].includes(data.type)) return
-    const fileType = data.type
-    const title =
-      fileType === 'xlsx' ? 'Example Document Title.xlsx' : 'File.docx'
-    const key = (fileType === 'xlsx' ? 'ket' : 'keydoc') + this.idramdom
-    const documentType = fileType === 'xlsx' ? 'cell' : 'word'
-    this.urlViewExcel = `http://sso.d2s.com.vn:1235/${data.path}?cacheBuster=${Date.now()}`
+    // if (!['xlsx', 'docx'].includes(data.type)) return
+    // const fileType = data.type
+    // const title =
+    //   fileType === 'xlsx' ? 'Example Document Title.xlsx' : 'File.docx'
+    // const key = (fileType === 'xlsx' ? 'ket' : 'keydoc') + this.idramdom
+    // const documentType = fileType === 'xlsx' ? 'cell' : 'word'
+    this.urlViewExcel = `https://tmsapi.plxna.com.vn/${data.path}?cacheBuster=${Date.now()}`
     this.isVisiblePreviewExcel = true
-    this.config = {
-      document: {
-        fileType,
-        key,
-        title,
-        url: this.urlViewExcel,
-      },
-      documentType,
-      editorConfig: {
-        mode: 'view',
-      },
-    }
+    // this.config = {
+    //   document: {
+    //     fileType,
+    //     key,
+    //     title,
+    //     url: this.urlViewExcel,
+    //   },
+    //   documentType,
+    //   editorConfig: {
+    //     mode: 'view',
+    //   },
+    // }
+    console.log(this.urlViewExcel)
+
+    
   }
 
-  config: IConfig = {
-    document: {
-      fileType: 'xlsx',
-      key: `ket${this.idramdom}`,
-      title: 'Example Document Title.xlsx',
-      url: `${this.urlViewExcel}`,
-    },
-    documentType: 'cell',
-    editorConfig: {
-      mode: 'view',
-    },
-  }
+  // config: IConfig = {
+  //   document: {
+  //     fileType: 'xlsx',
+  //     key: `ket${this.idramdom}`,
+  //     title: 'Example Document Title.xlsx',
+  //     url: `${this.urlViewExcel}`,
+  //   },
+  //   documentType: 'cell',
+  //   editorConfig: {
+  //     mode: 'view',
+  //   },
+  // }
+
 
   onShowSMS() {
     this._configTemplateService.getall().subscribe({

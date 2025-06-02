@@ -2916,9 +2916,13 @@
   (nzOnCancel)="handleCancel()">
 
   <ng-container *nzModalContent>
-    <document-editor (id)="idramdom" documentServerUrl="http://sso.d2s.com.vn:1239" [config]="config"
+
+    <!-- <document-editor (id)="idramdom" documentServerUrl="http://sso.d2s.com.vn:1239" [config]="config"
       [events_onDocumentReady]="onDocumentReady" [height]="'900'">
-    </document-editor>
+    </document-editor> -->
+    <ngx-doc-viewer [url]="urlViewExcel" viewer="office" style="width:100%;height:93vh;">
+    </ngx-doc-viewer>
+
   </ng-container>
 
 </nz-modal>
