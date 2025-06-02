@@ -824,7 +824,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
   //   },
   // }
 
-
+Closeoffice(){
+    this.isVisiblePreviewExcel = false
+}
   onShowSMS() {
     this._configTemplateService.getall().subscribe({
       next: (data) => {
