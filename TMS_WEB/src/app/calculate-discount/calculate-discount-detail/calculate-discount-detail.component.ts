@@ -85,6 +85,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstSMS: any[] = []
   lstEmail: any[] = []
   lstHistoryFile: any[] = []
+  lstAllHistoryFile: any[] = []
   lstHistory: any[] = []
   lstSms: any[] = []
   searchValue = ''
@@ -135,6 +136,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstgoods: any[] = []
   lstSendSms: any[] = []
   localResult: any[] = []
+  filteredBbdo: any = []
   isBrowser: boolean = true
   idramdom = new Date().getTime()
   isVisiblePreviewExcel: boolean = false
@@ -171,7 +173,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data
-        this.listNameBBDO = this.input.customerBbdo
+        this.listNameBBDO = this.input.customerBbdo.filter((item: any, index: string, self: any) =>
+          index === self.findIndex((t: any) => t.code === item.code)
+        );
         this.titleTab = data.header.name
       },
       error: (response) => {
@@ -217,6 +221,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
           item.pathDownload = environment.apiUrl + item.path
           item.pathView = environment.apiUrl + item.path
         })
+        this.lstAllHistoryFile = this.lstHistoryFile
       },
     })
   }
@@ -428,7 +433,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.selectedCustomer = null
     this.selectedTrangThai = null
     this.inputSearchCustomer = ''
+    this.inputFileName = ''
     this.searchHistorySMS()
+    this.searchHistoryDowload()
   }
 
   checkedEmail: boolean = false
@@ -548,8 +555,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   searchCustomer() {
     const keyword = this.inputSearchCustomer.trim().toLowerCase()
     this.lstCus = this.lstCustomer
-    .filter((c) => !keyword || c.name.toLowerCase().includes(keyword))
-    .filter((c) => !this.searchDelivery || c.deliveryGroupCode == this.searchDelivery)
+      .filter((c) => !keyword || c.name.toLowerCase().includes(keyword))
+      .filter((c) => !this.searchDelivery || c.deliveryGroupCode == this.searchDelivery)
     console.log(keyword, this.lstCus)
   }
 
@@ -770,6 +777,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   exportExcel() {
+
     this._service.exportExcel(this.headerId, this.accountGroups).subscribe({
       next: (data) => {
         var a = document.createElement('a')
@@ -808,7 +816,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
     // }
     console.log(this.urlViewExcel)
 
-    
+
   }
 
   // config: IConfig = {
@@ -824,9 +832,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
   //   },
   // }
 
-Closeoffice(){
+  Closeoffice() {
     this.isVisiblePreviewExcel = false
-}
+  }
   onShowSMS() {
     this._configTemplateService.getall().subscribe({
       next: (data) => {
@@ -971,6 +979,15 @@ Closeoffice(){
       },
       error: (err) => console.error(err),
     })
+  }
+
+
+  inputFileName: any = ''
+  searchHistoryDowload() {
+    const keyword = this.inputFileName != null ?  this.inputFileName.trim().toLowerCase() : ''
+    this.lstHistoryFile = this.lstAllHistoryFile
+      .filter((c) => !this.inputSearchCustomer || c.customerCode === this.inputSearchCustomer)
+      .filter((c) => !keyword || c.name.toLowerCase().includes(keyword))
   }
 
   exportPDF() {

@@ -70,11 +70,6 @@
               <li nz-menu-item (click)="showHistoryExport()">Lịch sử xuất file</li>
               <li nz-menu-item (click)="showEmailAction()">Lịch sử gửi Mail</li>
               <li nz-menu-item (click)="showSMSAction()">Lịch sử gửi SMS</li>
-
-              <!-- <li nz-menu-item (click)="showEmailAction()"
-                *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi Mail</li>
-              <li nz-menu-item (click)="showSMSAction()"
-                *ngIf="input.header.status == '04' || input.header.status == '08'">Lịch sử gửi SMS</li> -->
             </ul>
           </nz-dropdown-menu>
 
@@ -2792,7 +2787,7 @@
       <thead>
         <tr>
           <th [(nzChecked)]="checkedSms" (nzCheckedChange)="onAllCheckedSendEmail($event)"></th>
-          <th>KHÁCH HÀNG</th>
+          <th style="width: 25%;">KHÁCH HÀNG</th>
           <th>MAIL</th>
           <th style="width: 70%;">NỘI DUNG </th>
           <!-- <th>NGÀY</th> -->
@@ -2834,7 +2829,7 @@
             (nzCheckedChange)="onItemCheckedSendEmail(data.id, $event)">
           </td>
 
-          <td>{{data.customerName}}</td>
+          <td title="{{data.customerName}}">{{data.customerName}}</td>
           <td>{{data.email}}</td>
           <td title="{{data.contents}}" [innerText]="_global.removeHtmlTags(data.contents)"></td>
           <td>{{data.checkFile}}</td>
@@ -2864,14 +2859,38 @@
     <nz-table #historyTableFile [nzData]="lstHistoryFile" nzSize="small">
       <thead>
         <tr>
-          <th></th>
+          <th>-</th>
           <th class="align-center">Tên file</th>
+          <th class="align-center">Khách hàng</th>
           <th class="align-center">Người xuất</th>
           <th class="align-center">Thời gian</th>
-          <th class="align-center" colspan="2">Hành động</th>
+          <th class="align-center">Hành động</th>
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td (click)="clearSearchSms()"><span nz-icon nzType="history"></span></td>
+          <td>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="File" [(ngModel)]="inputFileName"
+              style="border: none" (ngModelChange)="searchHistoryDowload()" style="width: 100%; border: none">
+              <nz-option nzLabel="Cơ sở tính mức giảm giá" nzValue="CSTMGG"></nz-option>
+              <nz-option nzLabel="Thông báo giá" nzValue="ThongBaoGia"></nz-option>
+              <ng-container *ngFor="let data of lstTrinhKy">
+                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"></nz-option>
+              </ng-container>
+            </nz-select></td>
+          <td>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="inputSearchCustomer"
+              style="border: none" (ngModelChange)="searchHistoryDowload()" style="width: 100%; border: none">
+              <ng-container *ngFor="let data of listNameBBDO">
+                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"
+                  *ngIf="data.id != null"></nz-option>
+              </ng-container>
+            </nz-select></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
         @for (data of historyTableFile.data; track data) {
         <tr>
           <td *ngIf="data.type == 'xlsx'">
@@ -2884,20 +2903,21 @@
             <img src="/assets/img/pdf.png" style="width: 24px" />
           </td>
           <td>{{ data.name }}</td>
+          <td title="{{getCustomerName(data.customerCode)}}">{{ getCustomerName(data.customerCode) }}</td>
           <td class="align-center">{{ data.createBy }}</td>
           <td class="align-center">
             {{ data.createDate | date: 'hh:mm dd/MM/yyyy' }}
           </td>
-          <td class="align-center">
-            <button nzAlign="center" nz-button nzType="default" (click)="Preview(data)">
-              <span nz-icon nzType="eye"></span>Xem trực tiếp
+          <td class="d-flex align-right" nzAlign="right">
+            <button nzAlign="center" nz-button nzType="default" (click)="Preview(data)" style="margin-right: 10px">
+              <span nz-icon nzType="eye"></span>Xem
             </button>
-          </td>
-          <td class="align-center" nzAlign="center">
             <button nzAlign="center" nz-button nzType="default" (click)="openNewTab(data.pathDownload)">
-              <span nz-icon nzType="download"></span>Tải xuống
+              <span nz-icon nzType="download"></span>Tải
             </button>
           </td>
+          <!-- <td class="d-flex align-right" nzAlign="right">
+          </td> -->
         </tr>
         }
       </tbody>

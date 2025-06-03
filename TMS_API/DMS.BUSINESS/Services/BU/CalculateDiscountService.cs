@@ -134,10 +134,14 @@ namespace DMS.BUSINESS.Services.BU
                         Date = DateTime.Now,
                         Hour = DateTime.Now,
                         IsActive = true,
-                        SignerCode = lstSigner.Where(x => x.Type == "NguoiKy"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
-                        KdxdCode = lstSigner.Where(x => x.Type == "kdxd"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
-                        TcktCode = lstSigner.Where(x => x.Type == "tckt"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
-                        VietphuonganCode = lstSigner.Where(x => x.Type == "vietPhuongAn"&& x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        CongDienPtBanLe = "",
+                        CongDienSo = "",
+                        QuyetDinhSo = "",
+                        VanBanSo = "",
+                        SignerCode = lstSigner.Where(x => x.Type == "NguoiKy" && x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        KdxdCode = lstSigner.Where(x => x.Type == "kdxd" && x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        TcktCode = lstSigner.Where(x => x.Type == "tckt" && x.IsSelect == true).FirstOrDefault()?.Code ?? "",
+                        VietphuonganCode = lstSigner.Where(x => x.Type == "vietPhuongAn" && x.IsSelect == true).FirstOrDefault()?.Code ?? "",
                         Status = "01"
                     },
                     InputPrice = lstGoods.Select(g => new TblBuInputPrice
