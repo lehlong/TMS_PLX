@@ -212,22 +212,24 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let data of output.dlg.dlg3;">
-                      <td nzAlign="left" *ngIf="data.isBold" colspan="4" style="font-weight: bold;">
-                        {{data.goodName}}</td>
-                      <td nzAlign="left" *ngIf="!data.isBold">{{data.goodName}}</td>
-                      <td nzAlign="right" *ngIf="!data.isBold">{{ data.col1 | number}}</td>
-                      <td nzAlign="right" *ngIf="!data.isBold">{{ data.col2 | number }}</td>
-                      <td nzAlign="right" *ngIf="!data.isBold">
-                        <ng-container *ngIf="data.col3 > 0">
-                          (+) {{ data.col3 }}
-                        </ng-container>
-                        <ng-container *ngIf="data.col3 < 0">
-                          (-) {{ data.col3 * -1 }}
-                        </ng-container>
-                        <ng-container *ngIf="data.col3 === 0">
-                          0
-                        </ng-container>
-                      </td>
+                      <ng-container *ngIf="data.localCode == 'V2'">
+                        <td nzAlign="left" *ngIf="data.isBold" colspan="4" style="font-weight: bold;">
+                          {{data.goodName}}</td>
+                        <td nzAlign="left" *ngIf="!data.isBold">{{data.goodName}}</td>
+                        <td nzAlign="right" *ngIf="!data.isBold">{{ data.col1 | number}}</td>
+                        <td nzAlign="right" *ngIf="!data.isBold">{{ data.col2 | number }}</td>
+                        <td nzAlign="right" *ngIf="!data.isBold">
+                          <ng-container *ngIf="data.col3 > 0">
+                            (+) {{ data.col3 }}
+                          </ng-container>
+                          <ng-container *ngIf="data.col3 < 0">
+                            (-) {{ data.col3 * -1 }}
+                          </ng-container>
+                          <ng-container *ngIf="data.col3 === 0">
+                            0
+                          </ng-container>
+                        </td>
+                      </ng-container>
                     </tr>
                   </tbody>
                 </nz-table>
@@ -424,29 +426,32 @@
               </thead>
               <tbody>
                 <tr *ngFor="let data of output.dlg.dlg6;">
-                  <td nzAlign="center" *ngIf="data.isBold" style="font-weight: bold;">{{data.stt}}
-                  </td>
-                  <td nzAlign="left" *ngIf="data.isBold" style="font-weight: bold;" colspan="17">
-                    {{data.goodName}}</td>
+                  <ng-container *ngIf="data.localCode == 'V2'">
 
-                  <td nzAlign="center" *ngIf="!data.isBold">{{data.stt}}</td>
-                  <td nzAlign="left" *ngIf="!data.isBold">{{data.goodName}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col1}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col2 | number }}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col3 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col4 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col5 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col6 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col7 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col8 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col9 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col10 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col11 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col12 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col13 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col14 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col15 | number}}</td>
-                  <td nzAlign="right" *ngIf="!data.isBold">{{ data.col16 | number}}</td>
+                    <td nzAlign="center" *ngIf="data.isBold" style="font-weight: bold;">{{data.stt}}
+                    </td>
+                    <td nzAlign="left" *ngIf="data.isBold" style="font-weight: bold;" colspan="17">
+                      {{data.goodName}}</td>
+
+                    <td nzAlign="center" *ngIf="!data.isBold">{{data.stt}}</td>
+                    <td nzAlign="left" *ngIf="!data.isBold">{{data.goodName}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col1}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col2 | number }}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col3 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col4 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col5 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col6 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col7 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col8 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col9 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col10 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col11 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col12 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col13 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col14 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col15 | number}}</td>
+                    <td nzAlign="right" *ngIf="!data.isBold">{{ data.col16 | number}}</td>
+                  </ng-container>
                 </tr>
               </tbody>
             </nz-table>
@@ -578,7 +583,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <!-- <tr>
                       <td class="bold-text" style="font-weight:bold" colspan="4">Vùng thị trường trung tâm</td>
                     </tr>
                     @for (d of dlgTable_7.data; track d) {
@@ -605,7 +610,7 @@
                     }
                     <tr>
                       <td class="bold-text" style="font-weight:bold" colspan="4">Các vùng thị trường còn lại</td>
-                    </tr>
+                    </tr> -->
                     @for (d of dlgTable_7.data; track d) {
                     <tr *ngIf="d.localCode === 'V2'">
                       <td>{{ d.goodName }}</td>
@@ -2139,7 +2144,7 @@
       <div nz-col class="gutter-row" [nzSpan]="6">
         <div class="inner-box">
           <label>Ngày hiệu lực</label>
-          <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="yyyy-MM-dd HH:mm"
+          <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="HH:mm dd-MM-yyyy"
             [(ngModel)]="input.header.date" [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>
@@ -2187,10 +2192,17 @@
         </div>
       </div>
 
-      <div nz-col class="gutter-row" [nzSpan]="6">
+      <div nz-col class="gutter-row" [nzSpan]="3">
         <div class="inner-box">
           <label>VB điều chỉnh hệ số VCF</label>
-          <input nz-input [(ngModel)]="input.header.thueBvmtPts" #nameInput="ngModel" required />
+          <input nz-input [(ngModel)]="input.header.vanBanSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="3">
+        <div class="inner-box">
+          <label>Ngày điều chỉnh VCF</label>
+          <nz-date-picker (ngModelChange)="onDateChange($event)" nzFormat="dd-MM-yyyy"
+            [(ngModel)]="input.header.vanBanSoDate" [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>
     </div>
@@ -2281,6 +2293,7 @@
               <th nzAlign="center" rowspan="2">LÃI GỘP ĐIỀU TIẾT<br>(L15 CHƯA VAT&BVMT)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br>(Vùng còn lại)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
+              <th nzAlign="center" rowspan="2">THUẾ GTGT</th>
             </tr>
             <tr>
               <th nzAlign="center">GIÁ BÁN LẺ V1</th>
@@ -2324,6 +2337,11 @@
                 </td>
                 <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
+                </td>
+
+                <td><input nz-input [(ngModel)]="data.thueGtgt" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueGtgt')"
+                    type="text" />
                 </td>
               </ng-container>
             </tr>
@@ -2563,6 +2581,7 @@
                 <th nzAlign="center">CP CHUNG <br> CHƯA CƯỚC VC</th>
                 <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
                 <th nzAlign="center">LÃI VAY NH</th>
+                <th nzAlign="center">THUẾ GIẢM GIÁ <br> BÊN MUA</th>
                 <th nzAlign="center" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
                 <th nzAlign="center">LÀM TRÒN <br> ĐẶC BIỆT</th>
               </tr>
@@ -2592,6 +2611,7 @@
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.thamSo" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
                   <td style="text-align: center;">
                     <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>
@@ -2803,15 +2823,22 @@
           <td>
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="selectedCustomerMail"
               style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%; border: none">
-              <ng-container *ngFor="let data of output.bbdo">
-                <nz-option nzLabel="{{data.customerName}}" nzValue="{{data.customerCode}}"
+              <ng-container *ngFor="let data of lstBbdo">
+                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"
                   *ngIf="data.id != null"></nz-option>
               </ng-container>
             </nz-select>
           </td>
           <td colspan="2"><input nz-input [(ngModel)]="inputSearchCustomer" placeholder="NỘI DUNG"
               (ngModelChange)="searchHistoryMail()" type="text" style="border: 1px solid #d9d9d9;" /></td>
-          <td class="align-center">-</td>
+          <td class="align-center">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Nhóm khách hàng" [(ngModel)]="selectedGroupMail"
+              style="border: none" (ngModelChange)="searchHistoryMail()" style="width: 100%; border: none">
+              <ng-container *ngFor="let data of lstGroupMail">
+                <nz-option [nzLabel]="data.name" [nzValue]="data.code" ></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
           <td class="align-center">-</td>
           <td nzAlign="center">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm trạng thái" [(ngModel)]="selectedTrangThaiMail"
@@ -2871,22 +2898,23 @@
         <tr>
           <td (click)="clearSearchSms()"><span nz-icon nzType="history"></span></td>
           <td>
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="File" [(ngModel)]="inputFileName"
-              style="border: none" (ngModelChange)="searchHistoryDowload()" style="width: 100%; border: none">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="File" [(ngModel)]="inputFileName" style="border: none"
+              (ngModelChange)="searchHistoryDowload()" style="width: 100%; border: none">
               <nz-option nzLabel="Cơ sở tính mức giảm giá" nzValue="CSTMGG"></nz-option>
               <nz-option nzLabel="Thông báo giá" nzValue="ThongBaoGia"></nz-option>
               <ng-container *ngFor="let data of lstTrinhKy">
                 <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"></nz-option>
               </ng-container>
-            </nz-select></td>
+            </nz-select>
+          </td>
           <td>
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="inputSearchCustomer"
               style="border: none" (ngModelChange)="searchHistoryDowload()" style="width: 100%; border: none">
-              <ng-container *ngFor="let data of listNameBBDO">
-                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}"
-                  *ngIf="data.id != null"></nz-option>
+              <ng-container *ngFor="let data of lstBbdo">
+                <nz-option nzLabel="{{data.name}}" nzValue="{{data.code}}" *ngIf="data.id != null"></nz-option>
               </ng-container>
-            </nz-select></td>
+            </nz-select>
+          </td>
           <td></td>
           <td></td>
           <td></td>

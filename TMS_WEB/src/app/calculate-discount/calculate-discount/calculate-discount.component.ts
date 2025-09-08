@@ -204,7 +204,10 @@ export class CalculateDiscountComponent implements OnInit {
   }
 
   onCreate() {
-    // console.log(this.input);
+    console.log(this.input);
+    this.input.header.date = this.globalService.formatDateToSendServer(this.input.header?.date)
+    this.input.header.hour = this.globalService.formatDateToSendServer(this.input.header?.hour)
+    this.input.header.vanBanSoDate = this.globalService.formatDateToSendServer(this.input.header.vanBanSoDate)
     this._service.create(this.input).subscribe({
       next: (data) => {
         this.router.navigate([`/calculate-discount/detail/${this.input.header.id}`]);

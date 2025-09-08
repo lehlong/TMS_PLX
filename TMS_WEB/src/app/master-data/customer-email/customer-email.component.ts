@@ -9,6 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon'
 import { SignerFilter } from '../../models/master-data/signer.model'
 import { CalculateDiscountService } from '../../services/calculate-discount/calculate-discount.service'
 import { CustomerEmailService } from '../../services/master-data/customer-email.service'
+import { GroupMailService } from '../../services/master-data/group-mail.service'
 import { CustomerBbdoService } from '../../services/master-data/customer-bbdo.service'
 
 @Component({
@@ -19,16 +20,23 @@ import { CustomerBbdoService } from '../../services/master-data/customer-bbdo.se
   styleUrl: './customer-email.component.scss'
 })
 export class CustomerEmailComponent {
-isSubmit: boolean = false
+  isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
   filter = new SignerFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
-  lstEmail:any[] = []
+  keySearchGroup = 'b6160dce-b59c-4529-ad87-f0657b9109da'
+  lstEmail: any[] = []
+  lstGroupMail: any[] = []
+  lstAllData: any[] = []
+
+
+
   constructor(
     private _service: CustomerEmailService,
+    private _groupMailService: GroupMailService,
     private _customerBbdoService: CustomerBbdoService,
     private _CalculateDiscountservice: CalculateDiscountService,
     private fb: NonNullableFormBuilder,
@@ -45,15 +53,16 @@ isSubmit: boolean = false
     })
   }
   validateForm: FormGroup = this.fb.group({
-    code:'',
+    code: '',
     customerCode: ['', [Validators.required]],
+    groupMailCode: ['', [Validators.required]],
     email: ['', [Validators.required]],
     isActive: [true, [Validators.required]],
   })
   get customerCode() {
     return this.validateForm.get('customerCode');
   }
-  lstCustomer:any[] =[]
+  lstCustomer: any[] = []
   ngOnDestroy() {
     this.globalService.setBreadcrumb([])
   }
@@ -61,6 +70,7 @@ isSubmit: boolean = false
   ngOnInit(): void {
     this.search()
     this.getAllInputCustomer()
+    this.getAllGroupMail()
   }
 
   onSortChange(name: string, value: any) {
@@ -76,7 +86,12 @@ isSubmit: boolean = false
     this.isSubmit = false
     this._service.search(this.filter).subscribe({
       next: (data) => {
-        this.paginationResult = data
+        this.lstAllData = data.data
+        if(this.keySearchGroup != "b6160dce-b59c-4529-ad87-f0657b9109da"){
+          this.searchMailGroup(this.keySearchGroup);
+        }else{
+          this.paginationResult.data = this.lstAllData
+        }
       },
       error: (response) => {
         console.log(response)
@@ -107,18 +122,42 @@ isSubmit: boolean = false
     }
   }
 
-  getAllInputCustomer():void{
+  getAllInputCustomer(): void {
     this._customerBbdoService.getall().subscribe({
       next: (data) => {
         this.lstCustomer = data.filter(
           (customer: any, index: any, self: any) =>
-            index === self.findIndex((c:any) => c.code === customer.code)
+            index === self.findIndex((c: any) => c.code === customer.code)
         );
       },
       error: (response) => {
         console.log(response)
       },
     })
+  }
+
+  getAllGroupMail(): void {
+    this._groupMailService.getall().subscribe({
+      next: (data) => {
+        this.lstGroupMail = data
+        // this.lstCustomer = data.filter(
+        //   (customer: any, index: any, self: any) =>
+        //     index === self.findIndex((c:any) => c.code === customer.code)
+        // );
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
+  searchMailGroup(event: any) {
+    console.log(this.keySearchGroup, event)
+    if(event != "b6160dce-b59c-4529-ad87-f0657b9109da"){
+      this.paginationResult.data = this.lstAllData.filter(x => x.groupMailCode == event)
+    }else{
+      this.paginationResult.data = this.lstAllData
+    }
   }
 
   updateCustomerEmail(): void {
@@ -167,6 +206,7 @@ isSubmit: boolean = false
     this.validateForm.setValue({
       code: data.code,
       customerCode: data.customerCode,
+      groupMailCode: data.groupMailCode,
       email: data.email,
       isActive: data.isActive,
     })

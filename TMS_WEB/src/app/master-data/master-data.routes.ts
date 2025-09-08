@@ -2,6 +2,7 @@ import AuthGuard from '../guards/auth.guard'
 import { Routes } from '@angular/router'
 import { UnitComponent } from './unit/unit.component'
 import { LocalComponent } from './local/local.component'
+import { GroupMailComponent } from './group-mail/group-mail.component'
 import { AreaComponent } from './area/area.component'
 import { AccountTypeComponent } from './account-type/account-type.component'
 import { GoodsComponent } from './goods/goods.component'
@@ -27,6 +28,7 @@ import { JanaPriceComponent } from './jana-price/jana-price.component'
 export const masterDataRoutes: Routes = [
   { path: 'unit', component: UnitComponent },
   { path: 'local', component: LocalComponent },
+  { path: 'group-mail', component: GroupMailComponent },
   { path: 'area', component: AreaComponent },
   { path: 'account-type', component: AccountTypeComponent },
   { path: 'delivery-group', component: DeliveryGroupComponent },

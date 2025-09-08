@@ -1,53 +1,44 @@
 import { Component } from '@angular/core'
 import { ShareModule } from '../../shared/share-module'
+import { LocalFilter } from '../../models/master-data/local.model'
 import { GlobalService } from '../../services/global.service'
 import { PaginationResult } from '../../models/base.model'
 import { FormGroup, Validators, NonNullableFormBuilder } from '@angular/forms'
-import { LOCAL_RIGHTS, GOODS_RIGHTS, MASTER_DATA_MANAGEMENT } from '../../shared/constants'
+import { LOCAL_RIGHTS, MASTER_DATA_MANAGEMENT } from '../../shared/constants'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { GoodsFilter } from '../../models/master-data/goods.model'
-import { GoodsService } from '../../services/master-data/goods.service'
+import { GroupMailService } from '../../services/master-data/group-mail.service'
 @Component({
-  selector: 'app-local',
+  selector: 'app-group=mail',
   standalone: true,
   imports: [ShareModule],
-  templateUrl: './goods.component.html',
-  styleUrl: './goods.component.scss',
+  templateUrl: './group-mail.component.html',
+  styleUrl: './group-mail.component.scss',
 })
-export class GoodsComponent {
+export class GroupMailComponent {
   validateForm: FormGroup = this.fb.group({
-    code: ['', [Validators.required]],
+    code: ['1', [Validators.required]],
     name: ['', [Validators.required]],
-    type: [''],
-    thueBvmt: ['', [Validators.required]],
-    thueGtgt: ['', [Validators.required]],
-    vfcDx: ['', [Validators.required]],
-    vfcHt: ['', [Validators.required]],
-    mtsV1: ['', [Validators.required]],
-    order: ['', [Validators.required]],
-    createDate: [new Date(), [Validators.required]],
     isActive: [true, [Validators.required]],
   })
 
   isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
-  filter = new GoodsFilter()
+  filter = new LocalFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
-  lstType: any[] = []
 
   constructor(
-    private _service: GoodsService,
+    private _service: GroupMailService,
     private fb: NonNullableFormBuilder,
     private globalService: GlobalService,
     private message: NzMessageService,
   ) {
     this.globalService.setBreadcrumb([
       {
-        name: 'Danh sách mặt hàng',
-        path: 'master-data/goods',
+        name: 'Danh sách nhóm Email',
+        path: 'master-data/group-mail',
       },
     ])
     this.globalService.getLoading().subscribe((value) => {
@@ -61,10 +52,6 @@ export class GoodsComponent {
 
   ngOnInit(): void {
     this.search()
-    this.lstType = [
-      { code: 'X', name: 'Xăng' },
-      { code: 'D', name: 'Dầu' }
-    ]
   }
 
   onSortChange(name: string, value: any) {
@@ -78,7 +65,7 @@ export class GoodsComponent {
 
   search() {
     this.isSubmit = false
-    this._service.searchGoods(this.filter).subscribe({
+    this._service.searchGroupMail(this.filter).subscribe({
       next: (data) => {
         this.paginationResult = data
       },
@@ -88,11 +75,9 @@ export class GoodsComponent {
     })
   }
 
-
-
   exportExcel() {
     return this._service
-      .exportExcelGoods(this.filter)
+      .exportExcelGroupMail(this.filter)
       .subscribe((result: Blob) => {
         const blob = new Blob([result], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -104,37 +89,44 @@ export class GoodsComponent {
         anchor.click()
       })
   }
-
   isCodeExist(code: string): boolean {
     return this.paginationResult.data?.some((local: any) => local.code === code)
   }
-
   submitForm(): void {
     this.isSubmit = true
-    const formData = this.validateForm.getRawValue()
-    if (this.edit) {
-      this._service.updateGoods(formData).subscribe({
-        next: (data) => {
-          this.search()
-        },
-        error: (response) => {
-          console.log(response)
-        },
-      })
-    } else {
-      if (this.isCodeExist(formData.code)) {
-        this.message.error(
-          `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
-        )
-        return
+    if (this.validateForm.valid) {
+      const formData = this.validateForm.getRawValue()
+      if (this.edit) {
+        this._service.updateGroupMail(formData).subscribe({
+          next: (data) => {
+            this.search()
+          },
+          error: (response) => {
+            console.log(response)
+          },
+        })
+      } else {
+        if (this.isCodeExist(formData.code)) {
+          this.message.error(
+            `Mã khu vục ${formData.code} đã tồn tại, vui lòng nhập lại`,
+          )
+          return
+        }
+        this._service.createGroupMail(formData).subscribe({
+          next: (data) => {
+            this.search()
+          },
+          error: (response) => {
+            console.log(response)
+          },
+        })
       }
-      this._service.createGoods(formData).subscribe({
-        next: (data) => {
-          this.search()
-        },
-        error: (response) => {
-          console.log(response)
-        },
+    } else {
+      Object.values(this.validateForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty()
+          control.updateValueAndValidity({ onlySelf: true })
+        }
       })
     }
   }
@@ -145,7 +137,7 @@ export class GoodsComponent {
   }
 
   reset() {
-    this.filter = new GoodsFilter()
+    this.filter = new LocalFilter()
     this.search()
   }
 
@@ -160,7 +152,7 @@ export class GoodsComponent {
   }
 
   deleteItem(code: string | number) {
-    this._service.deleteGoods(code).subscribe({
+    this._service.deleteGroupMail(code).subscribe({
       next: (data) => {
         this.search()
       },
@@ -170,21 +162,12 @@ export class GoodsComponent {
     })
   }
 
-  openEdit(data: any) {
+  openEdit(data: { code: string; name: string; isActive: boolean }) {
     this.validateForm.setValue({
       code: data.code,
       name: data.name,
-      type: data.type,
-      thueBvmt: data.thueBvmt,
-      thueGtgt: data.thueGtgt,
-      vfcDx: data.vfcDx,
-      vfcHt: data.vfcHt,
-      mtsV1: data.mtsV1,
-      order: data.order,
-      createDate: data.createDate,
       isActive: data.isActive,
     })
-
     setTimeout(() => {
       this.edit = true
       this.visible = true

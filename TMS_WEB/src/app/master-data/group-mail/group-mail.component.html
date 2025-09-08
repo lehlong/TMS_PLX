@@ -1,16 +1,9 @@
-<div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.SHIPPING_COST_MANAGEMENT">
+<div class="container-list" [appPermission]="MASTER_DATA_MANAGEMENT.REGION_LIST_MANAGEMENT">
   <div class="site-page-header-ghost-wrapper">
-    <nz-page-header nzBackIcon nzTitle="Email" nzSubtitle="Danh sách Email" class="site-page-header">
+    <nz-page-header nzBackIcon nzTitle="Nhóm Email" nzSubtitle="Danh sách nhóm Email" class="site-page-header">
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
-
-            <nz-form-control [nzErrorTip]="'Vui lòng chọn khách hàng'">
-              <nz-select nzShowSearch nzAllowClear placeholder="Chọn khách hàng" [(ngModel)]="keySearchGroup" (ngModelChange)="searchMailGroup($event)">
-                <nz-option *ngFor="let item of lstGroupMail" [nzLabel]="item.name" [nzValue]="item.code">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
             <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
               [(value)]="filter.keyWord"></app-input-clear>
             <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button
@@ -22,9 +15,20 @@
               <span nz-icon nzType="redo"></span>
             </button>
           </nz-space>
-          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button
+            >
             <span nz-icon nzType="plus-circle"></span> Thêm mới
           </button>
+          <!-- <button
+            (click)="exportExcel()"
+            class="!flex !items-center"
+            nz-button
+            nzType="primary"
+            [appPermission]="LOCAL_RIGHTS.EXCEL"
+            nzDanger
+          >
+            <span nz-icon nzType="file-excel"></span>Tải Excel
+          </button> -->
         </nz-space>
       </nz-page-header-extra>
     </nz-page-header>
@@ -35,19 +39,21 @@
       <thead>
         <tr>
           <th nzWidth="30px">STT</th>
-
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('customerCode', $event)" nzWidth="160px">
-            Mã khách hàng
-          </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('customerCode', $event)">
-            Tên khách hàng
-          </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('email', $event)">
-            Email
+          <!-- <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('code', $event)" nzWidth="150px">
+            Mã
+          </th> -->
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
+            Tên
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
             Trạng thái
           </th>
+          <!-- <th
+            nzAlign="center"
+            [appPermission]="LOCAL_RIGHTS.DELETE"
+          >
+            Hành động
+          </th> -->
         </tr>
       </thead>
       <tbody>
@@ -59,16 +65,27 @@
             1
             }}
           </td>
-          <td nzAlign="center"><a (click)="openEdit(data)">{{ data.customerCode }}</a></td>
-          <td>{{ getNameByCode(data.customerCode) }}</td>
           <td>
-            {{ data.email }}
+            <a (click)="openEdit(data)">{{ data.name }}</a>
           </td>
-
+          <!-- <td>{{ data.name }}</td> -->
           <td nzAlign="center">
             <span [ngClass]="data?.isActive ? '!text-green-500' : '!text-red-500'" nz-icon nzType="check-circle"
               nzTheme="outline"></span>
           </td>
+          <!-- <td nzAlign="center">
+            <span
+              nz-popconfirm
+              nzPopconfirmTitle="Bạn muốn xoá loại địa phương này ?"
+              nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteItem(data.code)"
+              class="!text-red-500 cursor-pointer"
+              nz-icon
+              nzType="delete"
+              nzTheme="outline"
+              [appPermission]="LOCAL_RIGHTS.DELETE"
+            ></span>
+          </td> -->
         </tr>
       </tbody>
     </nz-table>
@@ -81,31 +98,17 @@
 </div>
 
 <!--Create Update-->
-<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right" nzWidth="40%"
+<nz-drawer [nzMask]="!edit" nzSize="default" [nzVisible]="visible" nzPlacement="right"
   [nzTitle]="edit ? ' Chỉnh sửa  ' : ' Tạo mới  '" [nzExtra]="extra" (nzOnClose)="close()">
   <ng-container *nzDrawerContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <!-- <app-input-clear placeholder="Nhập mã" [required]="true" label="Mã"
+        [control]="$any(validateForm).controls['code']" [required]="true"
+        [disabled]="edit ? true : false"></app-input-clear> -->
+      <app-input-clear placeholder="Nhập tên" [required]="true" label="Tên"
+        [control]="$any(validateForm).controls['name']"></app-input-clear>
 
-      <app-input-clear placeholder="Nhập email" [required]="true" label="Nhập email"
-        [control]="$any(validateForm).controls['email']"></app-input-clear>
-
-      <nz-form-label>Khách hàng</nz-form-label>
-      <nz-form-control [nzErrorTip]="'Vui lòng chọn khách hàng'">
-        <nz-select nzShowSearch nzAllowClear formControlName="customerCode" placeholder="Chọn khách hàng">
-          <nz-option *ngFor="let item of lstCustomer" [nzLabel]="item.name" [nzValue]="item.code">
-          </nz-option>
-        </nz-select>
-      </nz-form-control>
-
-      <nz-form-label style="margin-top: 24px">Nhóm Email</nz-form-label>
-      <nz-form-control [nzErrorTip]="'Vui lòng chọn khách hàng'">
-        <nz-select nzShowSearch nzAllowClear formControlName="groupMailCode" placeholder="Chọn Nhóm">
-          <nz-option *ngFor="let item of lstGroupMail" [nzLabel]="item.name" [nzValue]="item.code">
-          </nz-option>
-        </nz-select>
-      </nz-form-control>
-
-      <nz-form-item style="margin-top: 24px">
+      <nz-form-item>
         <nz-form-label>Trạng thái</nz-form-label>
         <nz-form-control>
           <nz-radio-group formControlName="isActive">
@@ -120,14 +123,14 @@
 <ng-template #extra>
   <nz-space>
     <ng-container *ngIf="edit">
-      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
-        (click)="updateCustomerEmail()">
+      <button [nzLoading]="loading"  *nzSpaceItem nz-button nzType="primary"
+        class="!flex !items-center" (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>
     <ng-container *ngIf="!edit">
-      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
-        (click)="submitForm()">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary"
+        class="!flex !items-center" (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>

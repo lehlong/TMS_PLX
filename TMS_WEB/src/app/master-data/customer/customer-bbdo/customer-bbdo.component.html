@@ -34,7 +34,7 @@
   </div>
   <div class="overflow-auto flex-grow">
     <nz-table nzBordered nzSize="small" [nzData]="paginationResult.data" [nzFrontPagination]="'false'"
-      [nzShowPagination]="'false'">
+      [nzShowPagination]="'false'" #basicTable>
       <thead>
         <tr>
           <th nzAlign="center" rowspan="2">MÃ</th>
@@ -44,22 +44,24 @@
           <th nzAlign="center" rowspan="2">CỰ LY <br> BQ (Km)</th>
           <th nzAlign="center" rowspan="2">CƯỚC <br> VC BQ</th>
           <th nzAlign="center" rowspan="2">CP CHUNG <br> CHƯA CƯỚC VC</th>
-          <th nzAlign="center" rowspan="2">	Mức giảm giá <br> tại kho bên bán (FOB)</th>
+          <th nzAlign="center" [nzSortFn]="true" rowspan="2" (nzSortOrderChange)="onSortChange('fob', $event)"> Mức giảm giá <br> tại kho bên bán (FOB)</th>
           <th nzAlign="center" colspan="2">CK ĐIỀU TIẾT</th>
           <th nzAlign="center" rowspan="2">HỖ TRỢ <br> CƯỚC VC</th>
           <th nzAlign="center" rowspan="2">NGUỒN LỰC <br> HỖ TRỢ</th>
           <th nzAlign="center" rowspan="2">CK <br> VÒNG 2</th>
+          <th nzAlign="center" [nzSortFn]="true" rowspan="2" (nzSortOrderChange)="onSortChange('thamSo', $event)">THUẾ GIẢM GIÁ <br> BÊN MUA</th>
           <th nzAlign="center" rowspan="2" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
         </tr>
         <tr>
-          <th nzAlign="center">XĂNG</th>
-          <th nzAlign="center">DẦU</th>
+          <th nzAlign="center" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('ckXang', $event)">XĂNG</th>
+          <th nzAlign="center" [nzSortFn]="true" (nzSortOrderChange)="onSortChange('ckDau', $event)">DẦU</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of paginationResult.data">
           <td> <a (click)="openEdit(data)"> {{data.code }}</a></td>
-          <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold" nzAlign="left" title="{{data.name}}">{{data.name }}</td>
+          <td style="white-space: nowrap !important; width: auto; max-width: 380px !important;" *ngIf="!data.isBold"
+            nzAlign="left" title="{{data.name}}">{{data.name }}</td>
           <td>
             <span *ngFor="let item of localResult">
               <span *ngIf=" data.localCode === item.code ">{{ item.name }}</span>
@@ -70,7 +72,7 @@
               <span *ngIf="item.code === data.marketCode">{{ item.name }}</span>
             </span>
           </td>
-          <td nzAlign="center" >{{ data.cuLyBq }}</td>
+          <td nzAlign="center">{{ data.cuLyBq }}</td>
           <td nzAlign="center">{{ data.cvcbq }}</td>
           <td nzAlign="center">{{ data.cpccvc }}</td>
           <td nzAlign="center">{{ data.fob }}</td>
@@ -79,6 +81,7 @@
           <td nzAlign="center">{{ data.htcvc }}</td>
           <td nzAlign="center">{{ data.httVb1370 }}</td>
           <td nzAlign="center">{{ data.ckv2 }}</td>
+          <td nzAlign="center">{{ data.thamSo }}</td>
           <td>{{ data.deliveryPoint }}</td>
         </tr>
       </tbody>
@@ -184,17 +187,20 @@
         <app-input-clear nz-col nzSpan="8" placeholder="Nhập chiết khấu dầu" [required]="true" label="Chiết khấu dầu"
           [control]="$any(validateForm).controls['ckDau']"></app-input-clear>
 
-          <app-input-clear nz-col nzSpan="8" placeholder="Mức giảm giá tại kho bên bán (FOB)" [required]="true" label="Múc giảm giá tại kho bên bán FOB"
-          [control]="$any(validateForm).controls['fob']"></app-input-clear>
+        <app-input-clear nz-col nzSpan="8" placeholder="Mức giảm giá tại kho bên bán (FOB)" [required]="true"
+          label="Múc giảm giá tại kho bên bán FOB" [control]="$any(validateForm).controls['fob']"></app-input-clear>
       </div>
       <div nz-row nzJustify="space-evenly">
-        <app-input-clear nz-col nzSpan="6" placeholder="Nhập phương thức" [required]="true" label="Phương thức"
+        <app-input-clear nz-col nzSpan="5" placeholder="Nhập phương thức" [required]="true" label="Phương thức"
           [control]="$any(validateForm).controls['phuongThuc']"></app-input-clear>
 
-        <app-input-clear nz-col nzSpan="6" placeholder="Nhập lãi vay ngân hàng" [required]="true"
+        <app-input-clear nz-col nzSpan="5" placeholder="Nhập lãi vay ngân hàng" [required]="true"
           label="Lãi vay ngân hàng" [control]="$any(validateForm).controls['lvnh']"></app-input-clear>
 
-        <nz-form-item nz-col nzSpan="11">
+        <app-input-clear nz-col nzSpan="5" placeholder="Thuế giảm giá kho bên mua" [required]="true"
+          label="Thuế giảm giá kho bên mua" [control]="$any(validateForm).controls['thamSo']"></app-input-clear>
+
+        <nz-form-item nz-col nzSpan="8">
           <nz-form-label>Thời hạn thanh toán</nz-form-label>
           <nz-form-control>
             <nz-select nzShowSearch nzAllowClear placeholder="Chọn hạn thanh toán" formControlName="thtt">
@@ -222,7 +228,7 @@
         <nz-form-item nz-col nzSpan="12">
           <nz-form-label>Khách hàng làm tròn đặc biệt</nz-form-label>
           <nz-form-control>
-              <label nz-checkbox formControlName="lamTronDacBiet">Kích hoạt</label>
+            <label nz-checkbox formControlName="lamTronDacBiet">Kích hoạt</label>
           </nz-form-control>
         </nz-form-item>
       </div>

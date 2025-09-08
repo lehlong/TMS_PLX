@@ -15,8 +15,7 @@
               <span nz-icon nzType="redo"></span>
             </button>
           </nz-space>
-          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button
-            >
+          <button (click)="openCreate()" class="!flex !items-center" nzType="primary" nz-button>
             <span nz-icon nzType="plus-circle"></span> Thêm mới
           </button>
           <!-- <button
@@ -34,18 +33,18 @@
     </nz-page-header>
   </div>
   <div class="overflow-auto flex-grow">
-    <nz-table nzTableLayout="fixed" [nzShowPagination]="false"
-      [nzFrontPagination]="false" #headerTable [nzData]="paginationResult.data">
+    <nz-table nzTableLayout="fixed" [nzShowPagination]="false" [nzFrontPagination]="false" #headerTable
+      [nzData]="paginationResult.data">
       <thead>
         <tr>
           <th nzWidth="60px">STT</th>
-          <th [nzSortFn]="true"  nzAlign="center" (nzSortOrderChange)="onSortChange('code', $event)" nzWidth="150px">
+          <th [nzSortFn]="true" nzAlign="center" (nzSortOrderChange)="onSortChange('code', $event)" nzWidth="150px">
             Mã
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)" >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('name', $event)">
             Tên
           </th>
-          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Type', $event)" >
+          <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('Type', $event)">
             Loại mặt hàng
           </th>
           <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('thueBvmt', $event)" nzAlign="center">
@@ -82,10 +81,10 @@
           <td nzAlign="right">
             <a (click)="openEdit(data)">{{ data.code }}</a>
           </td>
-          <td >{{ data.name }}</td>
+          <td>{{ data.name }}</td>
 
           <td nzAlign="left">
-            <span *ngFor="let item of lstType" >
+            <span *ngFor="let item of lstType">
               <span *ngIf="item.code == data.type">{{ item.name }}</span>
             </span>
           </td>
@@ -121,35 +120,35 @@
       <app-input-clear placeholder="Nhập tên" [required]="true" label="Tên "
         [control]="$any(validateForm).controls['name']"></app-input-clear>
 
-        <nz-form-item >
-          <nz-form-label [nzRequired]="true">Loại mặt hàng</nz-form-label>
-          <nz-form-control nzErrorTip="Không được để trống">
-            <nz-select nzShowSearch nzAllowClear placeholder="Chọn Vùng" formControlName="type">
-              <nz-option cdkScrollable
-                *ngFor="let item of lstType"
-                [nzLabel]="item.name"
-                [nzValue]="item.code">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Loại mặt hàng</nz-form-label>
+        <nz-form-control nzErrorTip="Không được để trống">
+          <nz-select nzShowSearch nzAllowClear placeholder="Chọn Vùng" formControlName="type">
+            <nz-option cdkScrollable *ngFor="let item of lstType" [nzLabel]="item.name" [nzValue]="item.code">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
 
       <app-input-clear placeholder="Nhập thuế bảo vệ môi trường" [required]="true" label="Thuế bảo vệ môi trường"
         [control]="$any(validateForm).controls['thueBvmt']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập thuế hệ số VFC đông xuân" [required]="true" label="Hệ số VFC đông xuân"
-      [control]="$any(validateForm).controls['vfcDx']"></app-input-clear>
+        [control]="$any(validateForm).controls['vfcDx']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập thuế hệ số VFC hè thu" [required]="true" label="Hệ số VFC hè thu"
-      [control]="$any(validateForm).controls['vfcHt']"></app-input-clear>
+        [control]="$any(validateForm).controls['vfcHt']"></app-input-clear>
 
       <app-input-clear placeholder="Nhập mức tăng so với Vùng 1" [required]="true" label="Mức tăng so với Vùng 1"
         [control]="$any(validateForm).controls['mtsV1']"></app-input-clear>
 
-        <app-input-clear placeholder="Thứ tự" [required]="true" label="Thứ tự"
+      <app-input-clear placeholder="Mức thuế GTGT" [required]="true" label="Mức thuế GTGT"
+        [control]="$any(validateForm).controls['thueGtgt']"></app-input-clear>
+
+      <app-input-clear placeholder="Thứ tự" [required]="true" label="Thứ tự"
         [control]="$any(validateForm).controls['order']"></app-input-clear>
 
-        <nz-form-item>
+      <nz-form-item>
         <nz-form-label>Trạng thái</nz-form-label>
         <nz-form-control>
           <nz-radio-group formControlName="isActive">
@@ -164,14 +163,14 @@
 <ng-template #extra>
   <nz-space>
     <ng-container *ngIf="edit">
-      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary"
-        class="!flex !items-center" (click)="submitForm()">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>
     <ng-container *ngIf="!edit">
-      <button [nzLoading]="loading" *nzSpaceItem  nz-button nzType="primary"
-        class="!flex !items-center" (click)="submitForm()">
+      <button [nzLoading]="loading" *nzSpaceItem nz-button nzType="primary" class="!flex !items-center"
+        (click)="submitForm()">
         <span nz-icon nzType="save" nzTheme="outline"></span>Lưu
       </button>
     </ng-container>

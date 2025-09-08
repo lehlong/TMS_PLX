@@ -87,7 +87,7 @@
       <div nz-col class="gutter-row" [nzSpan]="6">
         <div class="inner-box">
           <label>Ngày hiệu lực</label>
-          <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="yyyy-MM-dd HH:mm"
+          <nz-date-picker nzShowTime (ngModelChange)="onDateChange($event)" nzFormat="HH:mm dd-MM-yyyy"
             [(ngModel)]="input.header.date" [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>
@@ -118,10 +118,17 @@
           <input nz-input [(ngModel)]="input.header.congDienPtBanLe" #nameInput="ngModel" required />
         </div>
       </div>
-      <div nz-col class="gutter-row" [nzSpan]="6">
+      <div nz-col class="gutter-row" [nzSpan]="3">
         <div class="inner-box">
           <label>VB điều chỉnh hệ số VCF</label>
-          <input nz-input [(ngModel)]="input.header.thueBvmtPts" #nameInput="ngModel" required />
+          <input nz-input [(ngModel)]="input.header.vanBanSo" #nameInput="ngModel" required />
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="3">
+        <div class="inner-box">
+          <label>Ngày điều chỉnh VCF</label>
+          <nz-date-picker (ngModelChange)="onDateChange($event)" nzFormat="dd-MM-yyyy"
+            [(ngModel)]="input.header.vanBanSoDate" [nzPlaceHolder]="'Chọn ngày'" style="width: 100%;"></nz-date-picker>
         </div>
       </div>
 
@@ -212,6 +219,7 @@
               <th nzAlign="center" rowspan="2">LÃI GỘP ĐIỀU TIẾT<br>(L15 CHƯA VAT&BVMT)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br>(Vùng còn lại)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
+              <th nzAlign="center" rowspan="2">THUẾ GTGT</th>
             </tr>
             <tr>
               <th nzAlign="center">GIÁ BÁN LẺ V1</th>
@@ -255,6 +263,9 @@
                 </td>
                 <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
+                </td>
+                <td><input nz-input [(ngModel)]="data.thueGtgt" style="text-align: right;"
+                    (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueGtgt')" type="text" />
                 </td>
               </ng-container>
             </tr>
@@ -494,6 +505,7 @@
                 <th nzAlign="center">CP CHUNG <br> CHƯA CƯỚC VC</th>
                 <th nzAlign="center">MỨC GIẢM GIÁ TẠI <br> KHO BÊN BÁN (FOB)</th>
                 <th nzAlign="center">LÃI VAY NH</th>
+                <th nzAlign="center">THUẾ GIẢM GIÁ <br> BÊN MUA</th>
                 <th nzAlign="center" style="width: 24%;">ĐIỂM GIAO HÀNG</th>
                 <th nzAlign="center">LÀM TRÒN <br> ĐẶC BIỆT</th>
               </tr>
@@ -514,6 +526,7 @@
                   <td><input nz-input [(ngModel)]="data.cpccvc" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.fob" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.lvnh" type="number" /></td>
+                  <td><input nz-input [(ngModel)]="data.thamSo" type="number" /></td>
                   <td><input nz-input [(ngModel)]="data.deliveryPoint" type="text" /></td>
                   <td style="text-align: center;">
                     <label nz-checkbox [(ngModel)]="data.lamTronDacBiet"></label>

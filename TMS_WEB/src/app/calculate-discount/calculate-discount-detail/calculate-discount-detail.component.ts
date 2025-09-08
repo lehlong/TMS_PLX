@@ -14,6 +14,7 @@ import { IConfig } from '@onlyoffice/document-editor-angular'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { ConfigTemplateService } from '../../services/system-manager/config-template.service'
 import { LocalService } from '../../services/master-data/local.service'
+import { GroupMailService } from '../../services/master-data/group-mail.service'
 import { lstTrinhKy } from '../../shared/constants/select.model'
 import { OutputModel } from '../../models/calculate-discount/output.model'
 import { InputModel } from '../../models/calculate-discount/input.model'
@@ -51,24 +52,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     des: '',
     value: '',
   }
-
-  selectedIndexInput: any = 0
-  onTabChangeInput(e: any) {
-    this.selectedIndexInput = e
-  }
-
-  getFilteredList(): any[] {
-    const term = this.getSearchTermInput('listNameBBDO');
-    if (!term) return this.listNameBBDO;
-    return this.listNameBBDO.filter(item =>
-      item?.name?.toLowerCase().includes(term)
-    );
-  }
-
-  trackByCode(index: number, item: any): string {
-    return item.code;
-  }
-
   input: any = new InputModel()
   output: any = new OutputModel()
   checked = false
@@ -136,15 +119,36 @@ export class CalculateDiscountDetailComponent implements OnInit {
   lstgoods: any[] = []
   lstSendSms: any[] = []
   localResult: any[] = []
+  lstGroupMail: any[] = []
   filteredBbdo: any = []
+  lstBbdo: any = []
   isBrowser: boolean = true
   idramdom = new Date().getTime()
   isVisiblePreviewExcel: boolean = false
   urlViewExcel = ''
 
+
+  selectedIndexInput: any = 0
+  onTabChangeInput(e: any) {
+    this.selectedIndexInput = e
+  }
+
+  getFilteredList(): any[] {
+    const term = this.getSearchTermInput('listNameBBDO');
+    if (!term) return this.listNameBBDO;
+    return this.listNameBBDO.filter(item =>
+      item?.name?.toLowerCase().includes(term)
+    );
+  }
+
+  trackByCode(index: number, item: any): string {
+    return item.code;
+  }
+
   constructor(
     private _service: CalculateDiscountService,
     private _localService: LocalService,
+    private _groupMailService: GroupMailService,
     public _global: GlobalService,
     private message: NzMessageService,
     private route: ActivatedRoute,
@@ -173,7 +177,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this._service.getInput(this.headerId).subscribe({
       next: (data) => {
         this.input = data
-        this.listNameBBDO = this.input.customerBbdo.filter((item: any, index: string, self: any) =>
+
+        this.listNameBBDO = this.input.customerBbdo
+        this.lstBbdo = this.input.customerBbdo.filter((item: any, index: string, self: any) =>
           index === self.findIndex((t: any) => t.code === item.code)
         );
         this.titleTab = data.header.name
@@ -441,11 +447,13 @@ export class CalculateDiscountDetailComponent implements OnInit {
   checkedEmail: boolean = false
   lstSearchEmail: any[] = []
   showEmailAction() {
+    this.getAllGroupMail()
     this._service.Getmail(this.headerId).subscribe({
       next: (data) => {
         this.lstSearchEmail = data
         this.lstEmail = data
         this.isVisibleEmail = true
+
       },
       error: (err) => {
         console.log(err)
@@ -498,12 +506,6 @@ export class CalculateDiscountDetailComponent implements OnInit {
     }
   }
 
-  searchEmail() {
-    const keyword = this.inputSearchMail.trim().toLowerCase()
-    this.lstSearchEmail = this.lstEmail.filter((c) =>
-      c.contents.toLowerCase().includes(keyword),
-    )
-  }
 
   ResendEmail() {
     this._service.ResetSendlstMail(this.lstSendEmailChecked).subscribe({
@@ -520,8 +522,12 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   selectedCustomerMail: any = null
   selectedTrangThaiMail: any = null
+  selectedGroupMail: any = null
+
   searchHistoryMail() {
     const keyword = this.inputSearchCustomer.trim().toLowerCase()
+    // console.log(this.lstEmail);
+    // console.log(this.selectedCustomerMail);
 
     this.lstSearchEmail = this.lstEmail
       .filter((c) =>
@@ -534,11 +540,14 @@ export class CalculateDiscountDetailComponent implements OnInit {
           ? c.isSend === 'N' && c.numberRetry === 3
           : c.isSend === this.selectedTrangThaiMail
       })
-      .filter(
-        (c) =>
-          !keyword ||
-          c.contents.toLowerCase().includes(keyword) ||
-          c.email.toLowerCase().includes(keyword),
+      .filter((c) =>
+        !this.selectedGroupMail ||
+        this.selectedGroupMail === "b6160dce-b59c-4529-ad87-f0657b9109da" ||
+        c.groupMailCode === this.selectedGroupMail)
+      .filter((c) =>
+        !keyword ||
+        c.contents.toLowerCase().includes(keyword) ||
+        c.email.toLowerCase().includes(keyword),
       )
   }
 
@@ -546,7 +555,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.selectedCustomerMail = null
     this.selectedTrangThai = null
     this.inputSearchCustomer = ''
-    this.searchHistoryMail()
+    this.lstSearchEmail = this.lstEmail
+    // this.searchHistoryMail()
   }
 
 
@@ -709,12 +719,32 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.visibleInput = true
   }
 
+  getAllGroupMail(): void {
+    this._groupMailService.getall().subscribe({
+      next: (data) => {
+        this.lstGroupMail = data
+        console.log(this.lstGroupMail)
+        // this.lstCustomer = data.filter(
+        //   (customer: any, index: any, self: any) =>
+        //     index === self.findIndex((c:any) => c.code === customer.code)
+        // );
+      },
+      error: (response) => {
+        console.log(response)
+      },
+    })
+  }
+
   onUpdateInput() {
-    this.visibleInput = false
+
+    this.input.header.date = this._global.formatDateToSendServer(this.input.header?.date)
+    this.input.header.hour = this._global.formatDateToSendServer(this.input.header?.hour)
+    this.input.header.vanBanSoDate = this._global.formatDateToSendServer(this.input.header.vanBanSoDate)
     this._service.updateInput(this.input).subscribe({
       next: (data) => { },
       error: (response) => {
         console.log(response)
+        this.visibleInput = false
       },
     })
     this.getOutput(this.headerId)
@@ -984,7 +1014,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
 
   inputFileName: any = ''
   searchHistoryDowload() {
-    const keyword = this.inputFileName != null ?  this.inputFileName.trim().toLowerCase() : ''
+    const keyword = this.inputFileName != null ? this.inputFileName.trim().toLowerCase() : ''
     this.lstHistoryFile = this.lstAllHistoryFile
       .filter((c) => !this.inputSearchCustomer || c.customerCode === this.inputSearchCustomer)
       .filter((c) => !keyword || c.name.toLowerCase().includes(keyword))

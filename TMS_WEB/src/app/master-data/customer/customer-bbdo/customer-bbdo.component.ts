@@ -44,6 +44,7 @@ export class CustomerBbdoComponent {
     thtt: [''],
     lvnh: [0],
     order: [0],
+    thamSo: [0],
     phuongThuc: [''],
     isActive: [true, [Validators.required]],
     lamTronDacBiet: [false, [Validators.required]],
@@ -286,7 +287,8 @@ export class CustomerBbdoComponent {
       thtt: data.thtt,
       adrress: data.adrress,
       lamTronDacBiet: data.lamTronDacBiet,
-      local2 : data.local2
+      local2 : data.local2,
+      thamSo : data?.thamSo ?? 0
     })
     setTimeout(() => {
       this.edit = true
