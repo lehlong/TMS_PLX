@@ -90,6 +90,9 @@ namespace DMS.BUSINESS.Dtos.MD
         [Description("Khách hàng áp dụng làm tròn đặc biệt")]
         public bool? LamTronDacBiet { get; set; }
 
+        [Description("Tham số động (vd: 1.08)")]
+        public decimal? ThamSo { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<TblMdCustomerBbdo, CustomerBbdoDto>().ReverseMap();

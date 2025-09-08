@@ -133,6 +133,7 @@ namespace DMS.BUSINESS.Services.BU
                         Id = headerId,
                         Date = DateTime.Now,
                         Hour = DateTime.Now,
+                        VanBanSoDate = DateTime.Now,
                         IsActive = true,
                         CongDienPtBanLe = "",
                         CongDienSo = "",
@@ -160,6 +161,7 @@ namespace DMS.BUSINESS.Services.BU
                         LaiGop = 0,
                         IsActive = true,
                         Order = g.Order,
+                        ThueGtgt = g.ThueGtgt ?? 0
                     }).ToList(),
                     Market = lstMarket.Select(x => new TblBuInputMarket
                     {
@@ -313,6 +315,7 @@ namespace DMS.BUSINESS.Services.BU
                         Cpccvc = x.Cpccvc ?? 0,
                         Cvcbq = x.Cvcbq ?? 0,
                         Lvnh = x.Lvnh ?? 0,
+                        ThamSo = x.ThamSo ?? 0,
                         Fob = x.Fob ?? 0,
                         Htcvc = x.Htcvc ?? 0,
                         HttVb1370 = x.HttVb1370 ?? 0,
@@ -341,8 +344,8 @@ namespace DMS.BUSINESS.Services.BU
         #region Tạo các thông tin đầu vào
         public async Task Create(CalculateDiscountInputModel input)
         {
-            input.Header.Date = input.Header.Date.AddHours(7);
-            input.Header.Hour = (DateTime)(input.Header.Hour?.AddHours(7));
+            //input.Header.Date = input.Header.Date.AddHours(7);
+            //input.Header.Hour = (DateTime)(input.Header.Hour?.AddHours(7));
             try
             {
                 _dbContext.TblBuCalculateDiscount.Add(input.Header);
@@ -446,6 +449,12 @@ namespace DMS.BUSINESS.Services.BU
                 data.Header = currentHeader;
 
                 var currentData = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == id).OrderBy(x => x.Order).ToListAsync();
+
+                var gtgtR95 = currentData.FirstOrDefault(x => x.GoodCode == "0201032").ThueGtgt;
+                var gtgtR92 = currentData.FirstOrDefault(x => x.GoodCode == "0201004").ThueGtgt;
+                var gtgtD01 = currentData.FirstOrDefault(x => x.GoodCode == "0601005").ThueGtgt;
+                var gtgtD05 = currentData.FirstOrDefault(x => x.GoodCode == "0601002").ThueGtgt;
+
                 var previousHeader = await _dbContext.TblBuCalculateDiscount.Where(x => x.Date < currentHeader.Date && x.Status == "04").OrderByDescending(x => x.Date).FirstOrDefaultAsync();
                 var previousData = new List<TblBuInputPrice>();
                 data.Dlg.NameOld = "";
@@ -490,12 +499,12 @@ namespace DMS.BUSINESS.Services.BU
                         Col2 = i.ThueBvmt,
                         Col3 = i.L15Blv2,
                         Col4 = i.L15Blv2 * i.Vcf,
-                        Col5 = (i.ThueBvmt + i.L15Blv2 * i.Vcf) * 1.1M,
+                        Col5 = (i.ThueBvmt + i.L15Blv2 * i.Vcf) * i.ThueGtgt,
                         Col6 = i.GblV1,
                         Col7 = i.GblV2,
-                        Col8 = i.GblV2 / 1.1M - i.ThueBvmt,
-                        Col9 = i.GblV2 - (i.ThueBvmt + i.L15Blv2 * i.Vcf) * 1.1M,
-                        Col10 = (i.GblV2 / 1.1M - i.ThueBvmt) - (i.L15Blv2 * i.Vcf)
+                        Col8 = i.GblV2 / i.ThueGtgt - i.ThueBvmt,
+                        Col9 = i.GblV2 - (i.ThueBvmt + i.L15Blv2 * i.Vcf) * i.ThueGtgt,
+                        Col10 = (i.GblV2 / i.ThueGtgt - i.ThueBvmt) - (i.L15Blv2 * i.Vcf)
                     });
                     data.Dlg.Dlg5.Add(new DlgModel
                     {
@@ -514,7 +523,7 @@ namespace DMS.BUSINESS.Services.BU
                         Col2 = i.ThueBvmt,
                         Col3 = i.L15Blv2,
                         Col4 = i.Vcf * i.L15Blv2,
-                        Col5 = ((i.Vcf * i.L15Blv2) + i.ThueBvmt) * 1.1M,
+                        Col5 = ((i.Vcf * i.L15Blv2) + i.ThueBvmt) * i.ThueGtgt,
                     });
                     data.Dlg.Dlg8.Add(new DlgModel
                     {
@@ -527,7 +536,7 @@ namespace DMS.BUSINESS.Services.BU
                         Col4 = i.L15Blv2,
                         Col5 = 0,
                         Col6 = (i.ThueBvmt / i.Vcf) + i.L15Blv2,
-                        Col7 = ((i.ThueBvmt / i.Vcf) + i.L15Blv2) * 1.1M,
+                        Col7 = ((i.ThueBvmt / i.Vcf) + i.L15Blv2) * i.ThueGtgt,
                         Note = ""
                     });
                     _oDlg++;
@@ -590,18 +599,18 @@ namespace DMS.BUSINESS.Services.BU
                         Col2 = i.ThueBvmt,
                         Col3 = i.L15Nbl,
                         Col4 = i.Vcf * i.L15Nbl,
-                        Col5 = (i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M,
+                        Col5 = (i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt,
                         Col6 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1),
-                        Col7 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) / 1.1M - i.ThueBvmt,
-                        Col8 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M),
-                        Col9 = (data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M,
+                        Col7 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) / i.ThueGtgt - i.ThueBvmt,
+                        Col8 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt),
+                        Col9 = (data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt,
                         Col10 = i.LaiGop,
-                        Col11 = i.Vcf * i.LaiGop * 1.1M,
-                        Col12 = ((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M,
-                        Col13 = (i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M),
+                        Col11 = i.Vcf * i.LaiGop * i.ThueGtgt,
+                        Col12 = ((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt,
+                        Col13 = (i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt),
                         Col14 = i.FobV1,
-                        Col15 = ((((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M) - i.FobV1) * i.Vcf,
-                        Col16 = (((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M) - i.FobV1
+                        Col15 = ((((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt) - i.FobV1) * i.Vcf,
+                        Col16 = (((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col1) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt) - i.FobV1
                     });
                     _o1++;
                 }
@@ -624,18 +633,18 @@ namespace DMS.BUSINESS.Services.BU
                         Col2 = i.ThueBvmt,
                         Col3 = i.L15Nbl,
                         Col4 = i.Vcf * i.L15Nbl,
-                        Col5 = (i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M,
+                        Col5 = (i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt,
                         Col6 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2),
-                        Col7 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) / 1.1M - i.ThueBvmt,
-                        Col8 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M),
-                        Col9 = (data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M,
+                        Col7 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) / i.ThueGtgt - i.ThueBvmt,
+                        Col8 = data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt),
+                        Col9 = (data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt,
                         Col10 = i.LaiGop,
-                        Col11 = i.Vcf * i.LaiGop * 1.1M,
-                        Col12 = ((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M,
-                        Col13 = (i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M),
+                        Col11 = i.Vcf * i.LaiGop * i.ThueGtgt,
+                        Col12 = ((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt,
+                        Col13 = (i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt),
                         Col14 = i.FobV2,
-                        Col15 = ((((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M) - i.FobV2) * i.Vcf,
-                        Col16 = (((i.Vcf * i.LaiGop * 1.1M) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * 1.1M)) / 1.1M)) * 1.1M) - i.FobV2
+                        Col15 = ((((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt) - i.FobV2) * i.Vcf,
+                        Col16 = (((i.Vcf * i.LaiGop * i.ThueGtgt) + ((data.Dlg.Dlg2.Where(x => x.GoodCode == i.GoodCode).Sum(x => x.Col2) - ((i.Vcf * i.L15Nbl + i.ThueBvmt) * i.ThueGtgt)) / i.ThueGtgt)) * i.ThueGtgt) - i.FobV2
                     });
                     _o2++;
                 }
@@ -648,28 +657,28 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         GoodCode = g.Code,
                         LocalCode = "V1",
-                        GoodName = g.Name,
+                        GoodName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         Col1 = oldData.Sum(x => x.Vcf),
                         Col2 = oldData.Sum(x => x.ThueBvmt),
                         Col3 = oldData.Sum(x => x.L15Nbl),
                         Col4 = oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl),
-                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * 1.1M,
+                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * currentData.FirstOrDefault(x => x.GoodCode == g.Code).ThueGtgt,
                         Col6 = oldData.Sum(x => x.GblV1 + x.ChenhLech),
                         Col14 = oldData.Sum(x => x.FobV1),
                         Col10 = oldData.Sum(x => x.LaiGop) == null ? 0 : oldData.Sum(x => x.LaiGop),
                     };
                     if (k.Col6 != 0)
                     {
-                        k.Col7 = k.Col6 / 1.1M - k.Col2;
+                        k.Col7 = k.Col6 / g.ThueGtgt - k.Col2 ?? 0;
                     }
                     k.Col8 = k.Col6 - k.Col5;
                     if (k.Col8 != 0)
                     {
-                        k.Col9 = k.Col8 / 1.1M;
+                        k.Col9 = k.Col8 / g.ThueGtgt ?? 0;
                     }
-                    k.Col11 = k.Col1 * k.Col10 * 1.1M;
+                    k.Col11 = k.Col1 * k.Col10 * g.ThueGtgt ?? 0;
                     k.Col13 = k.Col11 + k.Col9;
-                    k.Col12 = k.Col13 * 1.1M;
+                    k.Col12 = k.Col13 * g.ThueGtgt ?? 0;
                     k.Col15 = (k.Col12 - k.Col14) * k.Col1;
                     k.Col16 = k.Col12 - k.Col14;
                     data.Dlg.Dlg6Old.Add(k);
@@ -682,28 +691,28 @@ namespace DMS.BUSINESS.Services.BU
                     {
                         GoodCode = g.Code,
                         LocalCode = "V2",
-                        GoodName = g.Name,
+                        GoodName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         Col1 = oldData.Sum(x => x.Vcf),
                         Col2 = oldData.Sum(x => x.ThueBvmt),
                         Col3 = oldData.Sum(x => x.L15Nbl),
                         Col4 = oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl),
-                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * 1.1M,
+                        Col5 = (oldData.Sum(x => x.ThueBvmt) + oldData.Sum(x => x.Vcf) * oldData.Sum(x => x.L15Nbl)) * (currentData.FirstOrDefault(x => x.GoodCode == g.Code).ThueGtgt),
                         Col6 = oldData.Sum(x => x.GblV2),
                         Col14 = oldData.Sum(x => x.FobV2),
                         Col10 = oldData.Sum(x => x.LaiGop) == null ? 0 : oldData.Sum(x => x.LaiGop),
                     };
                     if (k.Col6 != 0)
                     {
-                        k.Col7 = k.Col6 / 1.1M - k.Col2;
+                        k.Col7 = k.Col6 / g.ThueGtgt - k.Col2 ?? 0;
                     }
                     k.Col8 = k.Col6 - k.Col5;
                     if (k.Col8 != 0)
                     {
-                        k.Col9 = k.Col8 / 1.1M;
+                        k.Col9 = k.Col8 / g.ThueGtgt ?? 0;
                     }
-                    k.Col11 = k.Col1 * k.Col10 * 1.1M;
+                    k.Col11 = k.Col1 * k.Col10 * g.ThueGtgt ?? 0;
                     k.Col13 = k.Col11 + k.Col9;
-                    k.Col12 = k.Col13 * 1.1M;
+                    k.Col12 = k.Col13 * g.ThueGtgt ?? 0;
                     k.Col15 = (k.Col12 - k.Col14) * k.Col1;
                     k.Col16 = k.Col12 - k.Col14;
                     data.Dlg.Dlg6Old.Add(k);
@@ -720,7 +729,7 @@ namespace DMS.BUSINESS.Services.BU
                             var i = new DlgModel
                             {
                                 GoodCode = g.Code,
-                                GoodName = g.Name,
+                                GoodName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                                 LocalCode = n.LocalCode,
                                 Col1 = dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == n.LocalCode).Sum(x => x.Col12),
                                 Col2 = n.Col12,
@@ -745,7 +754,7 @@ namespace DMS.BUSINESS.Services.BU
                             var i = new DlgModel
                             {
                                 GoodCode = g.Code,
-                                GoodName = g.Name,
+                                GoodName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                                 LocalCode = n.LocalCode,
                                 Col1 = dlg_6_Old.Where(x => x.GoodCode == g.Code).Where(x => x.LocalCode == "V2").Sum(x => x.Col14),
                                 Col2 = n.Col14,
@@ -786,16 +795,17 @@ namespace DMS.BUSINESS.Services.BU
                             Col8 = i.CuocVCBQ ?? 0,
                             Col9 = i.CkDieuTietXang ?? 0,
                             Col10 = i.CkDieuTietDau ?? 0,
-                            Col11 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietXang ?? 0,
-                            Col13 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietXang ?? 0,
-                            Col15 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietDau ?? 0,
-                            Col17 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) - i.CuocVCBQ * 1.1M + i.CkDieuTietDau ?? 0,
+                            Col11 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) - i.CuocVCBQ * i.Coefficient + i.CkDieuTietXang ?? 0,
+                            Col13 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) - i.CuocVCBQ * i.Coefficient + i.CkDieuTietXang ?? 0,
+                            Col15 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) - i.CuocVCBQ * i.Coefficient + i.CkDieuTietDau ?? 0,
+                            Col17 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) - i.CuocVCBQ * i.Coefficient + i.CkDieuTietDau ?? 0,
+                            Col31  = i.Coefficient ?? 0,
                         };
                         
-                        p.Col12 = Math.Round(p.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col14 = Math.Round(p.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col16 = Math.Round(p.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
-                        p.Col18 = Math.Round(p.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10 / 1.1M;
+                        p.Col12 = Math.Round(p.Col11 / 10, 0, MidpointRounding.AwayFromZero) * 10 / i.Coefficient ?? 0;
+                        p.Col14 = Math.Round(p.Col13 / 10, 0, MidpointRounding.AwayFromZero) * 10 / i.Coefficient ?? 0;
+                        p.Col16 = Math.Round(p.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10 / i.Coefficient ?? 0;
+                        p.Col18 = Math.Round(p.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10 / i.Coefficient ?? 0;
 
                         p.Col19 = p.Col2 - p.Col6 - p.Col12;
                         p.Col20 = p.Col3 - p.Col6 - p.Col14;
@@ -807,10 +817,10 @@ namespace DMS.BUSINESS.Services.BU
                         p.Col28 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col6) - Math.Round(p.Col15 / 10, 0, MidpointRounding.AwayFromZero) * 10; ;
                         p.Col30 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col6) - Math.Round(p.Col17 / 10, 0, MidpointRounding.AwayFromZero) * 10; ;
 
-                        p.Col23 = p.Col24 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
-                        p.Col25 = p.Col26 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
-                        p.Col27 = p.Col28 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
-                        p.Col29 = p.Col30 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
+                        p.Col23 = p.Col24 / (i.Coefficient ?? 1.1M) - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
+                        p.Col25 = p.Col26 / (i.Coefficient ?? 1.1M) - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
+                        p.Col27 = p.Col28 / (i.Coefficient ?? 1.1M) - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
+                        p.Col29 = p.Col30 / (i.Coefficient ?? 1.1M) - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
 
                         data.Pt.Add(p);
                         _o++;
@@ -882,11 +892,11 @@ namespace DMS.BUSINESS.Services.BU
                             Col18 = i.HttVb1370 + col18,
                             Col20 = i.HttVb1370 + col20 + i.CkDau,
                         };
-                        p.Col15 = p.Col14 / 1.1M;
-                        p.Col17 = p.Col16 / 1.1M;
-                        p.Col19 = p.Col18 / 1.1M;
-                        p.Col21 = p.Col20 / 1.1M;
-
+                        p.Col15 = p.Col14 / gtgtR95;
+                        p.Col17 = p.Col16 / gtgtR92;
+                        p.Col19 = p.Col18 / gtgtD01;
+                        p.Col21 = p.Col20 / gtgtD05;
+                        
                         p.Col23 = p.Col2 - p.Col6 - p.Col15 - p.Col22 / 1.1M + p.Col11 / 1.1M;
                         p.Col24 = p.Col3 - p.Col6 - p.Col17 - p.Col22 / 1.1M + p.Col11 / 1.1M;
                         p.Col25 = p.Col4 - p.Col6 - p.Col19 - p.Col22 / 1.1M + p.Col11 / 1.1M;
@@ -898,10 +908,10 @@ namespace DMS.BUSINESS.Services.BU
                         p.Col34 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col6) - p.Col20;
 
 
-                        p.Col27 = p.Col28 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
-                        p.Col29 = p.Col30 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
-                        p.Col31 = p.Col32 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
-                        p.Col33 = p.Col34 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
+                        p.Col27 = p.Col28 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
+                        p.Col29 = p.Col30 / gtgtR92 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
+                        p.Col31 = p.Col32 / gtgtD01 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
+                        p.Col33 = p.Col34 / gtgtD05 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
 
 
                         data.Db.Add(p);
@@ -939,29 +949,29 @@ namespace DMS.BUSINESS.Services.BU
                             Col10 = i.CkXang,
                             Col11 = i.CkDau,
                             Col12 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370,
-                            Col13 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / 1.1M,
+                            Col13 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR95,
                             Col14 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370,
-                            Col15 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / 1.1M,
+                            Col15 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR92,
                             Col16 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
-                            Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / 1.1M,
+                            Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD01,
                             Col18 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
-                            Col19 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / 1.1M,
+                            Col19 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD05,
                             Col20 = i.Ckv2
                         };
-                        p.Col21 = p.Col1 - p.Col5 - p.Col13 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                        p.Col22 = p.Col2 - p.Col5 - p.Col15 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                        p.Col23 = p.Col3 - p.Col5 - p.Col17 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                        p.Col24 = p.Col4 - p.Col5 - p.Col19 - p.Col20 / 1.1M + p.Col9 / 1.1M;
+                        p.Col21 = p.Col1 - p.Col5 - p.Col13 - p.Col20 / gtgtR95 + p.Col9 / gtgtR95;
+                        p.Col22 = p.Col2 - p.Col5 - p.Col15 - p.Col20 / gtgtR92 + p.Col9 / gtgtR92;
+                        p.Col23 = p.Col3 - p.Col5 - p.Col17 - p.Col20 / gtgtD01 + p.Col9 / gtgtD01;
+                        p.Col24 = p.Col4 - p.Col5 - p.Col19 - p.Col20 / gtgtD05 + p.Col9 / gtgtD05;
 
                         p.Col26 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col6) - p.Col12;
                         p.Col28 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col6) - p.Col14;
                         p.Col30 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col6) - p.Col16;
                         p.Col32 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col6) - p.Col18;
 
-                        p.Col25 = p.Col26 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
-                        p.Col27 = p.Col28 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
-                        p.Col29 = p.Col30 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
-                        p.Col31 = p.Col32 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
+                        p.Col25 = p.Col26 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col2);
+                        p.Col27 = p.Col28 / gtgtR92 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col2);
+                        p.Col29 = p.Col30 / gtgtD01 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col2);
+                        p.Col31 = p.Col32 / gtgtD05 - data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col2);
 
 
                         data.Fob.Add(p);
@@ -991,29 +1001,29 @@ namespace DMS.BUSINESS.Services.BU
                         Col10 = i.CkXang,
                         Col11 = i.CkDau,
                         Col12 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370,
-                        Col13 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / 1.1M,
+                        Col13 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR95,
                         Col14 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370,
-                        Col15 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / 1.1M,
+                        Col15 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR92,
                         Col16 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
-                        Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / 1.1M,
+                        Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD01,
                         Col18 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
-                        Col19 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / 1.1M,
+                        Col19 = (data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD05,
                         Col20 = i.Ckv2
                     };
-                    p.Col21 = p.Col1 - p.Col5 - p.Col13 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                    p.Col22 = p.Col2 - p.Col5 - p.Col15 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                    p.Col23 = p.Col3 - p.Col5 - p.Col17 - p.Col20 / 1.1M + p.Col9 / 1.1M;
-                    p.Col24 = p.Col4 - p.Col5 - p.Col19 - p.Col20 / 1.1M + p.Col9 / 1.1M;
+                    p.Col21 = p.Col1 - p.Col5 - p.Col13 - p.Col20 / gtgtR95 + p.Col9 / gtgtR95;
+                    p.Col22 = p.Col2 - p.Col5 - p.Col15 - p.Col20 / gtgtR92 + p.Col9 / gtgtR92;
+                    p.Col23 = p.Col3 - p.Col5 - p.Col17 - p.Col20 / gtgtD01 + p.Col9 / gtgtD01;
+                    p.Col24 = p.Col4 - p.Col5 - p.Col19 - p.Col20 / gtgtD05 + p.Col9 / gtgtD05;
 
                     p.Col26 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col6) - p.Col12;
                     p.Col28 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col6) - p.Col14;
                     p.Col30 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col6) - p.Col16;
                     p.Col32 = data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col6) - p.Col18;
 
-                    p.Col25 = p.Col26 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col2);
-                    p.Col27 = p.Col28 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col2);
-                    p.Col29 = p.Col30 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col2);
-                    p.Col31 = p.Col32 / 1.1M - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col2);
+                    p.Col25 = p.Col26 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201032").Sum(x => x.Col2);
+                    p.Col27 = p.Col28 / gtgtR92 - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0201004").Sum(x => x.Col2);
+                    p.Col29 = p.Col30 / gtgtD01 - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601005").Sum(x => x.Col2);
+                    p.Col31 = p.Col32 / gtgtD05 - data.Dlg.Dlg6.Where(x => x.LocalCode == "V2" && x.GoodCode == "0601002").Sum(x => x.Col2);
 
 
                     data.Pt09.Add(p);
@@ -1053,21 +1063,28 @@ namespace DMS.BUSINESS.Services.BU
                             Dvt = "L",
                             TToan = i.Thtt,
                             Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
-                            Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                            Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / gtgtR95,
                             Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
                             Col4 = i.Cpccvc,
                             Col5 = i.Cvcbq,
                             Col6 = i.Lvnh,
                             Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob,
-                            Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / 1.1M,
+                            Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / gtgtR95,
                             Col15 = i.LamTronDacBiet == true ? 1 : 0,
 
                         };
-                        j.Col9 = j.Col7 - j.Col5 * 1.1M;
+                        if (i.ThamSo == null || i.ThamSo == 0)
+                        {
+                            j.Col9 = j.Col7 - j.Col5 * gtgtR95;
+                        }
+                        else
+                        {
+                            j.Col9 = (decimal)(j.Col7 - j.Col5 * i.ThamSo);
+                        }
                         //Math.Round((j.Col7 - j.Col5 * 1.1M), MidpointRounding.AwayFromZero);
-                        j.Col10 = j.Col9 / 1.1M;
+                        j.Col10 = j.Col9 / gtgtR95;
                         j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
-                        j.Col11 = j.Col12 * 1.1M;
+                        j.Col11 = j.Col12 * gtgtR95;
 
                         var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
                         if (j.LocalCode == "V1")
@@ -1082,12 +1099,12 @@ namespace DMS.BUSINESS.Services.BU
                         //j.Col14 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) - j.Col9;
                         //j.Col14 = j.Col14 > data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) : j.Col14;
 
-                        j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                        j.Col13 = j.Col14 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                         if (j.Col15 == 1)
                         {
                             j.Col13 = Math.Round((j.Col13/ 10), MidpointRounding.AwayFromZero) * 10;
                         
-                            j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                            j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * gtgtR95;
                         }
 
 
@@ -1119,21 +1136,28 @@ namespace DMS.BUSINESS.Services.BU
                         Dvt = "L",
                         TToan = i.Thtt,
                         Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
-                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / gtgtR95,
                         Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
                         Col4 = i.Cpccvc,
                         Col5 = i.Cvcbq,
                         Col6 = i.Lvnh,
                         Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
-                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
                         Col15 = i.LamTronDacBiet == true ? 1 : 0,
 
                     };
-                    j.Col9 = j.Col7 - j.Col5 * 1.1M;
-                        //Math.Round((j.Col7 - j.Col5 * 1.1M), MidpointRounding.AwayFromZero);
-                    j.Col10 = j.Col9 / 1.1M;
+                    if (i.ThamSo == null || i.ThamSo == 0)
+                    {
+                        j.Col9 = j.Col7 - j.Col5 * gtgtR95;
+                    }
+                    else
+                    {
+                        j.Col9 = (decimal)(j.Col7 - j.Col5 * i.ThamSo);
+                    }
+                    //Math.Round((j.Col7 - j.Col5 * 1.1M), MidpointRounding.AwayFromZero);
+                    j.Col10 = j.Col9 / gtgtR95;
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
-                    j.Col11 = j.Col12 * 1.1M;
+                    j.Col11 = j.Col12 * gtgtR95;
 
                     var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
                     if (j.LocalCode == "V1")
@@ -1147,13 +1171,13 @@ namespace DMS.BUSINESS.Services.BU
                         : j.Col14;
 
 
-                    j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    j.Col13 = j.Col14 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                     
                     if (j.Col15 == 1)
                     {
                         j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
 
-                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * gtgtR95;
                     }
                     data.Bbdo.Add(j);
 
@@ -1182,19 +1206,26 @@ namespace DMS.BUSINESS.Services.BU
                         Dvt = "L",
                         TToan = i.Thtt,
                         Col1 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12),
-                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / 1.1M,
+                        Col2 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col12) / gtgtR95,
                         Col3 = i.Cpccvc + i.Cvcbq + i.Lvnh,
                         Col4 = i.Cpccvc,
                         Col5 = i.Cvcbq,
                         Col6 = i.Lvnh,
                         Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
-                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / 1.1M,
+                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
                         Col15 = i.LamTronDacBiet == true ? 1 : 0,
                     };
-                    j.Col9 = j.Col7 - j.Col5 * 1.1M;
-                    j.Col10 = j.Col9 / 1.1M;
+                    if (i.ThamSo == null || i.ThamSo == 0)
+                    {
+                        j.Col9 = j.Col7 - j.Col5 * gtgtR95;
+                    }
+                    else
+                    {
+                        j.Col9 = (decimal)(j.Col7 - j.Col5 * i.ThamSo);
+                    }
+                    j.Col10 = j.Col9 / gtgtR95;
                     j.Col12 = j.Col2 - j.Col3 - j.Col10 - j.Col6;
-                    j.Col11 = j.Col12 * 1.1M;
+                    j.Col11 = j.Col12 * gtgtR95;
 
 
                     var dlg6 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").FirstOrDefault();
@@ -1213,12 +1244,12 @@ namespace DMS.BUSINESS.Services.BU
                     //    ? data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col6) 
                     //    : j.Col14;
 
-                    j.Col13 = j.Col14 / 1.1M - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
+                    j.Col13 = j.Col14 / gtgtR95 - data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2);
                     if (j.Col15 == 1)
                     {
                         j.Col13 = Math.Round((j.Col13 / 10), MidpointRounding.AwayFromZero) * 10;
 
-                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * 1.1M;
+                        j.Col14 = (j.Col13 + data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col2)) * gtgtR95;
                     }
 
                     data.Bbdo.Add(j);
@@ -1348,7 +1379,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     data.Vk11Pt.Add(new VK11Model
                     {
-                        CustomerName = g.Name,
+                        CustomerName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         IsBold = true,
                     });
 
@@ -1387,7 +1418,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     data.Vk11Db.Add(new VK11Model
                     {
-                        CustomerName = g.Name,
+                        CustomerName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         IsBold = true,
                     });
 
@@ -1425,7 +1456,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     data.Vk11Fob.Add(new VK11Model
                     {
-                        CustomerName = g.Name,
+                        CustomerName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         IsBold = true,
                     });
 
@@ -1463,7 +1494,7 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     data.Vk11Tnpp.Add(new VK11Model
                     {
-                        CustomerName = g.Name,
+                        CustomerName = currentData.FirstOrDefault(x => x.GoodCode == g.Code).GoodName,
                         IsBold = true,
                     });
 
@@ -2001,27 +2032,30 @@ namespace DMS.BUSINESS.Services.BU
                 #endregion
 
                 #region THAY ĐỔI GIÁ GIAO PT BÁN LẺ
-                int rowIndexDl5 = 39;
+                int rowIndexDl5 = 40;
                 foreach (var i in data.Dlg.Dlg3)
                 {
-                    var text = i.IsBold ? styles.TextBold : styles.Text;
-                    var number = i.IsBold ? styles.NumberBold : styles.Number;
-                    var row = sheetDlg.GetRow(rowIndexDl5) ?? sheetDlg.CreateRow(rowIndexDl5);
-                    if (i.GoodCode == null)
+                    if(i.LocalCode == "V2")
                     {
-                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, styles.TextBold);
-                    }
-                    else
-                    {
-                        ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
-                        ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
-                        //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
-                        ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
+                        var text = i.IsBold ? styles.TextBold : styles.Text;
+                        var number = i.IsBold ? styles.NumberBold : styles.Number;
+                        var row = sheetDlg.GetRow(rowIndexDl5) ?? sheetDlg.CreateRow(rowIndexDl5);
+                        if (i.GoodCode == null)
+                        {
+                            ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, styles.TextBold);
+                        }
+                        else
+                        {
+                            ExcelNPOIExtention.SetCellValueText(row, 20, i.GoodName, text);
+                            ExcelNPOIExtention.SetCellValueNumber(row, 21, i.Col1, number);
+                            ExcelNPOIExtention.SetCellValueNumber(row, 22, i.Col2, number);
+                            //ExcelNPOIExtention.SetCellValueNumber(row, 23, i.Col3, number);
+                            ExcelNPOIExtention.SetCellValueText(row, 23, i.Col3 < 0 ? "(-) " + Math.Abs(i.Col3).ToString() : i.Col3 > 0 ? "(+) " + i.Col3 : "0", ExcelNPOIExtention.SetCellFreeStyle(workbook, false, HorizontalAlignment.Right, true, 13));
 
-                        ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", text);
+                            ExcelNPOIExtention.SetCellValueText(row, 24, i.Col3 == 0 ? "(Không thay đổi)" : "(Thay đổi)", text);
+                        }
+                        rowIndexDl5++;
                     }
-                    rowIndexDl5++;
                 }
                 #endregion
 
@@ -4421,7 +4455,7 @@ namespace DMS.BUSINESS.Services.BU
                 var goods = await _dbContext.TblMdGoods.ToListAsync();
                 var NguoiKyTen = await _dbContext.TblMdSigner.FirstOrDefaultAsync(x => x.Code == data.Header.SignerCode);
                 var date = $"{data.Header.Date.Hour:D2}h{data.Header.Date.Minute:D2} ngày {data.Header.Date.ToString("dd/MM/yyyy")}"; 
-                var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {data.Header.Date.Day:D2}/{data.Header.Date.Month:D2}/{data.Header.Date.Year} của Công ty Xăng dầu Nghệ An)";
+                var A5 = $"  (Kèm theo Công văn số:                        /PLXNA ngày {data.Header.Date.Day:D2}/{data.Header.Date.Month:D2}/{data.Header.Date.Year} của Công ty TNHH MTV Petrolimex Nghệ An)";
                 var A29 = $" + Căn cứ Quyết định số {data.Header.QuyetDinhSo} ngày {data.Header.Date.Day:D2}/{data.Header.Date.Month:D2}/{data.Header.Date.Year} của Tổng giám đốc Tập đoàn Xăng dầu Việt Nam về việc qui định giá bán xăng dầu; ";
                 var B25 = $"Mức giá bán đăng ký này có hiệu lực thi hành kể từ {data.Header.Date.Hour:D2} giờ 00 ngày {data.Header.Date.Day:D2} tháng {data.Header.Date.Month:D2} năm {data.Header.Date.Year}";
                 var E8 = $"Giá kê khai kì liền kề trước (theo VB số ......./PLXNA-KDXD ngày {data.HeaderOld.Date.ToString("dd/MM/yyyy")}";
@@ -4470,56 +4504,56 @@ namespace DMS.BUSINESS.Services.BU
                     ICell cellE8 = rowE8?.GetCell(4);
                     cellE8.SetCellValue(E8);
 
-                    int rowIndex = 10; // Bắt đầu từ row 11 (index = 10)
-                    foreach (var item in data.Dlg.Dlg3)
-                    {
-                        IRow row = sheet.GetRow(rowIndex); // Chỉ lấy row, không cần CreateRow
-                        if (row != null && item.LocalCode == "V1" && item.IsBold == false)
-                        {
-                            // E11 -> col1
-                            ICell cellE = row.GetCell(4);
-                            if (cellE != null)
-                            {
-                                cellE.SetCellValue((double)item.Col1);
-                            }
+                    //int rowIndex = 10; // Bắt đầu từ row 11 (index = 10)
+                    //foreach (var item in data.Dlg.Dlg3)
+                    //{
+                    //    IRow row = sheet.GetRow(rowIndex); // Chỉ lấy row, không cần CreateRow
+                    //    if (row != null && item.LocalCode == "V1" && item.IsBold == false)
+                    //    {
+                    //        // E11 -> col1
+                    //        ICell cellE = row.GetCell(4);
+                    //        if (cellE != null)
+                    //        {
+                    //            cellE.SetCellValue((double)item.Col1);
+                    //        }
 
-                            // F11 -> col2
-                            ICell cellF = row.GetCell(5);
-                            if (cellF != null)
-                            {
-                                cellF.SetCellValue((double)item.Col2);
-                            }
+                    //        // F11 -> col2
+                    //        ICell cellF = row.GetCell(5);
+                    //        if (cellF != null)
+                    //        {
+                    //            cellF.SetCellValue((double)item.Col2);
+                    //        }
 
-                            //G11 
-                            ICell cellG = row.GetCell(6);
-                            if (cellG != null)
-                            {
-                                cellG.SetCellValue(date);
-                            }
+                    //        //G11 
+                    //        ICell cellG = row.GetCell(6);
+                    //        if (cellG != null)
+                    //        {
+                    //            cellG.SetCellValue(date);
+                    //        }
 
-                            // H11 -> tangGiam1_2
-                            ICell cellH = row.GetCell(7);
-                            if (cellH != null)
-                            {
-                                cellH.SetCellValue((double)item.Col3);
-                            }
+                    //        // H11 -> tangGiam1_2
+                    //        ICell cellH = row.GetCell(7);
+                    //        if (cellH != null)
+                    //        {
+                    //            cellH.SetCellValue((double)item.Col3);
+                    //        }
 
-                            ICell cellI = row.GetCell(8);
-                            if (cellI != null)
-                            {
-                                if (item.Col1 != 0)
-                                {
-                                    double rateOfIncreaseAndDecrease = (double)((item.Col2 - item.Col1) / item.Col1);
-                                    cellI.SetCellValue(rateOfIncreaseAndDecrease);
-                                }
-                                else
-                                {
-                                    cellI.SetCellValue(0);
-                                }
-                            }
-                            rowIndex++;
-                        }
-                    }
+                    //        ICell cellI = row.GetCell(8);
+                    //        if (cellI != null)
+                    //        {
+                    //            if (item.Col1 != 0)
+                    //            {
+                    //                double rateOfIncreaseAndDecrease = (double)((item.Col2 - item.Col1) / item.Col1);
+                    //                cellI.SetCellValue(rateOfIncreaseAndDecrease);
+                    //            }
+                    //            else
+                    //            {
+                    //                cellI.SetCellValue(0);
+                    //            }
+                    //        }
+                    //        rowIndex++;
+                    //    }
+                    //}
 
                     int rowIndex2 = 15;
                     foreach (var item in data.Dlg.Dlg3)
@@ -5682,6 +5716,9 @@ namespace DMS.BUSINESS.Services.BU
                             case "##DATE@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, date);
                                 break;
+                            case "##VBS_DATE@@":
+                                wordDocumentService.ReplaceStringInWordDocumennt(doc, t, header.VanBanSoDate?.ToString("dd/MM/yyyy") ?? string.Empty);
+                                break;
                             case "##HOUR_NOW@@":
                                 wordDocumentService.ReplaceStringInWordDocumennt(doc, t, hour_now);
                                 break;
@@ -6044,6 +6081,400 @@ namespace DMS.BUSINESS.Services.BU
             await _dbContext.SaveChangesAsync();
         }
 
+        #endregion
+
+        #region xử lý quy trình xét duyệt
+
+        public async Task HandleQuyTrinh(QuyTrinhModel data)
+        {
+            try
+            {
+                data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
+                //data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "11" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code == "12" ? "04" : data.Status.Code;
+                _dbContext.TblBuCalculateDiscount.Update(data.header);
+                var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
+                var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
+                var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
+                var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
+                
+                var h = new TblBuHistoryAction()
+                {
+                    Code = Guid.NewGuid().ToString(),
+                    HeaderCode = data.header.Id,
+
+                    Action = data.Status.Code == "02" ? "Trình duyệt" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa" : data.Status.Code == "04" ? "Phê duyệt" : data.Status.Code == "05" ? "Từ chối" : data.Status.Code == "06" ? "Hủy trình duyệt" : "Hủy phê duyệt",
+                    //Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : data.Status.Code == "11" ? "Hủy phê duyệt giá bán lẻ" : data.Status.Code == "12" ? "Hủy phê duyệt giá thù lao" : "Hủy phê duyệt",
+                    Contents = data.Status.Content
+                };
+                _dbContext.TblBuHistoryAction.Add(h);
+                //if (data.Status.Code == "02" || data.Status.Code == "06")
+                if (data.Status.Code == "02")
+                    {
+                    var email = new TblNotifyEmail();
+                    foreach (var i in AccoundTPKD)
+                    {
+                        var m = Account.FirstOrDefault(x => x.UserName == i.UserName).Email;
+                        email = new TblNotifyEmail()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            HeaderId = data.header.Id,
+                            Email =m,
+                            NumberRetry = 0,
+                            Subject = templateEmail.Title.Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
+                            Contents = templateEmail.HtmlSource.Replace("[pram]", data.Status.Link).Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
+                            IsSend = "N",
+                        };
+                        _dbContext.TblCmNotifiEmail.Add(email);
+                    }
+                }else if (data.Status.Code == "04")
+                {
+                    await SaveMailTBGia(data.header.Id);
+                }else if (data.Status.Code == "07")
+                {
+                    var lstmail = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == data.header.Id);
+                    foreach (var item in lstmail)
+                    {
+                        item.IsSend = "K";
+
+                    }
+                    _dbContext.TblCmNotifiEmail.UpdateRange(lstmail);
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
+
+
+
+        #endregion
+
+        #region
+        public async Task<List<TblBuHistoryAction>> GetHistoryAction(string code)
+        {
+            try
+            {
+                var data = await _dbContext.TblBuHistoryAction.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new List<TblBuHistoryAction>();
+            }
+        }
+        #endregion
+
+        #region history dowload file
+        public async Task<List<TblBuHistoryDownload>> GetHistoryFile(string code)
+        {
+            try
+            {
+                var data = await _dbContext.TblBuHistoryDownload.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new List<TblBuHistoryDownload>();
+            }
+        }
+        //public async Task ResendEmail(string code)
+        //{
+        //    try
+        //    {
+        //        var data = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == code&&x.IsSend=="N" && x.NumberRetry==3).ToList();
+
+        //        foreach(var mail in data)
+        //        {
+        //            mail.IsSend = "N";
+        //            mail.Status = "";
+        //            mail.NumberRetry = 0;
+                    
+        //        }
+        //        _dbContext.TblCmNotifiEmail.UpdateRange(data);
+        //        _dbContext.SaveChanges();
+               
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.Status = false;
+        //    }
+        //}
+        #endregion
+
+        #region copy kỳ
+        public async Task<CalculateDiscountInputModel> CopyInput(string headerId, string id)
+        {
+            try 
+            {
+                var Header = _dbContext.TblBuCalculateDiscount.Find(headerId);
+                Header.Id = id;
+                Header.Name = "";
+                Header.Date = DateTime.Now;
+                Header.Status = "01";
+                Header.IsActive = true;
+                //var headerId = Guid.NewGuid().ToString();
+                var InputPrice = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == headerId).OrderBy(x => x.Order).ToListAsync();
+                //InputPrice.he
+                var lstGoods = await _dbContext.TblMdGoods.Where(x => x.IsActive != false).OrderBy(x => x.CreateDate).OrderBy(x => x.Order).ToListAsync();
+                var lstMarket = await _dbContext.TblMdMarket.Where(x => x.IsActive != false).OrderBy(x => x.Code).ToListAsync();
+                var lstCustomerDb = await _dbContext.TblMdCustomerDb.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPt = await _dbContext.TblMdCustomerPt.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerFob = await _dbContext.TblMdCustomerFob.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+                var lstCustomerPts = await _dbContext.TblMdCustomerPts.Where(x => x.IsActive != false).OrderBy(x => x.Order).ToListAsync();
+
+                return new CalculateDiscountInputModel
+                {
+                    Header = Header,
+                    InputPrice = InputPrice.Select(g => new TblBuInputPrice
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        GoodCode = g.GoodCode,
+                        GoodName = g.GoodName,
+                        ThueBvmt = g.ThueBvmt,
+                        Vcf = g.Vcf,
+                        ChenhLech = g.ChenhLech,
+                        GblV1 = g.GblV1,
+                        GblV2 = g.GblV2,
+                        L15Blv2 = g.L15Blv2,
+                        L15Nbl = g.L15Nbl,
+                        LaiGop = 0,
+                        IsActive = true,
+                        Order = g.Order,
+                        ThueGtgt = g.ThueGtgt
+                    }).ToList(),
+                    Market = lstMarket.Select(x => new TblBuInputMarket
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        FullName = x.FullName,
+                        Local2 = x.Local2,
+                        LocalCode = x.LocalCode,
+                        WarehouseCode = x.WarehouseCode,
+                        Gap = x.Gap,
+                        Coefficient = x.Coefficient,
+                        CuocVCBQ = x.CuocVCBQ,
+                        CPChungChuaCuocVC = x.CPChungChuaCuocVC,
+                        CkDieuTietDau = x.CkDieuTietDau,
+                        CkDieuTietXang = x.CkDieuTietXang,
+                    }).ToList(),
+
+                    CustomerDb = lstCustomerDb.Select(x => new TblBuInputCustomerDb
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        Local2 = x.Local2,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerPt = lstCustomerPt.Select(x => new TblBuInputCustomerPt
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerPts = lstCustomerPts.Select(x => new TblBuInputCustomerPts
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        GoodsCode = x.GoodsCode,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true
+                    }).ToList(),
+                    CustomerFob = lstCustomerFob.Select(x => new TblBuInputCustomerFob
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerTnpp = lstCustomerTnpp.Select(x => new TblBuInputCustomerTnpp
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode,
+                        MarketCode = x.MarketCode,
+                        CuLyBq = x.CuLyBq,
+                        Cpccvc = x.Cpccvc,
+                        Cvcbq = x.Cvcbq,
+                        Lvnh = x.Lvnh,
+                        Htcvc = x.Htcvc,
+                        HttVb1370 = x.HttVb1370,
+                        Ckv2 = x.Ckv2,
+                        PhuongThuc = x.PhuongThuc,
+                        Thtt = x.Thtt,
+                        Order = x.Order,
+                        Adrress = x.Adrress,
+                        CkDau = x.CkDau,
+                        CkXang = x.CkXang,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                    CustomerBbdo = lstCustomerBbdo.Select(x => new TblBuInputCustomerBbdo
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        HeaderId = id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        LocalCode = x.LocalCode ?? "-",
+                        DeliveryPoint = x.DeliveryPoint ?? "-",
+                        DeliveryGroupCode = x.DeliveryGroupCode ?? "-",
+                        GoodsCode = x.GoodsCode ?? "-",
+                        MarketCode = x.MarketCode ?? "-",
+                        CuLyBq = x.CuLyBq ?? 0,
+                        Cpccvc = x.Cpccvc ?? 0,
+                        Cvcbq = x.Cvcbq ?? 0,
+                        Lvnh = x.Lvnh ?? 0,
+                        Fob = x.Fob ?? 0,
+                        Htcvc = x.Htcvc ?? 0,
+                        HttVb1370 = x.HttVb1370 ?? 0,
+                        Ckv2 = x.Ckv2 ?? 0,
+                        PhuongThuc = x.PhuongThuc ?? "-",
+                        Thtt = x.Thtt ?? "-",
+                        Order = x.Order,
+                        Adrress = x.Adrress ?? "-",
+                        CkDau = x.CkDau ?? 0,
+                        CkXang = x.CkXang ?? 0,
+                        IsActive = true,
+                        LamTronDacBiet = x.LamTronDacBiet
+                    }).ToList(),
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+                return new CalculateDiscountInputModel();
+            }
+        }
+        #endregion
+
+        #region gửi mail thông báo giá xăng dầu
+        public async Task SaveMailTBGia(string headerId)
+        {
+            try
+            {
+                //var s = new ExportWordService(_dbContext);
+                //var data = await this.CalculateDiscountOutput(headerId);
+                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true && x.Email != "").ToList();
+                var lstCustomerBbdo = _dbContext.TblMdCustomerBbdo.Where(x => x.IsActive == true).ToList();
+                var dataHeader = await this.GetInput(headerId);
+                DateTime Date = dataHeader.Header.Date;
+                var Ngay = $"{Date.Hour:D2}h00 ngày {Date:dd/MM/yyyy}";
+                var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email thông báo giá bán");
+
+                var lstmail = new List<TblNotifyEmail>();
+
+                foreach (var item in litCustomerBBdoMail)
+                {
+                    if (lstCustomerBbdo.FirstOrDefault(x => x.Code == item.CustomerCode) != null)
+                    {
+                        lstmail.Add(new TblNotifyEmail()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = item.Email,
+                            Subject = template.Title.Replace("[fromDate]", Ngay) ?? "",
+                            Contents = template.HtmlSource.Replace("[fromDate]", Ngay),
+                            IsSend = "C",
+                            NumberRetry = 0,
+                            HeaderId = headerId,
+                            CustomerCode = item.CustomerCode ?? ""
+                        });
+                    }
+                }
+
+                _dbContext.TblCmNotifiEmail.AddRange(lstmail);
+
+
+
+
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Status = false;
+                Exception = ex;
+            }
+        }
+
+
         public async Task<string> SaveSMS(string headerId, string smsName)
         {
 
@@ -6055,7 +6486,8 @@ namespace DMS.BUSINESS.Services.BU
                 {
                     return "01";
                 }
-            }else if (smsName == "SMS Thông báo giá bán lẻ niêm yết")
+            }
+            else if (smsName == "SMS Thông báo giá bán lẻ niêm yết")
             {
                 var lstSMS = _dbContext.TblCmNotifySms.FirstOrDefault(x => x.HeaderId == headerId && x.Status == "TBGBL");
 
@@ -6083,7 +6515,7 @@ namespace DMS.BUSINESS.Services.BU
 
                             foreach (var p in lstPhonecustomer)
                             {
-                                var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
+                                var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S-V: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                                 var info = new TblNotifySms()
                                 {
@@ -6115,7 +6547,7 @@ namespace DMS.BUSINESS.Services.BU
                             {
                                 var market = _dbContext.TblMdMarket.Where(x => x.Code == i.MarketCode).Select(x => x.Name).FirstOrDefault();
 
-                                var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
+                                var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S-V: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                                 var info = new TblNotifySms()
                                 {
@@ -6146,7 +6578,7 @@ namespace DMS.BUSINESS.Services.BU
                         {
                             var market = "kho N.Huong/Ben Thuy";
 
-                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
+                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S-V: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                             var info = new TblNotifySms()
                             {
@@ -6178,7 +6610,7 @@ namespace DMS.BUSINESS.Services.BU
                             var market = "kho N.Huong/Ben Thuy";
 
 
-                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
+                            var goods = $"X 95-III: {i.Col1.ToString("N0")} d/l, X E5-II {i.Col2.ToString("N0")} d/l, Do 0,001S-V: {i.Col3.ToString("N0")} d/l, Do 0,05S-II: {i.Col4.ToString("N0")} d/l";
 
                             var info = new TblNotifySms()
                             {
@@ -6203,13 +6635,13 @@ namespace DMS.BUSINESS.Services.BU
                     var dlgV1 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V1").ToList();
                     var goodsV1 = $"X 95-III: {dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3).ToString("N0")} d/l), " +
                         $"X E5-II: {dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3).ToString("N0")} d/l), " +
-                        $"Do 0,001S: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,001S-V: {dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
                         $"Do 0,05S-II: {dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV1.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3).ToString("N0")} d/l)";
 
                     var dlgV2 = data.Dlg.Dlg3.Where(x => x.LocalCode == "V2").ToList();
                     var goodsV2 = $"X 95-III: {dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0201032").Sum(x => x.Col3).ToString("N0")} d/l), " +
                         $"X E5-II: {dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0201004").Sum(x => x.Col3).ToString("N0")} d/l), " +
-                        $"Do 0,001S: {dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
+                        $"Do 0,001S-V: {dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0601005").Sum(x => x.Col3).ToString("N0")} d/l), " +
                         $"Do 0,05S-II: {dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col2).ToString("N0")} d/l ({dlgV2.Where(x => x.GoodCode == "0601002").Sum(x => x.Col3).ToString("N0")} d/l)";
 
                     var lstMarketV1 = _dbContext.TblMdMarket.Where(x => x.LocalCode == "V1").ToList();
@@ -6494,14 +6926,15 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<TblNotifySms>();
             }
         }
-   
+
 
         public async Task<List<NotifyEmailViewModel>> GetHistoryMail(string headerID)
         {
             try
             {
-                
+
                 var BbdoCus = _dbContext.TblMdCustomerBbdo.ToList();
+                var lstCusMail = _dbContext.TblMdCustomerEmail.OrderBy(x => x.Code).ToList();
                 var fileDowload = _dbContext.TblBuHistoryDownload.Where(x => x.HeaderCode == headerID).ToList();
                 var emailList = _dbContext.TblCmNotifiEmail
                     .Where(x => x.HeaderId == headerID && x.IsSend != "K")
@@ -6519,6 +6952,7 @@ namespace DMS.BUSINESS.Services.BU
                     Email = x.Email,
                     CustomerCode = x.CustomerCode,
                     CustomerName = BbdoCus.FirstOrDefault(y => y.Code == x.CustomerCode)?.Name,
+                    GroupMailCode = lstCusMail.FirstOrDefault(i => i.CustomerCode == x.CustomerCode && i.Email == x.Email)?.GroupMailCode ?? "",
                     CheckFile = fileDowload.Any(y => y.CustomerCode == x.CustomerCode) ? "có File đính kèm" : "chưa có file đính kèm"
                 }).ToList();
 
@@ -6531,7 +6965,7 @@ namespace DMS.BUSINESS.Services.BU
                 return new List<NotifyEmailViewModel>();
             }
         }
-       
+
 
         public async Task SendSMS(List<string> lstSms)
         {
@@ -6546,7 +6980,7 @@ namespace DMS.BUSINESS.Services.BU
             }
             catch (Exception ex)
             {
-              
+
             }
         }
 
@@ -6631,396 +7065,7 @@ namespace DMS.BUSINESS.Services.BU
                 //return null;
             }
         }
-        #endregion
 
-        #region xử lý quy trình xét duyệt
-
-        public async Task HandleQuyTrinh(QuyTrinhModel data)
-        {
-            try
-            {
-                data.header.Status = data.Status.Code == "06" ? "01" : data.Status.Code == "07" ? "01" : data.Status.Code;
-                //data.header.Status = data.Status.Code == "09" ? "01" : data.Status.Code == "11" ? "01" : data.Status.Code == "10" ? "04" : data.Status.Code == "12" ? "04" : data.Status.Code;
-                _dbContext.TblBuCalculateDiscount.Update(data.header);
-                var TpkdId = _dbContext.TblAdAccountGroup.FirstOrDefault(x => x.Name == "G_TP_KD").Id;
-                var AccoundTPKD = _dbContext.TblAdAccount_AccountGroup.Where(x => x.GroupId == TpkdId).ToList();
-                var templateEmail = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email Thông báo phê duyệt");
-                var Account = _dbContext.TblAdAccount.Select(x => new { Email= x.Email, UserName = x.UserName });
-                
-                var h = new TblBuHistoryAction()
-                {
-                    Code = Guid.NewGuid().ToString(),
-                    HeaderCode = data.header.Id,
-
-                    Action = data.Status.Code == "02" ? "Trình duyệt" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa" : data.Status.Code == "04" ? "Phê duyệt" : data.Status.Code == "05" ? "Từ chối" : data.Status.Code == "06" ? "Hủy trình duyệt" : "Hủy phê duyệt",
-                    //Action = data.Status.Code == "02" ? "Trình duyệt giá bán lẻ" : data.Status.Code == "03" ? "Yêu cầu chỉnh sửa giá bán lẻ" : data.Status.Code == "04" ? "Duyệt giá bán lẻ" : data.Status.Code == "05" ? "Từ chối": data.Status.Code == "06" ? "Trình duyệt giá thù lao" : data.Status.Code == "07" ? "Yêu cầu chỉnh sửa giá thù lao" : data.Status.Code == "08" ? "Phê duyệt Đợt tính thù lao" : data.Status.Code == "09" ? "Hủy trình duyệt giá bán lẻ" : data.Status.Code == "10" ? "Hủy trình duyệt giá thù lao" : data.Status.Code == "11" ? "Hủy phê duyệt giá bán lẻ" : data.Status.Code == "12" ? "Hủy phê duyệt giá thù lao" : "Hủy phê duyệt",
-                    Contents = data.Status.Content
-                };
-                _dbContext.TblBuHistoryAction.Add(h);
-                //if (data.Status.Code == "02" || data.Status.Code == "06")
-                if (data.Status.Code == "02")
-                    {
-                    var email = new TblNotifyEmail();
-                    foreach (var i in AccoundTPKD)
-                    {
-                        var m = Account.FirstOrDefault(x => x.UserName == i.UserName).Email;
-                        email = new TblNotifyEmail()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            HeaderId = data.header.Id,
-                            Email =m,
-                            NumberRetry = 0,
-                            Subject = templateEmail.Title.Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
-                            Contents = templateEmail.HtmlSource.Replace("[pram]", data.Status.Link).Replace("[fromDate]", data.header.Date.ToString("dd/MM/yyyy")),
-                            IsSend = "N",
-                        };
-                        _dbContext.TblCmNotifiEmail.Add(email);
-                    }
-                }else if (data.Status.Code == "04")
-                {
-                    await SaveMailTBGia(data.header.Id);
-                }else if (data.Status.Code == "07")
-                {
-                    var lstmail = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == data.header.Id);
-                    foreach (var item in lstmail)
-                    {
-                        item.IsSend = "K";
-
-                    }
-                    _dbContext.TblCmNotifiEmail.UpdateRange(lstmail);
-                }
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Status = false;
-                Exception = ex;
-            }
-        }
-
-
-
-        #endregion
-
-        #region
-        public async Task<List<TblBuHistoryAction>> GetHistoryAction(string code)
-        {
-            try
-            {
-                var data = await _dbContext.TblBuHistoryAction.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
-                return data;
-            }
-            catch (Exception ex)
-            {
-                return new List<TblBuHistoryAction>();
-            }
-        }
-        #endregion
-
-        #region history dowload file
-        public async Task<List<TblBuHistoryDownload>> GetHistoryFile(string code)
-        {
-            try
-            {
-                var data = await _dbContext.TblBuHistoryDownload.Where(x => x.HeaderCode == code).OrderByDescending(x => x.CreateDate).ToListAsync();
-                return data;
-            }
-            catch (Exception ex)
-            {
-                return new List<TblBuHistoryDownload>();
-            }
-        }
-        //public async Task ResendEmail(string code)
-        //{
-        //    try
-        //    {
-        //        var data = _dbContext.TblCmNotifiEmail.Where(x => x.HeaderId == code&&x.IsSend=="N" && x.NumberRetry==3).ToList();
-
-        //        foreach(var mail in data)
-        //        {
-        //            mail.IsSend = "N";
-        //            mail.Status = "";
-        //            mail.NumberRetry = 0;
-                    
-        //        }
-        //        _dbContext.TblCmNotifiEmail.UpdateRange(data);
-        //        _dbContext.SaveChanges();
-               
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.Status = false;
-        //    }
-        //}
-        #endregion
-
-        #region copy kỳ
-        public async Task<CalculateDiscountInputModel> CopyInput(string headerId, string id)
-        {
-            try 
-            {
-                var Header = _dbContext.TblBuCalculateDiscount.Find(headerId);
-                Header.Id = id;
-                Header.Date = DateTime.Now;
-                Header.Status = "01";
-                Header.IsActive = true;
-                //var headerId = Guid.NewGuid().ToString();
-                var InputPrice = await _dbContext.TblBuInputPrice.Where(x => x.HeaderId == headerId).OrderBy(x => x.Order).ToListAsync();
-                //InputPrice.he
-                var lstGoods = await _dbContext.TblMdGoods.OrderBy(x => x.CreateDate).OrderBy(x => x.Order).ToListAsync();
-                var lstMarket = await _dbContext.TblMdMarket.OrderBy(x => x.Code).ToListAsync();
-                var lstCustomerDb = await _dbContext.TblMdCustomerDb.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerPt = await _dbContext.TblMdCustomerPt.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerFob = await _dbContext.TblMdCustomerFob.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerTnpp = await _dbContext.TblMdCustomerTnpp.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerBbdo = await _dbContext.TblMdCustomerBbdo.OrderBy(x => x.Order).ToListAsync();
-                var lstCustomerPts = await _dbContext.TblMdCustomerPts.OrderBy(x => x.Order).ToListAsync();
-
-                return new CalculateDiscountInputModel
-                {
-                    Header = Header,
-                    InputPrice = InputPrice.Select(g => new TblBuInputPrice
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        GoodCode = g.GoodCode,
-                        GoodName = g.GoodName,
-                        ThueBvmt = g.ThueBvmt,
-                        Vcf = g.Vcf,
-                        ChenhLech = g.ChenhLech,
-                        GblV1 = g.GblV1,
-                        GblV2 = g.GblV2,
-                        L15Blv2 = g.L15Blv2,
-                        L15Nbl = g.L15Nbl,
-                        LaiGop = 0,
-                        IsActive = true,
-                        Order = g.Order,
-                    }).ToList(),
-                    Market = lstMarket.Select(x => new TblBuInputMarket
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        FullName = x.FullName,
-                        Local2 = x.Local2,
-                        LocalCode = x.LocalCode,
-                        WarehouseCode = x.WarehouseCode,
-                        Gap = x.Gap,
-                        Coefficient = x.Coefficient,
-                        CuocVCBQ = x.CuocVCBQ,
-                        CPChungChuaCuocVC = x.CPChungChuaCuocVC,
-                        CkDieuTietDau = x.CkDieuTietDau,
-                        CkDieuTietXang = x.CkDieuTietXang,
-                    }).ToList(),
-
-                    CustomerDb = lstCustomerDb.Select(x => new TblBuInputCustomerDb
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        LocalCode = x.LocalCode,
-                        Local2 = x.Local2,
-                        MarketCode = x.MarketCode,
-                        CuLyBq = x.CuLyBq,
-                        Cpccvc = x.Cpccvc,
-                        Cvcbq = x.Cvcbq,
-                        Lvnh = x.Lvnh,
-                        Htcvc = x.Htcvc,
-                        HttVb1370 = x.HttVb1370,
-                        Ckv2 = x.Ckv2,
-                        PhuongThuc = x.PhuongThuc,
-                        Thtt = x.Thtt,
-                        Order = x.Order,
-                        Adrress = x.Adrress,
-                        CkDau = x.CkDau,
-                        CkXang = x.CkXang,
-                        IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet
-                    }).ToList(),
-                    CustomerPt = lstCustomerPt.Select(x => new TblBuInputCustomerPt
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        LocalCode = x.LocalCode,
-                        MarketCode = x.MarketCode,
-                        CuLyBq = x.CuLyBq,
-                        Cpccvc = x.Cpccvc,
-                        Cvcbq = x.Cvcbq,
-                        Lvnh = x.Lvnh,
-                        Htcvc = x.Htcvc,
-                        HttVb1370 = x.HttVb1370,
-                        Ckv2 = x.Ckv2,
-                        PhuongThuc = x.PhuongThuc,
-                        Thtt = x.Thtt,
-                        Order = x.Order,
-                        Adrress = x.Adrress,
-                        CkDau = x.CkDau,
-                        CkXang = x.CkXang,
-                        IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet
-                    }).ToList(),
-                    CustomerPts = lstCustomerPts.Select(x => new TblBuInputCustomerPts
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        CuLyBq = x.CuLyBq,
-                        Cpccvc = x.Cpccvc,
-                        Cvcbq = x.Cvcbq,
-                        Lvnh = x.Lvnh,
-                        Htcvc = x.Htcvc,
-                        HttVb1370 = x.HttVb1370,
-                        Ckv2 = x.Ckv2,
-                        GoodsCode = x.GoodsCode,
-                        PhuongThuc = x.PhuongThuc,
-                        Thtt = x.Thtt,
-                        Order = x.Order,
-                        Adrress = x.Adrress,
-                        CkDau = x.CkDau,
-                        CkXang = x.CkXang,
-                        IsActive = true
-                    }).ToList(),
-                    CustomerFob = lstCustomerFob.Select(x => new TblBuInputCustomerFob
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        LocalCode = x.LocalCode,
-                        MarketCode = x.MarketCode,
-                        CuLyBq = x.CuLyBq,
-                        Cpccvc = x.Cpccvc,
-                        Cvcbq = x.Cvcbq,
-                        Lvnh = x.Lvnh,
-                        Htcvc = x.Htcvc,
-                        HttVb1370 = x.HttVb1370,
-                        Ckv2 = x.Ckv2,
-                        PhuongThuc = x.PhuongThuc,
-                        Thtt = x.Thtt,
-                        Order = x.Order,
-                        Adrress = x.Adrress,
-                        CkDau = x.CkDau,
-                        CkXang = x.CkXang,
-                        IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet
-                    }).ToList(),
-                    CustomerTnpp = lstCustomerTnpp.Select(x => new TblBuInputCustomerTnpp
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        LocalCode = x.LocalCode,
-                        MarketCode = x.MarketCode,
-                        CuLyBq = x.CuLyBq,
-                        Cpccvc = x.Cpccvc,
-                        Cvcbq = x.Cvcbq,
-                        Lvnh = x.Lvnh,
-                        Htcvc = x.Htcvc,
-                        HttVb1370 = x.HttVb1370,
-                        Ckv2 = x.Ckv2,
-                        PhuongThuc = x.PhuongThuc,
-                        Thtt = x.Thtt,
-                        Order = x.Order,
-                        Adrress = x.Adrress,
-                        CkDau = x.CkDau,
-                        CkXang = x.CkXang,
-                        IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet
-                    }).ToList(),
-                    CustomerBbdo = lstCustomerBbdo.Select(x => new TblBuInputCustomerBbdo
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        HeaderId = id,
-                        Code = x.Code,
-                        Name = x.Name,
-                        LocalCode = x.LocalCode ?? "-",
-                        DeliveryPoint = x.DeliveryPoint ?? "-",
-                        DeliveryGroupCode = x.DeliveryGroupCode ?? "-",
-                        GoodsCode = x.GoodsCode ?? "-",
-                        MarketCode = x.MarketCode ?? "-",
-                        CuLyBq = x.CuLyBq ?? 0,
-                        Cpccvc = x.Cpccvc ?? 0,
-                        Cvcbq = x.Cvcbq ?? 0,
-                        Lvnh = x.Lvnh ?? 0,
-                        Fob = x.Fob ?? 0,
-                        Htcvc = x.Htcvc ?? 0,
-                        HttVb1370 = x.HttVb1370 ?? 0,
-                        Ckv2 = x.Ckv2 ?? 0,
-                        PhuongThuc = x.PhuongThuc ?? "-",
-                        Thtt = x.Thtt ?? "-",
-                        Order = x.Order,
-                        Adrress = x.Adrress ?? "-",
-                        CkDau = x.CkDau ?? 0,
-                        CkXang = x.CkXang ?? 0,
-                        IsActive = true,
-                        LamTronDacBiet = x.LamTronDacBiet
-                    }).ToList(),
-                };
-
-            }
-            catch (Exception ex)
-            {
-                Status = false;
-                Exception = ex;
-                return new CalculateDiscountInputModel();
-            }
-        }
-        #endregion
-
-        #region gửi mail thông báo giá xăng dầu
-        public async Task SaveMailTBGia(string headerId)
-        {
-            try
-            {
-                //var s = new ExportWordService(_dbContext);
-                //var data = await this.CalculateDiscountOutput(headerId);
-                var litCustomerBBdoMail = _dbContext.TblMdCustomerEmail.Where(x => x.IsActive == true && x.Email != "").ToList();
-                var lstCustomerBbdo = _dbContext.TblMdCustomerBbdo.Where(x => x.IsActive == true).ToList();
-                var dataHeader = await this.GetInput(headerId);
-                DateTime Date = dataHeader.Header.Date;
-                var Ngay = $"{Date.Hour:D2}h00 ngày {Date:dd/MM/yyyy}";
-                var template = _dbContext.TblAdConfigTemplate.FirstOrDefault(x => x.Name == "Email thông báo giá bán");
-
-                var lstmail = new List<TblNotifyEmail>();
-
-                foreach (var item in litCustomerBBdoMail)
-                {
-                    if (lstCustomerBbdo.FirstOrDefault(x => x.Code == item.CustomerCode) != null)
-                    {
-                        lstmail.Add(new TblNotifyEmail()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Email = item.Email,
-                            Subject = template.Title.Replace("[fromDate]", Ngay) ?? "",
-                            Contents = template.HtmlSource.Replace("[fromDate]", Ngay),
-                            IsSend = "C",
-                            NumberRetry = 0,
-                            HeaderId = headerId,
-                            CustomerCode = item.CustomerCode ?? ""
-                        });
-                    }
-                }
-
-                _dbContext.TblCmNotifiEmail.AddRange(lstmail);
-
-
-
-
-
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Status = false;
-                Exception = ex;
-            }
-        }
         public async Task DelMailPheDuyet(string headerId)
         {
             try

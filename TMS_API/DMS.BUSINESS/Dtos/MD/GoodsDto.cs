@@ -29,6 +29,9 @@ namespace DMS.BUSINESS.Dtos.MD
         [Description("Thuế bảo vệ môi trường")]
         public decimal ThueBvmt { get; set; }
 
+        [Description("mức Thuế GTGT")]
+        public decimal ThueGtgt { get; set; }
+
         [Description("Hệ số VFC BQ mùa miền")]
         public decimal Vfc { get; set; }
 

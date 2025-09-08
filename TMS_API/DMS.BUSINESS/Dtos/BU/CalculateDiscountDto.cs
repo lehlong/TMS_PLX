@@ -22,6 +22,7 @@ namespace DMS.BUSINESS.Dtos.BU
         public string? TcktCode { get; set; }
         public string? QuyetDinhSo { get; set; }
         public string? CongDienPtBanLe { get; set; }
+        public DateTime? VanBanSoDate { get; set; }
         public string? VanBanSo { get; set; }
 
 

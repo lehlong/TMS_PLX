@@ -11,30 +11,24 @@ using System.Threading.Tasks;
 
 namespace DMS.BUSINESS.Dtos.MD
 {
-    public class CustomerEmailDto : BaseMdDto, IDto, IMapFrom
+    public class GroupMailDto : BaseMdDto, IDto, IMapFrom
     {
         [Description("STT")]
         public int OrdinalNumber { get; set; }
-
         [Key]
-        [Description("Mã Email")]
-        public string Code { get; set; }
+        [Description("Mã ")]
+        public string? Code { get; set; }
 
-        [Description("Mã khách hàng")]
-        public string CustomerCode { get; set; }
-
-        [Description("Mã Nhóm email")]
-        public string? GroupMailCode { get; set; }
-
-        [Description("Email")]
-        public string? Email { get; set; }
+        [Description("Tên Nhóm mail")]
+        public string Name { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TblMdCustomerEmail, CustomerEmailDto>().ReverseMap();
+            profile.CreateMap<TblMdGroupMail, GroupMailDto>().ReverseMap();
         }
+
     }
 }

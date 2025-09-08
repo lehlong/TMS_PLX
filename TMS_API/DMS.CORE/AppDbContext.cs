@@ -153,6 +153,7 @@ namespace DMS.CORE
 
         public DbSet<TblMdTypeOfGoods> TblMdTypeOfGoods { get; set; }
         public DbSet<TblMdGoods> TblMdGoods { get; set; }
+        public DbSet<TblMdGroupMail> TblMdGroupMail { get; set; }
         public DbSet<TblMdWarehouse> TblMdWarehouse { get; set; }
         public DbSet<TblMdLaiGopDieuTiet> TblMdLaiGopDieuTiet { get; set; }
         public DbSet<TblMdCustomer> TblMdCustomer { get; set; }
