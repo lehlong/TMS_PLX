@@ -29,6 +29,7 @@ namespace DMS.CORE.Entities.BU
 
         [Column("GBL_V1", TypeName = "decimal(18, 0)")]
         public decimal GblV1 { get; set; }
+
         [Column("GBL_V2", TypeName = "decimal(18, 0)")]
         public decimal GblV2 { get; set; }
 
@@ -37,6 +38,7 @@ namespace DMS.CORE.Entities.BU
 
         [Column("L15_NBL", TypeName = "decimal(18, 0)")]
         public decimal L15Nbl { get; set; }
+
         [Column("LAI_GOP", TypeName = "decimal(18, 0)")]
         public decimal LaiGop { get; set; }
 
@@ -45,8 +47,11 @@ namespace DMS.CORE.Entities.BU
 
         [Column("FOB_V2", TypeName = "decimal(18, 0)")]
         public decimal FobV2 { get; set; }
+
         [Column("C_ORDER")]
         public int Order { get; set; }
 
+        [Column("THUE_GTGT", TypeName = "DECIMAL(10,4)")]
+        public decimal ThueGtgt { get; set; }
     }
 }

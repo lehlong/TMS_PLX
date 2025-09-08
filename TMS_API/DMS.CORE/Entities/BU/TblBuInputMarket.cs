@@ -32,7 +32,7 @@ namespace DMS.CORE.Entities.BU
         [Column("GAP", TypeName = "DECIMAL(18,0)")]
         public decimal? Gap { get; set; }
 
-        [Column("COEFFICIENT", TypeName = "DECIMAL(18,1)")]
+        [Column("COEFFICIENT", TypeName = "DECIMAL(18,5)")]
         public decimal? Coefficient { get; set; }
 
         [Column("LOCAL_CODE", TypeName = "VARCHAR(50)")]

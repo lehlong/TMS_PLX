@@ -54,6 +54,7 @@ namespace DMS.CORE.Entities.BU
         public string Email { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
+        public string? GroupMailCode { get; set; }
         public string CheckFile { get; set; }
     }
 }

@@ -82,5 +82,8 @@ namespace DMS.CORE.Entities.BU
 
         [Column("LAM_TRON_DAC_BIET")]
         public bool? LamTronDacBiet { get; set; }
+
+        [Column("THAM_SO", TypeName = "DECIMAL(18,5)")]
+        public decimal? ThamSo { get; set; }
     }
 }

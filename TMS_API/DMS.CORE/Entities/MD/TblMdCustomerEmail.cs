@@ -14,6 +14,9 @@ namespace DMS.CORE.Entities.MD
         [Column("CUSTOMER_CODE", TypeName = "VARCHAR(50)")]
         public string CustomerCode { get; set; }
 
+        [Column("GROUP_MAIL_CODE", TypeName = "VARCHAR(50)")]
+        public string? GroupMailCode { get; set; }
+
         [Column("EMAIL", TypeName = "VARCHAR(250)")]
         public string Email { get; set; }
     }

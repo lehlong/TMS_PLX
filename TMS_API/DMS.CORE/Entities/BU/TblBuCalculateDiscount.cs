@@ -43,6 +43,9 @@ namespace DMS.CORE.Entities.BU
         [Column("VAN_BAN_SO", TypeName = "NVARCHAR(250)")]
         public string? VanBanSo { get; set; }
 
+        [Column("VAN_BAN_SO_DATE", TypeName = "DATETIME")]
+        public DateTime? VanBanSoDate { get; set; }
+
         [Column("STATUS", TypeName = "NVARCHAR(50)")]
         public string? Status { get; set; }
     }
