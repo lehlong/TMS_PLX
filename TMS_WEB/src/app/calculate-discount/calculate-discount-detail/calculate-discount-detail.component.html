@@ -1030,9 +1030,9 @@
             <tbody>
               <ng-container *ngFor="let data of output.fob;">
                 <tr>
-                  <td *ngIf="data.isBold"></td>
+                  <!-- <td *ngIf="data.isBold"></td>
                   <td *ngIf="data.isBold" nzAlign="left" colspan="36" style="font-weight: bold;">
-                    {{data.customerName}}</td>
+                    {{data.customerName}}</td> -->
                   <ng-container
                     *ngIf="!getSearchTerm('FOB') || data?.customerName?.toLowerCase().includes(getSearchTerm('FOB').toLowerCase())">
                     <td *ngIf="!data.isBold" nzAlign="center">{{ data.stt}}</td>
@@ -2286,19 +2286,19 @@
               <th nzAlign="center" rowspan="2">LOẠI HÀNG</th>
               <th nzAlign="center" rowspan="2">THUẾ BVMT</th>
               <th nzAlign="center" rowspan="2">Hệ số <br> VCF BQ <br> mùa miền</th>
-              <th nzAlign="center" rowspan="2">MỨC TĂNG<br> SO VỚI V1</th>
-              <th nzAlign="center" colspan="2">GIÁ TẬP ĐOÀN CÔNG BỐ</th>
+              <!-- <th nzAlign="center" rowspan="2">MỨC TĂNG<br> SO VỚI V1</th> -->
+              <th nzAlign="center" rowspan="2">GIÁ TẬP ĐOÀN CÔNG BỐ</th>
               <th nzAlign="center" rowspan="2">L15 CHƯA VAT<br> & BVMT<br>(PT bán lẻ - V2)</th>
               <th nzAlign="center" rowspan="2">L15 CHƯA VAT <br> & BVMT<br>(ngoài bán lẻ)</th>
               <th nzAlign="center" rowspan="2">LÃI GỘP ĐIỀU TIẾT<br>(L15 CHƯA VAT&BVMT)</th>
               <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br>(Vùng còn lại)</th>
-              <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th>
+              <!-- <th nzAlign="center" rowspan="2">GIẢM GIÁ FOB <br> CÓ VAT &BVMT <br> (Vùng trung tâm)</th> -->
               <th nzAlign="center" rowspan="2">THUẾ GTGT</th>
             </tr>
-            <tr>
+            <!-- <tr>
               <th nzAlign="center">GIÁ BÁN LẺ V1</th>
               <th nzAlign="center">GIÁ BÁN LẺ V2</th>
-            </tr>
+            </tr> -->
           </thead>
           <tbody>
             <tr *ngFor="let data of input2.inputPrice; let rowIndex = index">
@@ -2312,13 +2312,13 @@
                 <td><input nz-input [(ngModel)]="data.vcf" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'vcf')" type="text" />
                 </td>
-                <td><input nz-input [(ngModel)]="data.chenhLech" style="text-align: right;"
+                <!-- <td><input nz-input [(ngModel)]="data.chenhLech" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'chenhLech')"
                     type="text" />
                 </td>
                 <td><input nz-input [(ngModel)]="data.gblV1" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV1')" type="text" />
-                </td>
+                </td> -->
                 <td><input nz-input [(ngModel)]="data.gblV2" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'gblV2')" type="text" />
                 </td>
@@ -2335,9 +2335,9 @@
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV2')"
                     (keyup)="handleAutoInput(data)" type="text" />
                 </td>
-                <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
+                <!-- <td><input nz-input [(ngModel)]="data.fobV1" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'fobV1')" type="text" />
-                </td>
+                </td> -->
 
                 <td><input nz-input [(ngModel)]="data.thueGtgt" style="text-align: right;"
                     (keydown)="onKeyDownNumberOnly($event)" (input)="onInputNumberFormat(data,'thueGtgt')"

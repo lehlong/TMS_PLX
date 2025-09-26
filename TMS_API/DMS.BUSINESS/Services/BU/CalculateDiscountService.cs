@@ -952,8 +952,8 @@ namespace DMS.BUSINESS.Services.BU
                             Col13 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201032").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR95,
                             Col14 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370,
                             Col15 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0201004").Sum(x => x.Col14) + i.CkXang + i.HttVb1370) / gtgtR92,
-                            Col16 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
-                            Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD01,
+                            Col16 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.HttVb1370,
+                            Col17 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601005").Sum(x => x.Col14) + i.HttVb1370) / gtgtD01,
                             Col18 = data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370,
                             Col19 = (data.Dlg.Dlg6.Where(x => x.LocalCode == l.Code && x.GoodCode == "0601002").Sum(x => x.Col14) + i.CkDau + i.HttVb1370) / gtgtD05,
                             Col20 = i.Ckv2
@@ -1068,8 +1068,13 @@ namespace DMS.BUSINESS.Services.BU
                             Col4 = i.Cpccvc,
                             Col5 = i.Cvcbq,
                             Col6 = i.Lvnh,
-                            Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob,
-                            Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / gtgtR95,
+                            // theo sheet 21/8 không cần cộng 50 đồng vào col 7
+                            Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob,
+                            Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob) / gtgtR95,
+
+                            //Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob,
+                            //Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) + 50 : (decimal)i.Fob) / gtgtR95,
+
                             Col15 = i.LamTronDacBiet == true ? 1 : 0,
 
                         };
@@ -1141,8 +1146,11 @@ namespace DMS.BUSINESS.Services.BU
                         Col4 = i.Cpccvc,
                         Col5 = i.Cvcbq,
                         Col6 = i.Lvnh,
-                        Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
-                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
+                        Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob,
+                        Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob) / gtgtR95,
+
+                        //Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
+                        //Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
                         Col15 = i.LamTronDacBiet == true ? 1 : 0,
 
                     };
@@ -1211,8 +1219,11 @@ namespace DMS.BUSINESS.Services.BU
                         Col4 = i.Cpccvc,
                         Col5 = i.Cvcbq,
                         Col6 = i.Lvnh,
-                        Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
-                        Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
+                        Col7 = i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob,
+                        Col8 = (i.Fob == 0 ? (decimal)((data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => (decimal?)x.Col14) ?? 0M)) : (decimal)i.Fob) / gtgtR95,
+
+                        //Col7 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14),
+                        //Col8 = data.Dlg.Dlg6.Where(x => x.GoodCode == i.GoodsCode && x.LocalCode == "V2").Sum(x => x.Col14) / gtgtR95,
                         Col15 = i.LamTronDacBiet == true ? 1 : 0,
                     };
                     if (i.ThamSo == null || i.ThamSo == 0)
@@ -5457,37 +5468,38 @@ namespace DMS.BUSINESS.Services.BU
                                     table.Append(headerRow1);
                                     table.Append(headerRow2);
 
-                                    // Thêm dòng tiêu đề "Vùng thị trường trung tâm"
-                                    TableRow regionRow1 = new TableRow();
-                                    regionRow1.Append(CreateCell("Vùng thị trường trung tâm", true, 26, true, "2082", 4, 1));
-                                    table.Append(regionRow1);
                                     #endregion
 
                                     #region Gendata table                                   
-                                    foreach (var i in dlg9.Where(x => x.LocalCode == "V1"))
-                                    {
-                                            TableRow row = new TableRow();
-                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
-                                            row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
-                                            row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
-                                            row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
-                                            table.Append(row);
-                                    }
+                                    //// Thêm dòng tiêu đề "Vùng thị trường trung tâm"
+                                    //TableRow regionRow1 = new TableRow();
+                                    //regionRow1.Append(CreateCell("Vùng thị trường trung tâm", true, 26, true, "2082", 4, 1));
+                                    //table.Append(regionRow1);
+
+                                    //foreach (var i in dlg9.Where(x => x.LocalCode == "V1"))
+                                    //{
+                                    //        TableRow row = new TableRow();
+                                    //        row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
+                                    //        row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
+                                    //        row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
+                                    //        row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
+                                    //        table.Append(row);
+                                    //}
 
                                     // Thêm dòng tiêu đề "Các vùng thị trường còn lại"
-                                    TableRow regionRow2 = new TableRow();
-                                    regionRow2.Append(CreateCell("Các vùng thị trường còn lại", true, 26, true, "2082", 4, 1)); // Gộp 4 cột
-                                    table.Append(regionRow2);
+                                    //TableRow regionRow2 = new TableRow();
+                                    //regionRow2.Append(CreateCell("Các vùng thị trường còn lại", true, 26, true, "2082", 4, 1)); // Gộp 4 cột
+                                    //table.Append(regionRow2);
 
-                                    // Duyệt danh sách dlg6, in từng mặt hàng thuộc vùng còn lại
+                                    //// Duyệt danh sách dlg6, in từng mặt hàng thuộc vùng còn lại
                                     foreach (var i in dlg9.Where(x => x.LocalCode == "V2"))
                                     {
-                                            TableRow row = new TableRow();
-                                            row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
-                                            row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
-                                            row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
-                                            row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
-                                            table.Append(row);
+                                        TableRow row = new TableRow();
+                                        row.Append(CreateCell(i.GoodName, false, 26, false, "3500")); // Tên mặt hàng
+                                        row.Append(CreateCell(i.Col1.ToString("N0"), false, 26, false, "2082")); // LG cũ
+                                        row.Append(CreateCell(i.Col2.ToString("N0"), false, 26, false, "2082")); // LG mới
+                                        row.Append(CreateCell(i.Col3.ToString("N0"), false, 26, false, "2082"));
+                                        table.Append(row);
                                     }
                                     #endregion
 
