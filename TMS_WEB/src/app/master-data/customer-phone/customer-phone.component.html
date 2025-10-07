@@ -4,6 +4,16 @@
       <nz-page-header-extra>
         <nz-space [nzWrap]="true" class="gap-[5px]">
           <nz-space>
+            <nz-select  style="width: 230px;" class="flex-grow" nzShowSearch nzAllowClear nzPlaceHolder="Tìm khách hàng" [(ngModel)]="filter.keyWord"
+              (ngModelChange)="search()">
+              <nz-option *ngFor="let item of lstCustomer" [nzLabel]="item.name" [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
+            <nz-select style="width: 230px;" class="flex-grow" nzShowSearch nzAllowClear nzPlaceHolder="Tìm thị trường" [(ngModel)]="filter.keyWord"
+              (ngModelChange)="search()">
+              <nz-option *ngFor="let item of lstMarket" [nzLabel]="item.name" [nzValue]="item.code">
+              </nz-option>
+            </nz-select>
             <app-input-clear placeholder="Tìm kiếm" (enterEvent)="search()"
               [(value)]="filter.keyWord"></app-input-clear>
             <button (click)="search()" class="flex !items-center !border-l-0 gray-btn" nzType="default" nz-button

@@ -19,14 +19,16 @@ import { MarketService } from '../../services/master-data/market.service'
   styleUrl: './customer-phone.component.scss'
 })
 export class CustomerPhoneComponent {
-isSubmit: boolean = false
+  isSubmit: boolean = false
   visible: boolean = false
   edit: boolean = false
   filter = new SignerFilter()
   paginationResult = new PaginationResult()
   loading: boolean = false
   MASTER_DATA_MANAGEMENT = MASTER_DATA_MANAGEMENT
-  lstPhone:any[] = []
+  lstPhone: any[] = []
+  keySearchGroup = ''
+
   constructor(
     private _service: CustomerPhoneService,
     private _marketService: MarketService,
@@ -45,7 +47,7 @@ isSubmit: boolean = false
     })
   }
   validateForm: FormGroup = this.fb.group({
-    code:'',
+    code: '',
     customerCode: [''],
     marketCode: [''],
     phone: ['', [Validators.required]],
@@ -54,8 +56,8 @@ isSubmit: boolean = false
   get customerCode() {
     return this.validateForm.get('customerCode');
   }
-  lstCustomer:any[] =[]
-  lstMarket:any[] =[]
+  lstCustomer: any[] = []
+  lstMarket: any[] = []
 
   ngOnDestroy() {
     this.globalService.setBreadcrumb([])
@@ -123,7 +125,7 @@ isSubmit: boolean = false
     }
   }
 
-  getAllInputCustomer():void{
+  getAllInputCustomer(): void {
     this._CalculateDiscountservice.GetAllInputCustomer().subscribe({
       next: (data) => {
         this.lstCustomer = data
@@ -134,7 +136,7 @@ isSubmit: boolean = false
     })
   }
 
-  getAllMarket():void{
+  getAllMarket(): void {
     this._marketService.getall().subscribe({
       next: (data) => {
         this.lstMarket = data
@@ -164,6 +166,14 @@ isSubmit: boolean = false
         }
       })
     }
+  }
+
+  searchCustomer(event: any) {
+    if(event == null) this.search();
+    console.log(this.paginationResult.data);
+
+
+    this.paginationResult.data = this.paginationResult.data.filter((x: any) => x.customerCode == event || x.marketCode == event)
   }
 
   close() {

@@ -99,9 +99,10 @@ namespace DMS.BUSINESS.Services.BU
                     ["##DATE3@@"] = $"ngày {header?.Date.Day:D2} tháng {header?.Date.Month:D2} năm {header?.Date.Year}",
                     ["##DATE2@@"] = $"ngày {oldHeader?.Date.Day:D2} tháng {oldHeader?.Date.Month:D2} năm {oldHeader?.Date.Year}",
                     ["##QUYET_DINH_SO@@"] = header?.QuyetDinhSo ?? "",
-                    ["##DAI_DIEN@@"] = signer?.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "",
-                    ["##NGUOI_DAI_DIEN@@"] = signer.Position,
-                    ["##TEN@@"] = signer.Name,
+                    ["##DAI_DIEN@@"] = "KT.TRƯỞNG PHÒNG KDXD",
+                    //["##DAI_DIEN@@"] = signer?.Code != "TongGiamDoc" ? "KT.GIÁM ĐỐC CÔNG TY" : "",
+                    ["##NGUOI_DAI_DIEN@@"] = "PHÓ TRƯỞNG PHÒNG",
+                    ["##TEN@@"] = "Trần Đình Thái",
                 };
 
                 foreach (var (key, value) in replacements)
@@ -212,19 +213,24 @@ namespace DMS.BUSINESS.Services.BU
             var table = InitTableWithBorders();
             var row1 = new TableRow();
             row1.Append(CreateHeaderCell("STT", 1, 2, 26, 200));
-            row1.Append(CreateHeaderCell("Mặt hàng, quy cách", 1, 2, 26, 5500));
-            row1.Append(CreateHeaderCell("Đơn vị tính", 1, 2, 26, 1500));
-            row1.Append(CreateHeaderCell("Đơn giá đã có 10% VAT", 3, 1, 26, 3000));
+            row1.Append(CreateHeaderCell("Mặt hàng", 1, 2, 26, 4000));
+            row1.Append(CreateHeaderCell("Điểm giao hàng tại kho bên mua", 1, 2, 26, 7000));
+            //row1.Append(CreateHeaderCell("Đơn vị tính", 1, 2, 26, 1500));
+            //row1.Append(CreateHeaderCell("Đơn giá đã có 10% VAT", 3, 2, 26, 3000));
+            row1.Append(CreateHeaderCell("Giá bán lẻ Vùng 2", 1, 2, 26, 2000));
+            row1.Append(CreateHeaderCell("Chiết khấu", 1, 2, 26, 1000));
+            row1.Append(CreateHeaderCell("Giá bán cho bên mua", 1, 2, 26, 1500));
 
-            var row2 = new TableRow();
-            row2.Append(CreateHeaderCell("", 1, -1, 26, 200));
-            row2.Append(CreateHeaderCell("", 1, -1, 26, 5500));
-            row2.Append(CreateHeaderCell("", 1, -1, 26, 1500));
-            row2.Append(CreateHeaderCell("Giá bán lẻ Petrolimex công tại Vùng 2", 1, 1, 26, 3000));
-            row2.Append(CreateHeaderCell("Chiết khấu", 1, 1, 26, 1000));
-            row2.Append(CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 1500));
+            //var row2 = new TableRow();
+            //row1.Append(CreateHeaderCell("", 1, -1, 26, 200));
+            //row2.Append(CreateHeaderCell("", 1, -1, 26, 4000));
+            //row2.Append(CreateHeaderCell("", 1, -1, 26, 6000));
+            //row2.Append(CreateHeaderCell("Giá bán lẻ Vùng 2", 1, 1, 26, 3000));
+            //row2.Append(CreateHeaderCell("Chiết khấu", 1, 1, 26, 1000));
+            //row2.Append(CreateHeaderCell("Giá bán cho bên mua", 1, 1, 26, 1500));
 
-            table.Append(row1, row2);
+            //table.Append(row1, row2);
+            table.Append(row1);
 
             int stt = 1;
             var lstCus = data.Bbdo.Where(x => x.CustomerCode == cusCode).ToList();
@@ -233,9 +239,10 @@ namespace DMS.BUSINESS.Services.BU
                 var item = data.Dlg.Dlg6.Where(i => i.LocalCode == "V2" && i.GoodCode == cus.GoodCode).FirstOrDefault();
                 var row = new TableRow();
                 row.Append(CreateCell((stt++).ToString(), true, 26, 200));
-                row.Append(CreateCell(item?.GoodName, true, 26, 5500));
-                row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
-                row.Append(CreateCell(item.Col6.ToString("N0"), true, 26, 3000));
+                row.Append(CreateCell(item?.GoodName, true, 26, 3500));
+                row.Append(CreateCell(cus?.DeliveryPoint, false, 26, 7000));
+                //row.Append(CreateCell("Đ/lít tt", true, 26, 1500));
+                row.Append(CreateCell(item.Col6.ToString("N0"), true, 26, 2000));
                 row.Append(CreateCell((item.Col6 - cus.Col14).ToString("N0"), true, 26, 1000));
                 row.Append(CreateCell(cus.Col14.ToString("N0"), true, 26, 1500));
                 table.Append(row);

@@ -304,7 +304,7 @@ export class CalculateDiscountDetailComponent implements OnInit {
   onAllChecked(value: boolean): void {
     this.lstCustomerChecked = []
     if (value) {
-      this.lstCustomer.forEach((i) => {
+      this.lstCus.forEach((i) => {
         this.lstCustomerChecked.push({
           code: i.code,
           deliveryGroupCode: i.deliveryGroupCode,

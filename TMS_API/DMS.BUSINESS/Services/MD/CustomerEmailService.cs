@@ -25,7 +25,10 @@ namespace DMS.BUSINESS.Services.MD
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
                     query = query.Where(x =>
-                    x.Email.Contains(filter.KeyWord) || x.Code.ToString().Contains(filter.KeyWord));
+                    x.Email.Contains(filter.KeyWord) || 
+                    x.Code.ToString().Contains(filter.KeyWord) ||
+                    x.CustomerCode == (filter.KeyWord)
+                    );
                 }
                 //if (filter.IsActive.HasValue)
                 //{
