@@ -7017,22 +7017,14 @@ namespace DMS.BUSINESS.Services.BU
         {
             try
             {
-                foreach (var i in lstSms)
+                var lstData = _dbContext.TblCmNotifySms.Where(x => lstSms.Contains(x.Id)).ToList();
+                foreach (var i in lstData)
                 {
-                    var sms = _dbContext.TblCmNotifySms.Where(x => x.Id == i).FirstOrDefault();
-                    if ((sms.NumberRetry == 3 && sms.IsSend == "N") || sms.IsSend == "Y")
-                    {
-                        sms.IsSend = "N";
-                        sms.NumberRetry = 0;
-
-                        _dbContext.SaveChanges();
-                    }
-                    else
-                    {
-
-                    }
-
+                    i.IsSend = "N";
+                    i.NumberRetry = 0;
                 }
+
+                await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -7104,7 +7096,8 @@ namespace DMS.BUSINESS.Services.BU
                 foreach (var item in lstmail)
                 {
                     item.IsSend = "K";
-                };
+                }
+                ;
             }
             catch (Exception ex)
             {

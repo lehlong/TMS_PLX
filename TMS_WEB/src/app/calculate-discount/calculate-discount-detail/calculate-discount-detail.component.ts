@@ -357,6 +357,8 @@ export class CalculateDiscountDetailComponent implements OnInit {
   }
 
   ResendSms() {
+    console.log(this.lstSendSmsChecked);
+    
     this._service.ResetSendSms(this.lstSendSmsChecked).subscribe({
       next: (data) => {
         this.isVisibleEmail = false
@@ -373,9 +375,9 @@ export class CalculateDiscountDetailComponent implements OnInit {
     this.lstSendSmsChecked = []
     if (value) {
       this.lstSearchSms.forEach((i) => {
-        if (i.isSend != 'Y') {
+        // if (i.isSend != 'Y') {
           this.lstSendSmsChecked.push(i.id)
-        }
+        // }
       })
     } else {
       this.lstSendSmsChecked = []
